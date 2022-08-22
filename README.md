@@ -29,4 +29,4 @@ No additional instructions required.
 
 Name | Mobile | Email | Development OS/Toolchain
 -:|:-:|:-|-|
-Chu Kim Guan | 92317543 | chukimguan@gmail.com | MacOS/Visual Studio Code 2022
+Chu Kim Guan | 92317543 | chukimguan@gmail.com |

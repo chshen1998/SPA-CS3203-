@@ -29,4 +29,4 @@ No additional instructions required.
 
 Name | Mobile | Email | Development OS/Toolchain
 -:|:-:|:-|-|
-John Doe | 99887766 | john@doe.com | Windows 10/Visual Studio 2019
+Chu Kim Guan | 92317543 | chukimguan@gmail.com | MacOS/Visual Studio Code 2022

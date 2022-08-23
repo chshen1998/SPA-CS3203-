@@ -29,4 +29,4 @@ No additional instructions required.
 
 Name | Mobile | Email | Development OS/Toolchain
 -:|:-:|:-|-|
-Chu Kim Guans | 92317543 | chukimguan@gmail.com |
+Chu Kim Guan | 92317543 | chukimguan@gmail.com |

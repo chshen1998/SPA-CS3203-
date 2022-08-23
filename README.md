@@ -30,3 +30,4 @@ No additional instructions required.
 Name | Mobile | Email | Development OS/Toolchain
 Nobel Ang | 96338038 | e0564962@u.nus.edu | Windows/VS|
 Chu Kim Guan | 92317543 | chukimguan@gmail.com |
+Chua Sue-Ann | 83227552 | sue.ann.chua@gmail.com |

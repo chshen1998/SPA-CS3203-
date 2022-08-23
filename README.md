@@ -28,7 +28,7 @@ No additional instructions required.
 # Team Members
 
 Name | Mobile | Email | Development OS/Toolchain |
-Nobel Ang | 96338038 | e0564962@u.nus.edu | Windows/VS|
+Nobel Ang | 96338038 | e0564962@u.nus.edu | Windows 10/Microsoft Visual Studio Enterprise 2019 Version 16.11.0|
 Chu Kim Guan | 92317543 | chukimguan@gmail.com |
 Chua Sue-Ann | 83227552 | sue.ann.chua@gmail.com |
 Chew Hoa Shen | 81982565 | e0407025@u.nus.edu |

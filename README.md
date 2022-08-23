@@ -1,4 +1,4 @@
-# Team 00
+# Team 37
 
 > Please fill in this Readme with the required information, and delete this box.
 > 
@@ -28,5 +28,5 @@ No additional instructions required.
 # Team Members
 
 Name | Mobile | Email | Development OS/Toolchain
--:|:-:|:-|-|
+Nobel Ang | 96338038 | e0564962@u.nus.edu | Windows/VS|
 Chu Kim Guan | 92317543 | chukimguan@gmail.com |

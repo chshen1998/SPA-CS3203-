@@ -34,3 +34,4 @@ Chu Kim Guan | 92317543 | chukimguan@gmail.com | MacOS/CLion
 Chua Sue-Ann | 83227552 | sue.ann.chua@gmail.com | MacOS/CLion
 Chew Hoa Shen | 81982565 | e0407025@u.nus.edu | Windows 10/Microsoft Visual Studio Enterprise 2019 Version 16.11.0 |
 Koh Hau Heonng Kieron | 93661531 | kieron560@gmail.com | Windows 10/Microsoft Visual Studio Enterprise 2019 Version 16.11.0 |
+Sun Yu Pei | 91783902 | sunyupei1999@gmail.com | MacOS/CLion |

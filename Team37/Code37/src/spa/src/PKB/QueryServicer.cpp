@@ -5,10 +5,4 @@
 
 using namespace std;
 
-#include "PKB/PKB.h"
-#include "TNode.h"
-
-int Parse () {
-
-	return 0;
-}
+#include "PKB.h"

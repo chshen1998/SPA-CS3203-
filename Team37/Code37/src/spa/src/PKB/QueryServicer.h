@@ -1,3 +1,5 @@
+#pragma once
+
 #include<stdio.h>
 #include <iostream>
 #include <string>
@@ -5,10 +7,6 @@
 
 using namespace std;
 
-#include "PKB/PKB.h"
-#include "AST/TNode.h"
+class QueryServicer {
 
-int Parse () {
-
-	return 0;
-}
+};

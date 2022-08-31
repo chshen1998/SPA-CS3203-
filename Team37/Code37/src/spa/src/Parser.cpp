@@ -6,7 +6,7 @@
 using namespace std;
 
 #include "PKB/PKB.h"
-#include "TNode.h"
+#include "AST/TNode.h"
 
 int Parse () {
 

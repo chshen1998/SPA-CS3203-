@@ -5,17 +5,21 @@
 #include <string>
 #include <vector>
 
+#include "../AST/TNode.h"
+#include "./Storage.h"
+#include "./QueryServicer.h"
+
 using namespace std;
-typedef short PROC;
 
-class TNode;
-
-class VarTable;  // no need to #include "VarTable.h" as all I need is pointer
 
 class PKB {
+private:
+	shared_ptr<Storage> storage;
+	shared_ptr<QueryServicer> queryServicer;
 public:
-	static VarTable* varTable; 
-	static int setProcToAST(PROC p, TNode* r);
-	static TNode* getRootAST (PROC p);
+	// Constructor
+	PKB();
+
+	// TODO: Pass through functions on facade
 
 };

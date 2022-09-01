@@ -6,12 +6,13 @@
 using namespace std;
 
 #include "PKB.h"
-#include "AST/TNode.h"
+#include "../AST/TNode.h"
+#include "./Storage.h"
+#include "./QueryServicer.h"
 
-int PKB::setProcToAST(PROC p, TNode* r) {
-	return 0;
+PKB::PKB() {
+	storage = shared_ptr<Storage> Storage(new Storage());
+	queryServicer = shared_ptr<QueryServicer> QueryServicer(new QueryServicer());
 }
 
-TNode* PKB::getRootAST (PROC p){
-	return nullptr;
-}
+// TODO: Pass through functions on facade

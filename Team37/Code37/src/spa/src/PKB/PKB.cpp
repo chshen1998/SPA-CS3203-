@@ -15,4 +15,7 @@ PKB::PKB() {
 	queryServicer = shared_ptr<QueryServicer> QueryServicer(new QueryServicer());
 }
 
-// TODO: Pass through functions on facade
+
+shared_ptr<QueryServicer> PKB::getQueryServicer() {
+	return this->queryServicer;
+}

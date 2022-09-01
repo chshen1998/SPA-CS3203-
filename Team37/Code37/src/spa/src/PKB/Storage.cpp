@@ -10,16 +10,16 @@ using namespace std;
 #include "../AST/TNode.h"
 
 // Constructor
-Storage() {}
+Storage::Storage() {}
 
-void storeAST(shared_ptr<TNode> AST) {
+void Storage::storeAST(shared_ptr<TNode> AST) {
 	this->AST = AST;
 }
 
-void storeVar(string varName) {
+void Storage::storeVar(string varName) {
 	(this->variables).insert(varName);
 }
 
-set<string> getAllVar() {
+set<string> Storage::getAllVar() {
 	return this->variables;
  }

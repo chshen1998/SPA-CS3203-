@@ -18,8 +18,8 @@ public:
 	// Constructor
 	Storage();
 
-	storeAST();
-	storeVar();
+	void storeAST(shared_ptr<TNode>);
+	void storeVar(string);
 
-	getAllVar();
+	set<string> getAllVar();
 };

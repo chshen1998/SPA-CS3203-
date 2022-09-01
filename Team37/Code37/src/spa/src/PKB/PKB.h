@@ -20,6 +20,5 @@ public:
 	// Constructor
 	PKB();
 
-	// TODO: Pass through functions on facade
-
+	shared_ptr<QueryServicer> getQueryServicer();
 };

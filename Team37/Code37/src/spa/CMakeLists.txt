@@ -29,6 +29,8 @@ add_library(spa ${srcs} ${headers}
         src/SP/Visitor.h
         src/SP/ParserVisitor.h
         src/SP/TokeniserVisitor.h
+        src/SP/Tokenizer.h
+        src/SP/Tokenizer.cpp
         src/SP/SP.cpp
         src/SP/Visitor.cpp
         src/SP/ParserVisitor.cpp

@@ -7,6 +7,8 @@ using namespace std;
 
 #include "../AST/SourceCode.h"
 #include "ParserVisitor.h"
+#include "../AST/Procedure.h"
+#include "Tokenizer.h"
 
 ParserVisitor::ParserVisitor() {}
 
@@ -33,6 +35,8 @@ void ParserVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
             }
         }
         file.close();
+        // TODO syntax check
+        Tokenizer:: tokenize(lines);
     } else {
         cout << "Failed to open file" << endl;
     }

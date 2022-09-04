@@ -58,9 +58,10 @@ struct PqlToken {
     TokenType type;
     string value;
 
-    PqlToken() : type{ TokenType::STRING }, value{ "" } {}
-    PqlToken(TokenType tokenType, string value = "")
-            : type{ tokenType }, value{ value } {}
+    PqlToken(TokenType tokenType, string value) {
+        type = tokenType;
+        value = value;
+    }
 };
 
 /*

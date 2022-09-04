@@ -7,16 +7,13 @@ using namespace std;
 #include "AST/Procedure.h"
 
 void Tokenizer:: tokenize(vector<string> lines) {
-    shared_ptr<TNode> root = nullptr;
-    for (auto l : lines) {
-//        vector<string> keywords = {"read", "print", "call", "while", "if"};
-//        vector<string> operators = {"=", "+", "-", "*", "/", "%", "!=", ">", "<", "<=", ">=", "=="};
-        if (root == nullptr) {
-            tokenizeRead(l);
-            tokenizePrint(l);
-            tokenizeAssignment(l);
-        }
+    shared_ptr<TNode> root = tokenizeProcedure(lines[0]);
 
+    for (int i = 1; i < lines.size(); i++) {
+        string l = lines[i];
+        tokenizeRead(l, i, root);
+        tokenizePrint(l, i, root);
+//        tokenizeAssignment(l);
     }
 }
 
@@ -38,23 +35,27 @@ shared_ptr<Procedure> Tokenizer:: tokenizeProcedure(string line) {
     }
 }
 
-void Tokenizer:: tokenizeRead(string line) {
+void Tokenizer:: tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
     string keyword = "read";
     int startIdx = line.find(keyword);
     if (startIdx != string::npos) {
         int end = startIdx + keyword.length();
         string varName = line.substr(end, string::npos);
-//        ReadStatement readStmt = ReadStatement(nullptr, ?, varName);
+//        shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(ReadStatement(parent, stmtNo, varName));
+//        return readStmt;
+        ReadStatement(parent, stmtNo, varName);
     }
 }
 
-void Tokenizer:: tokenizePrint(string line) {
+void Tokenizer:: tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
     string keyword = "print";
     int startIdx = line.find(keyword);
     if (startIdx != string::npos) {
         int end = startIdx + keyword.length();
         string varName = line.substr(end, string::npos);
-//        PrintStatement printStmt = PrintStatement(nullptr, ?, varName);
+//        shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(PrintStatement(parent, stmtNo, varName));
+//        return printStmt;
+        PrintStatement(parent, stmtNo, varName);
     }
 }
 

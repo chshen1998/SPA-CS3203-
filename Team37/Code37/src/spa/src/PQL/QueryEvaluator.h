@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "Pql.h"
+#include "Parser.h"
 
 #ifndef TEAM37_QUERYEVALUATOR_H
 #define TEAM37_QUERYEVALUATOR_H
@@ -11,10 +11,10 @@
 
 class QueryEvaluator {
 public:
-    ParsedQuery pq;
+    PqlQuery pq;
     vector<string> selectResult;
 
-    QueryEvaluator(ParsedQuery parsedQuery);
+    QueryEvaluator(PqlQuery pqlQuery);
     vector<string> CallPKB();
 
 private:

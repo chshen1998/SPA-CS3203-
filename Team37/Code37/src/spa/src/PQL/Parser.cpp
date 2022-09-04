@@ -1,17 +1,21 @@
+using namespace std;
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
-
-using namespace std;
 
 #include "Parser.h"
 #include "QuerySemanticsExtractor.h"
 #include "QueryEvaluator.h"
 #include "PKB/PKB.h"
 #include "AST/TNode.h"
+#include <unordered_map>
 
-unordered_map<string, TokenType> TokenMap = {
+/*
+ * Hashmap containing the tokenType to pql string value mapping
+ */
+unordered_map<string, TokenType> stringToTokenMap = {
         {"variable", TokenType::VARIABLE},
         {"constant", TokenType::CONSTANT},
         {"assign", TokenType::ASSIGN},
@@ -26,38 +30,48 @@ unordered_map<string, TokenType> TokenMap = {
         {"Uses", TokenType::USES},
         {"Modifies", TokenType::MODIFIES},
         {"Follows", TokenType::FOLLOWS},
-        {"Follows*", TokenType::FOLLOWS_T},
+        {"Follows*", TokenType::FOLLOWS_A},
         {"Parent", TokenType::PARENT},
-        {"Parent*", TokenType::PARENT_T},
+        {"Parent*", TokenType::PARENT_A},
 
         {"such", TokenType::SUCH},
         {"that", TokenType::THAT},
 
         {";", TokenType::SEMICOLON},
         {",", TokenType::COMMA},
-        {"(", TokenType::OPEN_PARENTHESIS},
-        {")", TokenType::CLOSED_PARENTHESIS},
+        {"(", TokenType::OPEN_BRACKET},
+        {")", TokenType::CLOSED_BRACKET},
 };
 
+/*
+ * Set of valid declaration types
+ */
 unordered_set<TokenType> validDeclarations = {
-        TokenType::Variable,
+        TokenType::VARIABLE,
         TokenType::PROCEDURE,
         TokenType::WHILE,
         TokenType::ASSIGN,
-        TokenType::STMT
+        TokenType::STATEMENT
 };
 
+/*
+ * Set of valid such that clauses
+ */
 unordered_set<TokenType> validSuchThatClauses = {
         TokenType::USES,
         TokenType::MODIFIES,
         TokenType::PARENT,
-        TokenType::FOLLOWS
+        TokenType::PARENT_A,
+        TokenType::FOLLOWS,
+        TokenType::FOLLOWS_A
 };
 
-
+/*
+ * Takes in query string input from user, parses the query string then return result from PKB
+ */
 int Parser::Parse () {
     QuerySemanticsExtractor extractor = QuerySemanticsExtractor(mockTokenize());
-    ParsedQuery pq = extractor.ExtractSemantics();
+    PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);
     vector<string> result = evaluator.CallPKB();

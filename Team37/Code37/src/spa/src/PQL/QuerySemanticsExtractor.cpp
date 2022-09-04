@@ -9,10 +9,10 @@ using namespace std;
 QuerySemanticsExtractor::QuerySemanticsExtractor(vector<PqlToken> &tokens) {
     next = tokens.begin();
     end = tokens.end();
-    pq = ParsedQuery();
+    pq = PqlQuery();
 }
 
-void QuerySemanticsExtractor::ExtractSemantics() {
+PqlQuery QuerySemanticsExtractor::ExtractSemantics() {
     ExtractDeclarations();
     ExtractSelect();
     return pq;
@@ -23,7 +23,7 @@ void QuerySemanticsExtractor::ExtractDeclarations() {
         const PqlToken declaration = getNextToken();
         if (declaration.type == TokenType::WHITESPACE) {
             // Reached end of declarations
-            return
+            return;
         }
         const PqlToken synonym = getNextToken();
         const PqlToken semicolon = getNextToken();
@@ -46,7 +46,7 @@ void QuerySemanticsExtractor::ExtractSelect() {
 void QuerySemanticsExtractor::ExtractClauses() {
     const PqlToken nextToken = getNextToken();
     if (nextToken.type == TokenType::END) {
-        return
+        return;
     }
 
     if (nextToken.type == TokenType::PATTERN) {
@@ -63,11 +63,11 @@ void QuerySemanticsExtractor::ExtractPatternClause() {
     while (patternSynonym.type != TokenType::SYNONYM) {
         patternSynonym = getNextToken();
     }
-    const PqlToken openParenthesis = getNextToken();
+    const PqlToken openBracket = getNextToken();
     const PqlToken synonym1 = getNextToken();
     const PqlToken comma = getNextToken();
     const PqlToken synonym2 = getNextToken();
-    const PqlToken closeParenthesis = getNextToken();
+    const PqlToken closedBracket = getNextToken();
 }
 
 void QuerySemanticsExtractor::ExtractSuchThatClause() {
@@ -83,11 +83,11 @@ void QuerySemanticsExtractor::ExtractSuchThatClause() {
 }
 
 PqlToken QuerySemanticsExtractor::getNextToken() {
-    if (curr == end) {
-        return PqlToken(TokenType::END, "")
+    if (next == end) {
+        return PqlToken(TokenType::END, "");
     } else {
         const PqlToken token = *next;
         next++;
-        return token
+        return token;
     }
 }

@@ -7,13 +7,13 @@ using namespace std;
 #include "Parser.h"
 
 
-QueryEvaluator::QueryEvaluator(ParsedQuery parsedQuery) {
-    pq = parsedQuery;
+QueryEvaluator::QueryEvaluator(PqlQuery pqlQuery) {
+    pq = pqlQuery;
 }
 
 vector<string> QueryEvaluator::CallPKB() {
     QuerySelect();
-    return selectResult
+    return selectResult;
 }
 
 void QueryEvaluator::QuerySelect() {

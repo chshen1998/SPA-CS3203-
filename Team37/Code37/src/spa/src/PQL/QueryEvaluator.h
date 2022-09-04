@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <set>
 
 #include "Parser.h"
 
@@ -12,10 +12,10 @@
 class QueryEvaluator {
 public:
     PqlQuery pq;
-    vector<string> selectResult;
+    set<string> selectResult;
 
     QueryEvaluator(PqlQuery pqlQuery);
-    vector<string> CallPKB();
+    set<string> CallPKB();
 
 private:
     void QuerySelect();

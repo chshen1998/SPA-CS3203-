@@ -4,6 +4,7 @@ using namespace std;
 #include <iostream>
 #include <string>
 #include <vector>
+#include <set>
 
 #include "Parser.h"
 #include "QuerySemanticsExtractor.h"
@@ -74,7 +75,7 @@ int Parser::Parse () {
     PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);
-    vector<string> result = evaluator.CallPKB();
+    set<string> result = evaluator.CallPKB();
     return 0;
 }
 

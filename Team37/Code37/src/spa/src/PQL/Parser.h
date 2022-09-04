@@ -84,10 +84,10 @@ public:
 };
 
 // These are placeholder methods, delete after integration with PKB
-vector<string> AllVariables();
-vector<string> AllConstants();
-vector<string> AllProcedures();
-vector<string> AllStatements();
+set<string> AllVariables();
+set<string> AllConstants();
+set<string> AllProcedures();
+set<string> AllStatements();
 vector<PqlToken> mockTokenize();
 
 #endif //TEAM37_PARSER_H

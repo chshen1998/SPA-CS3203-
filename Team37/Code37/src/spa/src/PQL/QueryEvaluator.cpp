@@ -1,17 +1,18 @@
 using namespace std;
 
 #include <string>
-#include <vector>
+#include <set>
 
 #include "QueryEvaluator.h"
 #include "Parser.h"
+#include "../PKB/QueryServicer.h"
 
 
 QueryEvaluator::QueryEvaluator(PqlQuery pqlQuery) {
     pq = pqlQuery;
 }
 
-vector<string> QueryEvaluator::CallPKB() {
+set<string> QueryEvaluator::CallPKB() {
     QuerySelect();
     return selectResult;
 }
@@ -20,7 +21,7 @@ void QueryEvaluator::QuerySelect() {
     const string selectSynonym = pq.select;
     const TokenType type = pq.declarations[selectSynonym];
     if (type == TokenType::VARIABLE) {
-        selectResult = AllVariables();
+    	selectResult = QueryServicer::retrieveAll();
     } else if (type == TokenType::CONSTANT) {
         selectResult = AllConstants();
     } else if (type == TokenType::STATEMENT) {

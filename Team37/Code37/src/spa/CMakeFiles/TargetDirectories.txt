@@ -1,0 +1,3 @@
+C:/Users/chewh/OneDrive/Desktop/CS3203/22s1-cp-spa-team-37/Team37/Code37/src/spa/CMakeFiles/spa.dir
+C:/Users/chewh/OneDrive/Desktop/CS3203/22s1-cp-spa-team-37/Team37/Code37/src/spa/CMakeFiles/ALL_BUILD.dir
+C:/Users/chewh/OneDrive/Desktop/CS3203/22s1-cp-spa-team-37/Team37/Code37/src/spa/CMakeFiles/ZERO_CHECK.dir

@@ -1,5 +1,6 @@
 file(GLOB srcs "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
+
 add_library(spa ${srcs} ${headers}
         src/AST/SourceCode.h
         src/AST/Operators/RelationalOperator.h
@@ -21,6 +22,9 @@ add_library(spa ${srcs} ${headers}
         src/AST/Statement/PrintStatement.h
         src/AST/Statement/ReadStatement.h
         src/AST/Procedure.h
+        src/pql/Parser.h
+        src/pql/QuerySemanticsExtractor.h
+        src/pql/QueryEvaluator.h
         src/AST/SourceCode.cpp
         src/AST/Procedure.cpp
         src/AST/Statement/ReadStatement.cpp
@@ -35,7 +39,11 @@ add_library(spa ${srcs} ${headers}
         src/AST/ConditionalExpression/RelationalExpression.cpp
         src/AST/ConditionalExpression/NotCondition.cpp
         src/AST/ConditionalExpression/AndCondition.cpp
-        src/AST/ConditionalExpression/OrCondition.cpp)
+        src/AST/ConditionalExpression/OrCondition.cpp
+        src/pql/Parser.cpp
+        src/pql/QuerySemanticsExtractor.cpp
+        src/pql/QueryEvaluator.cpp)
+
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 

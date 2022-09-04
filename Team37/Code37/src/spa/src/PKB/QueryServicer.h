@@ -22,5 +22,5 @@ public:
 	// Retrieve all of an element
 	// TEMP: Return all variables only
 	// GOAL: Take in element type and return correct type
-	set<string> retrieveAll();
+	static set<string> retrieveAll();
 };

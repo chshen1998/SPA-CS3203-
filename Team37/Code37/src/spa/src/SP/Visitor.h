@@ -1,14 +1,16 @@
-//
-// Created by Sueann Chua on 30/8/22.
-//
+#include <string>
 
-#ifndef INC_22S1_CP_SPA_TEAM_37_VISITOR_H
-#define INC_22S1_CP_SPA_TEAM_37_VISITOR_H
+using namespace std;
 
+class SourceCode;
 
 class Visitor {
+public:
+    Visitor();
+    virtual void visitSourceCode(shared_ptr<SourceCode> sourceCode) = 0;
+//    virtual void visitTokenGroup(TokenGroup tokenGroup) = 0;
+//    virtual void visitProcedureList(ProcedureList procedureList) = 0;
+//    virtual void visitStatementList(StatementList statementList) = 0;
+//    virtual void visitToken(Token token) = 0;
 
 };
-
-
-#endif //INC_22S1_CP_SPA_TEAM_37_VISITOR_H

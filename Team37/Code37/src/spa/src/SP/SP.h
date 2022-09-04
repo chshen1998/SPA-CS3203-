@@ -1,10 +1,11 @@
-#ifndef INC_22S1_CP_SPA_TEAM_37_SP_H
-#define INC_22S1_CP_SPA_TEAM_37_SP_H
+#include <string>
+#include <vector>
 
+using namespace std;
 
 class SP {
-
+public:
+    SP();
+    vector<string> lines;
+    void parse(string filename);
 };
-
-
-#endif //INC_22S1_CP_SPA_TEAM_37_SP_H

@@ -5,4 +5,16 @@
 
 using namespace std;
 
-#include "PKB.h"
+#include "QueryServicer.h"
+#include "Storage.h"
+
+QueryServicer::QueryServicer(shared_ptr<Storage> storage) {
+	this->storage = storage;
+}
+
+// Retrieve all of an element
+// TEMP: Return all variables only
+// GOAL: Take in element type and return correct type
+QueryServicer::QueryServicer retrieveAll() {
+	return storage->getAllVar();
+}

@@ -5,14 +5,16 @@
 
 using namespace std;
 
-#include "../AST/TNode.h"
+#include "../AST/SourceCode.h"
 #include "ParserVisitor.h"
+
+ParserVisitor::ParserVisitor() {}
 
 void ParserVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
     string line;
     vector<string> temp;
     vector<string> lines;
-    ifstream file (sourceCode->filename);
+    ifstream file (sourceCode->getFileName());
     if (file.is_open()) {
         while (getline(file, line, '\n')) {
             lines.push_back(line);

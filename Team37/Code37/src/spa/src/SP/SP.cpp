@@ -4,12 +4,11 @@
 
 using namespace std;
 
-#include "../AST/TNode.h"
 #include "ParserVisitor.h"
-#include "SourceCode.h"
+#include "AST/SourceCode.h"
 
 void SP:: parse(string filename) {
-    ParserVisitor parserVisitor;
+    shared_ptr<ParserVisitor> parserVisitor;
 
     SourceCode sourceCode = SourceCode(filename);
     sourceCode.accept(parserVisitor);

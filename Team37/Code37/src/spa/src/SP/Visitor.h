@@ -1,6 +1,9 @@
-#include <string>
-
 using namespace std;
+
+#ifndef TEAM37_SP_H
+#define TEAM37_SP_H
+
+#include <string>
 
 class SourceCode;
 
@@ -14,3 +17,4 @@ public:
 //    virtual void visitToken(Token token) = 0;
 
 };
+#endif //TEAM37_QPS_H

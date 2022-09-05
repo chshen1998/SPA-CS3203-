@@ -1,10 +1,17 @@
-#include "Statement/Statement.h"
+using namespace std;
+
+#ifndef TEAM37_AST_H
+#define TEAM37_AST_H
+
+#include "./Statement/Statement.h"
+#include "AST/TNode.h"
 #include <vector>
+#include <string>
 
 class Procedure : public TNode {
 private:
     string procedureName;
-    vector<shared_ptr<Statement>> stmtLst;
+    vector<shared_ptr<Statement> > stmtLst;
 public:
     Procedure(shared_ptr<TNode> parent, string procedureName);
 
@@ -28,12 +35,14 @@ public:
      *
      * @return the list of statements
      */
-    vector<shared_ptr<Statement>> getStatements();
+    vector<shared_ptr<Statement> > getStatements();
 
     /**
      * Gets the parent
      *
      * @return the parent
      */
-    shared_ptr<TNode> getParent() override;
+    shared_ptr<TNode> getParent();
 };
+
+#endif //TEAM37_QPS_H

@@ -1,12 +1,18 @@
+using namespace std;
+
+#ifndef TEAM37_AST_H
+#define TEAM37_AST_H
+
 #include <vector>
 #include <string>
 
 #include "Procedure.h"
 #include "SP/Visitor.h"
+#include "AST/TNode.h"
 
 class SourceCode: public TNode {
 private:
-    vector<shared_ptr<Procedure>> procedureLst;
+    vector<shared_ptr<Procedure> > procedureLst;
     string filename;
 public:
     SourceCode(string filename);
@@ -24,14 +30,14 @@ public:
      *
      * @return the list of procedures
      */
-    vector<shared_ptr<Procedure>> getProcedures();
+    vector<shared_ptr<Procedure> > getProcedures();
 
     /**
      * Gets the parent
      *
      * @return the parent
      */
-    shared_ptr<TNode> getParent() override;
+    shared_ptr<TNode> getParent();
 
     /**
      * Accepts the visitor.
@@ -49,3 +55,4 @@ public:
         return this->filename;
     }
 };
+#endif //TEAM37_QPS_H

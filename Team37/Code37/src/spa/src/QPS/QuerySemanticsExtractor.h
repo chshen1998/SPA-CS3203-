@@ -14,7 +14,7 @@ public:
     vector<PqlToken>::iterator end;
     PqlQuery pq;
 
-    QuerySemanticsExtractor(vector<PqlToken> &tokens);
+    QuerySemanticsExtractor(vector<PqlToken> tokens);
 
     PqlQuery ExtractSemantics();
 

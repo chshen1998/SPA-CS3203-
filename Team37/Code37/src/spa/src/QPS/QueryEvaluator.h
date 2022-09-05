@@ -3,7 +3,7 @@
 #include <string>
 #include <set>
 
-#include "Parser.h"
+#include "QPS.h"
 
 #ifndef TEAM37_QUERYEVALUATOR_H
 #define TEAM37_QUERYEVALUATOR_H

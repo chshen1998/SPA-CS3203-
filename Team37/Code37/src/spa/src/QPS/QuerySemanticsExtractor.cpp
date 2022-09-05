@@ -4,9 +4,9 @@ using namespace std;
 #include <vector>
 
 #include "QuerySemanticsExtractor.h"
-#include "Parser.h"
+#include "QPS.h"
 
-QuerySemanticsExtractor::QuerySemanticsExtractor(vector<PqlToken> &tokens) {
+QuerySemanticsExtractor::QuerySemanticsExtractor(vector<PqlToken> tokens) {
     next = tokens.begin();
     end = tokens.end();
     pq = PqlQuery();

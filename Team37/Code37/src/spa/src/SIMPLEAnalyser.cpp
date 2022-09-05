@@ -29,7 +29,7 @@ public:
 	string inputSIMPLE(string program) {
 		// TODO: Call sourceProcessor function
 		shared_ptr<TNode> AST = SP::parse(program);
-		// knowledgeBase -> buildFromAst(AST)
+		 knowledgeBase -> buildFromAst(AST);
         return "";
 	}
 

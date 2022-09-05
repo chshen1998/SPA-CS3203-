@@ -15,6 +15,10 @@ QueryTokenizer::QueryTokenizer(string queryString) {
 }
 
 vector<PqlToken> QueryTokenizer::Tokenize() {
+    if (query.size() == 0) {
+        throw "Invalid Query Syntax :: Query Length is zero.";
+    }
+
     Split();
     ConvertIntoTokens();
 
@@ -26,8 +30,24 @@ TODO: To be added and revamped.
 Currently hard-coded for the demo.
 */
 void QueryTokenizer::Split() {
-    istringstream iss(query);
-    string current;
+    TokenType currentToken;
+    string currentString;
+    bool selectExists;
+
+    for (int i = 0; i < query.size(); i++) {
+        if (query[i] == '') {
+
+        }
+
+        currentString += query[i];
+
+
+    }
+
+    if (!selectExists) {
+        throw "Invalid Query Syntax :: Select statement does not exist.";
+    }
+
 }
 
 void QueryTokenizer::ConvertIntoTokens() {
@@ -36,7 +56,7 @@ void QueryTokenizer::ConvertIntoTokens() {
             tokens.push_back(PqlToken(stringToTokenMap[element], element));
         }
         else {
-            throw "Invalid Query syntax";
+            throw "Invalid Query syntax :: Token does not exist.";
         }
     }
 }

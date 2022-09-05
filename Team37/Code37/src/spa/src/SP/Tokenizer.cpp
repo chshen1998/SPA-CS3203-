@@ -161,10 +161,12 @@ void Tokenizer:: tokenizeWhile(string line, int stmtNo, shared_ptr<TNode> parent
     }
 }
 
+/* Commented out as Compiler throws an error
 OperatedExpression Tokenizer:: tokenizeOperatedExpr(string line, vector<int> indexes) {
     string expr = removeParentheses(line);
     // TODO
 }
+*/
 
 void Tokenizer:: tokenizeOperatedExprByVar(string line, vector<int> indexes, string lhs, shared_ptr<TNode> parent, int lineNo) { //currently tokenizes into variables only
     string expr = removeParentheses(line);

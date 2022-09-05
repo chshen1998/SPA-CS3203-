@@ -4,6 +4,8 @@ using namespace std;
 #define TEAM37_VISITOR_H
 
 #include <string>
+#include <memory>
+
 
 class SourceCode;
 

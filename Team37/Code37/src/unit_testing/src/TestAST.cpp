@@ -7,7 +7,7 @@ void require(bool b) {
 }
 
 TEST_CASE("1st Test") {
-    shared_ptr<SourceCode> sc = make_shared<SourceCode>();
+    shared_ptr<SourceCode> sc = make_shared<SourceCode>("");
     shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sc, "TestProcedure 1");
     shared_ptr<Procedure> procedure2 = make_shared<Procedure>(sc, "TestProcedure 1");
 

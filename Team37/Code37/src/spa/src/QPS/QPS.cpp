@@ -69,6 +69,22 @@ set<TokenType> validSuchThatClauses = {
 };
 
 /*
+Hard-coded for the demo for now.
+*/
+vector<PqlToken> mockTokenize() {
+    vector<PqlToken> v;
+
+    v.push_back(PqlToken(TokenType::VARIABLE, "variable"));
+    v.push_back(PqlToken(TokenType::SYNONYM, "v"));
+    v.push_back(PqlToken(TokenType::SEMICOLON, ";"));
+    v.push_back(PqlToken(TokenType::SELECT, "Select"));
+    v.push_back(PqlToken(TokenType::SYNONYM, "v"));
+
+    return v;
+}
+
+
+/*
  * Takes in query string input from user, parses the query string then return result from PKB
  */
 string QPS::processQuery(string query) {

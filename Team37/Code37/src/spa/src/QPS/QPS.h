@@ -1,7 +1,7 @@
 using namespace std;
 
-#ifndef TEAM37_PARSER_H
-#define TEAM37_PARSER_H
+#ifndef TEAM37_QPS_H
+#define TEAM37_QPS_H
 
 #include <string>
 #include <vector>
@@ -58,9 +58,9 @@ struct PqlToken {
     TokenType type;
     string value;
 
-    PqlToken(TokenType tokenType, string value) {
+    PqlToken(TokenType tokenType, string tokenValue) {
         type = tokenType;
-        value = value;
+        value = tokenValue;
     }
 };
 
@@ -74,13 +74,13 @@ struct PqlQuery {
     string suchThatClause;
 };
 
-extern unordered_map<string, TokenType> stringTokenMap;
+extern unordered_map<string, TokenType> stringToTokenMap;
 extern set<TokenType> validDeclarations;
 extern set<TokenType> validSuchThatClauses;
 
-class Parser {
+class QPS {
 public:
-    int Parse();
+    string processQuery(string query);
 };
 
 // These are placeholder methods, delete after integration with PKB
@@ -90,5 +90,5 @@ set<string> AllProcedures();
 set<string> AllStatements();
 vector<PqlToken> mockTokenize();
 
-#endif //TEAM37_PARSER_H
+#endif //TEAM37_QPS_H
 

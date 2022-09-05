@@ -47,7 +47,7 @@ unordered_map<string, TokenType> stringToTokenMap = {
 /*
  * Set of valid declaration types
  */
-unordered_set<TokenType> validDeclarations = {
+set<TokenType> validDeclarations = {
         TokenType::VARIABLE,
         TokenType::PROCEDURE,
         TokenType::WHILE,
@@ -58,7 +58,7 @@ unordered_set<TokenType> validDeclarations = {
 /*
  * Set of valid such that clauses
  */
-unordered_set<TokenType> validSuchThatClauses = {
+set<TokenType> validSuchThatClauses = {
         TokenType::USES,
         TokenType::MODIFIES,
         TokenType::PARENT,

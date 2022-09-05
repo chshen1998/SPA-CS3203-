@@ -6,7 +6,7 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <unordered_set>
+#include <set>
 
 
 /*
@@ -75,8 +75,8 @@ struct PqlQuery {
 };
 
 extern unordered_map<string, TokenType> stringTokenMap;
-extern unordered_set<TokenType> validDeclarations;
-extern unordered_set<TokenType> validSuchThatClauses;
+extern set<TokenType> validDeclarations;
+extern set<TokenType> validSuchThatClauses;
 
 class Parser {
 public:

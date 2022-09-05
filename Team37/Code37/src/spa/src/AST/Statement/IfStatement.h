@@ -6,8 +6,8 @@
 class IfStatement : public Statement {
 private:
     ConditionalExpression condExpr;
-    vector<shared_ptr<Statement>> thenStmtLst;
-    vector<shared_ptr<Statement>> elseStmtLst;
+    vector<shared_ptr<Statement> > thenStmtLst;
+    vector<shared_ptr<Statement> > elseStmtLst;
 public:
     IfStatement(shared_ptr<TNode> parent, int lineNum, ConditionalExpression condExpr);
 
@@ -39,14 +39,14 @@ public:
      *
      * @return the if-then statement list
      */
-    vector<shared_ptr<Statement>> getThenStatements();
+    vector<shared_ptr<Statement> > getThenStatements();
 
     /**
      * Gets the if-else statement list
      *
      * @return the if-else statement list
      */
-    vector<shared_ptr<Statement>> getElseStatements();
+    vector<shared_ptr<Statement> > getElseStatements();
 
     shared_ptr<TNode> getParent() override;
 };

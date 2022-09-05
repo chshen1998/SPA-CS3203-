@@ -1,10 +1,10 @@
-#ifndef TEAM37_TNODE_H
-#define TEAM37_TNODE_H
-
 #include <stdio.h>
 #include <iostream>
 
 using namespace std;
+
+#ifndef TEAM37_TNODE_H
+#define TEAM37_TNODE_H
 
 class TNode {
 private:
@@ -17,4 +17,4 @@ protected:
     }
 };
 
-#endif TEAM37_TNODE_H
+#endif

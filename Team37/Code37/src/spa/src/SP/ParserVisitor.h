@@ -1,14 +1,22 @@
-//
-// Created by Sueann Chua on 30/8/22.
-//
+using namespace std;
 
-#ifndef INC_22S1_CP_SPA_TEAM_37_PARSERVISITOR_H
-#define INC_22S1_CP_SPA_TEAM_37_PARSERVISITOR_H
+#ifndef TEAM37_PARSERVISITOR_H
+#define TEAM37_PARSERVISITOR_H
 
+#include <string>
+#include <fstream>
+#include <iostream>
 
-class ParserVisitor {
+#include "AST/SourceCode.h"
 
+class ParserVisitor: public Visitor {
+public:
+    // Constructor
+    ParserVisitor();
+    shared_ptr<TNode> visitSourceCode(shared_ptr<SourceCode> sourceCode);
+//    void visitTokenGroup(TokenGroup tokenGroup);
+//    void visitProcedureList(ProcedureList procedureList);
+//    void visitStatementList(StatementList statementList);
+//    void visitToken(Token token);
 };
-
-
-#endif //INC_22S1_CP_SPA_TEAM_37_PARSERVISITOR_H
+#endif

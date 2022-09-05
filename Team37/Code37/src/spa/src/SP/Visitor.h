@@ -1,14 +1,23 @@
-//
-// Created by Sueann Chua on 30/8/22.
-//
+using namespace std;
 
-#ifndef INC_22S1_CP_SPA_TEAM_37_VISITOR_H
-#define INC_22S1_CP_SPA_TEAM_37_VISITOR_H
+#ifndef TEAM37_VISITOR_H
+#define TEAM37_VISITOR_H
 
+#include <string>
+#include <memory>
+
+#include "AST/TNode.h"
+
+class SourceCode;
 
 class Visitor {
+public:
+    Visitor();
+    virtual shared_ptr<TNode> visitSourceCode(shared_ptr<SourceCode> sourceCode) = 0;
+//    virtual void visitTokenGroup(TokenGroup tokenGroup) = 0;
+//    virtual void visitProcedureList(ProcedureList procedureList) = 0;
+//    virtual void visitStatementList(StatementList statementList) = 0;
+//    virtual void visitToken(Token token) = 0;
 
 };
-
-
-#endif //INC_22S1_CP_SPA_TEAM_37_VISITOR_H
+#endif //TEAM37_QPS_H

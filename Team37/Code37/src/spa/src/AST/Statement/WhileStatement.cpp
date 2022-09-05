@@ -14,7 +14,7 @@ ConditionalExpression WhileStatement::getConditionalExpression() {
     return WhileStatement::condExpr;
 }
 
-vector<shared_ptr<Statement>> WhileStatement::getStatements() {
+vector<shared_ptr<Statement> > WhileStatement::getStatements() {
     return WhileStatement::stmtLst;
 }
 

@@ -6,7 +6,7 @@
 class WhileStatement : public Statement {
 private:
     ConditionalExpression condExpr;
-    vector<shared_ptr<Statement>> stmtLst;
+    vector<shared_ptr<Statement> > stmtLst;
 public:
     WhileStatement(shared_ptr<TNode> parent, int lineNum, ConditionalExpression condExpr);
 
@@ -30,7 +30,7 @@ public:
      *
      * @return the statement list
      */
-    vector<shared_ptr<Statement>> getStatements();
+    vector<shared_ptr<Statement> > getStatements();
 
     shared_ptr<TNode> getParent() override;
 };

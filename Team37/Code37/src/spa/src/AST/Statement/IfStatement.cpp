@@ -17,11 +17,11 @@ ConditionalExpression IfStatement::getConditionalExpression() {
     return this->condExpr;
 }
 
-vector<shared_ptr<Statement>> IfStatement::getThenStatements() {
+vector<shared_ptr<Statement> > IfStatement::getThenStatements() {
     return this->thenStmtLst;
 }
 
-vector<shared_ptr<Statement>> IfStatement::getElseStatements() {
+vector<shared_ptr<Statement> > IfStatement::getElseStatements() {
     return this->elseStmtLst;
 }
 

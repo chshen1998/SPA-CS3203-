@@ -26,8 +26,9 @@ public:
 	// Input SIMPLE Program
 	// Params program: SIMPLE program to be analysed
 	// Returns: Success or error message
-	string inputSIMPLE(string program) {
+	shared_ptr<TNode> inputSIMPLE(string program) {
 		// TODO: Call sourceProcessor function
+        SP::parse(program);
 	}
 
 	// Excecute Query

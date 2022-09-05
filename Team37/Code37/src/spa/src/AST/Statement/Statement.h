@@ -1,3 +1,8 @@
+using namespace std;
+
+#ifndef TEAM37_STATEMENT_H
+#define TEAM37_STATEMENT_H
+
 #include "../TNode.h"
 
 class Statement : public TNode {
@@ -15,7 +20,9 @@ public:
         return lineNum;
     }
 
-    shared_ptr<TNode> getParent() override {
+    shared_ptr<TNode> getParent() {
         return TNode::getParent();
     }
 };
+
+#endif

@@ -220,6 +220,6 @@ void Tokenizer:: tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> p
             AssignStatement(parent, lineNo, leftVar, NameExpression(rhs));
         }
     } else if (!all_of(indexes.begin(), indexes.end(), isNegative)){
-//        cout << "conditional" << endl; //TODO: tokenize conditional
+        //TODO: tokenize conditional
     }
 }

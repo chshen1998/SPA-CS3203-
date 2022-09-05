@@ -133,10 +133,12 @@ void Tokenizer:: tokenizeCall(string line) {
 }
 
 void Tokenizer:: tokenizeCondition(string condition) {
+    vector<string> boolOperators = {"&&", "!", "||"};
+    vector<string> relOperators = {"!=", "<=", ">=", "==", ">", "<"};
 
 }
 
-void Tokenizer:: tokenizeIf(string line) {
+void Tokenizer:: tokenizeIf(string line, int stmtNo, shared_ptr<TNode> parent) {
     string ifKeyword = "if";
     string thenKeyword = "then";
     int startIf = line.find(ifKeyword);
@@ -144,11 +146,12 @@ void Tokenizer:: tokenizeIf(string line) {
     if (startIf != string::npos && startThen != string::npos) {
         int end = startIf + ifKeyword.length();
         string condition = line.substr(end, startThen - end);
-//        IfStatement ifStmt = IfStatement(nullptr, ?, procName);
+//        ConditionalExpression condition =
+//        IfStatement ifStmt = IfStatement(parent, stmtNo, condition);
     }
 }
 
-void Tokenizer:: tokenizeWhile(string line) {
+void Tokenizer:: tokenizeWhile(string line, int stmtNo, shared_ptr<TNode> parent) {
     string keyword = "while";
     int startIdx = line.find(keyword);
     if (startIdx != string::npos) {

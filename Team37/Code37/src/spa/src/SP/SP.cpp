@@ -10,5 +10,5 @@ shared_ptr<TNode> SP:: parse(string filename) {
     shared_ptr<ParserVisitor> parserVisitor;
 
     SourceCode sourceCode = SourceCode(filename);
-    sourceCode.accept(parserVisitor);
+    return sourceCode.accept(parserVisitor);
 }

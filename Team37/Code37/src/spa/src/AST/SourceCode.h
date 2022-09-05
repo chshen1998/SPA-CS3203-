@@ -1,7 +1,7 @@
 using namespace std;
 
-#ifndef TEAM37_AST_H
-#define TEAM37_AST_H
+#ifndef TEAM37_SOURCECODE_H
+#define TEAM37_SOURCECODE_H
 
 #include <vector>
 #include <string>

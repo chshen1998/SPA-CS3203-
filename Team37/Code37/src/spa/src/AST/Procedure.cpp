@@ -12,7 +12,7 @@ string Procedure::getProcedureName() {
     return this->procedureName;
 }
 
-vector<shared_ptr<Statement>> Procedure::getStatements() {
+vector<shared_ptr<Statement> > Procedure::getStatements() {
     return this->stmtLst;
 }
 

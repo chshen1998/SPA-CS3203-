@@ -1,7 +1,7 @@
 using namespace std;
 
-#ifndef TEAM37_QPS_H
-#define TEAM37_QPS_H
+#ifndef TEAM37_STATEMENT_H
+#define TEAM37_STATEMENT_H
 
 #include "../TNode.h"
 

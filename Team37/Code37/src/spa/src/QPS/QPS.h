@@ -68,7 +68,7 @@ struct PqlToken {
  * ParsedQueries are created after extracting the components from the query.
  */
 struct PqlQuery {
-    unordered_map<string, TokenType> declarations = {};
+    unordered_map<string, TokenType> declarations;
     string select;
     string pattern;
     string suchThatClause;

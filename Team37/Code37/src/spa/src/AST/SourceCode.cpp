@@ -6,7 +6,7 @@ void SourceCode::addProcedure(shared_ptr<Procedure> procedure) {
     this->procedureLst.push_back(procedure);
 }
 
-vector<shared_ptr<Procedure>> SourceCode::getProcedures() {
+vector<shared_ptr<Procedure> > SourceCode::getProcedures() {
     return this->procedureLst;
 }
 

@@ -33,18 +33,19 @@ bool isPositive (int i) {
     return (i >= 0);
 }
 
-bool isOperatedExpression(string line) {
+vector<int> getOpIndexes(string line) {
     vector<string> operators = {"+", "-", "*", "/", "%"};
     vector<int> indexes;
     for (auto o : operators) {
         int i = line.find(o);
         indexes.push_back(i);
     }
+    return indexes;
+}
 
+bool isOperatedExpression(string line) {
+    vector<int> indexes = getOpIndexes(line);
     bool isOpExpr = any_of(indexes.begin(), indexes.end(), isPositive);
-    if (isOpExpr) {
-        Tokenizer:: tokenizeOperatedExpr(line, indexes);
-    }
     return isOpExpr;
 }
 
@@ -167,6 +168,32 @@ OperatedExpression Tokenizer:: tokenizeOperatedExpr(string line, vector<int> ind
     // TODO
 }
 
+void Tokenizer:: tokenizeOperatedExprByVar(string line, vector<int> indexes, string lhs, shared_ptr<TNode> parent, int lineNo) { //currently tokenizes into variables only
+    string expr = removeParentheses(line);
+    set<string> expressions;
+
+    indexes.push_back(line.length());
+
+    int start = 0;
+    for (int i = 0; i < indexes.size(); i++) {
+        int end = indexes[i];
+        cout << start << endl;
+        cout << end << endl;
+        string rhs = line.substr(start, end - start);
+        expressions.insert(trim(removeParentheses(rhs)));
+        start = end + 1;
+    }
+
+    for (auto v : expressions) {
+        if (isConstant(v)) {
+            AssignStatement(parent, lineNo, lhs, ConstantExpression(stoi(v)));
+        }
+        if (isVariable(v)) {
+            AssignStatement(parent, lineNo, lhs, NameExpression(v));
+        }
+    }
+}
+
 void Tokenizer:: tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> parent) {
     string op = "=";
     vector<string> otherOperators = {"!=", "<=", ">=", "=="};
@@ -180,11 +207,14 @@ void Tokenizer:: tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> p
     }
     if (startIdx != -1 && (all_of(indexes.begin(), indexes.end(), isNegative))) {
         string leftVar = line.substr(0, startIdx);
+
         // Parse RHS: could be expression or variable or constant
         string rhs = line.substr(startIdx + 1, string::npos);
         rhs = trim(rhs);
         if (isOperatedExpression(rhs)) {
-            // do nothing since isOperatedExpression calls tokenizeOperatedExpr if its is OpExpr
+            vector<int> opIndexes = getOpIndexes(line);
+            // Tokenizer:: tokenizeOperatedExpr(line, indexes); //TODO
+            Tokenizer:: tokenizeOperatedExprByVar(line, indexes, leftVar, parent, lineNo); // currently tokenizes var only
         }
         if (isConstant(rhs)) {
             AssignStatement(parent, lineNo, leftVar, ConstantExpression(stoi(rhs)));

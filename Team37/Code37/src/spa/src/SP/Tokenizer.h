@@ -26,4 +26,5 @@ public:
     static void tokenizeWhile(string line);
     static void tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> parent);
     static OperatedExpression tokenizeOperatedExpr(string line, vector<int> indexes);
+    static void tokenizeOperatedExprByVar(string line, vector<int> indexes, string lhs, shared_ptr<TNode> parent, int lineNo);
 };

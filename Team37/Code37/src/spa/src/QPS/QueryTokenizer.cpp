@@ -3,10 +3,12 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <sstream>
+
+#include <ctype.h>
 
 #include "QueryTokenizer.h"
 #include "QPS.h"
+
 
 QueryTokenizer::QueryTokenizer(string queryString) {
     query = queryString;
@@ -25,23 +27,40 @@ vector<PqlToken> QueryTokenizer::Tokenize() {
     return tokens;
 }
 
-/*
-TODO: To be added and revamped.
-Currently hard-coded for the demo.
-*/
+
 void QueryTokenizer::Split() {
-    TokenType currentToken;
     string currentString;
-    bool selectExists;
+    bool selectExists {};
+    bool addToList {};
 
     for (int i = 0; i < query.size(); i++) {
-        if (query[i] == '') {
 
+        // If the character is a blank (whitespace or tab etc)
+        if (isblank(query[i])) {
+            if (currentString.size() == 0) {
+                continue;
+            }
+            else {
+                delimited_query.push_back(currentString);
+                currentString = "";
+            }
         }
+           
+        // If the character is a symbol (whitespace or tab etc)
+        else if (stringToTokenMap.find(string{ query[i] }) != stringToTokenMap.end()) {
+            delimited_query.push_back(currentString);
+            delimited_query.push_back(string{ query[i] });
+            currentString = "";
+        } 
 
-        currentString += query[i];
+        else {
+            currentString += query[i];
+            selectExists = selectExists || currentString == "Select";
+        }
+    }
 
-
+    if (currentString.size() > 0) {
+        delimited_query.push_back(currentString);
     }
 
     if (!selectExists) {

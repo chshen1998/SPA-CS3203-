@@ -73,7 +73,7 @@ string removeParentheses(string line) {
 
 // ================================== Tokenizing functions ============================================
 
-void Tokenizer:: tokenize(vector<string> lines) {
+shared_ptr<TNode> Tokenizer:: tokenize(vector<string> lines) {
     shared_ptr<TNode> root = tokenizeProcedure(lines[0]); //TODO: Assuming that first line is procedure
 
     for (int i = 1; i < lines.size(); i++) {
@@ -82,6 +82,7 @@ void Tokenizer:: tokenize(vector<string> lines) {
         tokenizePrint(l, i, root);
         tokenizeAssignment(l, i, root);
     }
+    return root;
 }
 
 shared_ptr<Procedure> Tokenizer:: tokenizeProcedure(string line, int startIdx, string keyword) {

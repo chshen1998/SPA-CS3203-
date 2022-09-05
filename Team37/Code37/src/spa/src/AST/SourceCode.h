@@ -44,7 +44,7 @@ public:
      *
      * @param visitor
      */
-    void accept(shared_ptr<Visitor> visitor);
+    shared_ptr<TNode> accept(shared_ptr<Visitor> visitor);
 
     /**
      * Gets filename of source code

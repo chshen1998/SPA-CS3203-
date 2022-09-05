@@ -1,9 +1,15 @@
+using namespace std;
+
+#ifndef TEAM37_SP_H
+#define TEAM37_SP_H
+
 #include <string>
 #include <vector>
-
-using namespace std;
+#include <AST/TNode.h>
 
 class SP {
 public:
-    static void parse(string filename);
+    static shared_ptr<TNode> parse(string filename);
 };
+
+#endif

@@ -16,7 +16,7 @@ class Tokenizer {
 public:
     Tokenizer();
 
-    static void tokenize(vector<string> lines);
+    static shared_ptr<TNode> tokenize(vector<string> lines);
     static shared_ptr<Procedure> tokenizeProcedure(string line, int startIdx, string keyword);
     static shared_ptr<Procedure> tokenizeProcedure(string line);
     static void tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent);

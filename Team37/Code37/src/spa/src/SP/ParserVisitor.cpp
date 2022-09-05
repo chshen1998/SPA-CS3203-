@@ -10,7 +10,7 @@ using namespace std;
 
 ParserVisitor::ParserVisitor() {}
 
-void ParserVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
+shared_ptr<TNode> ParserVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
     string line;
     vector<string> temp;
     vector<string> lines;
@@ -34,7 +34,8 @@ void ParserVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
         }
         file.close();
         // TODO syntax check
-        Tokenizer:: tokenize(lines);
+        shared_ptr<TNode> AST = Tokenizer:: tokenize(lines);
+        return AST;
     } else {
         cout << "Failed to open file" << endl;
     }

@@ -1,6 +1,6 @@
 #include "SourceCode.h"
 
-SourceCode::SourceCode(string filename) : TNode(nullptr) { }
+SourceCode::SourceCode(string program) : TNode(nullptr) { }
 
 void SourceCode::addProcedure(shared_ptr<Procedure> procedure) {
     this->procedureLst.push_back(procedure);

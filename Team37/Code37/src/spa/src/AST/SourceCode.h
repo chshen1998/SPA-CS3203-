@@ -13,9 +13,9 @@ using namespace std;
 class SourceCode: public TNode {
 private:
     vector<shared_ptr<Procedure> > procedureLst;
-    string filename;
+    string program;
 public:
-    SourceCode(string filename);
+    SourceCode(string program);
 
     /**
      * Adds a procedure to the procedure list
@@ -47,12 +47,12 @@ public:
     shared_ptr<TNode> accept(shared_ptr<Visitor> visitor);
 
     /**
-     * Gets filename of source code
+     * Gets source code as string
      *
-     * @return filename
+     * @return program
      */
-    string getFileName() {
-        return this->filename;
+    string getProgram() {
+        return this->program;
     }
 };
 #endif //TEAM37_QPS_H

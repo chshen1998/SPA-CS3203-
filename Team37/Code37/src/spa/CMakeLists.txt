@@ -22,19 +22,9 @@ add_library(spa ${srcs} ${headers}
         src/AST/Statement/PrintStatement.h
         src/AST/Statement/ReadStatement.h
         src/AST/Procedure.h
-        src/pql/Parser.h
-        src/pql/QuerySemanticsExtractor.h
-        src/pql/QueryEvaluator.h
-        src/SP/SP.h
-        src/SP/Visitor.h
-        src/SP/ParserVisitor.h
-        src/SP/TokeniserVisitor.h
-        src/SP/Tokenizer.h
-        src/SP/Tokenizer.cpp
-        src/SP/SP.cpp
-        src/SP/Visitor.cpp
-        src/SP/ParserVisitor.cpp
-        src/SP/TokeniserVisitor.cpp
+        src/QPS/Parser.h
+        src/QPS/QuerySemanticsExtractor.h
+        src/QPS/QueryEvaluator.h
         src/AST/SourceCode.cpp
         src/AST/Procedure.cpp
         src/AST/Statement/ReadStatement.cpp
@@ -50,9 +40,9 @@ add_library(spa ${srcs} ${headers}
         src/AST/ConditionalExpression/NotCondition.cpp
         src/AST/ConditionalExpression/AndCondition.cpp
         src/AST/ConditionalExpression/OrCondition.cpp
-        src/pql/Parser.cpp
-        src/pql/QuerySemanticsExtractor.cpp
-        src/pql/QueryEvaluator.cpp src/Main.cpp)
+        src/QPS/Parser.cpp
+        src/QPS/QuerySemanticsExtractor.cpp
+        src/QPS/QueryEvaluator.cpp)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

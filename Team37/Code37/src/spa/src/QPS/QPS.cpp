@@ -6,11 +6,12 @@ using namespace std;
 #include <vector>
 #include <set>
 
-#include "Parser.h"
+#include "QPS.h"
 #include "QuerySemanticsExtractor.h"
 #include "QueryEvaluator.h"
-#include "PKB/PKB.h"
+#include "QueryTokenizer.h"
 #include "AST/TNode.h"
+#include "PKB/PKB.h"
 #include <unordered_map>
 
 /*
@@ -68,14 +69,39 @@ set<TokenType> validSuchThatClauses = {
 };
 
 /*
+Hard-coded for the demo for now.
+*/
+vector<PqlToken> mockTokenize() {
+    vector<PqlToken> v;
+
+    v.push_back(PqlToken(TokenType::VARIABLE, "variable"));
+    v.push_back(PqlToken(TokenType::SYNONYM, "v"));
+    v.push_back(PqlToken(TokenType::SEMICOLON, ";"));
+    v.push_back(PqlToken(TokenType::SELECT, "Select"));
+    v.push_back(PqlToken(TokenType::SYNONYM, "v"));
+
+    return v;
+}
+
+
+/*
  * Takes in query string input from user, parses the query string then return result from PKB
  */
-int Parser::Parse () {
+string QPS::processQuery(string query) {
+    
+    /* Commented out as we are using mockTokens for now
+    QueryTokenizer tokenizer = QueryTokenizer(query);
+    vector<PqlToken> tokens = tokenizer.Tokenize();
+    */
+
     QuerySemanticsExtractor extractor = QuerySemanticsExtractor(mockTokenize());
     PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);
     set<string> result = evaluator.CallPKB();
-    return 0;
+
+    // string output = evaluator.convertToString(result);
+
+    return "";
 }
 

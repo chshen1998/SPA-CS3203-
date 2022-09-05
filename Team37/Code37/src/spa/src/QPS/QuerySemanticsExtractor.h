@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "Parser.h"
+#include "QPS.h"
 
 #ifndef TEAM37_QUERYSEMANTICSEXTRACTOR_H
 #define TEAM37_QUERYSEMANTICSEXTRACTOR_H
@@ -14,7 +14,7 @@ public:
     vector<PqlToken>::iterator end;
     PqlQuery pq;
 
-    QuerySemanticsExtractor(vector<PqlToken> &tokens);
+    QuerySemanticsExtractor(vector<PqlToken> tokens);
 
     PqlQuery ExtractSemantics();
 

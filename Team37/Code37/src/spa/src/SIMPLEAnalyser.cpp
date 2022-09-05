@@ -18,9 +18,9 @@ private:
 public:
 	// Constructor
 	SIMPLEAnalyser() {
-		sourceProcessor = make_shared<SP>(SP());
-		knowledgeBase = make_shared<PKB>(PKB());
-		queryProcessor = make_shared<QPS>(QPS());
+		sourceProcessor = make_shared<SP>();
+		knowledgeBase = make_shared<PKB>();
+		queryProcessor = make_shared<QPS>();
 	}
 
 	// Input SIMPLE Program
@@ -33,12 +33,12 @@ public:
         return "";
 	}
 
-	// Excecute Query
+	// Execute Query
 	// Params program: Query to be analysed
 	// Returns: Result or error message
 	string executeQuery(string query) {
 		// TODO: Call queryProcessor function
-		//return queryProcessor->processQuery(query);
+//		return queryProcessor->processQuery(query);
 		set<string> result = knowledgeBase->retrieveAll();
 
 		string output = "";

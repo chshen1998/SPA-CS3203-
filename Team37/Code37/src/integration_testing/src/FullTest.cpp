@@ -2,11 +2,11 @@
 #include "SIMPLEAnalyser.cpp"
 #include "catch.hpp"
 using namespace std;
-void require(bool b) {
-    REQUIRE(b);
-}
+//void require(bool b) {
+//    REQUIRE(b);
+//}
 
-TEST_CASE("1st Test") {
+TEST_CASE("Other 1st Test") {
     shared_ptr<SIMPLEAnalyser> sp = make_shared<SIMPLEAnalyser>();
     string testProgram = "procedure main {\n"
                   "    flag = 0;\n"
@@ -20,7 +20,6 @@ TEST_CASE("1st Test") {
 
     string testQuery = "variable v; select v";
 
-    cout << "What";
     sp->inputSIMPLE(testProgram);
     string result = sp->executeQuery(testQuery);
 

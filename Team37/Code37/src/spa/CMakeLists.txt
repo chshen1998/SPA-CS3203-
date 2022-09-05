@@ -55,6 +55,9 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QuerySemanticsExtractor.cpp
         src/QPS/QueryEvaluator.cpp
         src/QPS/QueryTokenizer.cpp
+        src/PKB/PKB.cpp
+        src/PKB/QueryServicer.cpp
+        src/PKB/Storage.cpp
         )
 
 # this makes the headers accessible for other projects which uses spa lib

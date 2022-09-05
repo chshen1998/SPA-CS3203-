@@ -15,6 +15,6 @@ QueryServicer::QueryServicer(shared_ptr<Storage> storage) {
 // Retrieve all of an element
 // TEMP: Return all variables only
 // GOAL: Take in element type and return correct type
-QueryServicer::QueryServicer retrieveAll() {
-	return storage->getAllVar();
+set<string> QueryServicer::retrieveAll() {
+    return storage->getAllVar();
 }

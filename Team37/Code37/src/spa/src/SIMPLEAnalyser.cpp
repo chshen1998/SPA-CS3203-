@@ -28,6 +28,7 @@ public:
 	// Returns: Success or error message
 	string inputSIMPLE(string program) {
 		// TODO: Call sourceProcessor function
+        SP::parse(program);
 	}
 
 	// Excecute Query

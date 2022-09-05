@@ -5,7 +5,6 @@
 
 using namespace std;
 
-#include "../AST/SourceCode.h"
 #include "ParserVisitor.h"
 #include "../AST/Procedure.h"
 #include "Tokenizer.h"

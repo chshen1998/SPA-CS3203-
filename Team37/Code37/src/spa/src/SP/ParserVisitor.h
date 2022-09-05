@@ -4,14 +4,13 @@
 
 using namespace std;
 
-#include "SP.h"
 #include "AST/SourceCode.h"
 
 class ParserVisitor: public Visitor {
 public:
     // Constructor
     ParserVisitor();
-    void visitSourceCode(shared_ptr<SourceCode> sourceCode);
+    void visitSourceCode(shared_ptr<SourceCode> sourceCode) override;
 //    void visitTokenGroup(TokenGroup tokenGroup);
 //    void visitProcedureList(ProcedureList procedureList);
 //    void visitStatementList(StatementList statementList);

@@ -7,5 +7,5 @@ class SP {
 public:
     SP();
     vector<string> lines;
-    void parse(string filename);
+    static void parse(string filename);
 };

@@ -5,7 +5,6 @@
 using namespace std;
 
 #include "Tokenizer.h"
-#include "AST/Procedure.h"
 
 // ================================== Utility functions ============================================
 
@@ -75,7 +74,7 @@ string removeParentheses(string line) {
 // ================================== Tokenizing functions ============================================
 
 void Tokenizer:: tokenize(vector<string> lines) {
-    shared_ptr<TNode> root = tokenizeProcedure(lines[0]);
+    shared_ptr<TNode> root = tokenizeProcedure(lines[0]); //TODO: Assuming that first line is procedure
 
     for (int i = 1; i < lines.size(); i++) {
         string l = lines[i];
@@ -109,8 +108,6 @@ void Tokenizer:: tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent)
     if (startIdx != string::npos) {
         int end = startIdx + keyword.length();
         string varName = line.substr(end, string::npos);
-//        shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(ReadStatement(parent, stmtNo, varName));
-//        return readStmt;
         ReadStatement(parent, stmtNo, varName);
     }
 }
@@ -121,8 +118,6 @@ void Tokenizer:: tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent
     if (startIdx != string::npos) {
         int end = startIdx + keyword.length();
         string varName = line.substr(end, string::npos);
-//        shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(PrintStatement(parent, stmtNo, varName));
-//        return printStmt;
         PrintStatement(parent, stmtNo, varName);
     }
 }
@@ -198,7 +193,6 @@ void Tokenizer:: tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> p
     string op = "=";
     vector<string> otherOperators = {"!=", "<=", ">=", "=="};
     vector<int> indexes;
-//    set<string> variables;
 
     int startIdx = line.find(op);
     for (auto o : otherOperators) {

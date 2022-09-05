@@ -19,3 +19,7 @@ PKB::PKB() {
 shared_ptr<QueryServicer> PKB::getQueryServicer() {
 	return this->queryServicer;
 }
+
+set<string> retrieveAll() {
+	return storage->getAllVar();
+}

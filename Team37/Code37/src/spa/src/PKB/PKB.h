@@ -21,4 +21,5 @@ public:
 	PKB();
 
 	shared_ptr<QueryServicer> getQueryServicer();
+	set<string> retrieveAll();
 };

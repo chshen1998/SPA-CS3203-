@@ -28,7 +28,8 @@ public:
 	// Returns: Success or error message
 	shared_ptr<TNode> inputSIMPLE(string program) {
 		// TODO: Call sourceProcessor function
-        SP::parse(program);
+		shared_ptr<TNode> AST = SP::parse(program);
+		// knowledgeBase -> buildFromAst(AST)
 	}
 
 	// Excecute Query
@@ -37,5 +38,14 @@ public:
 	string executeQuery(string query) {
 		// TODO: Call queryProcessor function
 		//return queryProcessor->processQuery(query);
+		set<string> result = knowledgeBase->retrieveAll();
+
+		string output = "";
+
+		set<string>::iterator itr;
+
+		for (itr = result.begin(); itr != result.end(); itr++)	{
+			output += *itr;
+		}
 	}
 };

@@ -31,8 +31,6 @@ void QueryTokenizer::Split() {
 }
 
 void QueryTokenizer::ConvertIntoTokens() {
-    TokenType current;
-
     for (string& element : delimited_query) {
         if (stringToTokenMap.find(element) != stringToTokenMap.end()) {
             tokens.push_back(PqlToken(stringToTokenMap[element], element));

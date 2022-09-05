@@ -9,6 +9,7 @@ using namespace std;
 #include "QPS.h"
 #include "QuerySemanticsExtractor.h"
 #include "QueryEvaluator.h"
+#include "QueryTokenizer.h"
 #include "AST/TNode.h"
 #include "PKB/PKB.h"
 #include <unordered_map>
@@ -72,11 +73,11 @@ set<TokenType> validSuchThatClauses = {
  */
 string QPS::processQuery(string query) {
     
-    /*
-    * QueryTokenizer tokenizer = QueryTokenizer(query);
-    * vector<PqlTokens> tokens = tokenizer.tokenize();
+    /* Commented out as we are using mockTokens for now
+    QueryTokenizer tokenizer = QueryTokenizer(query);
+    vector<PqlToken> tokens = tokenizer.Tokenize();
     */
-    
+
     QuerySemanticsExtractor extractor = QuerySemanticsExtractor(mockTokenize());
     PqlQuery pq = extractor.ExtractSemantics();
 

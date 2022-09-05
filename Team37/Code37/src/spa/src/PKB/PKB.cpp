@@ -11,8 +11,8 @@ using namespace std;
 #include "./QueryServicer.h"
 
 PKB::PKB() {
-	storage = shared_ptr<Storage> Storage(new Storage());
-	queryServicer = shared_ptr<QueryServicer> QueryServicer(new QueryServicer());
+	storage = make_shared<Storage>();
+	queryServicer = make_shared<QueryServicer>();
 }
 
 

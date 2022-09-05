@@ -6,7 +6,6 @@
 using namespace std;
 
 #include "ParserVisitor.h"
-#include "../AST/Procedure.h"
 #include "Tokenizer.h"
 
 ParserVisitor::ParserVisitor() {}

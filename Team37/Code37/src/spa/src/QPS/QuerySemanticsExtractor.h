@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "Parser.h"
+#include "QPS.h"
 
 #ifndef TEAM37_QUERYSEMANTICSEXTRACTOR_H
 #define TEAM37_QUERYSEMANTICSEXTRACTOR_H

@@ -6,11 +6,11 @@ using namespace std;
 #include <vector>
 #include <set>
 
-#include "Parser.h"
+#include "QPS.h"
 #include "QuerySemanticsExtractor.h"
 #include "QueryEvaluator.h"
-#include "PKB/PKB.h"
 #include "AST/TNode.h"
+#include "PKB/PKB.h"
 #include <unordered_map>
 
 /*
@@ -70,12 +70,21 @@ set<TokenType> validSuchThatClauses = {
 /*
  * Takes in query string input from user, parses the query string then return result from PKB
  */
-int Parser::Parse () {
+string QPS::processQuery(string query) {
+    
+    /*
+    * QueryTokenizer tokenizer = QueryTokenizer(query);
+    * vector<PqlTokens> tokens = tokenizer.tokenize();
+    */
+    
     QuerySemanticsExtractor extractor = QuerySemanticsExtractor(mockTokenize());
     PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);
     set<string> result = evaluator.CallPKB();
-    return 0;
+
+    // string output = evaluator.convertToString(result);
+
+    return "";
 }
 

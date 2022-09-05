@@ -4,7 +4,7 @@ using namespace std;
 #include <set>
 
 #include "QueryEvaluator.h"
-#include "Parser.h"
+#include "QPS.h"
 #include "../PKB/QueryServicer.h"
 
 

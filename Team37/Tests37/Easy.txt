@@ -1,0 +1,9 @@
+procedure main {
+    flag = 0;
+    print flag;
+    read flag;
+
+    x = 1;
+    y = 2;
+    print x;
+}

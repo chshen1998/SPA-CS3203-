@@ -26,10 +26,11 @@ public:
 	// Input SIMPLE Program
 	// Params program: SIMPLE program to be analysed
 	// Returns: Success or error message
-	shared_ptr<TNode> inputSIMPLE(string program) {
+	string inputSIMPLE(string program) {
 		// TODO: Call sourceProcessor function
 		shared_ptr<TNode> AST = SP::parse(program);
 		// knowledgeBase -> buildFromAst(AST)
+        return "";
 	}
 
 	// Excecute Query
@@ -46,6 +47,9 @@ public:
 
 		for (itr = result.begin(); itr != result.end(); itr++)	{
 			output += *itr;
+            output += ",";
 		}
+
+        return output;
 	}
 };

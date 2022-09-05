@@ -12,7 +12,7 @@ using namespace std;
 
 PKB::PKB() {
 	storage = make_shared<Storage>();
-	queryServicer = make_shared<QueryServicer>();
+	queryServicer = make_shared<QueryServicer>(storage);
 }
 
 
@@ -20,6 +20,6 @@ shared_ptr<QueryServicer> PKB::getQueryServicer() {
 	return this->queryServicer;
 }
 
-set<string> retrieveAll() {
+set<string> PKB::retrieveAll() {
 	return storage->getAllVar();
 }

@@ -1,7 +1,7 @@
 using namespace std;
 
-#ifndef TEAM37_AST_H
-#define TEAM37_AST_H
+#ifndef TEAM37_PROCEDURE_H
+#define TEAM37_PROCEDURE_H
 
 #include "./Statement/Statement.h"
 #include "AST/TNode.h"

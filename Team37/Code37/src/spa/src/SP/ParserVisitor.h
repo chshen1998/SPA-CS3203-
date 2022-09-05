@@ -1,8 +1,11 @@
+using namespace std;
+
+#ifndef TEAM37_PARSERVISITOR_H
+#define TEAM37_PARSERVISITOR_H
+
 #include <string>
 #include <fstream>
 #include <iostream>
-
-using namespace std;
 
 #include "AST/SourceCode.h"
 
@@ -16,3 +19,4 @@ public:
 //    void visitStatementList(StatementList statementList);
 //    void visitToken(Token token);
 };
+#endif

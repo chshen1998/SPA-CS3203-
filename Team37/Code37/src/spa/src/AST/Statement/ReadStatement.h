@@ -1,3 +1,8 @@
+using namespace std;
+
+#ifndef TEAM37_READSTATEMENT_H
+#define TEAM37_READSTATEMENT_H
+
 #include "Statement.h"
 
 class ReadStatement : public Statement {
@@ -7,7 +12,7 @@ private:
 public:
     ReadStatement(shared_ptr<TNode> parent, int lineNum, string variableName);
 
-    int getLineNum() override;
+    int getLineNum();
 
     /**
      * Gets the name of the variable in the read statement
@@ -16,5 +21,7 @@ public:
      */
     string getVariableName();
 
-    shared_ptr<TNode> getParent() override;
+    shared_ptr<TNode> getParent();
 };
+
+#endif //TEAM37_READSTATEMENT_H

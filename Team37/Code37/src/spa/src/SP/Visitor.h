@@ -1,7 +1,7 @@
 using namespace std;
 
-#ifndef TEAM37_SP_H
-#define TEAM37_SP_H
+#ifndef TEAM37_VISITOR_H
+#define TEAM37_VISITOR_H
 
 #include <string>
 

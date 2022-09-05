@@ -33,7 +33,7 @@ bool isPositive (int i) {
 }
 
 vector<int> getOpIndexes(string line) {
-    vector<string> operators = {"+", "-", "*", "/", "%"};
+    string operators[] = {"+", "-", "*", "/", "%"};
     vector<int> indexes;
     for (auto o : operators) {
         int i = line.find(o);
@@ -133,8 +133,8 @@ void Tokenizer:: tokenizeCall(string line) {
 }
 
 void Tokenizer:: tokenizeCondition(string condition) {
-    vector<string> boolOperators = {"&&", "!", "||"};
-    vector<string> relOperators = {"!=", "<=", ">=", "==", ">", "<"};
+    string boolOperators[] = {"&&", "!", "||"};
+    string relOperators[] = {"!=", "<=", ">=", "==", ">", "<"};
 
 }
 
@@ -194,7 +194,7 @@ void Tokenizer:: tokenizeOperatedExprByVar(string line, vector<int> indexes, str
 
 void Tokenizer:: tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> parent) {
     string op = "=";
-    vector<string> otherOperators = {"!=", "<=", ">=", "=="};
+    string otherOperators[] = {"!=", "<=", ">=", "=="};
     vector<int> indexes;
 
     int startIdx = line.find(op);

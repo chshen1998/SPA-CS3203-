@@ -8,3 +8,7 @@ NotCondition::NotCondition(
 shared_ptr<ConditionalExpression> NotCondition::getConditionalExpression() {
     return this->condExpr;
 }
+
+void NotCondition::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitNotCondition(shared_from_this());
+}

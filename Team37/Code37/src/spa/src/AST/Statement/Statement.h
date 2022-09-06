@@ -1,9 +1,11 @@
-using namespace std;
+#pragma once
 
 #ifndef TEAM37_STATEMENT_H
 #define TEAM37_STATEMENT_H
 
-#include "../TNode.h"
+using namespace std;
+
+#include "AST/TNode.h"
 
 class Statement : public TNode {
 private:
@@ -16,9 +18,9 @@ public:
      *
      * @return the line number of the statement
      */
-    virtual int getLineNum() {
+     int getLineNum() {
         return lineNum;
-    }
+     }
 };
 
-#endif
+#endif //TEAM37_STATEMENT_H

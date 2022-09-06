@@ -7,3 +7,7 @@ NameExpression::NameExpression(
 string NameExpression::getVarName() {
     return this->varName;
 }
+
+void NameExpression::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitNameExpression(shared_from_this());
+}

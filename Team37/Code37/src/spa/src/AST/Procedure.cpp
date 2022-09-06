@@ -1,7 +1,5 @@
 #include "Procedure.h"
 
-using namespace std;
-
 Procedure::Procedure(shared_ptr<TNode> parent, string procedureName) : TNode(parent), procedureName(procedureName) { }
 
 void Procedure::addStatement(shared_ptr<Statement> stmt) {
@@ -14,4 +12,8 @@ string Procedure::getProcedureName() {
 
 vector<shared_ptr<Statement> > Procedure::getStatements() {
     return this->stmtLst;
+}
+
+void Procedure::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitProcedure(shared_from_this());
 }

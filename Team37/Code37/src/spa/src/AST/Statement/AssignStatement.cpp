@@ -15,3 +15,7 @@ string AssignStatement::getVarName() {
 shared_ptr<RelationalFactor> AssignStatement::getRelFactor() {
     return this->relFactor;
 }
+
+void AssignStatement::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitAssignStatement(shared_from_this());
+}

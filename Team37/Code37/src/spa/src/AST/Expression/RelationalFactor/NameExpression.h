@@ -1,12 +1,13 @@
+#pragma once
+
 #ifndef TEAM37_NAMEEXPRESSION_H
 #define TEAM37_NAMEEXPRESSION_H
 
-#include "RelationalFactor.h"
-#include <string>
-
 using namespace std;
 
-class NameExpression : public RelationalFactor {
+#include "RelationalFactor.h"
+
+class NameExpression : public RelationalFactor, public enable_shared_from_this<NameExpression> {
 private:
     string varName;
 public:
@@ -18,6 +19,8 @@ public:
      * @return a name
      */
     string getVarName();
+
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
 
 #endif

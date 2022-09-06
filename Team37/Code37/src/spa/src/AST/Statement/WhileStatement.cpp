@@ -17,3 +17,7 @@ shared_ptr<ConditionalExpression> WhileStatement::getConditionalExpression() {
 vector<shared_ptr<Statement> > WhileStatement::getStatements() {
     return WhileStatement::stmtLst;
 }
+
+void WhileStatement::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitWhileStatement(shared_from_this());
+}

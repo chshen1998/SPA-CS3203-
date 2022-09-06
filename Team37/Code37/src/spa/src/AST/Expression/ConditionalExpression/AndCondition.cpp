@@ -13,3 +13,7 @@ shared_ptr<ConditionalExpression> AndCondition::getConditionalExpression1() {
 shared_ptr<ConditionalExpression> AndCondition::getConditionalExpression2() {
     return this->condExpr2;
 }
+
+void AndCondition::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitAndCondition(shared_from_this());
+}

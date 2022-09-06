@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef TEAM37_RELATIONALOPERATOR_H
 #define TEAM37_RELATIONALOPERATOR_H
 

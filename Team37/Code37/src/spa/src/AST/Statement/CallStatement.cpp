@@ -8,10 +8,10 @@ CallStatement::CallStatement(
         string procedureName)
         : Statement(parent, lineNum), procedureName(procedureName) { }
 
-int CallStatement::getLineNum() {
-    return Statement::getLineNum();
-}
-
 string CallStatement::getProcedureName() {
     return this->procedureName;
+}
+
+void CallStatement::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitCallStatement(shared_from_this());
 }

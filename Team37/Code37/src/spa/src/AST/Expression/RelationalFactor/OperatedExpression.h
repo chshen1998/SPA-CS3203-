@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef TEAM37_OPERATEDEXPRESSION_H
 #define TEAM37_OPERATEDEXPRESSION_H
 
 #include "RelationalFactor.h"
 #include "AST/Operators/Operator.h"
 
-class OperatedExpression : public RelationalFactor {
+class OperatedExpression : public RelationalFactor, public enable_shared_from_this<OperatedExpression> {
 private:
     Operator opr;
     shared_ptr<RelationalFactor> relFactor1;
@@ -36,6 +38,8 @@ public:
      * @return an expression
      */
     shared_ptr<RelationalFactor> getExpression2();
+
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
 
 #endif

@@ -7,10 +7,10 @@ PrintStatement::PrintStatement(
         int lineNum,
         string variableName) : Statement(parent, lineNum), variableName(variableName) { }
 
-int PrintStatement::getLineNum() {
-    return Statement::getLineNum();
-}
-
 string PrintStatement::getVariableName() {
     return this->variableName;
+}
+
+void PrintStatement::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitPrintStatement(shared_from_this());
 }

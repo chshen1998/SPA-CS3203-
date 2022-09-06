@@ -25,3 +25,7 @@ vector<shared_ptr<Statement> > IfStatement::getThenStatements() {
 vector<shared_ptr<Statement> > IfStatement::getElseStatements() {
     return this->elseStmtLst;
 }
+
+void IfStatement::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitIfStatement(shared_from_this());
+}

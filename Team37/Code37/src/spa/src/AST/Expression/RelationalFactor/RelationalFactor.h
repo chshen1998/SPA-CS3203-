@@ -1,5 +1,7 @@
-#ifndef SPA_RELATIONALFACTOR_H
-#define SPA_RELATIONALFACTOR_H
+#pragma once
+
+#ifndef TEAM37_RELATIONALFACTOR_H
+#define TEAM37_RELATIONALFACTOR_H
 
 #include "../Expression.h"
 

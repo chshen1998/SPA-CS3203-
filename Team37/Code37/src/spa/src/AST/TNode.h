@@ -1,11 +1,14 @@
-using namespace std;
+#pragma once
 
 #ifndef TEAM37_TNODE_H
 #define TEAM37_TNODE_H
 
 #include <stdio.h>
 #include <iostream>
-//#include "ASTVisitor/ASTVisitor.h"
+
+using namespace std;
+
+#include "ASTVisitor/ASTVisitor.h"
 
 class TNode {
 private:
@@ -34,14 +37,14 @@ public:
         parent = newParent;
     }
 
-//    /**
-//     * Accepts a visitor
-//     * MUST be implemented by child classes
-//     *
-//     * @param visitor the visitor to accept
-//     * @return none
-//     */
-//    virtual void accept(shared_ptr<ASTVisitor> visitor)  = 0;
+    /**
+     * Accepts a visitor
+     * MUST be implemented by child classes
+     *
+     * @param visitor the visitor to accept
+     * @return none
+     */
+    virtual void accept(shared_ptr<ASTVisitor> visitor) = 0;
 };
 
-#endif
+#endif //TEAM37_TNODE_H

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef TEAM37_EXPRESSION_H
 #define TEAM37_EXPRESSION_H
 

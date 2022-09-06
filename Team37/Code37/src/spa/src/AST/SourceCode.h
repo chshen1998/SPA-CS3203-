@@ -1,5 +1,3 @@
-using namespace std;
-
 #ifndef TEAM37_SOURCECODE_H
 #define TEAM37_SOURCECODE_H
 
@@ -7,10 +5,8 @@ using namespace std;
 #include <string>
 
 #include "Procedure.h"
-#include "ASTVisitor/ASTVisitor.h"
-#include "AST/TNode.h"
 
-class SourceCode: public TNode {
+class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
     vector<shared_ptr<Procedure> > procedureLst;
     string filename;
@@ -39,7 +35,7 @@ public:
      */
     string getFileName();
 
-//    void accept(shared_ptr<ASTVisitor> visitor) override;
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
 
 #endif

@@ -18,3 +18,7 @@ shared_ptr<RelationalFactor> OperatedExpression::getExpression1() {
 shared_ptr<RelationalFactor> OperatedExpression::getExpression2() {
     return this->relFactor2;
 }
+
+void OperatedExpression::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitOperatedExpression(shared_from_this());
+}

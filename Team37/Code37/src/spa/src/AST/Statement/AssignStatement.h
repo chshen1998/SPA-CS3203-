@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef TEAM37_ASSIGNSTATEMENT_H
 #define TEAM37_ASSIGNSTATEMENT_H
 
 #include "Statement.h"
 #include "../Expression/RelationalFactor/RelationalFactor.h"
 
-class AssignStatement : public Statement {
+class AssignStatement : public Statement, public enable_shared_from_this<AssignStatement> {
 private:
     string varName;
     shared_ptr<RelationalFactor> relFactor;
@@ -24,6 +26,8 @@ public:
      * @return expression
      */
     shared_ptr<RelationalFactor> getRelFactor();
+
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
 
 #endif

@@ -1,12 +1,16 @@
+#pragma once
+
 #ifndef TEAM37_IFSTATEMENT_H
 #define TEAM37_IFSTATEMENT_H
 
 #include <vector>
 
+using namespace std;
+
 #include "Statement.h"
 #include "../Expression/ConditionalExpression/ConditionalExpression.h"
 
-class IfStatement : public Statement {
+class IfStatement : public Statement, public enable_shared_from_this<IfStatement> {
 private:
     shared_ptr<ConditionalExpression> condExpr;
     vector<shared_ptr<Statement> > thenStmtLst;
@@ -50,6 +54,8 @@ public:
      * @return the if-else statement list
      */
     vector<shared_ptr<Statement> > getElseStatements();
+
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
 
 #endif

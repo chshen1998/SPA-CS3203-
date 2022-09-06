@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef TEAM37_WHILESTATEMENT_H
 #define TEAM37_WHILESTATEMENT_H
 
@@ -6,7 +8,7 @@
 #include "Statement.h"
 #include "../Expression/ConditionalExpression/ConditionalExpression.h"
 
-class WhileStatement : public Statement {
+class WhileStatement : public Statement, public enable_shared_from_this<WhileStatement> {
 private:
     shared_ptr<ConditionalExpression> condExpr;
     vector<shared_ptr<Statement> > stmtLst;
@@ -34,6 +36,8 @@ public:
      * @return the statement list
      */
     vector<shared_ptr<Statement> > getStatements();
+
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
 
 

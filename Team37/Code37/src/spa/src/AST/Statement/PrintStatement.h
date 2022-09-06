@@ -1,15 +1,15 @@
+#pragma once
+
 #ifndef TEAM37_PRINTSTATEMENT_H
 #define TEAM37_PRINTSTATEMENT_H
 
 #include "Statement.h"
 
-class PrintStatement : public Statement {
+class PrintStatement : public Statement, public enable_shared_from_this<PrintStatement> {
 private:
     string variableName;
 public:
     PrintStatement(shared_ptr<TNode> parent, int lineNum, string variableName);
-
-    int getLineNum() override;
 
     /**
      * Gets the name of the variable in the print statement
@@ -17,6 +17,8 @@ public:
      * @return name of variable
      */
     string getVariableName();
+
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
 
 #endif

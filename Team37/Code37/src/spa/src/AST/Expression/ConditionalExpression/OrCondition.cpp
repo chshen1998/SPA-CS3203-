@@ -13,3 +13,7 @@ shared_ptr<ConditionalExpression> OrCondition::getConditionalExpression1() {
 shared_ptr<ConditionalExpression> OrCondition::getConditionalExpression2() {
     return this->condExpr2;
 }
+
+void OrCondition::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitOrCondition(shared_from_this());
+}

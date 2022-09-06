@@ -6,9 +6,9 @@ using namespace std;
 #include "AST/SourceCode.h"
 #include "SP.h"
 
-shared_ptr<TNode> SP::parse(string program) {
+shared_ptr<TNode> SP::parse(string filename) {
     shared_ptr<ParserVisitor> parserVisitor = make_shared<ParserVisitor>();
 
-    SourceCode sourceCode = SourceCode(program);
+    SourceCode sourceCode = SourceCode(filename);
     return sourceCode.accept(parserVisitor);
 }

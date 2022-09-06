@@ -14,25 +14,31 @@ shared_ptr<TNode> ParserVisitor::visitSourceCode(SourceCode* sourceCode) {
     string line;
     vector<string> temp;
     vector<string> lines;
-    stringstream file (sourceCode->getProgram());
+    ifstream file (sourceCode->getFileName());
 
-    while (getline(file, line, '\n')) {
-        lines.push_back(line);
-    }
-    for (auto i : lines) {
-        stringstream stream (i);
-        while (getline(stream, line, '{')){
-            temp.push_back(line);
-        }
-    }
-    lines.clear();
-    for (auto i : temp) {
-        stringstream stream (i);
-        while (getline(stream, line, ';')){
+    if (file.is_open()) {
+        while (getline(file, line, '\n')) {
             lines.push_back(line);
         }
+        for (auto i : lines) {
+            stringstream stream (i);
+            while (getline(stream, line, '{')){
+                temp.push_back(line);
+            }
+        }
+        lines.clear();
+        for (auto i : temp) {
+            stringstream stream (i);
+            while (getline(stream, line, ';')){
+                lines.push_back(line);
+            }
+        }
+        file.close();
+        return Tokenizer:: tokenize(lines);
+    } else {
+        cout << "Unable to open file." << endl;
     }
-    return Tokenizer:: tokenize(lines);
+
 }
 
 //    void ParserVisitor:: visitTokenGroup(TokenGroup tokenGroup) {

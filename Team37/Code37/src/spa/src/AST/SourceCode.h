@@ -11,16 +11,12 @@ using namespace std;
 #include "SP/Visitor.h"
 #include "AST/TNode.h"
 
-class SourceCode: public std::enable_shared_from_this<SourceCode>, public TNode {
+class SourceCode: public TNode {
 private:
     vector<shared_ptr<Procedure> > procedureLst;
-    string program;
+    string filename;
 public:
-    SourceCode(string program);
-
-    std::shared_ptr<SourceCode> getSourceCode() {
-        return shared_from_this();
-    }
+    SourceCode(string filename);
 
     /**
      * Adds a procedure to the procedure list
@@ -54,10 +50,10 @@ public:
     /**
      * Gets source code as string
      *
-     * @return program
+     * @return filename
      */
-    string getProgram() {
-        return this->program;
+    string getFileName() {
+        return this->filename;
     }
 };
 #endif //TEAM37_QPS_H

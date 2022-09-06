@@ -26,9 +26,9 @@ public:
 	// Input SIMPLE Program
 	// Params program: SIMPLE program to be analysed
 	// Returns: Success or error message
-	string inputSIMPLE(string program) {
+	string inputSIMPLE(string filename) {
 		// TODO: Call sourceProcessor function
-		shared_ptr<TNode> AST = SP::parse(program);
+		shared_ptr<TNode> AST = SP::parse(filename);
         knowledgeBase -> buildFromAst(AST);
         return "";
 	}

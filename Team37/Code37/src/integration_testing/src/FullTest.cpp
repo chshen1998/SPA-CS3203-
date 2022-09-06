@@ -20,7 +20,7 @@ TEST_CASE("Other 1st Test") {
 
     string testQuery = "variable v; select v";
 
-//    sp->inputSIMPLE(testProgram);
+    sp->inputSIMPLE(testProgram);
 //    string result = sp->executeQuery(testQuery);
 
 //    cout << result << endl;

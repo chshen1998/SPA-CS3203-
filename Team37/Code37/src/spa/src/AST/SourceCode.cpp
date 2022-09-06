@@ -15,5 +15,5 @@ shared_ptr<TNode> SourceCode::getParent() {
 }
 
 shared_ptr<TNode> SourceCode:: accept(shared_ptr<Visitor> visitor) {
-    return visitor->visitSourceCode(make_shared<SourceCode>(*this));
+    return visitor->visitSourceCode(this);
 }

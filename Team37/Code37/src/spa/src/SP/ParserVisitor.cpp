@@ -10,7 +10,7 @@ using namespace std;
 
 ParserVisitor::ParserVisitor() {}
 
-shared_ptr<TNode> ParserVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
+shared_ptr<TNode> ParserVisitor::visitSourceCode(SourceCode* sourceCode) {
     string line;
     vector<string> temp;
     vector<string> lines;

@@ -5,17 +5,22 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Procedure.h"
 #include "SP/Visitor.h"
 #include "AST/TNode.h"
 
-class SourceCode: public TNode {
+class SourceCode: public std::enable_shared_from_this<SourceCode>, public TNode {
 private:
     vector<shared_ptr<Procedure> > procedureLst;
     string program;
 public:
     SourceCode(string program);
+
+    std::shared_ptr<SourceCode> getSourceCode() {
+        return shared_from_this();
+    }
 
     /**
      * Adds a procedure to the procedure list

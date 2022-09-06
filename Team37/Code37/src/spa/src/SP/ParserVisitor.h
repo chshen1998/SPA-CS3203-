@@ -13,7 +13,7 @@ class ParserVisitor: public Visitor {
 public:
     // Constructor
     ParserVisitor();
-    shared_ptr<TNode> visitSourceCode(shared_ptr<SourceCode> sourceCode);
+    shared_ptr<TNode> visitSourceCode(SourceCode* sourceCode);
 //    void visitTokenGroup(TokenGroup tokenGroup);
 //    void visitProcedureList(ProcedureList procedureList);
 //    void visitStatementList(StatementList statementList);

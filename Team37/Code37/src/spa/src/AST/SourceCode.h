@@ -5,6 +5,7 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Procedure.h"
 #include "SP/Visitor.h"
@@ -47,7 +48,7 @@ public:
     shared_ptr<TNode> accept(shared_ptr<Visitor> visitor);
 
     /**
-     * Gets filename of source code
+     * Gets source code as string
      *
      * @return filename
      */

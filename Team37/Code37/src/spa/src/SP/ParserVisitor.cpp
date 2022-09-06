@@ -10,11 +10,12 @@ using namespace std;
 
 ParserVisitor::ParserVisitor() {}
 
-shared_ptr<TNode> ParserVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
+shared_ptr<TNode> ParserVisitor::visitSourceCode(SourceCode* sourceCode) {
     string line;
     vector<string> temp;
     vector<string> lines;
     ifstream file (sourceCode->getFileName());
+
     if (file.is_open()) {
         while (getline(file, line, '\n')) {
             lines.push_back(line);
@@ -33,12 +34,11 @@ shared_ptr<TNode> ParserVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCo
             }
         }
         file.close();
-        // TODO syntax check
-        shared_ptr<TNode> AST = Tokenizer:: tokenize(lines);
-        return AST;
+        return Tokenizer:: tokenize(lines);
     } else {
-        cout << "Failed to open file" << endl;
+        cout << "Unable to open file." << endl;
     }
+
 }
 
 //    void ParserVisitor:: visitTokenGroup(TokenGroup tokenGroup) {

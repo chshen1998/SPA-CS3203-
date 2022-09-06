@@ -3,21 +3,17 @@
 WhileStatement::WhileStatement(
         shared_ptr<TNode> parent,
         int lineNum,
-        ConditionalExpression condExpr
+        shared_ptr<ConditionalExpression> condExpr
         ) : Statement(parent, lineNum), condExpr(condExpr) { }
 
 void WhileStatement::addStatement(shared_ptr<Statement> stmt) {
     WhileStatement::stmtLst.push_back(stmt);
 }
 
-ConditionalExpression WhileStatement::getConditionalExpression() {
+shared_ptr<ConditionalExpression> WhileStatement::getConditionalExpression() {
     return WhileStatement::condExpr;
 }
 
 vector<shared_ptr<Statement> > WhileStatement::getStatements() {
     return WhileStatement::stmtLst;
-}
-
-shared_ptr<TNode> WhileStatement::getParent() {
-    return Statement::getParent();
 }

@@ -1,14 +1,17 @@
+#ifndef TEAM37_WHILESTATEMENT_H
+#define TEAM37_WHILESTATEMENT_H
+
 #include <vector>
 
 #include "Statement.h"
-#include "../ConditionalExpression/ConditionalExpression.h"
+#include "../Expression/ConditionalExpression/ConditionalExpression.h"
 
 class WhileStatement : public Statement {
 private:
-    ConditionalExpression condExpr;
+    shared_ptr<ConditionalExpression> condExpr;
     vector<shared_ptr<Statement> > stmtLst;
 public:
-    WhileStatement(shared_ptr<TNode> parent, int lineNum, ConditionalExpression condExpr);
+    WhileStatement(shared_ptr<TNode> parent, int lineNum, shared_ptr<ConditionalExpression> condExpr);
 
     /**
      * Adds a statement to the while statement list
@@ -23,7 +26,7 @@ public:
      *
      * @return a conditional expression
      */
-    ConditionalExpression getConditionalExpression();
+    shared_ptr<ConditionalExpression> getConditionalExpression();
 
     /**
      * Gets the statement list
@@ -31,6 +34,7 @@ public:
      * @return the statement list
      */
     vector<shared_ptr<Statement> > getStatements();
-
-    shared_ptr<TNode> getParent() override;
 };
+
+
+#endif

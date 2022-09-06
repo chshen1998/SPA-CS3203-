@@ -1,8 +1,11 @@
-using namespace std;
-
 #ifndef TEAM37_EXPRESSION_H
 #define TEAM37_EXPRESSION_H
 
-class Expression { };
+#include "../TNode.h"
 
-#endif //TEAM37_EXPRESSION_H
+class Expression : public TNode {
+public:
+    Expression(shared_ptr<TNode> parent) : TNode(parent) { }
+};
+
+#endif

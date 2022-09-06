@@ -1,6 +1,6 @@
 #include "SourceCode.h"
 
-SourceCode::SourceCode(string filename) : TNode(nullptr) { }
+SourceCode::SourceCode(string filename) : TNode(nullptr), filename(filename) { }
 
 void SourceCode::addProcedure(shared_ptr<Procedure> procedure) {
     this->procedureLst.push_back(procedure);
@@ -10,10 +10,10 @@ vector<shared_ptr<Procedure> > SourceCode::getProcedures() {
     return this->procedureLst;
 }
 
-shared_ptr<TNode> SourceCode::getParent() {
-    return SourceCode::TNode::getParent();
+string SourceCode::getFileName() {
+    return this->filename;
 }
 
-shared_ptr<TNode> SourceCode:: accept(shared_ptr<Visitor> visitor) {
-    return visitor->visitSourceCode(this);
-}
+//void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
+//    return visitor->visitSourceCode(this);
+//}

@@ -8,7 +8,6 @@ using namespace std;
 class ReadStatement : public Statement {
 private:
     string variableName;
-
 public:
     ReadStatement(shared_ptr<TNode> parent, int lineNum, string variableName);
 
@@ -20,8 +19,6 @@ public:
      * @return name of variable
      */
     string getVariableName();
-
-    shared_ptr<TNode> getParent();
 };
 
-#endif //TEAM37_READSTATEMENT_H
+#endif

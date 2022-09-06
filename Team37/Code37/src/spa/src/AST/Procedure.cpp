@@ -15,7 +15,3 @@ string Procedure::getProcedureName() {
 vector<shared_ptr<Statement> > Procedure::getStatements() {
     return this->stmtLst;
 }
-
-shared_ptr<TNode> Procedure::getParent() {
-    return Procedure::TNode::getParent();
-}

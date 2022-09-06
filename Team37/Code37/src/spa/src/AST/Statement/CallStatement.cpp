@@ -2,7 +2,11 @@
 
 using namespace std;
 
-CallStatement::CallStatement(shared_ptr<TNode> parent, int lineNum, string procedureName) : Statement(parent, lineNum), procedureName(procedureName) { }
+CallStatement::CallStatement(
+        shared_ptr<TNode> parent,
+        int lineNum,
+        string procedureName)
+        : Statement(parent, lineNum), procedureName(procedureName) { }
 
 int CallStatement::getLineNum() {
     return Statement::getLineNum();
@@ -10,8 +14,4 @@ int CallStatement::getLineNum() {
 
 string CallStatement::getProcedureName() {
     return this->procedureName;
-}
-
-shared_ptr<TNode> CallStatement::getParent()  {
-    return Statement::getParent();
 }

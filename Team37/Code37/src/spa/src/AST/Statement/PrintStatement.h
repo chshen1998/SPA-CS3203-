@@ -1,9 +1,11 @@
+#ifndef TEAM37_PRINTSTATEMENT_H
+#define TEAM37_PRINTSTATEMENT_H
+
 #include "Statement.h"
 
 class PrintStatement : public Statement {
 private:
     string variableName;
-
 public:
     PrintStatement(shared_ptr<TNode> parent, int lineNum, string variableName);
 
@@ -15,6 +17,6 @@ public:
      * @return name of variable
      */
     string getVariableName();
-
-    shared_ptr<TNode> getParent() override;
 };
+
+#endif

@@ -19,10 +19,6 @@ public:
     virtual int getLineNum() {
         return lineNum;
     }
-
-    shared_ptr<TNode> getParent() {
-        return TNode::getParent();
-    }
 };
 
 #endif

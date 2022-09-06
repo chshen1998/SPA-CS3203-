@@ -1,3 +1,5 @@
+#ifndef TEAM37_RELATIONALOPERATOR_H
+#define TEAM37_RELATIONALOPERATOR_H
 
 enum RelationalOperator {
     LESS_THAN,
@@ -7,3 +9,5 @@ enum RelationalOperator {
     EQUALS,
     NOT_EQUALS
 };
+
+#endif

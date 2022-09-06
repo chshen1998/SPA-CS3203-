@@ -5,10 +5,9 @@ using namespace std;
 
 #include <vector>
 #include <string>
-#include <memory>
 
 #include "Procedure.h"
-#include "SP/Visitor.h"
+#include "ASTVisitor/ASTVisitor.h"
 #include "AST/TNode.h"
 
 class SourceCode: public TNode {
@@ -34,26 +33,13 @@ public:
     vector<shared_ptr<Procedure> > getProcedures();
 
     /**
-     * Gets the parent
-     *
-     * @return the parent
-     */
-    shared_ptr<TNode> getParent();
-
-    /**
-     * Accepts the visitor.
-     *
-     * @param visitor
-     */
-    shared_ptr<TNode> accept(shared_ptr<Visitor> visitor);
-
-    /**
-     * Gets source code as string
+     * Gets filename of source code
      *
      * @return filename
      */
-    string getFileName() {
-        return this->filename;
-    }
+    string getFileName();
+
+//    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
-#endif //TEAM37_QPS_H
+
+#endif

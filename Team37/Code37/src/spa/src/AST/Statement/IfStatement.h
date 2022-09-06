@@ -1,15 +1,18 @@
+#ifndef TEAM37_IFSTATEMENT_H
+#define TEAM37_IFSTATEMENT_H
+
 #include <vector>
 
 #include "Statement.h"
-#include "../ConditionalExpression/ConditionalExpression.h"
+#include "../Expression/ConditionalExpression/ConditionalExpression.h"
 
 class IfStatement : public Statement {
 private:
-    ConditionalExpression condExpr;
+    shared_ptr<ConditionalExpression> condExpr;
     vector<shared_ptr<Statement> > thenStmtLst;
     vector<shared_ptr<Statement> > elseStmtLst;
 public:
-    IfStatement(shared_ptr<TNode> parent, int lineNum, ConditionalExpression condExpr);
+    IfStatement(shared_ptr<TNode> parent, int lineNum, shared_ptr<ConditionalExpression> condExpr);
 
     /**
      * Adds a statement to the if-then statement list
@@ -32,7 +35,7 @@ public:
      *
      * @return a conditional expression
      */
-    ConditionalExpression getConditionalExpression();
+    shared_ptr<ConditionalExpression> getConditionalExpression();
 
     /**
      * Gets the if-then statement list
@@ -47,6 +50,6 @@ public:
      * @return the if-else statement list
      */
     vector<shared_ptr<Statement> > getElseStatements();
-
-    shared_ptr<TNode> getParent() override;
 };
+
+#endif

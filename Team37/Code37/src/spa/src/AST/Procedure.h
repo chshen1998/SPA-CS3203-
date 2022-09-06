@@ -36,13 +36,6 @@ public:
      * @return the list of statements
      */
     vector<shared_ptr<Statement> > getStatements();
-
-    /**
-     * Gets the parent
-     *
-     * @return the parent
-     */
-    shared_ptr<TNode> getParent();
 };
 
-#endif //TEAM37_QPS_H
+#endif

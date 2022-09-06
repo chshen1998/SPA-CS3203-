@@ -5,16 +5,13 @@ using namespace std;
 AssignStatement::AssignStatement(
         shared_ptr<TNode> parent,
         int lineNum,
-        string varName, Expression expr) : Statement(parent, lineNum), expr(expr) {}
+        string varName,
+        shared_ptr<RelationalFactor> relFactor) : Statement(parent, lineNum), relFactor(relFactor) {}
 
 string AssignStatement::getVarName() {
     return this->varName;
 }
 
-Expression AssignStatement::getExpression() {
-    return this->expr;
-}
-
-shared_ptr<TNode> AssignStatement::getParent() {
-    return Statement::getParent();
+shared_ptr<RelationalFactor> AssignStatement::getRelFactor() {
+    return this->relFactor;
 }

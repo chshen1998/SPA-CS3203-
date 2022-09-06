@@ -1,12 +1,15 @@
+#ifndef TEAM37_ASSIGNSTATEMENT_H
+#define TEAM37_ASSIGNSTATEMENT_H
+
 #include "Statement.h"
-#include "../Expression/Expression.h"
+#include "../Expression/RelationalFactor/RelationalFactor.h"
 
 class AssignStatement : public Statement {
 private:
     string varName;
-    Expression expr;
+    shared_ptr<RelationalFactor> relFactor;
 public:
-    AssignStatement(shared_ptr<TNode> parent, int lineNum, string varName, Expression expr);
+    AssignStatement(shared_ptr<TNode> parent, int lineNum, string varName, shared_ptr<RelationalFactor> relFactor);
 
     /**
      * Get the variable name of the assign statement
@@ -20,7 +23,7 @@ public:
      *
      * @return expression
      */
-    Expression getExpression();
-
-    shared_ptr<TNode> getParent() override;
+    shared_ptr<RelationalFactor> getRelFactor();
 };
+
+#endif

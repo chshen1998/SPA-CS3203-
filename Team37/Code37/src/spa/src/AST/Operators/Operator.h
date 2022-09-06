@@ -1,3 +1,5 @@
+#ifndef TEAM37_OPERATOR_H
+#define TEAM37_OPERATOR_H
 
 enum Operator {
     ADD,
@@ -6,3 +8,5 @@ enum Operator {
     MULTIPLY,
     MODULO
 };
+
+#endif

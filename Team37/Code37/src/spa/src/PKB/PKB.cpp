@@ -24,8 +24,4 @@ void PKB::buildFromAst(shared_ptr<TNode> AST) {
     this->storage->storeAST(AST);
 };
 
-set<string> PKB::retrieveAll() {
-	return storage->getAllVar();
-}
-
 

@@ -2,11 +2,21 @@
 #include "QPS/QPS.h"
 
 #include <vector>
+#include <unordered_map>
 
 #include "catch.hpp"
 using namespace std;
-void require(bool b) {
-    REQUIRE(b);
+
+bool isSameMap(unordered_map<string, TokenType> ans, unordered_map<string, TokenType> result) {
+	for (const auto & [key, value] : ans) {
+		if (result.find(key) == result.end()) {
+			return false;
+		}
+		if (result[key] != value) {
+			return false;
+		}
+	}
+	return true;
 }
 
 TEST_CASE("variable v; select v") {
@@ -20,7 +30,13 @@ TEST_CASE("variable v; select v") {
 		PqlToken(TokenType::END, "")
 	};
 
+	unordered_map<string, TokenType> ans = {
+		{"v", TokenType::VARIABLE}
+	};
+
+
 	QuerySemanticsExtractor sut = QuerySemanticsExtractor(tokens);
 	PqlQuery results = sut.ExtractSemantics();
-	require(results.select == "v");
+		REQUIRE(results.select == "v");
+		REQUIRE(isSameMap(ans, results.declarations));
 }

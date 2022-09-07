@@ -24,13 +24,13 @@ void QueryEvaluator::QuerySelect() {
         // TODO
 //    	selectResult = QueryServicer::retrieveAll();
     } else if (type == TokenType::CONSTANT) {
-        selectResult = AllConstants();
+//        selectResult = AllConstants();
     } else if (type == TokenType::STATEMENT) {
-        selectResult = AllStatements();
+//        selectResult = AllStatements();
     } else if (type == TokenType::PROCEDURE) {
-        selectResult = AllProcedures();
+//        selectResult = AllProcedures();
     } else {
-        throw "Invalid select token type";
+//        throw "Invalid select token type";
     }
 }
 

@@ -6,9 +6,9 @@ using namespace std;
 #include "QuerySemanticsExtractor.h"
 #include "QPS.h"
 
-QuerySemanticsExtractor::QuerySemanticsExtractor(vector<PqlToken> tokens) {
+QuerySemanticsExtractor::QuerySemanticsExtractor(vector<PqlToken> &tokens) {
     next = tokens.begin();
-    end = tokens.end();
+    last = tokens.end();
     pq = PqlQuery();
 }
 
@@ -83,11 +83,11 @@ void QuerySemanticsExtractor::ExtractSuchThatClause() {
 }
 
 PqlToken QuerySemanticsExtractor::getNextToken() {
-    if (next == end) {
+    if (next == last) {
         return PqlToken(TokenType::END, "");
     } else {
-        const PqlToken token = *next;
-        next++;
+        PqlToken token = *next;
+        ++next;
         return token;
     }
 }

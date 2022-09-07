@@ -11,10 +11,10 @@
 class QuerySemanticsExtractor {
 public:
     vector<PqlToken>::iterator next;
-    vector<PqlToken>::iterator end;
+    vector<PqlToken>::iterator last;
     PqlQuery pq;
 
-    QuerySemanticsExtractor(vector<PqlToken> tokens);
+    QuerySemanticsExtractor(vector<PqlToken> &tokens);
 
     PqlQuery ExtractSemantics();
 

@@ -16,7 +16,7 @@ QueryServicer::QueryServicer(shared_ptr<Storage> storage) {
 // Retrieve all of an element
 // TEMP: Return all variables only
 // GOAL: Take in element type and return correct type
-set<shared_ptr<TNode>> QueryServicer::retrieveAll(elementType type) {
+set<shared_ptr<TNode>> QueryServicer::retrieveAll(ElementType type) {
 	switch (type) {
 	case VARIABLE:
 		return storage->getAllVar();

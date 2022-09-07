@@ -1,0 +1,12 @@
+enum ElementType { 
+	VARIABLE, 
+	CONSTANT,
+	STATEMENT,
+	ASSIGN,
+	CALL,
+	IF,
+	PRINT,
+	READ,
+	WHILE,
+	PROCEDURE
+};

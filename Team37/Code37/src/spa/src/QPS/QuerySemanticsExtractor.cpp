@@ -15,6 +15,7 @@ QuerySemanticsExtractor::QuerySemanticsExtractor(vector<PqlToken> &tokens) {
 PqlQuery QuerySemanticsExtractor::ExtractSemantics() {
     ExtractDeclarations();
     ExtractSelect();
+    ExtractClauses();
     return pq;
 }
 
@@ -40,7 +41,17 @@ void QuerySemanticsExtractor::ExtractSelect() {
     }
     const PqlToken synonym = getNextToken();
 
-    pq.select = synonym.value;
+    for (const auto& [key, value] : pq.declarations) {
+        if (key == synonym.value) {
+            pq.select = synonym.value;
+            break;
+        }
+    }
+
+    if (pq.select.empty())
+    {
+        throw "Error: Invalid select clause parameter";
+    }
 }
 
 void QuerySemanticsExtractor::ExtractClauses() {
@@ -61,24 +72,49 @@ void QuerySemanticsExtractor::ExtractClauses() {
 void QuerySemanticsExtractor::ExtractPatternClause() {
     PqlToken patternSynonym = getNextToken();
     while (patternSynonym.type != TokenType::SYNONYM) {
+        if (patternSynonym.type == TokenType::END)
+        {
+            return;
+        }
         patternSynonym = getNextToken();
     }
     const PqlToken openBracket = getNextToken();
     const PqlToken synonym1 = getNextToken();
+
+    if (synonym1.type != TokenType::VARIABLE)
+    {
+        throw "Error: Pattern clause parameters must be variable type";
+    }
+    pq.patternClause.left = synonym1.value;
+
     const PqlToken comma = getNextToken();
     const PqlToken synonym2 = getNextToken();
+
+    if (synonym1.type != TokenType::VARIABLE)
+    {
+        throw "Error: Pattern clause parameters must be variable type";
+    }
+    pq.patternClause.right = synonym2.value;
     const PqlToken closedBracket = getNextToken();
 }
 
 void QuerySemanticsExtractor::ExtractSuchThatClause() {
     PqlToken suchThatClause = getNextToken();
     while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
+        if (suchThatClause.type == TokenType::END)
+        {
+            return;
+        }
         suchThatClause = getNextToken();
     }
     const PqlToken openParenthesis = getNextToken();
     const PqlToken synonym1 = getNextToken();
+    pq.suchThatClause.left = synonym1.value;
+
     const PqlToken comma = getNextToken();
     const PqlToken synonym2 = getNextToken();
+    pq.suchThatClause.right = synonym2.value;
+
     const PqlToken closeParenthesis = getNextToken();
 }
 

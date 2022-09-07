@@ -65,14 +65,27 @@ struct PqlToken {
 };
 
 /*
+ * PatternClause has 2 synonyms, the left synonym appears on the LHS of the assignment while the right synonym
+ * appears on the RHS of the assignment.
+ *
+ * These synonyms must be variable type.
+ */
+struct Clause
+{
+    string left;
+    string right;
+};
+
+/*
  * ParsedQueries are created after extracting the components from the query.
  */
 struct PqlQuery {
     unordered_map<string, TokenType> declarations;
     string select;
-    string pattern;
-    string suchThatClause;
+    Clause patternClause;
+    Clause suchThatClause;
 };
+
 
 extern unordered_map<string, TokenType> stringToTokenMap;
 extern set<TokenType> validDeclarations;

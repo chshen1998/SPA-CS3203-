@@ -1,14 +1,16 @@
-using namespace std;
+#pragma once
 
 #ifndef TEAM37_PROCEDURE_H
 #define TEAM37_PROCEDURE_H
 
-#include "./Statement/Statement.h"
-#include "AST/TNode.h"
 #include <vector>
 #include <string>
 
-class Procedure : public TNode {
+using namespace std;
+
+#include "./Statement/Statement.h"
+
+class Procedure : public TNode, public enable_shared_from_this<Procedure> {
 private:
     string procedureName;
     vector<shared_ptr<Statement> > stmtLst;
@@ -37,12 +39,7 @@ public:
      */
     vector<shared_ptr<Statement> > getStatements();
 
-    /**
-     * Gets the parent
-     *
-     * @return the parent
-     */
-    shared_ptr<TNode> getParent();
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
 
-#endif //TEAM37_QPS_H
+#endif //TEAM37_PROCEDURE_H

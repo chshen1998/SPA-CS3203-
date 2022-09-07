@@ -93,5 +93,5 @@ TEST_CASE("Simple Specific Statements") {
     require(statements[4] == ifStmt);
     require(statements[5] == assignStmt);
 }
-*/
+
 

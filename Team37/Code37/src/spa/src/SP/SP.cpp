@@ -6,7 +6,12 @@ using namespace std;
 #include "AST/SourceCode.h"
 #include "SP.h"
 
-string toString(string filename) {
+/**
+ * Converts a text file to a string for easier parsing.
+ * @param filename filename of sourcecode.
+ * @return text file as a string.
+ */
+string SP:: fileToString(string filename) {
     string s;
     string sTotal;
 
@@ -21,7 +26,13 @@ string toString(string filename) {
     return sTotal;
 }
 
-vector<string> extractProcedures(string srcCode, vector<string> procedures) {
+/**
+ * Extracts each procedure as a string.
+ * @param srcCode source code as a string
+ * @param procedures vector to store procedures as strings.
+ * @return vector containing procedures as strings
+ */
+vector<string> SP:: extractProcedures(string srcCode, vector<string> procedures) {
     string keyword = "procedure";
 
     int startIdx = srcCode.find(keyword);
@@ -44,22 +55,40 @@ vector<string> extractProcedures(string srcCode, vector<string> procedures) {
     return procedures;
 }
 
-vector<string> extractProcedureName(vector<string> procedures) {
+/**
+ * Extracts the names of each procedure stored in a vector.
+ * @param procedures Vector storing the procedures.
+ * @return names of each procedure.
+ */
+vector<string> SP:: extractProcNames(vector<string> procedures) {
+    string keyword = "procedure";
+    vector<string> names;
 
+    for (auto proc : procedures) {
+        int procId = proc.find(keyword);
+        procId = procId + keyword.length();
+        string bracket = "{";
+        int bracketId = proc.find(bracket);
+        string name = proc.substr(procId, bracketId - procId);
+        names.push_back(name);
+    }
+    return names;
 }
 
-vector<shared_ptr<Procedure> > SP:: extractStatements(ifstream file) {
+/**
+ * Extracts the statements as strings in a procedure.
+ * @param procedures vector containing procedures as strings.
+ * @return statements each procedure contains.
+ */
+vector<string> SP:: extractStatements(vector<string> procedures) {
 
 }
 
 shared_ptr<SourceCode> SP:: processSourceCode(string filename) {
-    ifstream file (filename);
-    if (file.is_open()) {
-        string keyword = "procedure";
-        while (getline(file, keyword)) {
+    string code = fileToString(filename);
+    vector<string> procedures;
+    procedures = extractProcedures(code, procedures);
 
-        }
-    }
 }
 
 shared_ptr<TNode> SP::parse(string filename) {

@@ -46,7 +46,7 @@ enum class TokenType {
     OPEN_BRACKET,
     CLOSED_BRACKET,
 
-    WHITESPACE,
+    EMPTY,
     END
 };
 

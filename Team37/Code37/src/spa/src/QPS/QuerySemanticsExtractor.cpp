@@ -21,7 +21,7 @@ PqlQuery QuerySemanticsExtractor::ExtractSemantics() {
 void QuerySemanticsExtractor::ExtractDeclarations() {
     while (true) {
         const PqlToken declaration = getNextToken();
-        if (declaration.type == TokenType::WHITESPACE) {
+        if (declaration.type == TokenType::EMPTY) {
             // Reached end of declarations
             return;
         }

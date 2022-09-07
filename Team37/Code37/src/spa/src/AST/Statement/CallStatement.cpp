@@ -2,16 +2,16 @@
 
 using namespace std;
 
-CallStatement::CallStatement(shared_ptr<TNode> parent, int lineNum, string procedureName) : Statement(parent, lineNum), procedureName(procedureName) { }
-
-int CallStatement::getLineNum() {
-    return Statement::getLineNum();
-}
+CallStatement::CallStatement(
+        shared_ptr<TNode> parent,
+        int lineNum,
+        string procedureName)
+        : Statement(parent, lineNum), procedureName(procedureName) { }
 
 string CallStatement::getProcedureName() {
     return this->procedureName;
 }
 
-shared_ptr<TNode> CallStatement::getParent()  {
-    return Statement::getParent();
+void CallStatement::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitCallStatement(shared_from_this());
 }

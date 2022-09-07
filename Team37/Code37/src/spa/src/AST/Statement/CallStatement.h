@@ -1,13 +1,15 @@
+#pragma once
+
+#ifndef TEAM37_CALLSTATEMENT_H
+#define TEAM37_CALLSTATEMENT_H
+
 #include "Statement.h"
 
-class CallStatement : public Statement {
+class CallStatement : public Statement, public enable_shared_from_this<CallStatement> {
 private:
     string procedureName;
-
 public:
     CallStatement(shared_ptr<TNode> parent, int lineNum, string procedureName);
-
-    int getLineNum() override;
 
     /**
      * Gets the name of the procedure in the call statement
@@ -16,5 +18,7 @@ public:
      */
     string getProcedureName();
 
-    shared_ptr<TNode> getParent() override;
+    void accept(shared_ptr<ASTVisitor> visitor) override;
 };
+
+#endif

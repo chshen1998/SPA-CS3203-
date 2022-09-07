@@ -8,6 +8,7 @@ using namespace std;
 #include <iostream>
 
 #include "AST/SourceCode.h"
+#include "Visitor.h"
 
 class ParserVisitor: public Visitor {
 public:

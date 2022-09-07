@@ -8,9 +8,9 @@ using namespace std;
 #include "AST/Statement/PrintStatement.h"
 #include "AST/Statement/AssignStatement.h"
 #include "AST/Statement/IfStatement.h"
-#include "AST/Expression/OperatedExpression.h"
-#include "AST/Expression/ConstantExpression.h"
-#include "AST/Expression/NameExpression.h"
+#include "AST/Expression/RelationalFactor/OperatedExpression.h"
+#include "AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "AST/Expression/RelationalFactor/NameExpression.h"
 
 class Tokenizer {
 public:

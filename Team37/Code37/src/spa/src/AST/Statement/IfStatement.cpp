@@ -3,7 +3,8 @@
 IfStatement::IfStatement(
         shared_ptr<TNode> parent,
         int lineNum,
-        ConditionalExpression condExpr) : Statement(parent, lineNum), condExpr(condExpr) { }
+        shared_ptr<ConditionalExpression> condExpr)
+        : Statement(parent, lineNum), condExpr(condExpr) { }
 
 void IfStatement::addThenStatement(shared_ptr<Statement> stmt) {
     this->thenStmtLst.push_back(stmt);
@@ -13,7 +14,7 @@ void IfStatement::addElseStatement(shared_ptr<Statement> stmt) {
     this->elseStmtLst.push_back(stmt);
 }
 
-ConditionalExpression IfStatement::getConditionalExpression() {
+shared_ptr<ConditionalExpression> IfStatement::getConditionalExpression() {
     return this->condExpr;
 }
 
@@ -25,6 +26,6 @@ vector<shared_ptr<Statement> > IfStatement::getElseStatements() {
     return this->elseStmtLst;
 }
 
-shared_ptr<TNode> IfStatement::getParent() {
-    return Statement::getParent();
+void IfStatement::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitIfStatement(shared_from_this());
 }

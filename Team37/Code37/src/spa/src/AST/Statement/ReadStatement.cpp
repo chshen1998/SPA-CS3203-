@@ -1,17 +1,16 @@
-#include "ReadStatement.h"
-
 using namespace std;
 
-ReadStatement::ReadStatement(shared_ptr<TNode> parent, int lineNum, string variableName) : Statement(parent, lineNum), variableName(variableName) { }
+#include "ReadStatement.h"
 
-int ReadStatement::getLineNum() {
-    return Statement::getLineNum();
-}
+ReadStatement::ReadStatement(
+        shared_ptr<TNode> parent,
+        int lineNum,
+        string variableName) : Statement(parent, lineNum), variableName(variableName) { }
 
 string ReadStatement::getVariableName() {
     return this->variableName;
 }
 
-shared_ptr<TNode> ReadStatement::getParent()  {
-    return Statement::getParent();
+void ReadStatement::accept(shared_ptr<ASTVisitor> visitor) {
+    visitor->visitReadStatement(shared_from_this());
 }

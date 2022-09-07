@@ -87,7 +87,7 @@ vector<PqlToken> mockTokenize() {
 /*
  * Takes in query string input from user, parses the query string then return result from PKB
  */
-string QPS::processQuery(string query) {
+vector<string> QPS::processQuery(string query) {
     
     /* Commented out as we are using mockTokens for now
     QueryTokenizer tokenizer = QueryTokenizer(query);
@@ -102,6 +102,7 @@ string QPS::processQuery(string query) {
 
     // string output = evaluator.convertToString(result);
 
-    return "";
+    vector<string> s;
+    return s;
 }
 

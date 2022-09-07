@@ -80,7 +80,7 @@ extern set<TokenType> validSuchThatClauses;
 
 class QPS {
 public:
-    string processQuery(string query);
+    vector<string> processQuery(string query);
 };
 
 // These are placeholder methods, delete after integration with PKB

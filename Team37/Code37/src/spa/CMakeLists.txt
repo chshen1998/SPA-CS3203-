@@ -44,6 +44,7 @@ add_library(spa ${srcs} ${headers}
         src/AST/Operators/RelationalOperator.h
 
         src/AST/ASTVisitor/ASTVisitor.h
+        src/AST/ASTVisitor/ASTVisitor.cpp
 
         src/QPS/QPS.h
         src/QPS/QuerySemanticsExtractor.h

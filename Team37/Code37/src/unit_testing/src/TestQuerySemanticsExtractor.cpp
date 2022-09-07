@@ -1,6 +1,6 @@
 #include "QPS/QuerySemanticsExtractor.h"
 #include "QPS/QPS.h"
-#include "TestQuerySemanticsExtractorUtils.cpp"
+#include "utils/TestQuerySemanticsExtractorUtils.cpp"
 
 #include <vector>
 #include <unordered_map>

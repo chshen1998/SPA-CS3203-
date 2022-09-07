@@ -21,7 +21,8 @@ void QueryEvaluator::QuerySelect() {
     const string selectSynonym = pq.select;
     const TokenType type = pq.declarations[selectSynonym];
     if (type == TokenType::VARIABLE) {
-    	selectResult = QueryServicer::retrieveAll();
+        // TODO
+//    	selectResult = QueryServicer::retrieveAll();
     } else if (type == TokenType::CONSTANT) {
         selectResult = AllConstants();
     } else if (type == TokenType::STATEMENT) {

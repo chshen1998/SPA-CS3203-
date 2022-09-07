@@ -187,10 +187,10 @@ void Tokenizer:: tokenizeOperatedExprByVar(string line, vector<int> indexes, str
 
     for (auto v : expressions) {
         if (isConstant(v)) {
-            AssignStatement(parent, lineNo, lhs, ConstantExpression(stoi(v)));
+            AssignStatement(parent, lineNo, lhs, make_shared<ConstantExpression>(nullptr, stoi(v)));
         }
         if (isVariable(v)) {
-            AssignStatement(parent, lineNo, lhs, NameExpression(v));
+            AssignStatement(parent, lineNo, lhs, make_shared<NameExpression>(nullptr, v));
         }
     }
 }
@@ -217,10 +217,10 @@ void Tokenizer:: tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> p
             Tokenizer:: tokenizeOperatedExprByVar(line, indexes, leftVar, parent, lineNo); // currently tokenizes var only
         }
         if (isConstant(rhs)) {
-            AssignStatement(parent, lineNo, leftVar, ConstantExpression(stoi(rhs)));
+            AssignStatement(parent, lineNo, leftVar, make_shared<ConstantExpression>(nullptr, stoi(rhs)));
         }
         if (isVariable(rhs)) {
-            AssignStatement(parent, lineNo, leftVar, NameExpression(rhs));
+            AssignStatement(parent, lineNo, leftVar, make_shared<NameExpression>(nullptr, rhs));
         }
     } else if (!all_of(indexes.begin(), indexes.end(), isNegative)){
         //TODO: tokenize conditional

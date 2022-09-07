@@ -44,36 +44,6 @@ TEST_CASE("SourceCode and Procedure") {
     require(procedure2->getProcedureName() == "TestProcedure 2");
 }
 
-
-TEST_CASE("Generic Statements") {
-    shared_ptr<SourceCode> sc = make_shared<SourceCode>("");
-    shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sc, "TestProcedure 1");
-
-    sc->addProcedure(procedure1);
-
-    shared_ptr<Statement> stmt1 = make_shared<Statement>(procedure1, 1);
-    shared_ptr<Statement> stmt2 = make_shared<Statement>(procedure1, 2);
-    shared_ptr<Statement> stmt3 = make_shared<Statement>(procedure1, 3);
-    shared_ptr<Statement> stmt4 = make_shared<Statement>(procedure1, 4);
-
-    procedure1->addStatement(stmt1);
-    procedure1->addStatement(stmt2);
-    procedure1->addStatement(stmt3);
-    procedure1->addStatement(stmt4);
-
-    vector<shared_ptr<Statement>> statements = procedure1->getStatements();
-
-    require(statements[0] == stmt1);
-    require(statements[1] == stmt2);
-    require(statements[2] == stmt3);
-    require(statements[3] == stmt4);
-
-    require(stmt1->getParent() == procedure1);
-    require(stmt1->getParent()->getParent() == sc);
-}
-
-
-
 TEST_CASE("Simple Specific Statements") {
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("");
     shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sc, "TestProcedure 1");

@@ -1,25 +1,46 @@
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <set>
-
-using namespace std;
-
-#include "PKB.h"
-#include "../AST/TNode.h"
-
+#include "Storage.h"
 // Constructor
 Storage::Storage() {}
 
+/*
+Store the AST
+@param: AST - Shared Pointer to AST
+*/
 void Storage::storeAST(shared_ptr<TNode> AST) {
 	this->AST = AST;
 }
 
-void Storage::storeVar(string varName) {
-	(this->variables).insert(varName);
+// Variable
+/*
+Store a variable in the variable set
+@param varNode Shared pointers to a NameExpression Node
+*/
+void Storage::storeVar(shared_ptr<NameExpression> varNode) {
+	(this->variables).insert(varNode);
 }
 
-set<string> Storage::getAllVar() {
+/* 
+Retrieve all stored variables
+@returns Set of shared pointers of Variables
+*/
+set<shared_ptr<TNode>> Storage::getAllVar() {
 	return this->variables;
  }
+
+
+// Constant
+/*
+Store a constant
+@param constNode Shared pointers to a ConstantExpression Node
+*/
+void Storage::storeConst(shared_ptr<ConstantExpression> constNode) {
+	(this->constants).insert(constNode);
+}
+
+/*
+Retrieve all stored constants
+@return Set of shared pointers of constants stored
+*/
+set<shared_ptr<TNode>> Storage::getAllConst() {
+	return this->constants;
+}

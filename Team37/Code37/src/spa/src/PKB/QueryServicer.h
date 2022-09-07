@@ -10,6 +10,8 @@ using namespace std;
 #include "QueryServicer.h"
 #include "Storage.h"
 
+enum elementType {VARIABLE, CONSTANT};
+
 class QueryServicer {
 private:
 	shared_ptr<Storage> storage;
@@ -22,5 +24,5 @@ public:
 	// Retrieve all of an element
 	// TEMP: Return all variables only
 	// GOAL: Take in element type and return correct type
-    set<string> retrieveAll();
+    set<shared_ptr<TNode>> retrieveAll(elementType type);
 };

@@ -15,15 +15,11 @@ public:
 
     string fileToString(string filename);
 
-    vector<string> extractProcedures(string srcCode, vector<string> procedures)
-
-    vector<string> extractProcedureName(vector<string> procedures);
-
-    vector<shared_ptr<Procedure>> extractStatements(ifstream file);
+    vector<string> extractProcedures(string srcCode, vector<string> procedures);
 
     vector<string> extractProcNames(vector<string> procedures);
 
-    vector<string> extractStatements(vector<string> procedures);
+    vector<string> extractStatements(string procedure);
 };
 
 #endif

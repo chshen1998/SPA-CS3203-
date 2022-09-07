@@ -1,10 +1,32 @@
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
 #include "ParserVisitor.h"
 #include "AST/SourceCode.h"
 #include "SP.h"
+
+// =========================== Utility functions ============================
+
+const string WHITESPACE = " \n\r\t\f\v";
+
+string ltrim(string s) {
+    size_t start = s.find_first_not_of(WHITESPACE);
+    return (start == std::string::npos) ? "" : s.substr(start);
+}
+
+string rtrim(string s) {
+    size_t end = s.find_last_not_of(WHITESPACE);
+    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
+}
+
+string trim(string s) {
+    return rtrim(ltrim(s));
+}
+
+
+// =========================== Parsing functions ============================
 
 /**
  * Converts a text file to a string for easier parsing.
@@ -76,18 +98,42 @@ vector<string> SP:: extractProcNames(vector<string> procedures) {
 }
 
 /**
- * Extracts the statements as strings in a procedure.
- * @param procedures vector containing procedures as strings.
- * @return statements each procedure contains.
+ * Extracts statements of a procedure as strings.
+ * @param procedure
+ * @return statements as strings.
  */
-vector<string> SP:: extractStatements(vector<string> procedures) {
+vector<string> SP:: extractStatements(string procedure) {
+    vector<string> statements;
+    string openBracket = "{";
+    string closeBracket = "}";
+    string line;
 
+    int openIdx = procedure.find(openBracket);
+    int closeIdx = procedure.find(closeBracket);
+
+    string allStatements = procedure.substr(openIdx + 1, closeIdx - openIdx - 1);
+
+    stringstream s (trim(allStatements));
+
+    while (getline(s, line, ';')) {
+        line = trim(line);
+        statements.push_back(line);
+    }
+
+    return statements;
 }
 
 shared_ptr<SourceCode> SP:: processSourceCode(string filename) {
     string code = fileToString(filename);
     vector<string> procedures;
     procedures = extractProcedures(code, procedures);
+    vector<string> procNames = extractProcNames(procedures);
+
+    vector<vector<string> > statementLists;
+    for (auto p: procedures) {
+        vector<string> stmts = extractStatements(p);
+        statementLists.push_back(stmts);
+    }
 
 }
 

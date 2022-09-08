@@ -1,6 +1,7 @@
-#include "QPS/QuerySemanticsExtractor.h"
+#include "QPS/QueryExtractor.h"
 #include "QPS/QPS.h"
-#include "utils/TestQuerySemanticsExtractorUtils.cpp"
+#include "utils/TestQueryExtractorUtils.h"
+#include "utils/TestQueryExtractorUtils.cpp"
 
 #include <vector>
 #include <unordered_map>
@@ -40,14 +41,14 @@ TEST_CASE("Test declartions") {
 		{"a", TokenType::ASSIGN}
 	};
 
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(basic_tokens);
+	QueryExtractor sut = QueryExtractor(basic_tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameMap(ans, results.declarations));
 }
 
 TEST_CASE("Test Such That clauses") {
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(basic_tokens);
+	QueryExtractor sut = QueryExtractor(basic_tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(results.select == "v");
@@ -61,7 +62,7 @@ TEST_CASE("Test Pattern clause")
 
 	vector<PqlToken> tokens = addPatternClause(basic_tokens);
 
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(tokens);
+	QueryExtractor sut = QueryExtractor(tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameClause(ans, results.patternClause));
@@ -75,7 +76,7 @@ TEST_CASE("Test Uses clause")
 
 	vector<PqlToken> tokens = addUsesClause(basic_tokens);
 
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(tokens);
+	QueryExtractor sut = QueryExtractor(tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameClause(ans, results.suchThatClause));
@@ -89,7 +90,7 @@ TEST_CASE("Test Modifies Clause")
 
 	vector<PqlToken> tokens = addModifiesClause(basic_tokens);
 
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(tokens);
+	QueryExtractor sut = QueryExtractor(tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameClause(ans, results.suchThatClause));
@@ -103,7 +104,7 @@ TEST_CASE("Test Parent Clause")
 
 	vector<PqlToken> tokens = addParentClause(basic_tokens);
 
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(tokens);
+	QueryExtractor sut = QueryExtractor(tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameClause(ans, results.suchThatClause));
@@ -117,7 +118,7 @@ TEST_CASE("Test Follows Clause")
 
 	vector<PqlToken> tokens = addFollowsClause(basic_tokens);
 
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(tokens);
+	QueryExtractor sut = QueryExtractor(tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameClause(ans, results.suchThatClause));
@@ -135,7 +136,7 @@ TEST_CASE("Test Pattern then Such That Clause")
 	vector<PqlToken> tokens = addPatternClause(basic_tokens);
 	tokens = addFollowsClause(tokens);
 
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(tokens);
+	QueryExtractor sut = QueryExtractor(tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameClause(pattern, results.patternClause));
@@ -154,7 +155,7 @@ TEST_CASE("Test Such That then Pattern Clause")
 	vector<PqlToken> tokens = addFollowsClause(basic_tokens);
 	tokens = addPatternClause(tokens);
 
-	QuerySemanticsExtractor sut = QuerySemanticsExtractor(tokens);
+	QueryExtractor sut = QueryExtractor(tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameClause(pattern, results.patternClause));

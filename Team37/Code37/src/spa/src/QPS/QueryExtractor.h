@@ -5,16 +5,16 @@
 
 #include "QPS.h"
 
-#ifndef TEAM37_QUERYSEMANTICSEXTRACTOR_H
-#define TEAM37_QUERYSEMANTICSEXTRACTOR_H
+#ifndef TEAM37_QUERYEXTRACTOR_H
+#define TEAM37_QUERYEXTRACTOR_H
 
-class QuerySemanticsExtractor {
+class QueryExtractor {
 public:
     vector<PqlToken>::iterator next;
     vector<PqlToken>::iterator last;
     PqlQuery pq;
 
-    QuerySemanticsExtractor(vector<PqlToken> &tokens);
+    QueryExtractor(vector<PqlToken> &tokens);
 
     PqlQuery ExtractSemantics();
 
@@ -33,4 +33,4 @@ private:
 };
 
 
-#endif //TEAM37_QUERYSEMANTICSEXTRACTOR_H
+#endif //TEAM37_QUERYEXTRACTOR_H

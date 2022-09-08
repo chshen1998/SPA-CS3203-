@@ -7,7 +7,7 @@ using namespace std;
 #include <set>
 
 #include "QPS.h"
-#include "QuerySemanticsExtractor.h"
+#include "QueryExtractor.h"
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
 #include "AST/TNode.h"
@@ -94,7 +94,7 @@ vector<string> QPS::processQuery(string query) {
     vector<PqlToken> tokens = tokenizer.Tokenize();
     */
 
-    QuerySemanticsExtractor extractor = QuerySemanticsExtractor(mockTokenize());
+    QueryExtractor extractor = QueryExtractor(mockTokenize());
     PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);

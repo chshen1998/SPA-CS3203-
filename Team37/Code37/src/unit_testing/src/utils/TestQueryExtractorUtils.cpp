@@ -1,4 +1,4 @@
-#include "QPS/QuerySemanticsExtractor.h"
+#include "QPS/QueryExtractor.h"
 #include "QPS/QPS.h"
 
 #include <vector>

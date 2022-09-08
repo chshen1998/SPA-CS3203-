@@ -3,23 +3,23 @@ using namespace std;
 #include <string>
 #include <vector>
 
-#include "QuerySemanticsExtractor.h"
+#include "QueryExtractor.h"
 #include "QPS.h"
 
-QuerySemanticsExtractor::QuerySemanticsExtractor(vector<PqlToken> &tokens) {
+QueryExtractor::QueryExtractor(vector<PqlToken> &tokens) {
     next = tokens.begin();
     last = tokens.end();
     pq = PqlQuery();
 }
 
-PqlQuery QuerySemanticsExtractor::ExtractSemantics() {
+PqlQuery QueryExtractor::ExtractSemantics() {
     ExtractDeclarations();
     ExtractSelect();
     ExtractClauses();
     return pq;
 }
 
-void QuerySemanticsExtractor::ExtractDeclarations() {
+void QueryExtractor::ExtractDeclarations() {
     while (true) {
         const PqlToken declaration = getNextToken();
         if (declaration.type == TokenType::EMPTY) {
@@ -34,7 +34,7 @@ void QuerySemanticsExtractor::ExtractDeclarations() {
 
 }
 
-void QuerySemanticsExtractor::ExtractSelect() {
+void QueryExtractor::ExtractSelect() {
     const PqlToken selectClause = getNextToken();
     if (selectClause.type != TokenType::SELECT) {
         throw "Error: No select clause";
@@ -54,7 +54,7 @@ void QuerySemanticsExtractor::ExtractSelect() {
     }
 }
 
-void QuerySemanticsExtractor::ExtractClauses() {
+void QueryExtractor::ExtractClauses() {
     const PqlToken nextToken = getNextToken();
     if (nextToken.type == TokenType::END) {
         return;
@@ -69,7 +69,7 @@ void QuerySemanticsExtractor::ExtractClauses() {
     }
 }
 
-void QuerySemanticsExtractor::ExtractPatternClause() {
+void QueryExtractor::ExtractPatternClause() {
     PqlToken patternSynonym = getNextToken();
     while (patternSynonym.type != TokenType::SYNONYM) {
         if (patternSynonym.type == TokenType::END)
@@ -98,7 +98,7 @@ void QuerySemanticsExtractor::ExtractPatternClause() {
     const PqlToken closedBracket = getNextToken();
 }
 
-void QuerySemanticsExtractor::ExtractSuchThatClause() {
+void QueryExtractor::ExtractSuchThatClause() {
     PqlToken suchThatClause = getNextToken();
     while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
         if (suchThatClause.type == TokenType::END)
@@ -118,7 +118,7 @@ void QuerySemanticsExtractor::ExtractSuchThatClause() {
     const PqlToken closeParenthesis = getNextToken();
 }
 
-PqlToken QuerySemanticsExtractor::getNextToken() {
+PqlToken QueryExtractor::getNextToken() {
     if (next == last) {
         return PqlToken(TokenType::END, "");
     } else {

@@ -46,7 +46,7 @@ add_library(spa ${srcs} ${headers}
         src/AST/ASTVisitor/ASTVisitor.h
 
         src/QPS/QPS.h
-        src/QPS/QuerySemanticsExtractor.h
+        src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
         src/QPS/QueryValidator.h
@@ -62,7 +62,7 @@ add_library(spa ${srcs} ${headers}
         src/SP/Visitor.cpp
 
         src/QPS/QPS.cpp
-        src/QPS/QuerySemanticsExtractor.cpp
+        src/QPS/QueryExtractor.cpp
         src/QPS/QueryEvaluator.cpp
         src/QPS/QueryTokenizer.cpp
         src/QPS/QueryValidator.cpp

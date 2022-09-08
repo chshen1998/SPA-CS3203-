@@ -5,9 +5,10 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <set>
+#include <list>
 
 #include "QPS.h"
-#include "QuerySemanticsExtractor.h"
+#include "QueryExtractor.h"
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
 #include "AST/TNode.h"
@@ -87,21 +88,19 @@ vector<PqlToken> mockTokenize() {
 /*
  * Takes in query string input from user, parses the query string then return result from PKB
  */
-string QPS::processQuery(string query) {
+void QPS::evaluate(string query, list<string>& results) {
     
     /* Commented out as we are using mockTokens for now
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
     */
 
-    QuerySemanticsExtractor extractor = QuerySemanticsExtractor(mockTokenize());
+    QueryExtractor extractor = QueryExtractor(mockTokenize());
     PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);
     set<string> result = evaluator.CallPKB();
 
     // string output = evaluator.convertToString(result);
-
-    return "";
 }
 

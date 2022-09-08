@@ -64,10 +64,14 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QuerySemanticsExtractor.cpp
         src/QPS/QueryEvaluator.cpp
         src/QPS/QueryTokenizer.cpp
+
+        src/PKB/PKB.h
         src/PKB/PKB.cpp
+        src/PKB/QueryServicer.h
         src/PKB/QueryServicer.cpp
+        src/PKB/Storage.h
         src/PKB/Storage.cpp
-        )
+        src/PKB/ElementType.h)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

@@ -24,6 +24,8 @@ enum class TokenType {
     WHILE,
     IF,
     ELSE,
+    PRINT,
+    CALL,
 
     SYNONYM,
     NUMBER,
@@ -48,6 +50,7 @@ enum class TokenType {
     CLOSED_BRACKET,
 
     EMPTY,
+    DECLARATION_END,
     END
 };
 

@@ -4,7 +4,7 @@ add_executable(unit_testing ${srcs}
 	"src/TestPKBStorage.cpp"
 	"src/TestAST.cpp"
 	"src/TestQueryExtractor.cpp"
-	src/TestQueryTokenizer.cpp"
+	"src/TestQueryTokenizer.cpp"
 )
 
 target_link_libraries(unit_testing spa)

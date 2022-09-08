@@ -27,6 +27,8 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {"while", TokenType::WHILE},
         {"if", TokenType::IF},
         {"else", TokenType::ELSE},
+        {"print", TokenType::PRINT},
+        {"call", TokenType::CALL},
 
         {"Select", TokenType::SELECT},
         {"pattern", TokenType::PATTERN},

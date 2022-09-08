@@ -12,26 +12,30 @@ using namespace std;
 #include "../AST/SourceCode.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "../AST/ASTVisitor/ConcreteASTVisitor.h"
 
 
 class Storage {
 private:
-	shared_ptr<SourceCode> AST;
-	set<shared_ptr<TNode>> variables;
-	set<shared_ptr<TNode>> constants;
+    shared_ptr<TNode> AST;
+    set<shared_ptr<TNode>> variables;
+    set<shared_ptr<TNode>> constants;
 public:
-	// Constructor
-	Storage();
+    // Constructor
+    Storage();
 
-	// AST
-	void storeAST(shared_ptr<SourceCode>);
-	shared_ptr<TNode> retrieveAST();
+    // AST
+    void storeAST(shared_ptr<TNode>);
 
-	// Variables
-	void storeVar(shared_ptr<NameExpression>);
-	set<shared_ptr<TNode>> getAllVar();
+    shared_ptr<TNode> retrieveAST();
 
-	// Constants
-	void storeConst(shared_ptr<ConstantExpression>);
-	set<shared_ptr<TNode>> getAllConst();
+    // Variables
+    shared_ptr<TNode> storeVar(shared_ptr<NameExpression>);
+
+    set<shared_ptr<TNode>> getAllVar();
+
+    // Constants
+    void storeConst(shared_ptr<ConstantExpression>);
+
+    set<shared_ptr<TNode>> getAllConst();
 };

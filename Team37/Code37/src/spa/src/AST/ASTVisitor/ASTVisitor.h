@@ -3,10 +3,10 @@
 #ifndef TEAM37_ASTVISITOR_H
 #define TEAM37_ASTVISITOR_H
 
-#include <vector>
-#include <memory>
 
 using namespace std;
+
+#include <memory>
 
 //#include "AST/SourceCode.h"
 //#include "AST/TNode.h"
@@ -60,11 +60,7 @@ class OrCondition;
 class TNode;
 
 class ASTVisitor {
-private:
-    vector<shared_ptr<TNode>> TNodeVariables;
 public:
-    ASTVisitor(vector<shared_ptr<TNode>> TNodeVariables);
-
     virtual void visitSourceCode(shared_ptr<SourceCode> sourceCode) = 0;
 
     virtual void visitProcedure(shared_ptr<Procedure> procedure) = 0;
@@ -98,7 +94,6 @@ public:
 
     virtual void visitOrCondition(shared_ptr<OrCondition> orCondition) = 0;
 
-    vector<shared_ptr<TNode>> getTNodeVariables();
 };
 
 #endif

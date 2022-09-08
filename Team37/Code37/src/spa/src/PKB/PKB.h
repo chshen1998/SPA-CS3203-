@@ -21,5 +21,5 @@ public:
 	PKB();
 
 	shared_ptr<QueryServicer> getQueryServicer();
-    void buildFromAst(shared_ptr<TNode> AST);
+    void buildFromAst(shared_ptr<SourceCode> AST);
 };

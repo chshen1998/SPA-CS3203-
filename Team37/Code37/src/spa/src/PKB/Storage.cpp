@@ -6,8 +6,16 @@ Storage::Storage() {}
 Store the AST
 @param: AST - Shared Pointer to AST
 */
-void Storage::storeAST(shared_ptr<TNode> AST) {
+void Storage::storeAST(shared_ptr<SourceCode> AST) {
 	this->AST = AST;
+}
+
+/*
+Retrieve Stored AST
+@return AST SourceCode node if AST added, nullptr otherwise
+*/
+shared_ptr<TNode> Storage::retrieveAST() {
+	return this->AST;
 }
 
 // Variable

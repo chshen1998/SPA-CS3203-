@@ -5,24 +5,9 @@
 using namespace std;
 
 #include "Tokenizer.h"
+#include "Utils.h"
 
 // ================================== Utility functions ============================================
-
-const string WHITESPACE = " \n\r\t\f\v";
-
-string ltrim(string s) {
-    size_t start = s.find_first_not_of(WHITESPACE);
-    return (start == std::string::npos) ? "" : s.substr(start);
-}
-
-string rtrim(string s) {
-    size_t end = s.find_last_not_of(WHITESPACE);
-    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
-}
-
-string trim(string s) {
-    return rtrim(ltrim(s));
-}
 
 bool isNegative (int i) {
     return (i < 0) ;
@@ -71,56 +56,89 @@ string removeParentheses(string line) {
     return line;
 }
 
-// ================================== Tokenizing functions ============================================
-
-shared_ptr<TNode> Tokenizer:: tokenize(vector<string> lines) {
-    shared_ptr<TNode> root = tokenizeProcedure(lines[0]); //TODO: Assuming that first line is procedure
-
-    for (int i = 1; i < lines.size(); i++) {
-        string l = lines[i];
-        tokenizeRead(l, i, root);
-        tokenizePrint(l, i, root);
-        tokenizeAssignment(l, i, root);
-    }
-    return root;
-}
-
-shared_ptr<Procedure> Tokenizer:: tokenizeProcedure(string line, int startIdx, string keyword) {
-    int end = startIdx + keyword.length();
-    string name = line.substr(end, string::npos);
-    shared_ptr<Procedure> procedure = make_shared<Procedure>(Procedure(nullptr, name));
-    return procedure;
-}
-
-shared_ptr<Procedure> Tokenizer:: tokenizeProcedure(string line) {
-    string keyword = "procedure";
-    int startIdx = line.find(keyword);
-    if (startIdx != string::npos) {
-        int end = startIdx + keyword.length();
-        string name = line.substr(end, string::npos);
-        shared_ptr<Procedure> procedure = make_shared<Procedure>(Procedure(nullptr, name));
-        return procedure;
-    }
-}
-
-void Tokenizer:: tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
+bool isRead(string line) {
     string keyword = "read";
     int startIdx = line.find(keyword);
-    if (startIdx != string::npos) {
-        int end = startIdx + keyword.length();
-        string varName = line.substr(end, string::npos);
-        ReadStatement(parent, stmtNo, varName);
-    }
+    return (startIdx != -1);
 }
 
-void Tokenizer:: tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
+bool isPrint(string line) {
     string keyword = "print";
     int startIdx = line.find(keyword);
-    if (startIdx != string::npos) {
-        int end = startIdx + keyword.length();
-        string varName = line.substr(end, string::npos);
-        PrintStatement(parent, stmtNo, varName);
+    return (startIdx != -1);
+}
+
+// ================================== Tokenizing functions ============================================
+shared_ptr<ReadStatement> Tokenizer:: tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
+    string keyword = "read";
+    int startIdx = line.find(keyword);
+    int end = startIdx + keyword.length();
+    string varName = line.substr(end, string::npos);
+    return make_shared<ReadStatement>(parent, stmtNo, Utils::trim(varName));
+}
+
+shared_ptr<PrintStatement> Tokenizer:: tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
+    string keyword = "print";
+    int startIdx = line.find(keyword);
+    int end = startIdx + keyword.length();
+    string varName = line.substr(end, string::npos);
+    return make_shared<PrintStatement>(parent, stmtNo, Utils::trim(varName));
+}
+
+/**
+ * Creates statement objects and sets procedure as the parent node
+ * @param procedures vector containing all procedures of program
+ * @param statements vector containing statement lists as strings for each procedure
+ * @return vector containing procedures with corresponding statement objects
+ */
+vector<shared_ptr<Procedure> > Tokenizer:: tokenizeStatements(vector<shared_ptr<Procedure> > procedures, vector<vector<string> > statements) {
+    for (int i = 0; i < procedures.size(); i++) {
+        shared_ptr<Procedure> procedure = procedures[i];
+        for (int j = 0; j < statements[i].size(); j++) {
+            shared_ptr<Statement> stmt;
+            string s = statements[i][j];
+            if (isRead(s)) {
+                stmt = Tokenizer::tokenizeRead(s, j + 1, procedure);
+            }
+            if (isPrint(s)) {
+                stmt = Tokenizer::tokenizePrint(s, j + 1, procedure);
+            }
+            procedure->addStatement(stmt);
+        }
     }
+    return procedures;
+}
+
+/**
+ * Converts procedures as strings to Procedure objects.
+ * @param names vector containing all names of procedures in strings
+ * @param statements vector containing vector of statements corresponding to each procedure
+ * @return vector containing procedures containing statement lists.
+ */
+vector<shared_ptr<Procedure> > Tokenizer:: tokenizeProcedure(vector<string> names, vector<vector<string> > statements) {
+    vector<shared_ptr<Procedure> > procedures;
+    for (int i = 0; i < names.size(); i++) {
+        shared_ptr<Procedure> procedure = make_shared<Procedure>(nullptr, names[i]);
+        procedures.push_back(procedure);
+    }
+
+    return Tokenizer::tokenizeStatements(procedures, statements);
+}
+
+/**
+ * Tokenizes SourceCode and sets SourceCode as parent to all corresponding procedures.
+ * @param srcCode sourcecode object that acts as root node
+ * @param names vector of all procedure names of program
+ * @param statements vector of vector containing statements as strings for each corresponding procedure
+ * @return sourcecode node that now has all procedures in its procedure list
+ */
+shared_ptr<SourceCode> Tokenizer:: tokenize(shared_ptr<SourceCode> srcCode, vector<string> names, vector<vector<string> > statements) {
+    vector<shared_ptr<Procedure> > procedures = Tokenizer::tokenizeProcedure(names, statements);
+    for (auto p: procedures) {
+        srcCode->addProcedure(p);
+        p->setParent(srcCode);
+    }
+    return srcCode;
 }
 
 void Tokenizer:: tokenizeCall(string line) {
@@ -181,7 +199,7 @@ void Tokenizer:: tokenizeOperatedExprByVar(string line, vector<int> indexes, str
         cout << start << endl;
         cout << end << endl;
         string rhs = line.substr(start, end - start);
-        expressions.insert(trim(removeParentheses(rhs)));
+        expressions.insert(Utils::trim(removeParentheses(rhs)));
         start = end + 1;
     }
 
@@ -210,7 +228,7 @@ void Tokenizer:: tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> p
 
         // Parse RHS: could be expression or variable or constant
         string rhs = line.substr(startIdx + 1, string::npos);
-        rhs = trim(rhs);
+        rhs = Utils:: trim(rhs);
         if (isOperatedExpression(rhs)) {
             vector<int> opIndexes = getOpIndexes(line);
             // Tokenizer:: tokenizeOperatedExpr(line, indexes); //TODO

@@ -9,21 +9,6 @@ using namespace std;
 
 void require(bool b);
 
-TEST_CASE("File to String") {
-    string filepath = "../Team37/Tests37/Easy.txt";
-    string result = SP::fileToString(filepath);
-    string expected = "procedure main {\n"
-                      "    flag = 0;\n"
-                      "    print flag;\n"
-                      "    read flag;\n"
-                      "\n"
-                      "    x = 1;\n"
-                      "    y = 2;\n"
-                      "    print x;\n"
-                      "}";
-    require(result == expected);
-}
-
 TEST_CASE("Extract Procedures") {
     vector<string> procedures;
     string p = "procedure main {\n"
@@ -103,7 +88,9 @@ TEST_CASE("Tokenize read") {
     string line = "read v";
     shared_ptr<ReadStatement> result = Tokenizer::tokenizeRead(line, 1, procedure1);
 
-    require(result == readStatement);
+    require(result->getVariableName() == readStatement->getVariableName());
+    require(result->getLineNum() == readStatement->getLineNum());
+    require(result->getParent() == readStatement->getParent());
 }
 
 TEST_CASE("Tokenize print") {
@@ -114,7 +101,9 @@ TEST_CASE("Tokenize print") {
     string line = "print v";
     shared_ptr<PrintStatement> result = Tokenizer::tokenizePrint(line, 1, procedure1);
 
-    require(result == printStatement);
+    require(result->getVariableName() == printStatement->getVariableName());
+    require(result->getLineNum() == printStatement->getLineNum());
+    require(result->getParent() == printStatement->getParent());
 }
 
 TEST_CASE("Tokenize Statements") {
@@ -138,23 +127,53 @@ TEST_CASE("Tokenize Statements") {
     vector<shared_ptr<Procedure> > result = Tokenizer::tokenizeStatements(procedures, statements);
 
     vector<shared_ptr<Procedure> > expected;
-    shared_ptr<Procedure> procedure2 = make_shared<Procedure>(sourceCode, "p1");
-    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(procedure2, 1, "flag");
-    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(procedure2, 2, "flag");
-    procedure2->addStatement(print1);
-    procedure2->addStatement(read1);
+    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(procedure1, 1, "flag");
+    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(procedure1, 2, "flag");
 
     vector<shared_ptr<Statement> > resultStatements = result[0]->getStatements();
 
-    require(resultStatements[0] == print1);
-    require(resultStatements[1] == read1);
+    require(resultStatements[0]->getLineNum() == print1->getLineNum());
+    require(resultStatements[0]->getParent() == print1->getParent());
 
-}
-
-TEST_CASE("Tokenize Procedures") {
+    require(resultStatements[1]->getLineNum() == read1->getLineNum());
+    require(resultStatements[1]->getParent() == read1->getParent());
 
 }
 
 TEST_CASE("Tokenize SourceCode") {
+    shared_ptr<SourceCode> srcCode = make_shared<SourceCode>("");
+
+    vector<string> names;
+    string name = "ABC";
+    names.push_back(name);
+    shared_ptr<Procedure> p1 = make_shared<Procedure>(srcCode, name);
+
+    vector<vector<string> > statements;
+    string s1 = "print flag";
+    string s2 = "read flag";
+    vector<string> stmtlst;
+    stmtlst.push_back(s1);
+    stmtlst.push_back(s2);
+    statements.push_back(stmtlst);
+
+    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(p1, 1, "flag");
+    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(p1, 2, "flag");
+
+    p1->addStatement(print1);
+    p1->addStatement(read1);
+    srcCode->addProcedure(p1);
+
+    shared_ptr<SourceCode> srcCode2 = make_shared<SourceCode>("");
+    srcCode2 = Tokenizer::tokenize(srcCode, names, statements);
+
+    vector<shared_ptr<Procedure> > resultProcLst = srcCode2->getProcedures();
+    vector<shared_ptr<Statement> > resultStmtLst = resultProcLst[0]->getStatements();
+    string resultProcName = resultProcLst[0]->getProcedureName();
+
+    require(resultStmtLst[0]->getLineNum() == print1->getLineNum());
+    require(resultStmtLst[0]->getParent() == print1->getParent());
+
+    require(resultStmtLst[1]->getLineNum() == read1->getLineNum());
+    require(resultStmtLst[1]->getParent() == read1->getParent());
 
 }

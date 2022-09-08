@@ -110,10 +110,10 @@ vector<shared_ptr<Procedure> > Tokenizer:: tokenizeStatements(vector<shared_ptr<
 }
 
 /**
- * Converts procedure as a string to Procedure object.
+ * Converts procedures as strings to Procedure objects.
  * @param names vector containing all names of procedures in strings
  * @param statements vector containing vector of statements corresponding to each procedure
- * @return vector containing procedures.
+ * @return vector containing procedures containing statement lists.
  */
 vector<shared_ptr<Procedure> > Tokenizer:: tokenizeProcedure(vector<string> names, vector<vector<string> > statements) {
     vector<shared_ptr<Procedure> > procedures;

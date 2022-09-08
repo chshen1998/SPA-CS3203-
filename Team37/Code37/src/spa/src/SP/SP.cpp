@@ -21,11 +21,16 @@ string SP:: fileToString(string filename) {
     ifstream in;
     in.open(filename);
 
-    while(!in.eof()) {
-        getline(in, s);
-        sTotal += s + "\n";
+    if (in.is_open()) {
+        while(!in.eof()) {
+            getline(in, s);
+            sTotal += s + "\n";
+        }
+        in.close();
+    } else {
+        cout << "Unable to open file." << endl;
     }
-    in.close();
+
     return sTotal;
 }
 

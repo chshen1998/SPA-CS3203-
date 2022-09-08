@@ -21,8 +21,13 @@ ConcreteASTVisitor::ConcreteASTVisitor() {
 }
 
 vector<shared_ptr<NameExpression>> ConcreteASTVisitor::getTNodeVariables() {
-    return TNodeVariables;
+    return VisitedTNodeVariables;
 };
+
+vector<shared_ptr<ConstantExpression>> ConcreteASTVisitor::getVisitedConstants() {
+    return VisitedConstants;
+}
+
 
 void ConcreteASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
 
@@ -39,12 +44,12 @@ void ConcreteASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
 // Statements
 void ConcreteASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
     shared_ptr<NameExpression> expression = make_shared<NameExpression>(readStmt, readStmt->getVariableName());
-    (this->TNodeVariables).push_back(expression);
+    (this->VisitedTNodeVariables).push_back(expression);
 }
 
 void ConcreteASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt) {
     shared_ptr<NameExpression> expression = make_shared<NameExpression>(printStmt, printStmt->getVariableName());
-    (this->TNodeVariables).push_back(expression);
+    (this->VisitedTNodeVariables).push_back(expression);
 }
 
 void ConcreteASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt) {
@@ -71,7 +76,7 @@ void ConcreteASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
 
 void ConcreteASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
     shared_ptr<NameExpression> expression = make_shared<NameExpression>(assignStmt, assignStmt->getVarName());
-    (this->TNodeVariables).push_back(expression);
+    (this->VisitedTNodeVariables).push_back(expression);
 }
 
 // RelationalFactor
@@ -80,28 +85,34 @@ void ConcreteASTVisitor::visitNameExpression(shared_ptr<NameExpression> nameExpr
 }
 
 void ConcreteASTVisitor::visitConstantExpression(shared_ptr<ConstantExpression> constantExpr) {
-
+    (this->VisitedConstants).push_back(constantExpr);
 }
 
 void ConcreteASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpression> operatedExpr) {
+    operatedExpr->getExpression1()->accept(shared_ptr<ASTVisitor>(this));
+    operatedExpr->getExpression2()->accept(shared_ptr<ASTVisitor>(this));
 
 }
 
 // ConditionalExpression
 void ConcreteASTVisitor::visitRelationalExpression(shared_ptr<RelationalExpression> relationalExpr) {
-
+    relationalExpr->getRelFactor1()->accept(shared_ptr<ASTVisitor>(this));
+    relationalExpr->getRelFactor2()->accept(shared_ptr<ASTVisitor>(this));
 }
 
 void ConcreteASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCondition) {
-
+    notCondition->getConditionalExpression()->accept(shared_ptr<ASTVisitor>(this));
 }
 
 void ConcreteASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCondition) {
+    andCondition->getConditionalExpression1()->accept(shared_ptr<ASTVisitor>(this));
+    andCondition->getConditionalExpression2()->accept(shared_ptr<ASTVisitor>(this));
 
 }
 
 void ConcreteASTVisitor::visitOrCondition(shared_ptr<OrCondition> orCondition) {
-
+    orCondition->getConditionalExpression1()->accept(shared_ptr<ASTVisitor>(this));
+    orCondition->getConditionalExpression2()->accept(shared_ptr<ASTVisitor>(this));
 }
 
 

@@ -10,18 +10,22 @@ using namespace std;
 
 class ConcreteASTVisitor : public ASTVisitor {
 private:
-    vector<shared_ptr<NameExpression>> TNodeVariables;
+    vector<shared_ptr<NameExpression>> VisitedTNodeVariables;
+    vector<shared_ptr<ConstantExpression>> VisitedConstants;
 public:
     // Constructor
     ConcreteASTVisitor();
 
+    // Getters
     vector<shared_ptr<NameExpression>> getTNodeVariables();
 
+    vector<shared_ptr<ConstantExpression>> getVisitedConstants();
+
+    // Statements
     void visitSourceCode(shared_ptr<SourceCode> sourceCode);
 
     void visitProcedure(shared_ptr<Procedure> procedure);
 
-    // Statements
     void visitReadStatement(shared_ptr<ReadStatement> readStmt);
 
     void visitPrintStatement(shared_ptr<PrintStatement> printStmt);

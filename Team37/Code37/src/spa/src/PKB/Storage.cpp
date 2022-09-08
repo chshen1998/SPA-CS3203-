@@ -19,6 +19,11 @@ void Storage::storeAST(shared_ptr<TNode> AST) {
     for (auto variable: visitor->getTNodeVariables()) {
         this->storeVar(variable);
     }
+
+    //  Storing constants
+    for (auto constant: visitor->getVisitedConstants()) {
+        this->storeConst(constant);
+    }
 }
 
 

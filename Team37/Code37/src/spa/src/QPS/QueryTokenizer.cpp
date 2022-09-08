@@ -13,18 +13,19 @@ using namespace std;
 
 QueryTokenizer::QueryTokenizer(string queryString) {
     query = queryString;
-    delimited_query = vector<string>();
-    tokens = vector<PqlToken>();
 }
 
 void QueryTokenizer::resetQueryString(string queryString) {
     query = queryString;
     delimited_query = vector<string>();
-    tokens = vector<PqlToken>();
 }
 
 
 vector<PqlToken> QueryTokenizer::Tokenize() {
+    if (query.size() == 0) {
+        throw "Invalid Query Syntax :: Query Length is zero.";
+    }
+
     Split();
     ConvertIntoTokens();
 
@@ -34,12 +35,11 @@ vector<PqlToken> QueryTokenizer::Tokenize() {
 
 void QueryTokenizer::Split() {
     string currentString;
-    bool selectExists {};
-    bool addToList {};
+    bool selectExists{};
+    bool addToList{};
 
-    if (query.size() == 0) {
-        throw "Invalid Query Syntax :: Query Length is zero.";
-    }
+    delimited_query = vector<string>();
+    delimited_query.reserve(query.size());
 
     for (int i = 0; i < query.size(); i++) {
 
@@ -67,30 +67,42 @@ void QueryTokenizer::Split() {
         }
     }
 
+    if (!selectExists) {
+        throw "Invalid Query Syntax :: Select keyword does not exist.";
+    }
+
     if (currentString.size() > 0) {
         delimited_query.push_back(currentString);
     }
+
+    delimited_query.shrink_to_fit();
 
     if (delimited_query.size() == 0) {
         throw "Invalid Query Syntax :: Query is blank.";
     }
 
-    if (!selectExists) {
-        throw "Invalid Query Syntax :: Select keyword does not exist.";
-    }
 
     if (delimited_query.back() == ";") {
         throw "Invalid Query Syntax :: Query String should not end with a semicolon.";
     }
+
+
 }
 
 
 
 void QueryTokenizer::ConvertIntoTokens() {
-    
+    tokens = vector<PqlToken>();
+    tokens.reserve(delimited_query.size());
+
+    bool isSynonym = false;
+
     for (string& element : delimited_query) {
         if (stringToTokenMap.find(element) != stringToTokenMap.end()) {
-            tokens.push_back(PqlToken(stringToTokenMap[element], element));
+            TokenType currentTokenType = stringToTokenMap[element];
+            tokens.push_back(PqlToken(currentTokenType, element));
+          
+            
         } 
         else if (checkIfSynonym(element)) {
             tokens.push_back(PqlToken(TokenType::SYNONYM, element));

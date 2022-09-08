@@ -7,7 +7,7 @@ using namespace std;
 
 class Utils {
 public:
-    static const string WHITESPACE = " \n\r\t\f\v";
+    static const string WHITESPACE;
 
     static string ltrim(string s) {
         size_t start = s.find_first_not_of(WHITESPACE);

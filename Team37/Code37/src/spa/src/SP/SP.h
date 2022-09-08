@@ -1,5 +1,3 @@
-using namespace std;
-
 #ifndef TEAM37_SP_H
 #define TEAM37_SP_H
 

@@ -8,13 +8,13 @@ using namespace std;
 #include <iostream>
 
 #include "AST/SourceCode.h"
-#include "Visitor.h"
+#include "AST/ASTVisitor/ASTVisitor.h"
 
-class ParserVisitor: public Visitor {
+class ParserVisitor: public ASTVisitor {
 public:
     // Constructor
     ParserVisitor();
-    shared_ptr<TNode> visitSourceCode(SourceCode* sourceCode);
+    void visitSourceCode(shared_ptr<SourceCode> sourceCode);
 //    void visitTokenGroup(TokenGroup tokenGroup);
 //    void visitProcedureList(ProcedureList procedureList);
 //    void visitStatementList(StatementList statementList);

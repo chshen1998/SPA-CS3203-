@@ -7,6 +7,7 @@ using namespace std;
 #include <vector>
 #include <unordered_map>
 #include <set>
+#include <list>
 
 
 /*
@@ -93,7 +94,7 @@ extern set<TokenType> validSuchThatClauses;
 
 class QPS {
 public:
-    vector<string> processQuery(string query);
+    void evaluate(string query, list<string> &results);
 };
 
 // These are placeholder methods, delete after integration with PKB

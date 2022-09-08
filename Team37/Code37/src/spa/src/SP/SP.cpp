@@ -109,7 +109,7 @@ vector<string> SP:: extractStatements(string procedure) {
     return statements;
 }
 
-shared_ptr<TNode> SP::parse(string filename) {
+shared_ptr<SourceCode> SP::parse(string filename) {
     string code = fileToString(filename);
     vector<string> procedures;
     procedures = extractProcedures(code, procedures);

@@ -49,6 +49,7 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QuerySemanticsExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
+        src/QPS/QueryValidator.h
         src/SP/ParserVisitor.h
         src/SP/SP.h
         src/SP/TokeniserVisitor.h
@@ -64,6 +65,7 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QuerySemanticsExtractor.cpp
         src/QPS/QueryEvaluator.cpp
         src/QPS/QueryTokenizer.cpp
+        src/QPS/QueryValidator.cpp
 
         src/PKB/PKB.h
         src/PKB/PKB.cpp

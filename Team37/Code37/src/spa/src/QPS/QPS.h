@@ -64,6 +64,21 @@ struct PqlToken {
     }
 };
 
+enum class ErrorType
+{
+    SYNTAX_ERROR,
+    SEMANTIC_ERROR,
+    NONE
+};
+
+struct PqlError
+{
+    ErrorType type;
+    string message;
+
+    PqlError(ErrorType type) : type(type) {};
+};
+
 /*
  * ParsedQueries are created after extracting the components from the query.
  */

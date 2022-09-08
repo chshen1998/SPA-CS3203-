@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -15,6 +16,13 @@ QueryServicer::QueryServicer(shared_ptr<Storage> storage) {
 // Retrieve all of an element
 // TEMP: Return all variables only
 // GOAL: Take in element type and return correct type
-set<string> QueryServicer::retrieveAll() {
-    return storage->getAllVar();
-}
+set<shared_ptr<TNode>> QueryServicer::retrieveAll(ElementType type) {
+	switch (type) {
+	case VARIABLE:
+		return storage->getAllVar();
+		break;
+	case CONSTANT:
+		return storage->getAllConst();
+		break;
+	}
+}	

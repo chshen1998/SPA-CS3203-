@@ -3,6 +3,7 @@
 #include <string>
 #include <set>
 #include <vector>
+#include <unordered_map>
 
 #include "QPS.h"
 
@@ -14,8 +15,8 @@ class QueryValidator {
 public:
     vector<PqlToken>::iterator next;
     vector<PqlToken>::iterator end;
-    bool hasSelectClause;
-    bool hasDeclarations;
+    unordered_map<string, TokenType> declarations;
+    bool hasSelect;
     PqlError pe;
 
     QueryValidator(vector<PqlToken> &tokens);
@@ -26,6 +27,7 @@ private:
     void validateDeclarations();
     void validateSelect();
     void validateClauses();
+    void validateRequirements();
     void updatePqlError(ErrorType type, string msg);
     bool isValidDeclarationType(TokenType type);
     bool errorFound();

@@ -10,8 +10,7 @@ using namespace std;
 QueryValidator::QueryValidator(vector<PqlToken> &tokens) {
     next = tokens.begin();
     end = tokens.end();
-    hasSelectClause = false;
-    hasDeclarations = false;
+    hasSelect = false;
     pe = PqlError(ErrorType::NONE);
 }
 
@@ -29,36 +28,41 @@ PqlError QueryValidator::ValidateQuery()
 	    validateClauses();
     }
 
+    if (!errorFound())
+    {
+	    validateRequirements();
+    }
+    
     return pe;
 }
 
 void QueryValidator::validateDeclarations()
 {
-    PqlToken curr = getNextToken();
-	while (curr.type != TokenType::END) // Change tokentype end to the correct type
+    PqlToken declarationType = getNextToken();
+	while (declarationType.type != TokenType::END) // Change tokentype end to the correct type
 	{
-        if (!isValidDeclarationType(curr.type))
+        if (!isValidDeclarationType(declarationType.type))
         {
-            updatePqlError(ErrorType::SEMANTIC_ERROR, curr.value + " is not a valid declaration type");
+            updatePqlError(ErrorType::SEMANTIC_ERROR, declarationType.value + " is not a valid declaration type");
             return;
         }
 
-        curr = getNextToken();
-        if (curr.type != TokenType::SYNONYM)
+        PqlToken synonym = getNextToken();
+        if (synonym.type != TokenType::SYNONYM)
         {
             updatePqlError(ErrorType::SEMANTIC_ERROR, "Declarations must be a synonym");
             return;
         }
 
-        curr = getNextToken();
-        if (curr.type != TokenType::SEMICOLON)
+        PqlToken semicolon = getNextToken();
+        if (semicolon.type != TokenType::SEMICOLON)
         {
             updatePqlError(ErrorType::SYNTAX_ERROR, "Declarations must be followed with a semicolon");
             return;
         }
 
-        curr = getNextToken();
-        hasDeclarations = true;
+        declarations[synonym.value] = declarationType.type;
+        declarationType = getNextToken();
 	}
     return;
 }
@@ -78,12 +82,30 @@ void QueryValidator::validateSelect()
         updatePqlError(ErrorType::SEMANTIC_ERROR, "Select must be followed with a declared synonym");
         return;
     }
+    hasSelect = true;
     return;
 }
 
 void QueryValidator::validateClauses()
 {
-	
+    PqlToken curr = getNextToken();
+
+}
+
+void QueryValidator::validateRequirements()
+{
+    if (!hasDeclarations)
+    {
+        updatePqlError(ErrorType::SEMANTIC_ERROR, "Query must have declarations");
+        return;
+    }
+
+	if (!hasSelect)
+	{
+        updatePqlError(ErrorType::SEMANTIC_ERROR, "Query must have Select clause");
+        return;
+	}
+    return;
 }
 
 void QueryValidator::updatePqlError(ErrorType type, string msg)

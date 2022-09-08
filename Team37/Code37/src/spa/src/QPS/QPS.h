@@ -76,8 +76,6 @@ struct PqlError
 {
     ErrorType type;
     string message;
-
-    PqlError(ErrorType type) : type(type) {};
 };
 
 /*

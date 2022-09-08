@@ -11,7 +11,7 @@ QueryValidator::QueryValidator(vector<PqlToken> &tokens) {
     next = tokens.begin();
     end = tokens.end();
     hasSelect = false;
-    pe = PqlError(ErrorType::NONE);
+    pe.type = ErrorType::NONE;
 }
 
 PqlError QueryValidator::ValidateQuery()
@@ -94,7 +94,7 @@ void QueryValidator::validateClauses()
 
 void QueryValidator::validateRequirements()
 {
-    if (!hasDeclarations)
+    if (declarations.empty())
     {
         updatePqlError(ErrorType::SEMANTIC_ERROR, "Query must have declarations");
         return;

@@ -74,7 +74,7 @@ shared_ptr<ReadStatement> Tokenizer:: tokenizeRead(string line, int stmtNo, shar
     int startIdx = line.find(keyword);
     int end = startIdx + keyword.length();
     string varName = line.substr(end, string::npos);
-    return make_shared<ReadStatement>(parent, stmtNo, varName);
+    return make_shared<ReadStatement>(parent, stmtNo, Utils::trim(varName));
 }
 
 shared_ptr<PrintStatement> Tokenizer:: tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
@@ -82,7 +82,7 @@ shared_ptr<PrintStatement> Tokenizer:: tokenizePrint(string line, int stmtNo, sh
     int startIdx = line.find(keyword);
     int end = startIdx + keyword.length();
     string varName = line.substr(end, string::npos);
-    return make_shared<PrintStatement>(parent, stmtNo, varName);
+    return make_shared<PrintStatement>(parent, stmtNo, Utils::trim(varName));
 }
 
 /**
@@ -98,10 +98,10 @@ vector<shared_ptr<Procedure> > Tokenizer:: tokenizeStatements(vector<shared_ptr<
             shared_ptr<Statement> stmt;
             string s = statements[i][j];
             if (isRead(s)) {
-                stmt = Tokenizer::tokenizeRead(s, j, procedure);
+                stmt = Tokenizer::tokenizeRead(s, j + 1, procedure);
             }
             if (isPrint(s)) {
-                stmt = Tokenizer::tokenizePrint(s, j, procedure);
+                stmt = Tokenizer::tokenizePrint(s, j + 1, procedure);
             }
             procedure->addStatement(stmt);
         }

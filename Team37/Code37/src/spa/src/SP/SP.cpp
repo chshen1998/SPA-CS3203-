@@ -73,7 +73,7 @@ vector<string> SP:: extractProcNames(vector<string> procedures) {
         string bracket = "{";
         int bracketId = proc.find(bracket);
         string name = proc.substr(procId, bracketId - procId);
-        names.push_back(name);
+        names.push_back(Utils::trim(name));
     }
     return names;
 }

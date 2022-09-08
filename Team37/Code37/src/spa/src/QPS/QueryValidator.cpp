@@ -17,54 +17,79 @@ QueryValidator::QueryValidator(vector<PqlToken> &tokens) {
 
 PqlError QueryValidator::ValidateQuery()
 {
-    PqlToken selectClause = validateDeclarations();
-    if (errorFound())
+    validateDeclarations();
+
+    if (!errorFound()) 
     {
-        return pe;
+        validateSelect();
     }
 
-    validateSelectClause(selectClause);
+    if (!errorFound())
+    {
+	    validateClauses();
+    }
+
+    return pe;
 }
 
-PqlToken QueryValidator::validateDeclarations()
+void QueryValidator::validateDeclarations()
 {
-    PqlToken declarationType = getNextToken();
-	while (declarationType.type != TokenType::END)
+    PqlToken curr = getNextToken();
+	while (curr.type != TokenType::END) // Change tokentype end to the correct type
 	{
-        if (!isValidDeclarationType(declarationType.type))
+        if (!isValidDeclarationType(curr.type))
         {
-            pe.type = ErrorType::SEMANTIC_ERROR;
-            pe.message = declarationType.value + " is not a valid declaration type";
-            return declarationType;
+            updatePqlError(ErrorType::SEMANTIC_ERROR, curr.value + " is not a valid declaration type");
+            return;
         }
 
-        PqlToken synonym = getNextToken();
-
-        PqlToken semicolon = getNextToken();
-        if (semicolon.type != TokenType::SEMICOLON)
+        curr = getNextToken();
+        if (curr.type != TokenType::SYNONYM)
         {
-            pe.type = ErrorType::SYNTAX_ERROR;
-            pe.message = "Every declartion must end with a semicolon";
-            return declarationType;
+            updatePqlError(ErrorType::SEMANTIC_ERROR, "Declarations must be a synonym");
+            return;
         }
 
-        declarationType = getNextToken();
+        curr = getNextToken();
+        if (curr.type != TokenType::SEMICOLON)
+        {
+            updatePqlError(ErrorType::SYNTAX_ERROR, "Declarations must be followed with a semicolon");
+            return;
+        }
+
+        curr = getNextToken();
         hasDeclarations = true;
 	}
-    return declarationType;
+    return;
 }
 
-void QueryValidator::validateSelectClause(PqlToken select)
+void QueryValidator::validateSelect()
 {
-	if (select.type != TokenType::SELECT)
+    PqlToken curr = getNextToken();
+	if (curr.type != TokenType::SELECT)
 	{
-        pe.type = ErrorType::SEMANTIC_ERROR;
-        pe.message = "Select clause must come after declarations";
+        updatePqlError(ErrorType::SEMANTIC_ERROR, "Select must come after declarations");
         return;
 	}
 
-    PqlToken synonym = getNextToken();
+    curr = getNextToken();
+    if (curr.type != TokenType::SYNONYM)
+    {
+        updatePqlError(ErrorType::SEMANTIC_ERROR, "Select must be followed with a declared synonym");
+        return;
+    }
+    return;
+}
 
+void QueryValidator::validateClauses()
+{
+	
+}
+
+void QueryValidator::updatePqlError(ErrorType type, string msg)
+{
+    pe.type = type;
+    pe.message = msg;
 }
 
 bool QueryValidator::isValidDeclarationType(TokenType type)
@@ -79,6 +104,7 @@ bool QueryValidator::errorFound()
 {
     return pe.type != ErrorType::NONE;
 }
+
 
 PqlToken QueryValidator::getNextToken()
 {

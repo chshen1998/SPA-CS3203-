@@ -23,8 +23,10 @@ public:
     PqlError ValidateQuery();
 
 private:
-    PqlToken validateDeclarations();
-    void validateSelectClause(PqlToken select);
+    void validateDeclarations();
+    void validateSelect();
+    void validateClauses();
+    void updatePqlError(ErrorType type, string msg);
     bool isValidDeclarationType(TokenType type);
     bool errorFound();
     PqlToken getNextToken();

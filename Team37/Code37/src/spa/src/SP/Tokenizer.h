@@ -17,8 +17,6 @@ class Tokenizer {
 public:
     Tokenizer();
 
-    static vector<shared_ptr<Procedure> > tokenizeProcedure(vector<string> names, vector<vector<string> > statements);
-
     static shared_ptr<ReadStatement> tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent);
 
     static shared_ptr<PrintStatement> tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent);
@@ -33,12 +31,12 @@ public:
 
     static void tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> parent);
 
-    static OperatedExpression tokenizeOperatedExpr(string line, vector<int> indexes);
-
     static void tokenizeOperatedExprByVar(string line, vector<int> indexes, string lhs, shared_ptr<TNode> parent, int lineNo);
 
-    static vector<shared_ptr<Procedure> >
+    static vector<shared_ptr<Procedure>>
     tokenizeStatements(vector<shared_ptr<Procedure>> procedures, vector<vector<string>> statements);
+
+    static vector<shared_ptr<Procedure>> tokenizeProcedure(vector<string> names, vector<vector<string>> statements);
 
     static shared_ptr<SourceCode>
     tokenize(shared_ptr<SourceCode> srcCode, vector<string> names, vector<vector<string>> statements);

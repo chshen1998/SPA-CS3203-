@@ -9,7 +9,7 @@ using namespace std;
 QuerySemanticsExtractor::QuerySemanticsExtractor(vector<PqlToken> tokens) {
     next = tokens.begin();
     end = tokens.end();
-    pq = PqlQuery();
+    pq = PqlQuery(); 
 }
 
 PqlQuery QuerySemanticsExtractor::ExtractSemantics() {

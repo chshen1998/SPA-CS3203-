@@ -19,10 +19,14 @@ public:
     QueryTokenizer(string query);
 
     vector<PqlToken> Tokenize();
+    void resetQueryString(string query);
 
 private:
     void Split();
     void ConvertIntoTokens();
 };
+
+bool checkIfSynonym(string s);
+bool checkIfInteger(string s);
 
 #endif //TEAM37_QPS_H

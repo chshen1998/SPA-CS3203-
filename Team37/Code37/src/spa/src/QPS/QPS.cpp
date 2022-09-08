@@ -69,6 +69,26 @@ set<TokenType> validSuchThatClauses = {
 };
 
 /*
+Place Holder methods that need to be defined (otherwise theres an error).
+Will be removed in the next PR once Hoa Shen's PR is merged in.
+*/
+set<string> AllVariables() {
+    return set<string>();
+}
+set<string> AllConstants() {
+    return set<string>();
+}
+
+set<string> AllProcedures() {
+    return set<string>();
+}
+
+set<string> AllStatements() {
+    return set<string>();
+}
+
+
+/*
 Hard-coded for the demo for now.
 */
 vector<PqlToken> mockTokenize() {

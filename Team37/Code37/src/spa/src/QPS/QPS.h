@@ -47,6 +47,7 @@ enum class TokenType {
     CLOSED_BRACKET,
 
     WHITESPACE,
+    DECLARATION_END,
     END
 };
 
@@ -61,6 +62,10 @@ struct PqlToken {
     PqlToken(TokenType tokenType, string tokenValue) {
         type = tokenType;
         value = tokenValue;
+    }
+
+    bool operator==(const PqlToken& other) const {
+        return (other.type == type) && (other.value == value);
     }
 };
 

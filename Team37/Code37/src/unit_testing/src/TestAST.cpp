@@ -14,9 +14,7 @@
 
 #include "catch.hpp"
 using namespace std;
-void require(bool b) {
-    REQUIRE(b);
-}
+
 
 TEST_CASE("1st Test") {
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("");
@@ -26,22 +24,23 @@ TEST_CASE("1st Test") {
     sc->addProcedure(procedure1);
     sc->addProcedure(procedure2);
 
-    require(sc->getProcedures()[0] == procedure1);
-    require(sc->getProcedures()[1] == procedure2);
+    REQUIRE(sc->getProcedures()[0] == procedure1);
+    REQUIRE(sc->getProcedures()[1] == procedure2);
     // Negative case for sanity
-    require(sc->getProcedures()[1] != procedure1);
+    REQUIRE(sc->getProcedures()[1] != procedure1);
 
-    require(procedure1->getParent() == sc);
-    require(procedure2->getParent() == sc);
-    require(sc->getParent() == nullptr);
+    REQUIRE(procedure1->getParent() == sc);
+    REQUIRE(procedure2->getParent() == sc);
+    REQUIRE(sc->getParent() == nullptr);
 
-    shared_ptr<SourceCode> sc2 = make_shared<SourceCode>("");
+    shared_ptr<SourceCode> sc2 = make_shared<SourceCode>("Filename.txt");
     procedure1->setParent(sc2);
-    require(procedure1->getParent() == sc2);
+    REQUIRE(procedure1->getParent() == sc2);
 
-    require(sc->getFileName() == "Filename.txt");
-    require(procedure1->getProcedureName() == "TestProcedure 1");
-    require(procedure2->getProcedureName() == "TestProcedure 2");
+    REQUIRE(sc->getFileName() == "");
+    REQUIRE(sc2->getFileName() == "Filename.txt");
+    REQUIRE(procedure1->getProcedureName() == "TestProcedure 1");
+    REQUIRE(procedure2->getProcedureName() == "TestProcedure 2");
 }
 
 TEST_CASE("Simple Specific Statements") {
@@ -86,12 +85,12 @@ TEST_CASE("Simple Specific Statements") {
     procedure1->addStatement(assignStmt);
 
     vector<shared_ptr<Statement>> statements = procedure1->getStatements();
-    require(statements[0] == readStmt);
-    require(statements[1] == printStmt);
-    require(statements[2] == callStmt);
-    require(statements[3] == whileStmt);
-    require(statements[4] == ifStmt);
-    require(statements[5] == assignStmt);
+    REQUIRE(statements[0] == readStmt);
+    REQUIRE(statements[1] == printStmt);
+    REQUIRE(statements[2] == callStmt);
+    REQUIRE(statements[3] == whileStmt);
+    REQUIRE(statements[4] == ifStmt);
+    REQUIRE(statements[5] == assignStmt);
 }
 
 

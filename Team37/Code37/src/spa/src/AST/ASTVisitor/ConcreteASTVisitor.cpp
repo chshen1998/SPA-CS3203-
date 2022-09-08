@@ -107,7 +107,6 @@ void ConcreteASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCondition
 void ConcreteASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCondition) {
     andCondition->getConditionalExpression1()->accept(shared_ptr<ASTVisitor>(this));
     andCondition->getConditionalExpression2()->accept(shared_ptr<ASTVisitor>(this));
-
 }
 
 void ConcreteASTVisitor::visitOrCondition(shared_ptr<OrCondition> orCondition) {

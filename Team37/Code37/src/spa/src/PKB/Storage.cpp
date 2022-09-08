@@ -10,20 +10,22 @@ Store the AST
 void Storage::storeAST(shared_ptr<TNode> AST) {
     this->AST = AST;
 
-    vector<shared_ptr<NameExpression>> TNodeVariables;
+    // We start by traversing the AST using a Concrete Visitor
     shared_ptr<ConcreteASTVisitor> visitor = make_shared<ConcreteASTVisitor>();
-
     AST->accept(visitor);
 
-    //  Storing variables
+    // After traversing we store the variables,constants and relationships
+    // Storing variables
     for (auto variable: visitor->getTNodeVariables()) {
         this->storeVar(variable);
     }
 
-    //  Storing constants
+    // Storing constants
     for (auto constant: visitor->getVisitedConstants()) {
         this->storeConst(constant);
     }
+
+    // Storing relationships
 }
 
 

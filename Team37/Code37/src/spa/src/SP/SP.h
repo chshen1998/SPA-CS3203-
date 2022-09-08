@@ -5,7 +5,7 @@ using namespace std;
 
 #include <string>
 #include <vector>
-#include <AST/TNode.h>
+#include "AST/TNode.h"
 
 class SP {
 public:
@@ -13,13 +13,13 @@ public:
 
     shared_ptr<SourceCode> processSourceCode(string filename);
 
-    string fileToString(string filename);
+    static string fileToString(string filename);
 
-    vector<string> extractProcedures(string srcCode, vector<string> procedures);
+    static vector<string> extractProcedures(string srcCode, vector<string> procedures);
 
-    vector<string> extractProcNames(vector<string> procedures);
+    static vector<string> extractProcNames(vector<string> procedures);
 
-    vector<string> extractStatements(string procedure);
+    static vector<string> extractStatements(string procedure);
 };
 
 #endif

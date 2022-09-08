@@ -6,27 +6,8 @@ using namespace std;
 #include "ParserVisitor.h"
 #include "AST/SourceCode.h"
 #include "SP.h"
-
-// =========================== Utility functions ============================
-
-const string WHITESPACE = " \n\r\t\f\v";
-
-string ltrim(string s) {
-    size_t start = s.find_first_not_of(WHITESPACE);
-    return (start == std::string::npos) ? "" : s.substr(start);
-}
-
-string rtrim(string s) {
-    size_t end = s.find_last_not_of(WHITESPACE);
-    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
-}
-
-string trim(string s) {
-    return rtrim(ltrim(s));
-}
-
-
-// =========================== Parsing functions ============================
+#include "Utils.h"
+#include "Tokenizer.h"
 
 /**
  * Converts a text file to a string for easier parsing.
@@ -113,17 +94,17 @@ vector<string> SP:: extractStatements(string procedure) {
 
     string allStatements = procedure.substr(openIdx + 1, closeIdx - openIdx - 1);
 
-    stringstream s (trim(allStatements));
+    stringstream s (Utils::trim(allStatements));
 
     while (getline(s, line, ';')) {
-        line = trim(line);
+        line = Utils::trim(line);
         statements.push_back(line);
     }
 
     return statements;
 }
 
-shared_ptr<SourceCode> SP:: processSourceCode(string filename) {
+shared_ptr<TNode> SP::parse(string filename) {
     string code = fileToString(filename);
     vector<string> procedures;
     procedures = extractProcedures(code, procedures);
@@ -135,13 +116,7 @@ shared_ptr<SourceCode> SP:: processSourceCode(string filename) {
         statementLists.push_back(stmts);
     }
 
-}
-
-shared_ptr<TNode> SP::parse(string filename) {
-    shared_ptr<ParserVisitor> parserVisitor = make_shared<ParserVisitor>();
-
-    SourceCode sourceCode = SourceCode(filename);
-
-
-//    sourceCode.accept(parserVisitor);
+    shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>(filename);
+    sourceCode = Tokenizer::tokenize(sourceCode, procNames, statementLists);
+    return sourceCode;
 }

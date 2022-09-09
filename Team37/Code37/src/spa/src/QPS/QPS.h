@@ -7,6 +7,7 @@ using namespace std;
 #include <vector>
 #include <unordered_map>
 #include <set>
+#include <list>
 
 
 /*
@@ -46,7 +47,7 @@ enum class TokenType {
     OPEN_BRACKET,
     CLOSED_BRACKET,
 
-    WHITESPACE,
+    EMPTY,
     END
 };
 
@@ -65,14 +66,27 @@ struct PqlToken {
 };
 
 /*
+ * PatternClause has 2 synonyms, the left synonym appears on the LHS of the assignment while the right synonym
+ * appears on the RHS of the assignment.
+ *
+ * These synonyms must be variable type.
+ */
+struct Clause
+{
+    string left;
+    string right;
+};
+
+/*
  * ParsedQueries are created after extracting the components from the query.
  */
 struct PqlQuery {
     unordered_map<string, TokenType> declarations;
     string select;
-    string pattern;
-    string suchThatClause;
+    Clause patternClause;
+    Clause suchThatClause;
 };
+
 
 extern unordered_map<string, TokenType> stringToTokenMap;
 extern set<TokenType> validDeclarations;
@@ -80,14 +94,10 @@ extern set<TokenType> validSuchThatClauses;
 
 class QPS {
 public:
-    string processQuery(string query);
+    void evaluate(string query, list<string> &results);
 };
 
 // These are placeholder methods, delete after integration with PKB
-set<string> AllVariables();
-set<string> AllConstants();
-set<string> AllProcedures();
-set<string> AllStatements();
 vector<PqlToken> mockTokenize();
 
 #endif //TEAM37_QPS_H

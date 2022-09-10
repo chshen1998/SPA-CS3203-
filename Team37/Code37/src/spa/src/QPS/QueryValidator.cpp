@@ -44,7 +44,7 @@ void QueryValidator::validateDeclarations()
         PqlToken synonym = getNextToken();
         PqlToken semicolon = getNextToken();
 
-        pe = validator.validate(declarationType, getNextToken(), getNextToken());
+        pe = validator.validate(declarationType, synonym, semicolon);
         if (errorFound()) {
             return;
         }
@@ -57,12 +57,10 @@ void QueryValidator::validateDeclarations()
 void QueryValidator::validateSelect()
 {
     SelectValidator validator = SelectValidator(declarations);
-    pe = validator.validate(getNextToken(), getNextToken());
-    if (errorFound()) {
-        return;
-    }
+    PqlToken select = getNextToken();
+    PqlToken synonym = getNextToken();
 
-    hasSelect = true;
+    pe = validator.validateParameters(select, synonym);
 }
 
 void QueryValidator::validateClauses()
@@ -124,9 +122,9 @@ void QueryValidator::validatePattern()
 void QueryValidator::validateSuchThat(PqlToken such)
 {
     PqlToken that = getNextToken();
-    ClauseValidator validator = createClauseValidator(getNextToken().type);
+    unique_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
 
-    pe = validator.validateSuchThat(such, that);
+    pe = validator->validateSuchThat(such, that);
     if (errorFound()) { return; }
 
     PqlToken open = getNextToken();
@@ -134,8 +132,8 @@ void QueryValidator::validateSuchThat(PqlToken such)
     PqlToken comma = getNextToken();
     PqlToken right = getNextToken();
     PqlToken close = getNextToken();
-    pe = validator.validateBrackets(open, comma, close);
-    pe = validator.validateParameters(left, right);
+    pe = validator->validateBrackets(open, comma, close);
+    pe = validator->validateParameters(left, right);
 }
 
 
@@ -145,10 +143,10 @@ bool QueryValidator::errorFound()
 }
 
 // TODO Implement Validators for such that clauses and complete this function
-ClauseValidator QueryValidator::createClauseValidator(TokenType type)
+unique_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
 {
     if (type == TokenType::USES) {
-        return PatternValidator(declarations);
+        return make_unique<PatternValidator>(declarations);
     }
 }
 

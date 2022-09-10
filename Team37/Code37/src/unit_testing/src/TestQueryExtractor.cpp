@@ -1,7 +1,6 @@
 #include "QPS/QueryExtractor.h"
 #include "QPS/QPS.h"
-#include "utils/TestQueryExtractorUtils.h"
-#include "utils/TestQueryExtractorUtils.cpp"
+#include "TestQueryExtractorUtils.h"
 
 #include <vector>
 #include <unordered_map>

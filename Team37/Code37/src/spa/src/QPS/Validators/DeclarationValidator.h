@@ -14,7 +14,7 @@
 #define TEAM37_DECLARATIONVALIDATOR_H
 
 
-class DeclarationValidator : Validator {
+class DeclarationValidator : public Validator {
 public:
 	DeclarationValidator();
 	PqlError validate(PqlToken declarationType, PqlToken synonym, PqlToken semicolon);

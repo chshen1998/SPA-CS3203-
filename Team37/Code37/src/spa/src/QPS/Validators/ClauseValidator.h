@@ -14,10 +14,10 @@ class ClauseValidator
 public:
 	PqlError validateSuchThat(PqlToken such, PqlToken that);
 	PqlError validateBrackets(PqlToken open, PqlToken comma, PqlToken close);
-	virtual PqlError validateParameters(PqlToken left, PqlToken right);
+	virtual PqlError validateParameters(PqlToken left, PqlToken right) = 0;
 
 protected:
-	ClauseValidator(unordered_map<string, TokenType> declarations);
+	ClauseValidator(unordered_map<string, TokenType> declarationsMap);
 
 	bool isDeclared(PqlToken synonym);
 	bool isTokenType(PqlToken synonym, TokenType type);

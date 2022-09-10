@@ -18,7 +18,6 @@ public:
     vector<PqlToken>::iterator next;
     vector<PqlToken>::iterator end;
     unordered_map<string, TokenType> declarations;
-    bool hasSelect;
     PqlError pe;
 
     QueryValidator(vector<PqlToken> &tokens);
@@ -33,7 +32,7 @@ private:
     void validateSuchThat(PqlToken such);
     bool errorFound();
 
-    ClauseValidator createClauseValidator(TokenType type);
+    unique_ptr<ClauseValidator> createClauseValidator(TokenType type);
     PqlToken getNextToken();
 
 };

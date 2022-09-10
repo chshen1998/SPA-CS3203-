@@ -47,13 +47,14 @@ TEST_CASE("Test declartions") {
 	REQUIRE(isSameMap(ans, results.declarations));
 }
 
-TEST_CASE("Test Such That clauses") {
+TEST_CASE("Test Select clauses") {
 	QueryExtractor sut = QueryExtractor(basic_tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(results.select == "v");
 }
 
+/*
 TEST_CASE("Test Pattern clause")
 {
 	Clause ans;
@@ -161,3 +162,5 @@ TEST_CASE("Test Such That then Pattern Clause")
 	REQUIRE(isSameClause(pattern, results.patternClause));
 	REQUIRE(isSameClause(follows, results.suchThatClause));
 }
+
+*/

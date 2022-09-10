@@ -47,6 +47,9 @@ add_library(spa ${srcs} ${headers}
 
         "src/QPS/Validators/ClauseValidator.h"
         "src/QPS/Validators/DeclarationValidator.h"
+        "src/QPS/Validators/PatternValidator.h"
+        "src/QPS/Validators/SelectValidator.h"
+        "src/QPS/Validators/Validator.h"
         src/QPS/QPS.h
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
@@ -65,6 +68,9 @@ add_library(spa ${srcs} ${headers}
 
         "src/QPS/Validators/ClauseValidator.cpp"
         "src/QPS/Validators/DeclarationValidator.cpp"
+        "src/QPS/Validators/PatternValidator.cpp"
+        "src/QPS/Validators/SelectValidator.cpp"
+        "src/QPS/Validators/Validator.cpp"
         src/QPS/QPS.cpp
         src/QPS/QueryExtractor.cpp
         src/QPS/QueryEvaluator.cpp
@@ -77,7 +83,7 @@ add_library(spa ${srcs} ${headers}
         src/PKB/QueryServicer.cpp
         src/PKB/Storage.h
         src/PKB/Storage.cpp
-        src/PKB/ElementType.h "src/QPS/Validators/SelectValidator.cpp" "src/QPS/Validators/SelectValidator.h"  "src/QPS/Validators/PatternValidator.cpp" "src/QPS/Validators/PatternValidator.h" "src/QPS/Validators/Validator.h" "src/QPS/Validators/Validator.cpp")
+        src/PKB/ElementType.h)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

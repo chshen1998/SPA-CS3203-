@@ -6,9 +6,9 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QPS.h"
 
-QueryExtractor::QueryExtractor(vector<PqlToken> tokens) {
-    next = tokens.begin();
-    last = tokens.end();
+QueryExtractor::QueryExtractor(vector<PqlToken> &tokens) {
+    next = begin(tokens);
+    last = end(tokens);
     pq = PqlQuery();
 }
 
@@ -20,38 +20,20 @@ PqlQuery QueryExtractor::ExtractSemantics() {
 }
 
 void QueryExtractor::ExtractDeclarations() {
-    while (true) {
-        const PqlToken declaration = getNextToken();
-        if (declaration.type == TokenType::EMPTY) {
-            // Reached end of declarations
-            return;
-        }
-        const PqlToken synonym = getNextToken();
-        const PqlToken semicolon = getNextToken();
+    PqlToken declaration = getNextToken();
+    while (declaration.type != TokenType::DECLARATION_END) {
+        PqlToken synonym = getNextToken();
+        getNextToken();
 
         pq.declarations[synonym.value] = declaration.type;
+        declaration = getNextToken();
     }
-
 }
 
 void QueryExtractor::ExtractSelect() {
-    const PqlToken selectClause = getNextToken();
-    if (selectClause.type != TokenType::SELECT) {
-        throw "Error: No select clause";
-    }
+    getNextToken();
     const PqlToken synonym = getNextToken();
-
-    for (const auto& [key, value] : pq.declarations) {
-        if (key == synonym.value) {
-            pq.select = synonym.value;
-            break;
-        }
-    }
-
-    if (pq.select.empty())
-    {
-        throw "Error: Invalid select clause parameter";
-    }
+    pq.select = synonym.value;
 }
 
 void QueryExtractor::ExtractClauses() {
@@ -62,60 +44,24 @@ void QueryExtractor::ExtractClauses() {
 
     if (nextToken.type == TokenType::PATTERN) {
         ExtractPatternClause();
-        ExtractSuchThatClause();
+
+        if (nextToken.type != TokenType::END) {
+			ExtractSuchThatClause();
+        }
+        
     } else {
         ExtractSuchThatClause();
-        ExtractPatternClause();
+
+        if (nextToken.type != TokenType::END) {
+            ExtractPatternClause();
+        }
     }
 }
 
 void QueryExtractor::ExtractPatternClause() {
-    PqlToken patternSynonym = getNextToken();
-    while (patternSynonym.type != TokenType::SYNONYM) {
-        if (patternSynonym.type == TokenType::END)
-        {
-            return;
-        }
-        patternSynonym = getNextToken();
-    }
-    const PqlToken openBracket = getNextToken();
-    const PqlToken synonym1 = getNextToken();
-
-    if (synonym1.type != TokenType::VARIABLE)
-    {
-        throw "Error: Pattern clause parameters must be variable type";
-    }
-    pq.patternClause.left = synonym1.value;
-
-    const PqlToken comma = getNextToken();
-    const PqlToken synonym2 = getNextToken();
-
-    if (synonym1.type != TokenType::VARIABLE)
-    {
-        throw "Error: Pattern clause parameters must be variable type";
-    }
-    pq.patternClause.right = synonym2.value;
-    const PqlToken closedBracket = getNextToken();
 }
 
 void QueryExtractor::ExtractSuchThatClause() {
-    PqlToken suchThatClause = getNextToken();
-    while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
-        if (suchThatClause.type == TokenType::END)
-        {
-            return;
-        }
-        suchThatClause = getNextToken();
-    }
-    const PqlToken openParenthesis = getNextToken();
-    const PqlToken synonym1 = getNextToken();
-    pq.suchThatClause.left = synonym1.value;
-
-    const PqlToken comma = getNextToken();
-    const PqlToken synonym2 = getNextToken();
-    pq.suchThatClause.right = synonym2.value;
-
-    const PqlToken closeParenthesis = getNextToken();
 }
 
 PqlToken QueryExtractor::getNextToken() {

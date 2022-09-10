@@ -21,6 +21,14 @@ public:
     string getVarName();
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
+
+    bool operator== (const NameExpression& other) const {
+        return varName == other.varName;
+    };
+
+    bool operator< (const NameExpression& other) const {
+        return varName > other.varName;
+    };
 };
 
 #endif

@@ -36,6 +36,14 @@ public:
     string getFileName();
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
+
+    bool operator == (const SourceCode& other) {
+        return procedureLst == other.procedureLst && filename == other.filename;
+    };
+
+    bool operator < (const SourceCode& other) {
+        return filename < other.filename;
+    };
 };
 
 #endif

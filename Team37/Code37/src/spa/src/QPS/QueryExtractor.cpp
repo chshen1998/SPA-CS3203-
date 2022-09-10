@@ -6,7 +6,7 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QPS.h"
 
-QueryExtractor::QueryExtractor(vector<PqlToken> &tokens) {
+QueryExtractor::QueryExtractor(vector<PqlToken> tokens) {
     next = tokens.begin();
     last = tokens.end();
     pq = PqlQuery();

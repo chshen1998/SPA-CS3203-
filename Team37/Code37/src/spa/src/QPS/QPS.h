@@ -48,6 +48,7 @@ enum class TokenType {
     CLOSED_BRACKET,
 
     EMPTY,
+    DECLARATION_END,
     END
 };
 
@@ -104,6 +105,7 @@ struct PqlQuery {
 extern unordered_map<string, TokenType> stringToTokenMap;
 extern set<TokenType> validDeclarations;
 extern set<TokenType> validSuchThatClauses;
+extern set<TokenType> validPatternParameters;
 
 class QPS {
 public:

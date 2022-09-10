@@ -70,6 +70,16 @@ set<TokenType> validSuchThatClauses = {
 };
 
 /*
+ * Set of valid such that clauses
+ */
+set<TokenType> validPatternParameters = {
+        TokenType::SYNONYM,
+        TokenType::CONSTANT,
+        TokenType::STRING,
+        TokenType::NUMBER
+};
+
+/*
 Hard-coded for the demo for now.
 */
 vector<PqlToken> mockTokenize() {

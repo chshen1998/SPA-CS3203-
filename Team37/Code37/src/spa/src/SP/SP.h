@@ -9,7 +9,7 @@ using namespace std;
 
 class SP {
 public:
-    static shared_ptr<TNode> parse(string filename);
+    static shared_ptr<SourceCode> parse(string filename);
 };
 
 #endif

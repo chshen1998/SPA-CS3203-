@@ -1,11 +1,13 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <set>
 #include <vector>
 #include <unordered_map>
 
 #include "QPS.h"
+#include "Validators/ClauseValidator.h"
 
 #ifndef TEAM37_QUERYVALIDATOR_H
 #define TEAM37_QUERYVALIDATOR_H
@@ -27,10 +29,11 @@ private:
     void validateDeclarations();
     void validateSelect();
     void validateClauses();
-    void validateRequirements();
-    void updatePqlError(ErrorType type, string msg);
-    bool isValidDeclarationType(TokenType type);
+    void validatePattern();
+    void validateSuchThat(PqlToken such);
     bool errorFound();
+
+    ClauseValidator createClauseValidator(TokenType type);
     PqlToken getNextToken();
 
 };

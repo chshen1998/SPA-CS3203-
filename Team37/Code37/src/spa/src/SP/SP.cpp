@@ -7,7 +7,7 @@ using namespace std;
 #include "SP.h"
 
 
-shared_ptr<TNode> SP::parse(string filename) {
+shared_ptr<SourceCode> SP::parse(string filename) {
     shared_ptr<ParserVisitor> parserVisitor = make_shared<ParserVisitor>();
 
     SourceCode sourceCode = SourceCode(filename);

@@ -144,6 +144,7 @@ bool QueryValidator::errorFound()
     return pe.type != ErrorType::NONE;
 }
 
+// TODO Implement Validators for such that clauses and complete this function
 ClauseValidator QueryValidator::createClauseValidator(TokenType type)
 {
     if (type == TokenType::USES) {

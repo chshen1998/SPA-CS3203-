@@ -11,15 +11,15 @@ using namespace std;
 
 /**
  * Converts a text file to a string for easier parsing.
- * @param filename filename of sourcecode.
+ * @param filepath filepath of sourcecode.
  * @return text file as a string.
  */
-string SP:: fileToString(string filename) {
+string SP:: fileToString(string filepath) {
     string s;
     string sTotal;
 
     ifstream in;
-    in.open(filename);
+    in.open(filepath);
 
     if (in.is_open()) {
         while(!in.eof()) {

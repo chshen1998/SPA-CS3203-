@@ -7,9 +7,7 @@
 
 class SP {
 public:
-    static shared_ptr<SourceCode> parse(string filename);
-
-    shared_ptr<SourceCode> processSourceCode(string filename);
+    static shared_ptr<SourceCode> parse(string filepath);
 
     static string fileToString(string filename);
 

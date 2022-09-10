@@ -19,5 +19,5 @@ string SourceCode::getFileName() {
 }
 
 void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
-    visitor->visitSourceCode(shared_from_this()); //TODO parservisitor takes in *sourcecode
+    visitor->visitSourceCode(shared_ptr<SourceCode>());
 }

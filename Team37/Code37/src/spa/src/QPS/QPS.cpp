@@ -86,7 +86,7 @@ vector<PqlToken> mockTokenize() {
 
 
 void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
-    servicer = s;
+    QPS::servicer = s;
 }
 
 /*

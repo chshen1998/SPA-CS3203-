@@ -27,6 +27,7 @@ TestWrapper::~TestWrapper() {
 void TestWrapper::parse(string filename) {
 	shared_ptr<TNode> AST = SP::parse(filename);
 	knowledgeBase->buildFromAst(AST);
+	queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
 }
 
 // method to evaluating a query

@@ -9,6 +9,8 @@ using namespace std;
 #include <set>
 #include <list>
 
+#include "PKB/QueryServicer.h"
+
 
 /*
  * TokenTypes are used to tokenize query string, each word in the query string should be able to fit in one of the

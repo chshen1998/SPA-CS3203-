@@ -67,3 +67,26 @@ TEST_CASE("Print Statements") {
 
     require(storage->getAllVar().size() == 4);
 }
+
+TEST_CASE("Constant Expression") {
+    shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
+    shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
+    shared_ptr<Storage> storage = make_shared<Storage>();
+    shared_ptr<ConditionalExpression> expr1 = make_shared<RelationalExpression>(
+            nullptr,
+            RelationalOperator::EQUALS,
+            make_shared<ConstantExpression>(nullptr, 10),
+            make_shared<ConstantExpression>(nullptr, 11));
+    shared_ptr<Statement> whileStmt =
+            make_shared<WhileStatement>(procedure, 1, expr1);
+
+    procedure->addStatement(whileStmt);
+
+
+    sc->addProcedure(procedure);
+
+    // We start by traversing the AST
+    storage->storeAST(sc);
+
+    require(storage->getAllConst().size() == 2);
+}

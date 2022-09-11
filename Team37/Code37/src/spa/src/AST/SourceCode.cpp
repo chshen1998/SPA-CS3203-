@@ -4,7 +4,7 @@
 #include "SourceCode.h"
 #include "Procedure.h"
 
-SourceCode::SourceCode(string filename) : TNode(nullptr), filename(filename) { }
+SourceCode::SourceCode(string filename) : TNode(nullptr), filename(filename) {}
 
 void SourceCode::addProcedure(shared_ptr<Procedure> procedure) {
     this->procedureLst.push_back(procedure);
@@ -19,5 +19,5 @@ string SourceCode::getFileName() {
 }
 
 void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
-    visitor->visitSourceCode(shared_ptr<SourceCode>());
+    visitor->visitSourceCode(shared_from_this());
 }

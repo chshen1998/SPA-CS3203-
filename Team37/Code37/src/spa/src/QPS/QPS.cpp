@@ -85,11 +85,15 @@ vector<PqlToken> mockTokenize() {
 }
 
 
+void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
+    servicer = s;
+}
+
 /*
- * Takes in query string input from user, parses the query string then return result from PKB
- */
+    * Takes in query string input from user, parses the query string then return result from PKB
+    */
 void QPS::evaluate(string query, list<string>& results) {
-    
+
     /* Commented out as we are using mockTokens for now
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
@@ -103,4 +107,3 @@ void QPS::evaluate(string query, list<string>& results) {
 
     // string output = evaluator.convertToString(result);
 }
-

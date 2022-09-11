@@ -93,7 +93,10 @@ extern set<TokenType> validDeclarations;
 extern set<TokenType> validSuchThatClauses;
 
 class QPS {
+    shared_ptr<QueryServicer> servicer;
+
 public:
+    void setQueryServicer(shared_ptr<QueryServicer> s);
     void evaluate(string query, list<string> &results);
 };
 

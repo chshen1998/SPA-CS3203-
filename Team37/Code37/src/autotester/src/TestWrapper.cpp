@@ -31,5 +31,6 @@ void TestWrapper::parse(string filename) {
 
 // method to evaluating a query
 void TestWrapper::evaluate(string query, list<string>& results){
+
 	// results = queryProcessor->processQuery(query);
 }

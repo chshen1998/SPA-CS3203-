@@ -5,11 +5,13 @@ using namespace std;
 
 #include "QueryEvaluator.h"
 #include "QPS.h"
-#include "../PKB/QueryServicer.h"
+#include "../PKB/PKB.h"
+#include "../PKB/elementType.h"
 
 
 QueryEvaluator::QueryEvaluator(PqlQuery pqlQuery) {
     pq = pqlQuery;
+
 }
 
 set<string> QueryEvaluator::CallPKB() {
@@ -20,9 +22,11 @@ set<string> QueryEvaluator::CallPKB() {
 void QueryEvaluator::QuerySelect() {
     const string selectSynonym = pq.select;
     const TokenType type = pq.declarations[selectSynonym];
+
+    shared_ptr<QueryServicer> queryService = PKB::getQueryServicer();
+
     if (type == TokenType::VARIABLE) {
-        // TODO
-//    	selectResult = QueryServicer::retrieveAll();
+        selectResult = QueryServicer::retrieveAll();
     } else if (type == TokenType::CONSTANT) {
 //        selectResult = AllConstants();
     } else if (type == TokenType::STATEMENT) {

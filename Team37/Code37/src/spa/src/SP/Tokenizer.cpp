@@ -6,6 +6,7 @@ using namespace std;
 
 #include "Tokenizer.h"
 #include "Utils.h"
+#include "Keywords.h"
 
 // ================================== Utility functions ============================================
 
@@ -57,20 +58,20 @@ string removeParentheses(string line) {
 }
 
 bool isRead(string line) {
-    string keyword = "read";
+    string keyword = Keywords::READ;
     int startIdx = line.find(keyword);
     return (startIdx != -1);
 }
 
 bool isPrint(string line) {
-    string keyword = "print";
+    string keyword = Keywords::PRINT;
     int startIdx = line.find(keyword);
     return (startIdx != -1);
 }
 
 // ================================== Tokenizing functions ============================================
 shared_ptr<ReadStatement> Tokenizer:: tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
-    string keyword = "read";
+    string keyword = Keywords::READ;
     int startIdx = line.find(keyword);
     int end = startIdx + keyword.length();
     string varName = line.substr(end, string::npos);
@@ -78,7 +79,7 @@ shared_ptr<ReadStatement> Tokenizer:: tokenizeRead(string line, int stmtNo, shar
 }
 
 shared_ptr<PrintStatement> Tokenizer:: tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
-    string keyword = "print";
+    string keyword = Keywords::PRINT;
     int startIdx = line.find(keyword);
     int end = startIdx + keyword.length();
     string varName = line.substr(end, string::npos);

@@ -74,7 +74,9 @@ add_library(spa ${srcs} ${headers}
         src/PKB/QueryServicer.cpp
         src/PKB/Storage.h
         src/PKB/Storage.cpp
-        src/PKB/ElementType.h)
+        src/PKB/ElementType.h
+        src/SP/Keywords.cpp
+        src/SP/Keywords.h)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

@@ -8,6 +8,7 @@ using namespace std;
 #include "SP.h"
 #include "Utils.h"
 #include "Tokenizer.h"
+#include "Keywords.h"
 
 /**
  * Converts a text file to a string for easier parsing.
@@ -41,7 +42,7 @@ string SP:: fileToString(string filepath) {
  * @return vector containing procedures as strings
  */
 vector<string> SP:: extractProcedures(string srcCode, vector<string> procedures) {
-    string keyword = "procedure";
+    string keyword = Keywords:: PROCEDURE;
 
     int startIdx = srcCode.find(keyword);
     if (startIdx != -1) {
@@ -69,7 +70,7 @@ vector<string> SP:: extractProcedures(string srcCode, vector<string> procedures)
  * @return names of each procedure.
  */
 vector<string> SP:: extractProcNames(vector<string> procedures) {
-    string keyword = "procedure";
+    string keyword = Keywords::PROCEDURE;
     vector<string> names;
 
     for (auto proc : procedures) {
@@ -90,8 +91,8 @@ vector<string> SP:: extractProcNames(vector<string> procedures) {
  */
 vector<string> SP:: extractStatements(string procedure) {
     vector<string> statements;
-    string openBracket = "{";
-    string closeBracket = "}";
+    string openBracket = Keywords::OPEN_EGYPTIAN;
+    string closeBracket = Keywords::CLOSE_EGYPTIAN;
     string line;
 
     int openIdx = procedure.find(openBracket);

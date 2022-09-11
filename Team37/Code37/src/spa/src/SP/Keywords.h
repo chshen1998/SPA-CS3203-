@@ -12,7 +12,6 @@ public:
     static const string CLOSE_EGYPTIAN;
     static const string PRINT;
     static const string READ;
-    static const string OPERATORS[];
 
 };
 

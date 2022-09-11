@@ -10,11 +10,6 @@ using namespace std;
 #include "Tokenizer.h"
 #include "Keywords.h"
 
-/**
- * Converts a text file to a string for easier parsing.
- * @param filepath filepath of sourcecode.
- * @return text file as a string.
- */
 string SP:: fileToString(string filepath) {
     string s;
     string sTotal;
@@ -35,12 +30,6 @@ string SP:: fileToString(string filepath) {
     return sTotal;
 }
 
-/**
- * Extracts each procedure as a string.
- * @param srcCode source code as a string
- * @param procedures vector to store procedures as strings.
- * @return vector containing procedures as strings
- */
 vector<string> SP:: extractProcedures(string srcCode, vector<string> procedures) {
     string keyword = Keywords:: PROCEDURE;
 
@@ -64,11 +53,6 @@ vector<string> SP:: extractProcedures(string srcCode, vector<string> procedures)
     return procedures;
 }
 
-/**
- * Extracts the names of each procedure stored in a vector.
- * @param procedures Vector storing the procedures.
- * @return names of each procedure.
- */
 vector<string> SP:: extractProcNames(vector<string> procedures) {
     string keyword = Keywords::PROCEDURE;
     vector<string> names;
@@ -84,11 +68,6 @@ vector<string> SP:: extractProcNames(vector<string> procedures) {
     return names;
 }
 
-/**
- * Extracts statements of a procedure as strings.
- * @param procedure
- * @return statements as strings.
- */
 vector<string> SP:: extractStatements(string procedure) {
     vector<string> statements;
     string openBracket = Keywords::OPEN_EGYPTIAN;

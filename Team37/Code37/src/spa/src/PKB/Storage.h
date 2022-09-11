@@ -17,7 +17,7 @@ using namespace std;
 
 class Storage : public enable_shared_from_this<Storage> {
 private:
-    shared_ptr<TNode> AST;
+    shared_ptr<SourceCode> AST;
     set<shared_ptr<TNode>> variables;
     set<shared_ptr<TNode>> constants;
 public:
@@ -25,9 +25,9 @@ public:
     Storage();
 
     // AST
-    void storeAST(shared_ptr<TNode>);
+    void storeAST(shared_ptr<SourceCode>);
 
-    shared_ptr<TNode> retrieveAST();
+    shared_ptr<SourceCode> retrieveAST();
 
     // Variables
     void storeVar(shared_ptr<NameExpression>);

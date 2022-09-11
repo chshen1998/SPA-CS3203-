@@ -12,6 +12,7 @@ using namespace std;
 #include "../AST/SourceCode.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "../AST/Statement/Statement.h"
 
 
 class Storage {
@@ -19,6 +20,7 @@ private:
 	shared_ptr<SourceCode> AST;
 	set<NameExpression> variables;
 	set<ConstantExpression> constants;
+	set<shared_ptr<Statement>> statements;
 public:
 	// Constructor
 	Storage();
@@ -34,4 +36,8 @@ public:
 	// Constants
 	void storeConst(ConstantExpression);
 	set<ConstantExpression> getAllConst();
+
+	// Statements
+	void storeStmt(shared_ptr<Statement>);
+	set<shared_ptr<Statement>> getAllStmt();
 };

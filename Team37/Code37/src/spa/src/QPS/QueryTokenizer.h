@@ -10,6 +10,15 @@ using namespace std;
 #include <unordered_map>
 #include <set>
 
+enum class TokenizeState {
+    FINDING_KEYWORDS,
+    SELECT,
+    SUCH_THAT,
+    PATTERN
+};
+
+
+
 class QueryTokenizer {
 public:
     vector<PqlToken> tokens;
@@ -24,9 +33,16 @@ public:
 private:
     void Split();
     void ConvertIntoTokens();
+    int TokenizeBeforeSelect(int i);
+    void TokenizeAfterSelect(int i);
 };
 
+TokenType checkTokenType(string s);
 bool checkIfSynonym(string s);
 bool checkIfInteger(string s);
+bool checkIfStmtRef(string s);
+bool checkIfEntRef(string s);
+bool checkIfDesignEntity(string s);
+
 
 #endif //TEAM37_QPS_H

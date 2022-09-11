@@ -16,19 +16,78 @@ TEST_CASE("Valid Cases") {
         inputQuery = "variable v; Select v";
         q.resetQueryString(inputQuery);
         
-        vector<string> expectedDelimited = { "variable", "v", ";", "Select", "v"};
+        vector<string> expectedDelimited = { "variable", "v", ";", "Select", "v" };
         vector<PqlToken> expectedTokens = {
             PqlToken(TokenType::VARIABLE, "variable"),
             PqlToken(TokenType::SYNONYM, "v"),
             PqlToken(TokenType::SEMICOLON, ";"),
+            PqlToken(TokenType::DECLARATION_END, ""),
             PqlToken(TokenType::SELECT, "Select"),
-            PqlToken(TokenType::SYNONYM, "v")
+            PqlToken(TokenType::SYNONYM, "v"),
+            PqlToken(TokenType::END, "")
         };
       
         REQUIRE_NOTHROW(q.Tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
+
+
+    SECTION("One Such That Clause") {
+        inputQuery = "variable v;\nSelect v such that Uses(14, v)";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "variable", "v", ";", "Select", "v", "such", "that", "Uses", "(", "14", ",", "v", ")" };
+        vector<PqlToken> expectedTokens = {
+            PqlToken(TokenType::STATEMENT, "variable"),
+            PqlToken(TokenType::SYNONYM, "v"),
+            PqlToken(TokenType::SEMICOLON, ";"),
+            PqlToken(TokenType::DECLARATION_END, ""),
+            PqlToken(TokenType::SELECT, "Select"),
+            PqlToken(TokenType::SYNONYM, "v"),
+            PqlToken(TokenType::SUCH, "such"),
+            PqlToken(TokenType::THAT, "that"),
+            PqlToken(TokenType::FOLLOWS_A, "Uses"),
+            PqlToken(TokenType::OPEN_BRACKET, "("),
+            PqlToken(TokenType::STATEMENT_NUM, "14"),
+            PqlToken(TokenType::COMMA, ","),
+            PqlToken(TokenType::FOLLOWS_A, "v"),
+            PqlToken(TokenType::CLOSED_BRACKET, ")"),
+            PqlToken(TokenType::END, "")
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
+
+    /*
+    SECTION("One Such That Clause") {
+        inputQuery = "stmt s; \n Select s such that Follows* (6, s)";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "stmt", "s", ";", "Select", "s", "such", "that", "Follows*", "(", "6", ",", "s", ")"};
+        vector<PqlToken> expectedTokens = {
+            PqlToken(TokenType::STATEMENT, "stmt"),
+            PqlToken(TokenType::SYNONYM, "s"),
+            PqlToken(TokenType::SEMICOLON, ";"),
+            PqlToken(TokenType::DECLARATION_END, ""),
+            PqlToken(TokenType::SELECT, "Select"),
+            PqlToken(TokenType::SYNONYM, "s"),
+            PqlToken(TokenType::SUCH, "such"),
+            PqlToken(TokenType::THAT, "that"),
+            PqlToken(TokenType::FOLLOWS_A, "Follows*"),
+            PqlToken(TokenType::OPEN_BRACKET, "such"),
+            PqlToken(TokenType::THAT, "that"),
+            PqlToken(TokenType::FOLLOWS_A, "Follows*"),
+            PqlToken(TokenType::END, "")
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
+    */
 }
 
 

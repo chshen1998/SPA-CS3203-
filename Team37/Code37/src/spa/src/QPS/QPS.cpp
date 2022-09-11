@@ -90,6 +90,45 @@ set<string> AllStatements() {
     return set<string>();
 }
 
+ostream& operator<<(ostream& os, PqlToken& token) {
+    string typeString = "";
+    switch (token.type) {
+    case(TokenType::VARIABLE): typeString = "variable";
+    case(TokenType::CONSTANT): typeString = "constant";
+    case(TokenType::ASSIGN): typeString = "assign";
+    case(TokenType::PROCEDURE): typeString = "procedure";
+    case(TokenType::STATEMENT): typeString = "statement";
+    case(TokenType::WHILE): typeString = "while";
+    case(TokenType::IF): typeString = "if";
+    case(TokenType::ELSE): typeString = "else";
+    case(TokenType::PRINT): typeString = "print";
+    case(TokenType::CALL): typeString = "call";
+    case(TokenType::SYNONYM): typeString = "synonym";
+    case(TokenType::NUMBER): typeString = "number";
+    case(TokenType::STRING): typeString = "string";
+    case(TokenType::SELECT): typeString = "select";
+    case(TokenType::PATTERN): typeString = "pattern";
+    case(TokenType::USES): typeString = "uses";
+    case(TokenType::MODIFIES): typeString = "modifies";
+    case(TokenType::PARENT): typeString = "parent";
+    case(TokenType::PARENT_A): typeString = "parent_a";
+    case(TokenType::FOLLOWS): typeString = "follows";
+    case(TokenType::FOLLOWS_A): typeString = "follows_a";
+    case(TokenType::SUCH): typeString = "such";
+    case(TokenType::THAT): typeString = "that";
+    case(TokenType::SEMICOLON): typeString = "semicolon";
+    case(TokenType::COMMA): typeString = "comma";
+    case(TokenType::OPEN_BRACKET): typeString = "open_bracket";
+    case(TokenType::CLOSED_BRACKET): typeString = "closed_bracket";
+    case(TokenType::EMPTY): typeString = "empty";
+    case(TokenType::DECLARATION_END): typeString = "declaration_end";
+    case(TokenType::END): typeString = "end";
+    default: typeString = "Unknown";
+    }
+
+    os << "[Token: " << typeString << ", Value: " << token.value << "]";
+    return os;
+}
 
 /*
 Hard-coded for the demo for now.

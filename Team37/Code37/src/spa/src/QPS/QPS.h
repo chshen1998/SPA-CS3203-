@@ -8,6 +8,7 @@ using namespace std;
 #include <unordered_map>
 #include <set>
 #include <list>
+#include <iostream>
 
 
 /*
@@ -15,6 +16,8 @@ using namespace std;
  * existing token types
  */
 enum class TokenType {
+    UNKNOWN, 
+
     VARIABLE,
     CONSTANT,
     ASSIGN,
@@ -27,10 +30,13 @@ enum class TokenType {
     PRINT,
     CALL,
 
+    BOOLEAN,
     SYNONYM,
     NUMBER,
-    STRING,
+    STRING, // Anything with a inverted commas ""
     STATEMENT_NUM,
+    WILDCARD,
+    WILDCARD_STRING,
 
     SELECT,
     PATTERN,
@@ -71,6 +77,10 @@ struct PqlToken {
         return (other.type == type) && (other.value == value);
     }
 };
+
+// Created for debugging purposes
+ostream& operator<<(ostream& os, PqlToken& token);
+
 
 /*
  * PatternClause has 2 synonyms, the left synonym appears on the LHS of the assignment while the right synonym

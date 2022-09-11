@@ -1,16 +1,18 @@
 #pragma once
 
-#include<stdio.h>
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
 #include "QueryServicer.h"
 #include "Storage.h"
 #include "ElementType.h"
-
+#include "../AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "../AST/Expression/RelationalFactor/NameExpression.h"
 
 class QueryServicer {
 private:
@@ -21,8 +23,8 @@ public:
 
 	// Query methods
 
-	// Retrieve all of an element
-	// TEMP: Return all variables only
-	// GOAL: Take in element type and return correct type
-    set<shared_ptr<TNode>> retrieveAll(ElementType type);
+	// Retrieve all
+	set<NameExpression> getAllVar();
+    set<ConstantExpression> getAllConst();
+
 };

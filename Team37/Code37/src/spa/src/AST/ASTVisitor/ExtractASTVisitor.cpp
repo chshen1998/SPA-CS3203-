@@ -26,7 +26,11 @@ ExtractASTVisitor::ExtractASTVisitor(shared_ptr<Storage> storage) { this->storag
  * @param sourceCode
  */
 void ExtractASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
+    printf("hii");
+
     vector<shared_ptr<Procedure>> procedures = sourceCode->getProcedures();
+    printf("hii");
+
     for (auto procedure: procedures) {
         procedure->accept(shared_from_this());
     }

@@ -1,5 +1,4 @@
 #include "Storage.h"
-
 // Constructor
 Storage::Storage() {}
 
@@ -15,13 +14,12 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     AST->accept(visitor);
 }
 
-
 /*
 Retrieve Stored AST
 @return AST SourceCode node if AST added, nullptr otherwise
 */
 shared_ptr<SourceCode> Storage::retrieveAST() {
-    return this->AST;
+	return this->AST;
 }
 
 // Variable
@@ -29,17 +27,17 @@ shared_ptr<SourceCode> Storage::retrieveAST() {
 Store a variable in the variable set
 @param varNode Shared pointers to a NameExpression Node
 */
-void Storage::storeVar(shared_ptr<NameExpression> varNode) {
-    (this->variables).insert(varNode);
+void Storage::storeVar(NameExpression varNode) {
+	(this->variables).insert(varNode);
 }
 
-/*
+/* 
 Retrieve all stored variables
 @returns Set of shared pointers of Variables
 */
-set<shared_ptr<TNode>> Storage::getAllVar() {
-    return this->variables;
-}
+set<NameExpression> Storage::getAllVar() {
+	return this->variables;
+ }
 
 
 // Constant
@@ -47,14 +45,14 @@ set<shared_ptr<TNode>> Storage::getAllVar() {
 Store a constant
 @param constNode Shared pointers to a ConstantExpression Node
 */
-void Storage::storeConst(shared_ptr<ConstantExpression> constNode) {
-    (this->constants).insert(constNode);
+void Storage::storeConst(ConstantExpression constNode) {
+	(this->constants).insert(constNode);
 }
 
 /*
 Retrieve all stored constants
 @return Set of shared pointers of constants stored
 */
-set<shared_ptr<TNode>> Storage::getAllConst() {
-    return this->constants;
+set<ConstantExpression> Storage::getAllConst() {
+	return this->constants;
 }

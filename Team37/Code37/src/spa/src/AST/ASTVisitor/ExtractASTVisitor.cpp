@@ -21,14 +21,6 @@
 
 ExtractASTVisitor::ExtractASTVisitor(shared_ptr<Storage> storage) { this->storage = storage; }
 
-vector<shared_ptr<NameExpression>> ExtractASTVisitor::getTNodeVariables() {
-    return VisitedTNodeVariables;
-};
-
-vector<shared_ptr<ConstantExpression>> ExtractASTVisitor::getVisitedConstants() {
-    return VisitedConstants;
-}
-
 /**
  * We traverse all procedures in the source code to accept a visitor
  * @param sourceCode
@@ -62,7 +54,6 @@ void ExtractASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
     shared_ptr<NameExpression> expression = make_shared<NameExpression>(readStmt->getParent(),
                                                                         readStmt->getVariableName());
     this->storage->storeVar(expression);
-//    (this->VisitedTNodeVariables).push_back(expression);
 }
 
 /**
@@ -72,7 +63,7 @@ void ExtractASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
 void ExtractASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt) {
     shared_ptr<NameExpression> expression = make_shared<NameExpression>(printStmt->getParent(),
                                                                         printStmt->getVariableName());
-    (this->VisitedTNodeVariables).push_back(expression);
+    this->storage->storeVar(expression);
 }
 
 /**
@@ -116,7 +107,7 @@ void ExtractASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
 void ExtractASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
     shared_ptr<NameExpression> expression = make_shared<NameExpression>(assignStmt->getParent(),
                                                                         assignStmt->getVarName());
-    (this->VisitedTNodeVariables).push_back(expression);
+    this->storage->storeVar(expression);
 }
 
 // RelationalFactor
@@ -130,7 +121,7 @@ void ExtractASTVisitor::visitNameExpression(shared_ptr<NameExpression> nameExpr)
  * @param constantExpr
  */
 void ExtractASTVisitor::visitConstantExpression(shared_ptr<ConstantExpression> constantExpr) {
-    (this->VisitedConstants).push_back(constantExpr);
+    this->storage->storeConst(constantExpr);
 }
 
 /**
@@ -140,7 +131,6 @@ void ExtractASTVisitor::visitConstantExpression(shared_ptr<ConstantExpression> c
 void ExtractASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpression> operatedExpr) {
     operatedExpr->getExpression1()->accept(shared_ptr<ASTVisitor>(this));
     operatedExpr->getExpression2()->accept(shared_ptr<ASTVisitor>(this));
-
 }
 
 // ConditionalExpression

@@ -18,11 +18,6 @@ public:
     // Constructor
     ExtractASTVisitor(shared_ptr<Storage> storage);
 
-    // Getters
-    vector<shared_ptr<NameExpression>> getTNodeVariables();
-
-    vector<shared_ptr<ConstantExpression>> getVisitedConstants();
-
     // Statements
     void visitSourceCode(shared_ptr<SourceCode> sourceCode);
 

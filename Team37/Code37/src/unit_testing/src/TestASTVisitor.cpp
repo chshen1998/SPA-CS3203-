@@ -45,3 +45,25 @@ TEST_CASE("Read Statements") {
 
     require(storage->getAllVar().size() == 4);
 }
+
+TEST_CASE("Print Statements") {
+    shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
+    shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
+    shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure, 1, "a");
+    shared_ptr<PrintStatement> printStmt2 = make_shared<PrintStatement>(procedure, 2, "b");
+    shared_ptr<PrintStatement> printStmt3 = make_shared<PrintStatement>(procedure, 3, "c");
+    shared_ptr<PrintStatement> printStmt4 = make_shared<PrintStatement>(procedure, 4, "d");
+    shared_ptr<Storage> storage = make_shared<Storage>();
+
+    procedure->addStatement(printStmt1);
+    procedure->addStatement(printStmt2);
+    procedure->addStatement(printStmt3);
+    procedure->addStatement(printStmt4);
+
+    sc->addProcedure(procedure);
+
+    // We start by traversing the AST
+    storage->storeAST(sc);
+
+    require(storage->getAllVar().size() == 4);
+}

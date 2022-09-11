@@ -49,12 +49,13 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
-        src/SP/ParserVisitor.h
+
+        src/SP/Utils.h
         src/SP/SP.h
         src/SP/TokeniserVisitor.h
         src/SP/Tokenizer.h
         src/SP/Visitor.h
-        src/SP/ParserVisitor.cpp
+        src/SP/Utils.cpp
         src/SP/SP.cpp
         src/SP/TokeniserVisitor.cpp
         src/SP/Tokenizer.cpp
@@ -71,7 +72,10 @@ add_library(spa ${srcs} ${headers}
         src/PKB/QueryServicer.cpp
         src/PKB/Storage.h
         src/PKB/Storage.cpp
-        src/PKB/StatementType.h)
+        src/PKB/StatementType.h
+        src/PKB/ElementType.h
+        src/SP/Keywords.cpp
+        src/SP/Keywords.h)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

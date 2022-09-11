@@ -12,7 +12,7 @@ using namespace std;
 #include "../AST/SourceCode.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
-#include "../AST/ASTVisitor/ConcreteASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractASTVisitor.h"
 
 
 class Storage {

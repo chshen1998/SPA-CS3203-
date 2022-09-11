@@ -8,13 +8,13 @@ using namespace std;
 #include <vector>
 #include <memory>
 
-class ConcreteASTVisitor : public ASTVisitor {
+class ExtractASTVisitor : public ASTVisitor {
 private:
     vector<shared_ptr<NameExpression>> VisitedTNodeVariables;
     vector<shared_ptr<ConstantExpression>> VisitedConstants;
 public:
     // Constructor
-    ConcreteASTVisitor();
+    ExtractASTVisitor();
 
     // Getters
     vector<shared_ptr<NameExpression>> getTNodeVariables();

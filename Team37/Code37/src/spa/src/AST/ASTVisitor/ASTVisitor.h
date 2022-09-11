@@ -8,25 +8,6 @@ using namespace std;
 
 #include <memory>
 
-//#include "AST/SourceCode.h"
-//#include "AST/TNode.h"
-//
-//#include "AST/Statement/ReadStatement.h"
-//#include "AST/Statement/PrintStatement.h"
-//#include "AST/Statement/CallStatement.h"
-//#include "AST/Statement/WhileStatement.h"
-//#include "AST/Statement/IfStatement.h"
-//#include "AST/Statement/AssignStatement.h"
-//
-//#include "AST/Expression/RelationalFactor/NameExpression.h"
-//#include "AST/Expression/RelationalFactor/ConstantExpression.h"
-//#include "AST/Expression/RelationalFactor/OperatedExpression.h"
-//
-//#include "AST/Expression/ConditionalExpression/RelationalExpression.h"
-//#include "AST/Expression/ConditionalExpression/NotCondition.h"
-//#include "AST/Expression/ConditionalExpression/AndCondition.h"
-//#include "AST/Expression/ConditionalExpression/OrCondition.h"
-
 class SourceCode;
 
 class Procedure;

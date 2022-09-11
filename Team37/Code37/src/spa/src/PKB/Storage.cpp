@@ -11,7 +11,7 @@ void Storage::storeAST(shared_ptr<TNode> AST) {
     this->AST = AST;
 
     // We start by traversing the AST using a Concrete Visitor
-    shared_ptr<ConcreteASTVisitor> visitor = make_shared<ConcreteASTVisitor>();
+    shared_ptr<ExtractASTVisitor> visitor = make_shared<ExtractASTVisitor>();
     AST->accept(visitor);
 
     // After traversing we store the variables,constants and relationships

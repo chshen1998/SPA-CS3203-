@@ -10,27 +10,9 @@ Store the AST
 void Storage::storeAST(shared_ptr<TNode> AST) {
     this->AST = AST;
 
-    // We start by traversing the AST using a Concrete Visitor
-    shared_ptr<ExtractASTVisitor> visitor = make_shared<ExtractASTVisitor>(shared_ptr<Storage>(this));
+    // We start by traversing the AST using a Extract AST Visitor
+    shared_ptr<ExtractASTVisitor> visitor = make_shared<ExtractASTVisitor>(shared_from_this());
     AST->accept(visitor);
-
-    printf("HERE: %d", this->getAllVar().size());
-
-
-    // After traversing we store the variables,constants and relationships
-    // Storing variables
-//    for (auto variable: visitor->getTNodeVariables()) {
-//        this->storeVar(variable);
-//    }
-//
-//    // Storing constants
-//    for (auto constant: visitor->getVisitedConstants()) {
-//        this->storeConst(constant);
-//    }
-
-    // Storing statements
-
-    // Storing relationships
 }
 
 

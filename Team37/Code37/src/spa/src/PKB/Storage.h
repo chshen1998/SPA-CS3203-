@@ -15,7 +15,7 @@ using namespace std;
 #include "../AST/ASTVisitor/ExtractASTVisitor.h"
 
 
-class Storage {
+class Storage : public enable_shared_from_this<Storage> {
 private:
     shared_ptr<TNode> AST;
     set<shared_ptr<TNode>> variables;

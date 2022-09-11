@@ -59,7 +59,8 @@ void ExtractASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
  * @param readStmt
  */
 void ExtractASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
-    shared_ptr<NameExpression> expression = make_shared<NameExpression>(readStmt, readStmt->getVariableName());
+    shared_ptr<NameExpression> expression = make_shared<NameExpression>(readStmt->getParent(),
+                                                                        readStmt->getVariableName());
     this->storage->storeVar(expression);
 //    (this->VisitedTNodeVariables).push_back(expression);
 }
@@ -69,7 +70,8 @@ void ExtractASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
  * @param printStmt
  */
 void ExtractASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt) {
-    shared_ptr<NameExpression> expression = make_shared<NameExpression>(printStmt, printStmt->getVariableName());
+    shared_ptr<NameExpression> expression = make_shared<NameExpression>(printStmt->getParent(),
+                                                                        printStmt->getVariableName());
     (this->VisitedTNodeVariables).push_back(expression);
 }
 
@@ -112,7 +114,8 @@ void ExtractASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
  * @param assignStmt
  */
 void ExtractASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
-    shared_ptr<NameExpression> expression = make_shared<NameExpression>(assignStmt, assignStmt->getVarName());
+    shared_ptr<NameExpression> expression = make_shared<NameExpression>(assignStmt->getParent(),
+                                                                        assignStmt->getVarName());
     (this->VisitedTNodeVariables).push_back(expression);
 }
 

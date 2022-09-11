@@ -43,6 +43,7 @@ bool isConstant(string line) {
         }
         return true;
     }
+    return false;
 }
 
 bool isVariable(string line) {
@@ -225,4 +226,4 @@ OperatedExpression Tokenizer:: tokenizeOperatedExpr(string line, vector<int> ind
 //    } else if (!all_of(indexes.begin(), indexes.end(), isNegative)){
 //        //TODO: tokenize conditional
 //    }
-}
+//}

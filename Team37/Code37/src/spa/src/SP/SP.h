@@ -37,13 +37,13 @@ public:
      * @return statements as strings.
      */
     static vector<string> extractStatements(string procedure);
-};
 
     /**
      * Opens the file found at specified filepath and parses file to create SourceNode object.
-     * @param filepath filepath to source code file
+     * @param filepath The filepath to source code file
      * @return Sourcecode object
      */
-static shared_ptr<SourceCode> parse(string filepath);
+    static shared_ptr<SourceCode> parse(string filename);
+};
 
 #endif

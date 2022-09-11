@@ -23,11 +23,13 @@ enum class TokenizeState {
 During Tokenizing of clauses, I will have a counter that tracks the index of my string.
 For Such That Clause: [such, that, relationshipKeyword, (, token, comma, token, )]
 */
-extern int suchThatClauseTypeIndex = 2;
-extern int suchThatClauseFirstArgIndex = 4;
-extern int suchThatClauseSecondArgIndex = 6;
+extern int suchThatClauseTypeIndex;
+extern int suchThatClauseFirstArgIndex;
+extern int suchThatClauseSecondArgIndex;
 
-
+extern int patternClauseFirstArgIndex;
+extern int patternClauseSecondArgIndex;
+extern int patternClauseThirdArgIndex;
 
 
 class QueryTokenizer {
@@ -44,17 +46,26 @@ public:
 private:
     void Split();
     void ConvertIntoTokens();
-    int TokenizeBeforeSelect(int i);
-    void TokenizeAfterSelect(int i);
+    void TokenizeBeforeSelect(int& i);
+    void TokenizeAfterSelect(int& i);
 };
 
 
-TokenType checkTokenType(string s);
-bool checkIfSynonym(string s);
-bool checkIfInteger(string s);
-bool checkIfStmtRef(string s);
-bool checkIfEntRef(string s);
-bool checkIfDesignEntity(string s);
+TokenType checkTokenType(string s, TokenType token, TokenizeState state, bool firstArg);
+inline TokenType getStmtRefToken(string s);
+inline TokenType getEntRefToken(string s);
+inline TokenType getExpressionSpec(string s);
+
+inline bool checkIfSynonym(string s);
+inline bool checkIfInteger(string s);
+inline bool checkIfStmtRef(string s);
+inline bool checkIfEntRef(string s);
+inline bool checkIfString(string s);
+inline bool checkIfWildCardString(string s);
+inline bool checkIfExpressionSpec(string s);
+
+
+inline bool checkIfDesignEntity(string s);
 
 
 #endif //TEAM37_QPS_H

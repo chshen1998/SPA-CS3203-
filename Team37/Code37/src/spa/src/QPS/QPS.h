@@ -49,6 +49,7 @@ enum class TokenType {
 
     SUCH,
     THAT,
+    AND,
 
     SEMICOLON,
     COMMA,

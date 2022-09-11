@@ -25,6 +25,8 @@ void Storage::storeAST(shared_ptr<TNode> AST) {
         this->storeConst(constant);
     }
 
+    // Storing statements
+
     // Storing relationships
 }
 

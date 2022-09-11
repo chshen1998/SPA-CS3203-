@@ -49,7 +49,7 @@ TEST_CASE("Valid Cases") {
             PqlToken(TokenType::THAT, "that"),
             PqlToken(TokenType::FOLLOWS_A, "Uses"),
             PqlToken(TokenType::OPEN_BRACKET, "("),
-            PqlToken(TokenType::STATEMENT_NUM, "14"),
+            PqlToken(TokenType::NUMBER, "14"),
             PqlToken(TokenType::COMMA, ","),
             PqlToken(TokenType::FOLLOWS_A, "v"),
             PqlToken(TokenType::CLOSED_BRACKET, ")"),

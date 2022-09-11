@@ -76,6 +76,11 @@ struct PqlToken {
     bool operator==(const PqlToken& other) const {
         return (other.type == type) && (other.value == value);
     }
+
+public:
+    // For debugging when writing unit tests
+    friend ostream& operator<< (std::ostream& os, const PqlToken& token);
+       
 };
 
 // Created for debugging purposes
@@ -114,8 +119,6 @@ public:
     void evaluate(string query, list<string> &results);
 };
 
-// These are placeholder methods, delete after integration with PKB
-vector<PqlToken> mockTokenize();
 
 #endif //TEAM37_QPS_H
 

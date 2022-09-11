@@ -71,79 +71,51 @@ set<TokenType> validSuchThatClauses = {
         TokenType::FOLLOWS_A
 };
 
-/*
-Place Holder methods that need to be defined (otherwise theres an error).
-Will be removed in the next PR once Hoa Shen's PR is merged in.
-*/
-set<string> AllVariables() {
-    return set<string>();
-}
-set<string> AllConstants() {
-    return set<string>();
-}
 
-set<string> AllProcedures() {
-    return set<string>();
-}
-
-set<string> AllStatements() {
-    return set<string>();
-}
-
-ostream& operator<<(ostream& os, PqlToken& token) {
-    string typeString = "";
+std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
+    string typeString = "Unknown";
     switch (token.type) {
-    case(TokenType::VARIABLE): typeString = "variable";
-    case(TokenType::CONSTANT): typeString = "constant";
-    case(TokenType::ASSIGN): typeString = "assign";
-    case(TokenType::PROCEDURE): typeString = "procedure";
-    case(TokenType::STATEMENT): typeString = "statement";
-    case(TokenType::WHILE): typeString = "while";
-    case(TokenType::IF): typeString = "if";
-    case(TokenType::ELSE): typeString = "else";
-    case(TokenType::PRINT): typeString = "print";
-    case(TokenType::CALL): typeString = "call";
-    case(TokenType::SYNONYM): typeString = "synonym";
-    case(TokenType::NUMBER): typeString = "number";
-    case(TokenType::STRING): typeString = "string";
-    case(TokenType::SELECT): typeString = "select";
-    case(TokenType::PATTERN): typeString = "pattern";
-    case(TokenType::USES): typeString = "uses";
-    case(TokenType::MODIFIES): typeString = "modifies";
-    case(TokenType::PARENT): typeString = "parent";
-    case(TokenType::PARENT_A): typeString = "parent_a";
-    case(TokenType::FOLLOWS): typeString = "follows";
-    case(TokenType::FOLLOWS_A): typeString = "follows_a";
-    case(TokenType::SUCH): typeString = "such";
-    case(TokenType::THAT): typeString = "that";
-    case(TokenType::SEMICOLON): typeString = "semicolon";
-    case(TokenType::COMMA): typeString = "comma";
-    case(TokenType::OPEN_BRACKET): typeString = "open_bracket";
-    case(TokenType::CLOSED_BRACKET): typeString = "closed_bracket";
-    case(TokenType::EMPTY): typeString = "empty";
-    case(TokenType::DECLARATION_END): typeString = "declaration_end";
-    case(TokenType::END): typeString = "end";
-    default: typeString = "Unknown";
+    case(TokenType::VARIABLE): typeString = "variable"; break;
+    case(TokenType::CONSTANT):typeString = "constant"; break;
+    case(TokenType::ASSIGN): typeString = "assign"; break;
+    case(TokenType::PROCEDURE): typeString = "procedure"; break;
+    case(TokenType::STATEMENT): typeString = "statement"; break;
+    case(TokenType::WHILE): typeString = "while"; break;
+    case(TokenType::IF): typeString = "if"; break;
+    case(TokenType::ELSE): typeString = "else"; break;
+    case(TokenType::PRINT): typeString = "print"; break;
+    case(TokenType::CALL): typeString = "call"; break;
+    case(TokenType::SYNONYM): typeString = "synonym"; break;
+    case(TokenType::NUMBER): typeString = "number"; break;
+    case(TokenType::STATEMENT_NUM): typeString = "statement_num"; break;
+    case(TokenType::WILDCARD): typeString = "wildcard"; break;
+    case(TokenType::WILDCARD_STRING): typeString = "wildcard_string"; break;
+    case(TokenType::STRING): typeString = "string"; break;
+    case(TokenType::SELECT): typeString = "select"; break;
+    case(TokenType::PATTERN): typeString = "pattern"; break;
+    case(TokenType::USES): typeString = "uses"; break;
+    case(TokenType::MODIFIES): typeString = "modifies"; break;
+    case(TokenType::PARENT): typeString = "parent"; break;
+    case(TokenType::PARENT_A): typeString = "parent_a"; break;
+    case(TokenType::FOLLOWS): typeString = "follows"; break;
+    case(TokenType::FOLLOWS_A): typeString = "follows_a"; break;
+    case(TokenType::SUCH): typeString = "such"; break;
+    case(TokenType::THAT): typeString = "that"; break;
+    case(TokenType::SEMICOLON): typeString = "semicolon"; break;
+    case(TokenType::COMMA): typeString = "comma"; break;
+    case(TokenType::OPEN_BRACKET): typeString = "open_bracket"; break;
+    case(TokenType::CLOSED_BRACKET): typeString = "closed_bracket"; break;
+    case(TokenType::EMPTY): typeString = "empty"; break;
+    case(TokenType::DECLARATION_END): typeString = "declaration_end"; break;
+    case(TokenType::END): typeString = "end"; break;
     }
 
-    os << "[Token: " << typeString << ", Value: " << token.value << "]";
+    os << "[ TokenType: " + typeString + " , Value : '" + token.value + "' ]" << endl;
+
     return os;
 }
 
-/*
-Hard-coded for the demo for now.
-*/
-vector<PqlToken> mockTokenize() {
-    vector<PqlToken> v;
 
-    v.push_back(PqlToken(TokenType::VARIABLE, "variable"));
-    v.push_back(PqlToken(TokenType::SYNONYM, "v"));
-    v.push_back(PqlToken(TokenType::SEMICOLON, ";"));
-    v.push_back(PqlToken(TokenType::SELECT, "Select"));
-    v.push_back(PqlToken(TokenType::SYNONYM, "v"));
-
-    return v;
-}
 
 
 /*
@@ -151,12 +123,11 @@ vector<PqlToken> mockTokenize() {
  */
 void QPS::evaluate(string query, list<string>& results) {
     
-    /* Commented out as we are using mockTokens for now
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
-    */
+    
 
-    QueryExtractor extractor = QueryExtractor(mockTokenize());
+    QueryExtractor extractor = QueryExtractor(tokens);
     PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);

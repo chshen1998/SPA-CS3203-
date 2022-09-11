@@ -12,10 +12,21 @@ using namespace std;
 
 enum class TokenizeState {
     FINDING_KEYWORDS,
+    DECLARATION,
     SELECT,
     SUCH_THAT,
     PATTERN
 };
+
+
+/*
+During Tokenizing of clauses, I will have a counter that tracks the index of my string.
+For Such That Clause: [such, that, relationshipKeyword, (, token, comma, token, )]
+*/
+extern int suchThatClauseTypeIndex = 2;
+extern int suchThatClauseFirstArgIndex = 4;
+extern int suchThatClauseSecondArgIndex = 6;
+
 
 
 
@@ -36,6 +47,7 @@ private:
     int TokenizeBeforeSelect(int i);
     void TokenizeAfterSelect(int i);
 };
+
 
 TokenType checkTokenType(string s);
 bool checkIfSynonym(string s);

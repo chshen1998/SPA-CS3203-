@@ -17,21 +17,21 @@ using namespace std;
 class Storage {
 private:
 	shared_ptr<SourceCode> AST;
-	set<shared_ptr<TNode>> variables;
-	set<shared_ptr<TNode>> constants;
+	set<NameExpression> variables;
+	set<ConstantExpression> constants;
 public:
 	// Constructor
 	Storage();
 
 	// AST
 	void storeAST(shared_ptr<SourceCode>);
-	shared_ptr<TNode> retrieveAST();
+	shared_ptr<SourceCode> retrieveAST();
 
 	// Variables
-	void storeVar(shared_ptr<NameExpression>);
-	set<shared_ptr<TNode>> getAllVar();
+	void storeVar(NameExpression);
+	set<NameExpression> getAllVar();
 
 	// Constants
-	void storeConst(shared_ptr<ConstantExpression>);
-	set<shared_ptr<TNode>> getAllConst();
+	void storeConst(ConstantExpression);
+	set<ConstantExpression> getAllConst();
 };

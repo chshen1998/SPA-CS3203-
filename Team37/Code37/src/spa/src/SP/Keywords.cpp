@@ -5,3 +5,6 @@ const string Keywords::OPEN_EGYPTIAN = "{";
 const string Keywords::CLOSE_EGYPTIAN = "}";
 const string Keywords::PRINT = "print";
 const string Keywords::READ = "read";
+const string Keywords::WHILE = "while";
+const string Keywords::IF = "if";
+const string Keywords::ELSE = "else";

@@ -42,7 +42,7 @@ shared_ptr<TNode> Storage::retrieveAST() {
 Store a variable in the variable set
 @param varNode Shared pointers to a NameExpression Node
 */
-shared_ptr<TNode> Storage::storeVar(shared_ptr<NameExpression> varNode) {
+void Storage::storeVar(shared_ptr<NameExpression> varNode) {
     (this->variables).insert(varNode);
 }
 

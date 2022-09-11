@@ -30,7 +30,7 @@ public:
     shared_ptr<TNode> retrieveAST();
 
     // Variables
-    shared_ptr<TNode> storeVar(shared_ptr<NameExpression>);
+    void storeVar(shared_ptr<NameExpression>);
 
     set<shared_ptr<TNode>> getAllVar();
 

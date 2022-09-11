@@ -1,20 +1,22 @@
-
 #ifndef TEAM_37_CONCRETEASTVISITOR_H
 #define TEAM_37_CONCRETEASTVISITOR_H
 
 using namespace std;
 
+
 #include "AST/ASTVisitor/ASTVisitor.h"
+
 #include <vector>
 #include <memory>
 
-class ExtractASTVisitor : public ASTVisitor {
+class ExtractASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
     vector<shared_ptr<NameExpression>> VisitedTNodeVariables;
     vector<shared_ptr<ConstantExpression>> VisitedConstants;
+    shared_ptr<Storage> storage;
 public:
     // Constructor
-    ExtractASTVisitor();
+    ExtractASTVisitor(shared_ptr<Storage> storage);
 
     // Getters
     vector<shared_ptr<NameExpression>> getTNodeVariables();

@@ -17,8 +17,9 @@
 #include "AST/Expression/ConditionalExpression/AndCondition.h"
 #include "AST/Expression/ConditionalExpression/OrCondition.h"
 
-ExtractASTVisitor::ExtractASTVisitor() {
-}
+#include "PKB/Storage.h"
+
+ExtractASTVisitor::ExtractASTVisitor(shared_ptr<Storage> storage) { this->storage = storage; }
 
 vector<shared_ptr<NameExpression>> ExtractASTVisitor::getTNodeVariables() {
     return VisitedTNodeVariables;
@@ -35,7 +36,7 @@ vector<shared_ptr<ConstantExpression>> ExtractASTVisitor::getVisitedConstants() 
 void ExtractASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
     vector<shared_ptr<Procedure>> procedures = sourceCode->getProcedures();
     for (auto procedure: procedures) {
-        procedure->accept(shared_ptr<ASTVisitor>(this));
+        procedure->accept(shared_from_this());
     }
 }
 
@@ -46,8 +47,9 @@ void ExtractASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
 void ExtractASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
     vector<shared_ptr<Statement>> statements = procedure->getStatements();
     for (auto statement: statements) {
-        statement->accept(shared_ptr<ASTVisitor>(this));
+        statement->accept(shared_from_this());
     }
+
 }
 
 // Statements
@@ -58,7 +60,8 @@ void ExtractASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
  */
 void ExtractASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
     shared_ptr<NameExpression> expression = make_shared<NameExpression>(readStmt, readStmt->getVariableName());
-    (this->VisitedTNodeVariables).push_back(expression);
+    this->storage->storeVar(expression);
+//    (this->VisitedTNodeVariables).push_back(expression);
 }
 
 /**

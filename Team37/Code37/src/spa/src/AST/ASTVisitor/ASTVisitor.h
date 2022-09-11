@@ -8,6 +8,8 @@ using namespace std;
 
 #include <memory>
 
+class Storage;
+
 class SourceCode;
 
 class Procedure;

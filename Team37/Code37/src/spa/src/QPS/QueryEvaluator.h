@@ -17,7 +17,7 @@ class QueryEvaluator {
 public:
     PqlQuery pq;
     shared_ptr<QueryServicer> servicer;
-    list<string>  result;
+    list<string>&  result;
 
     QueryEvaluator(PqlQuery pqlQuery, shared_ptr<QueryServicer> s, list<string>& r);
     void evaluate();

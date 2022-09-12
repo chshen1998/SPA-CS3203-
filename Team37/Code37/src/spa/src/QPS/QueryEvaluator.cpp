@@ -12,10 +12,10 @@ using namespace std;
 #include "../PKB/QueryServicer.h"
 
 
-QueryEvaluator::QueryEvaluator(PqlQuery pqlQuery, shared_ptr<QueryServicer> s, list<string>& r) {
+QueryEvaluator::QueryEvaluator(PqlQuery pqlQuery, shared_ptr<QueryServicer> s, list<string>& r):
+    result(r), servicer(s)
+{
     pq = pqlQuery;
-    servicer = s;
-    result = r;
 }
 
 void QueryEvaluator::evaluate() {

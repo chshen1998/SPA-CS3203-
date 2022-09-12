@@ -10,6 +10,7 @@ using namespace std;
 #include "QPS.h"
 #include <algorithm>
 
+
 int suchThatClauseTypeIndex = 2;
 int suchThatClauseFirstArgIndex = 4;
 int suchThatClauseSecondArgIndex = 6;
@@ -17,6 +18,18 @@ int suchThatClauseSecondArgIndex = 6;
 int patternClauseFirstArgIndex = 1;
 int patternClauseSecondArgIndex = 3;
 int patternClauseThirdArgIndex = 5;
+
+unordered_map<TokenType, SpecificClause> tokenToClauseMap = {
+    {TokenType::USES, SpecificClause::USE},
+    {TokenType::FOLLOWS, SpecificClause::FOLLOWS},
+    {TokenType::FOLLOWS_A, SpecificClause::FOLLOWS},
+    {TokenType::PARENT, SpecificClause::PARENT},
+    {TokenType::PARENT_A, SpecificClause::PARENT},
+    {TokenType::MODIFIES, SpecificClause::MODIFIES},
+    {TokenType::CALL, SpecificClause::CALL},
+    {TokenType::WHILE, SpecificClause::WHILE},
+    {TokenType::IF, SpecificClause::IF }
+};
 
 QueryTokenizer::QueryTokenizer(string queryString) {
     query = queryString;
@@ -42,19 +55,22 @@ vector<PqlToken> QueryTokenizer::Tokenize() {
 
 void QueryTokenizer::Split() {
     string currentString;
-    bool selectExists{};
-    bool addToList{};
+    bool selectExists = false;
+    bool inString = false;
 
     // Optimization of vector
     delimited_query = vector<string>();
     delimited_query.reserve(query.size()); // Length of query shouldn't be THAT big
 
     for (int i = 0; i < query.size(); i++) {
-
         // If the character is a blank (whitespace or tab etc)
         if (isspace(query[i])) {
             if (currentString.size() == 0) {
                 continue;
+            }
+           // TODO: Confirm if we want to keep the spaces for pattern arguments with ""
+            else if (inString) {
+                currentString += query[i];
             }
             else {
                 delimited_query.push_back(currentString);
@@ -62,21 +78,25 @@ void QueryTokenizer::Split() {
             }
         }
            
-        // If the character is a symbol
+        // If the character is a single character symbol, for eg brackets or comma
         else if (stringToTokenMap.find(string{ query[i] }) != stringToTokenMap.end()) {
-            delimited_query.push_back(currentString);
+            if (currentString != "") {
+                delimited_query.push_back(currentString);
+            }
             delimited_query.push_back(string{ query[i] });
             currentString = "";
         } 
 
         else {
+            if (query[i] == '"') {
+                inString = !inString;
+            }
             currentString += query[i];
             selectExists = selectExists || currentString == "Select";
         }
     }
 
   
-
     if (currentString.size() > 0) {
         delimited_query.push_back(currentString);
     }
@@ -142,7 +162,7 @@ void QueryTokenizer::TokenizeBeforeSelect(int& i) {
 
         else {
             // Similarly, this should be a synonym after a design entity, but we pass it whatever fits
-            currentToken = checkTokenType(delimited_query[i], currentToken, TokenizeState::DECLARATION, false);
+            currentToken = checkTokenType(delimited_query[i], TokenizeState::DECLARATION, SpecificClause::NONE, ClauseArgNumber::NONE);
         }
 
         tokens.push_back(PqlToken(currentToken, delimited_query[i]));
@@ -153,7 +173,7 @@ void QueryTokenizer::TokenizeBeforeSelect(int& i) {
 
 void QueryTokenizer::TokenizeAfterSelect(int& i) {
     TokenizeState currentState = TokenizeState::FINDING_KEYWORDS;
-    TokenType suchThatClauseType;
+    SpecificClause clauseType = SpecificClause::NONE;
     int clauseCounter = 1;
 
     while (i < delimited_query.size()) {
@@ -174,7 +194,7 @@ void QueryTokenizer::TokenizeAfterSelect(int& i) {
                 }
             }
             else {
-                currentToken = checkTokenType(delimited_query[i], TokenType::UNKNOWN, TokenizeState::FINDING_KEYWORDS, false);
+                currentToken = checkTokenType(delimited_query[i], currentState, clauseType, ClauseArgNumber::NONE);
             }
         }
 
@@ -190,84 +210,64 @@ void QueryTokenizer::TokenizeAfterSelect(int& i) {
             }
             else {
                 // If it is not a synonym, checkTokenType will assign whatever token the string is, and validator will catch this error
-                currentToken = checkTokenType(delimited_query[i], TokenType::SELECT, TokenizeState::SELECT, false);
+                currentToken = checkTokenType(delimited_query[i], TokenizeState::SELECT, SpecificClause::NONE, ClauseArgNumber::NONE);
             }
             currentState = TokenizeState::FINDING_KEYWORDS; 
         }
 
-        else if (currentState == TokenizeState::SUCH_THAT) {
-            // This should handle Such / that / relRef keyword / openbracket
-            // If we catch any other keyword such as 'Select' or 'semicolon', validator will throw an error anyway
-            if (clauseCounter == suchThatClauseFirstArgIndex) {
-                currentToken = checkTokenType(delimited_query[i], suchThatClauseType, currentState, true);
-            }
-            else if (clauseCounter == suchThatClauseSecondArgIndex) {
-                currentToken = checkTokenType(delimited_query[i], suchThatClauseType, currentState, false);
-            }
-            else if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end()) {
-                currentToken = stringToTokenMap[delimited_query[i]];
+        else {
 
-                if (clauseCounter == suchThatClauseTypeIndex) {
-                    suchThatClauseType = currentToken;
+            if (currentState == TokenizeState::SUCH_THAT) {
+                // This should handle Such / that / relRef keyword / openbracket
+                // If we catch any other keyword such as 'Select' or 'semicolon', validator will throw an error anyway
+                if (clauseCounter == suchThatClauseFirstArgIndex) {
+                    currentToken = checkTokenType(delimited_query[i], currentState, clauseType,  ClauseArgNumber::FIRST);
+                }
+                else if (clauseCounter == suchThatClauseSecondArgIndex) {
+                    currentToken = checkTokenType(delimited_query[i], currentState, clauseType , ClauseArgNumber::SECOND);
+                }
+                else {
+                    if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end()) {
+                        currentToken = stringToTokenMap[delimited_query[i]];
+
+                        if (clauseCounter == suchThatClauseTypeIndex) {
+                            clauseType = tokenToClauseMap[currentToken];
+                        }
+                    }
                 }
             }
+
             else {
-                currentState = TokenizeState::FINDING_KEYWORDS;
-                currentToken = checkTokenType(delimited_query[i], suchThatClauseType, currentState, false);
-                clauseCounter = 0;
+                // [pattern, token, (, token, comma, token, )
+                 // This should handle Such / that / relRef keyword / openbracket
+                 // If we catch any other keyword such as 'Select' or 'semicolon', validator will throw an error anyway
+
+                if (clauseCounter == patternClauseFirstArgIndex) {
+                    currentToken = checkTokenType(delimited_query[i], currentState, clauseType, ClauseArgNumber::FIRST);
+                }
+
+                else if (clauseCounter == patternClauseSecondArgIndex) {
+                    currentToken = checkTokenType(delimited_query[i],  currentState, clauseType, ClauseArgNumber::SECOND);
+                }
+
+                else if (clauseCounter == patternClauseThirdArgIndex) {
+                    currentToken = checkTokenType(delimited_query[i], currentState, clauseType, ClauseArgNumber::THIRD);
+                }
+                else {
+                    if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end()) {
+                        currentToken = stringToTokenMap[delimited_query[i]];
+                    }
+                }
             }
 
             clauseCounter += 1;
-
-            // Closed bracket signifies the end of a caluse
+            
+            // If we finish a clause, we reset our clause counter and state
             if (currentToken == TokenType::CLOSED_BRACKET) {
                 currentState = TokenizeState::FINDING_KEYWORDS;
-                clauseCounter = 0;
+                clauseType = SpecificClause::NONE;
+                clauseCounter = 1;
             }
-        }
-
-        else {
-            // [pattern, token, (, token, comma, token, )
-             // This should handle Such / that / relRef keyword / openbracket
-             // If we catch any other keyword such as 'Select' or 'semicolon', validator will throw an error anyway
-             if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end()) {
-                 if (clauseCounter == patternClauseFirstArgIndex) {
-                     currentToken = checkTokenType(delimited_query[i], TokenType::UNKNOWN, currentState, true);
-                 }
-
-                 if (clauseCounter == patternClauseSecondArgIndex) {
-                     currentToken = checkTokenType(delimited_query[i], TokenType::UNKNOWN, currentState, false);
-                 }
-                 
-                 if (clauseCounter == patternClauseThirdArgIndex) {
-                     currentToken = checkTokenType(delimited_query[i], TokenType::PATTERN, currentState, false);
-
-                 }
-                 
-                 else if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end()) {
-                     currentToken = stringToTokenMap[delimited_query[i]];
-                 }
-                 else {
-                     // This will ensure that the string is stmt_ref or ent_ref as need be or validator will throw an error
-                     currentState = TokenizeState::FINDING_KEYWORDS;
-                     currentToken = checkTokenType(delimited_query[i], suchThatClauseType, currentState, false);
-                     clauseCounter = 0;
-                 }
-
-                 clauseCounter += 1;
-
-                 // Closed bracket signifies the end of a caluse
-                 if (currentToken == TokenType::CLOSED_BRACKET) {
-                     currentState = TokenizeState::FINDING_KEYWORDS;
-                     clauseCounter = 0;
-                 }
-             }
-             else {
-                 currentState = TokenizeState::FINDING_KEYWORDS;
-                 currentToken = checkTokenType(delimited_query[i], TokenType::UNKNOWN, currentState, false);
-                 clauseCounter = 0;
-             }
-             clauseCounter += 1;
         }
 
         tokens.push_back(PqlToken(currentToken, delimited_query[i]));
@@ -280,28 +280,28 @@ void QueryTokenizer::TokenizeAfterSelect(int& i) {
 
 
 // Helper Methods for Query Tokenizer
-TokenType checkTokenType(string s, TokenType token, TokenizeState state, bool firstArg) {
+TokenType checkTokenType(const string& s, const TokenizeState& state, const SpecificClause& type, const ClauseArgNumber& argnum) {
     // Declarations
     if (state == TokenizeState::DECLARATION && checkIfSynonym(s)) {
         return TokenType::SYNONYM;
     }
     
-    // Select Keyword
+    // Select Keyword (Creating a separate if statement from declarations because there will be additional logic for select in advanced SPA)
     if (state == TokenizeState::SELECT && checkIfSynonym(s)) {
         return TokenType::SYNONYM;
     }
     
     // Such that Clauase
     if (state == TokenizeState::SUCH_THAT) {
-        if (token == TokenType::USES || token == TokenType::MODIFIES) {
-            if (firstArg && checkIfStmtRef(s)) {
+        if (type == SpecificClause::USE || type == SpecificClause::MODIFIES) {
+            if (argnum == ClauseArgNumber::FIRST && checkIfStmtRef(s)) {
                 return getStmtRefToken(s);
             }
             if (checkIfEntRef(s)) {
                 return getEntRefToken(s);
             }
         }
-        else if (token == TokenType::CALL && checkIfEntRef(s)) {
+        else if (type == SpecificClause::CALL && checkIfEntRef(s)) {
             return getEntRefToken(s);
         }
         else {
@@ -315,17 +315,17 @@ TokenType checkTokenType(string s, TokenType token, TokenizeState state, bool fi
     if (state == TokenizeState::PATTERN) {
 
         // Check whether string is a synonym after the 'pattern' keyword
-        if (firstArg && checkIfSynonym(s)) {
+        if (argnum == ClauseArgNumber::FIRST && checkIfSynonym(s)) {
             return TokenType::SYNONYM;
         }
 
         // Check whether it is entRef
-        if (!firstArg && checkIfEntRef(s)) {
+        if (argnum == ClauseArgNumber::SECOND && checkIfEntRef(s)) {
             return getEntRefToken(s);
         }
 
         // check expression if assign pattern
-        if (token == TokenType::PATTERN && checkIfExpressionSpec(s)) {
+        if (argnum == ClauseArgNumber::THIRD && checkIfExpressionSpec(s)) {
             return getExpressionSpec(s);
         }
     }
@@ -347,25 +347,25 @@ TokenType checkTokenType(string s, TokenType token, TokenizeState state, bool fi
 
 
 // Check Token Methods
-inline bool checkIfSynonym(string s) {
+inline bool checkIfSynonym(const string& s) {
     return isalpha(s[0]) 
         && all_of(s.begin(), s.end(), 
             [](char c) { return isdigit(c) || isalpha(c); });
 }
 
-inline bool checkIfInteger(string s) {
+inline bool checkIfInteger(const string& s) {
     if (s.size() == 1) {
-        return s == "0";
+        return s == "0" || (isdigit(s[0]) && s != "0");
     }
 
     return s[0] != '0' && all_of(s.begin(), s.end(), [](char c) { return isdigit(c); });
 }
 
-inline bool checkIfStmtRef(string s) {
+inline bool checkIfStmtRef(const string& s) {
     return s == "_" || checkIfSynonym(s) || checkIfInteger(s);
 }
 
-inline TokenType getStmtRefToken(string s) {
+inline TokenType getStmtRefToken(const string& s) {
     if (s == "_") {
         return TokenType::WILDCARD;
     }
@@ -377,11 +377,11 @@ inline TokenType getStmtRefToken(string s) {
     }
 }
 
-inline bool checkIfEntRef(string s) {
+inline bool checkIfEntRef(const string& s) {
     return s == "_" || checkIfSynonym(s) || checkIfString(s);
 }
 
-inline TokenType getEntRefToken(string s) {
+inline TokenType getEntRefToken(const string& s) {
     if (s == "_") {
         return TokenType::WILDCARD;
     }
@@ -389,12 +389,12 @@ inline TokenType getEntRefToken(string s) {
         return TokenType::SYNONYM;
     }
     if (checkIfString(s)) {
-        return TokenType::STATEMENT_NUM;
+        return TokenType::STRING;
     }
 
 }
 
-inline TokenType getExpressionSpec(string s) {
+inline TokenType getExpressionSpec(const string& s) {
     if (s == "_") {
         return TokenType::WILDCARD;
     }
@@ -406,22 +406,24 @@ inline TokenType getExpressionSpec(string s) {
     }
 }
 
-inline bool checkIfExpressionSpec(string s) {
+inline bool checkIfExpressionSpec(const string& s) {
     return s == "_" || checkIfString(s) || checkIfWildCardString(s);
 }
 
-inline bool checkIfWildCardString(string s) {
+inline bool checkIfWildCardString(const string& s) {
+    // TODO: decide if we want to tokenize the assign arguments for easier parsing later
     return s[0] == '_' && s[s.size() - 1] == '_' && checkIfString(s.substr(1, s.size() - 2));
 }
 
-inline bool checkIfString(string s) {
+inline bool checkIfString(const string& s) {
     if (s.size() < 3) {
         return false;
     }
-    return s[0] == '"' && s[s.size() - 1] == '"' && checkIfSynonym(s.substr(1, s.size() - 2));
+    return s[0] == '"' && s[s.size() - 1] == '"';
+    // Add in this when we implement second argument of pattern clause
+    //checkIfSynonym(s.substr(1, s.size() - 2));
 }
 
-inline bool checkIfDesignEntity(string s) {
-    return s == "stmt" || s == "read" || s == "print" || s == "call" || s == "while" || s == "if" || s == "assign" || s ==
-        "variable" || s == "constant" || s == "procedure";
+inline bool checkIfDesignEntity(const string& s) {
+    return s == "stmt" || s == "read" || s == "print" || s == "call" || s == "while" || s == "if" || s == "assign" || s == variable" || s == "constant" || s == "procedure";
 }

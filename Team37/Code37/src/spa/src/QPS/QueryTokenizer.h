@@ -10,6 +10,7 @@ using namespace std;
 #include <unordered_map>
 #include <set>
 
+// The following enum classes are helper enums when deciding the tokenType of the delimited string
 enum class TokenizeState {
     FINDING_KEYWORDS,
     DECLARATION,
@@ -17,6 +18,30 @@ enum class TokenizeState {
     SUCH_THAT,
     PATTERN
 };
+
+enum class SpecificClause {
+    NONE, 
+    USE,
+    FOLLOWS,
+    MODIFIES,
+    PARENT,
+    CALL,
+    NEXT,
+    AFFECT,
+    ASSIGN,
+    WHILE,
+    IF
+};
+
+enum class ClauseArgNumber {
+    NONE,
+    FIRST,
+    SECOND,
+    THIRD
+};
+
+
+extern unordered_map<TokenType, SpecificClause> tokenToClauseMap;
 
 
 /*
@@ -51,21 +76,19 @@ private:
 };
 
 
-TokenType checkTokenType(string s, TokenType token, TokenizeState state, bool firstArg);
-inline TokenType getStmtRefToken(string s);
-inline TokenType getEntRefToken(string s);
-inline TokenType getExpressionSpec(string s);
+TokenType checkTokenType(const string& s, const TokenizeState& state, const SpecificClause& type, const ClauseArgNumber& argnum);
+inline TokenType getStmtRefToken(const string& s);
+inline TokenType getEntRefToken(const string& s);
+inline TokenType getExpressionSpec(const string& s);
 
-inline bool checkIfSynonym(string s);
-inline bool checkIfInteger(string s);
-inline bool checkIfStmtRef(string s);
-inline bool checkIfEntRef(string s);
-inline bool checkIfString(string s);
-inline bool checkIfWildCardString(string s);
-inline bool checkIfExpressionSpec(string s);
-
-
-inline bool checkIfDesignEntity(string s);
+inline bool checkIfSynonym(const string& s);
+inline bool checkIfInteger(const string& s);
+inline bool checkIfStmtRef(const string& s);
+inline bool checkIfEntRef(const string& s);
+inline bool checkIfString(const string& s);
+inline bool checkIfWildCardString(const string& s);
+inline bool checkIfExpressionSpec(const string& s);
+inline bool checkIfDesignEntity(const string& s);
 
 
 #endif //TEAM37_QPS_H

@@ -1,6 +1,6 @@
 #pragma once
 
-#include<stdio.h>
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -14,12 +14,13 @@ using namespace std;
 
 class PKB {
 private:
-	shared_ptr<Storage> storage;
-	shared_ptr<QueryServicer> queryServicer;
+    shared_ptr<Storage> storage;
+    shared_ptr<QueryServicer> queryServicer;
 public:
-	// Constructor
-	PKB();
+    // Constructor
+    PKB();
 
-	shared_ptr<QueryServicer> getQueryServicer();
+    shared_ptr<QueryServicer> getQueryServicer();
+
     void buildFromAst(shared_ptr<SourceCode> AST);
 };

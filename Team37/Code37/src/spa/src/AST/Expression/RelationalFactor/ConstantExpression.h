@@ -19,6 +19,14 @@ public:
     int getValue();
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
+
+    bool operator== (const ConstantExpression& other) const{
+        return value == other.value;
+    };
+
+    bool operator< (const ConstantExpression& other) const{
+        return value > other.value;
+    };
 };
 
 #endif

@@ -21,6 +21,14 @@ public:
      int getLineNum() {
         return lineNum;
      }
+
+     bool operator== (const Statement& other) const {
+         return lineNum == other.lineNum;
+     };
+
+     bool operator< (const Statement& other) const {
+         return lineNum > other.lineNum;
+     };
 };
 
 #endif //TEAM37_STATEMENT_H

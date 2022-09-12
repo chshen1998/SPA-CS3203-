@@ -7,7 +7,11 @@ Store the AST
 @param: AST - Shared Pointer to AST
 */
 void Storage::storeAST(shared_ptr<SourceCode> AST) {
-	this->AST = AST;
+    this->AST = AST;
+
+    // We start by traversing the AST using a Extract AST Visitor
+    shared_ptr<ExtractASTVisitor> visitor = make_shared<ExtractASTVisitor>(shared_from_this());
+    AST->accept(visitor);
 }
 
 /*

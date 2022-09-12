@@ -72,6 +72,7 @@ add_library(spa ${srcs} ${headers}
         src/PKB/QueryServicer.cpp
         src/PKB/Storage.h
         src/PKB/Storage.cpp
+        src/PKB/StatementType.h
         src/PKB/ElementType.h
         src/SP/Keywords.cpp
         src/SP/Keywords.h)

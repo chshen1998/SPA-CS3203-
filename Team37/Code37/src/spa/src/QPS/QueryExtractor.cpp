@@ -6,7 +6,7 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QPS.h"
 
-QueryExtractor::QueryExtractor(vector<PqlToken> &tokens) {
+QueryExtractor::QueryExtractor(vector<PqlToken> tokens) {
     next = tokens.begin();
     last = tokens.end();
     pq = PqlQuery();
@@ -41,15 +41,14 @@ void QueryExtractor::ExtractSelect() {
     }
     const PqlToken synonym = getNextToken();
 
-    for (const auto& [key, value] : pq.declarations) {
+    for (const auto &[key, value]: pq.declarations) {
         if (key == synonym.value) {
             pq.select = synonym.value;
             break;
         }
     }
 
-    if (pq.select.empty())
-    {
+    if (pq.select.empty()) {
         throw "Error: Invalid select clause parameter";
     }
 }
@@ -72,8 +71,7 @@ void QueryExtractor::ExtractClauses() {
 void QueryExtractor::ExtractPatternClause() {
     PqlToken patternSynonym = getNextToken();
     while (patternSynonym.type != TokenType::SYNONYM) {
-        if (patternSynonym.type == TokenType::END)
-        {
+        if (patternSynonym.type == TokenType::END) {
             return;
         }
         patternSynonym = getNextToken();
@@ -81,8 +79,7 @@ void QueryExtractor::ExtractPatternClause() {
     const PqlToken openBracket = getNextToken();
     const PqlToken synonym1 = getNextToken();
 
-    if (synonym1.type != TokenType::VARIABLE)
-    {
+    if (synonym1.type != TokenType::VARIABLE) {
         throw "Error: Pattern clause parameters must be variable type";
     }
     pq.patternClause.left = synonym1.value;
@@ -90,8 +87,7 @@ void QueryExtractor::ExtractPatternClause() {
     const PqlToken comma = getNextToken();
     const PqlToken synonym2 = getNextToken();
 
-    if (synonym1.type != TokenType::VARIABLE)
-    {
+    if (synonym1.type != TokenType::VARIABLE) {
         throw "Error: Pattern clause parameters must be variable type";
     }
     pq.patternClause.right = synonym2.value;
@@ -101,8 +97,7 @@ void QueryExtractor::ExtractPatternClause() {
 void QueryExtractor::ExtractSuchThatClause() {
     PqlToken suchThatClause = getNextToken();
     while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
-        if (suchThatClause.type == TokenType::END)
-        {
+        if (suchThatClause.type == TokenType::END) {
             return;
         }
         suchThatClause = getNextToken();

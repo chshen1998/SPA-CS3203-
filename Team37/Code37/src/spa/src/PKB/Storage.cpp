@@ -7,31 +7,35 @@ Store the AST
 @param: AST - Shared Pointer to AST
 */
 void Storage::storeAST(shared_ptr<SourceCode> AST) {
-	this->AST = AST;
+    this->AST = AST;
+
+    // We start by traversing the AST using a Extract AST Visitor
+    shared_ptr<ExtractASTVisitor> visitor = make_shared<ExtractASTVisitor>(shared_from_this());
+    AST->accept(visitor);
 }
 
 /*
 Retrieve Stored AST
 @return AST SourceCode node if AST added, nullptr otherwise
 */
-shared_ptr<TNode> Storage::retrieveAST() {
+shared_ptr<SourceCode> Storage::retrieveAST() {
 	return this->AST;
 }
 
 // Variable
 /*
 Store a variable in the variable set
-@param varNode Shared pointers to a NameExpression Node
+@param varNode NameExpression Node to store
 */
-void Storage::storeVar(shared_ptr<NameExpression> varNode) {
+void Storage::storeVar(NameExpression varNode) {
 	(this->variables).insert(varNode);
 }
 
 /* 
 Retrieve all stored variables
-@returns Set of shared pointers of Variables
+@returns Set of Variables
 */
-set<shared_ptr<TNode>> Storage::getAllVar() {
+set<NameExpression> Storage::getAllVar() {
 	return this->variables;
  }
 
@@ -39,16 +43,33 @@ set<shared_ptr<TNode>> Storage::getAllVar() {
 // Constant
 /*
 Store a constant
-@param constNode Shared pointers to a ConstantExpression Node
+@param constNode a ConstantExpression Node
 */
-void Storage::storeConst(shared_ptr<ConstantExpression> constNode) {
+void Storage::storeConst(ConstantExpression constNode) {
 	(this->constants).insert(constNode);
 }
 
 /*
 Retrieve all stored constants
-@return Set of shared pointers of constants stored
+@return Set of of constants stored
 */
-set<shared_ptr<TNode>> Storage::getAllConst() {
+set<ConstantExpression> Storage::getAllConst() {
 	return this->constants;
+}
+
+// Statement
+/*
+Store a shared pointer to a statement
+@param stmtNode Shared pointers to a Statement Node
+*/
+void Storage::storeStmt(shared_ptr<Statement> stmtNode) {
+	(this->statements).insert(stmtNode);
+}
+
+/*
+Retrieve all stored statements
+@return Set of shared pointers of statments stored
+*/
+set<shared_ptr<Statement>> Storage::getAllStmt() {
+	return this->statements;
 }

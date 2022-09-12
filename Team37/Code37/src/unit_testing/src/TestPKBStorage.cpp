@@ -124,5 +124,3 @@ TEST_CASE("Storage - Statement") {
     store->storeStmt(assignStmt);
     REQUIRE(store->getAllStmt().size() == 6);
 }
-    REQUIRE(store->getAllConst().size() == 2);
-}

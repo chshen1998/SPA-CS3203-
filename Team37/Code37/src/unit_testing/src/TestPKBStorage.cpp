@@ -6,6 +6,15 @@ using namespace std;
 #include "AST/SourceCode.h"
 #include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "AST/Expression/RelationalFactor/NameExpression.h"
+#include "AST/Statement/Statement.h"
+#include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/PrintStatement.h"
+#include "AST/Statement/ReadStatement.h"
+#include "AST/Statement/WhileStatement.h"
 
 
 TEST_CASE("Storage - AST") {
@@ -80,5 +89,40 @@ TEST_CASE("Storage - Constant") {
     // Check for repeated insertion of different item
     ConstantExpression other_const_0 = ConstantExpression(nullptr, 0);
     cmp_set.insert(other_const_0);
+    REQUIRE(store->getAllConst().size() == 2);
+}
+
+TEST_CASE("Storage - Statement") {
+    shared_ptr<Storage> store = make_shared<Storage>();
+
+    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(nullptr, 1, "x", nullptr);
+    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(nullptr, 2, "procedure_x");
+    shared_ptr<IfStatement> ifStmt = make_shared<IfStatement>(nullptr, 3, nullptr);
+    shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(nullptr, 4, "x");
+    shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(nullptr, 5, "x");
+    shared_ptr<WhileStatement> whileStmt = make_shared<WhileStatement>(nullptr, 6, nullptr);
+
+    store->storeStmt(assignStmt);
+    store->storeStmt(callStmt);
+    store->storeStmt(ifStmt);
+    store->storeStmt(printStmt);
+    store->storeStmt(readStmt);
+    store->storeStmt(whileStmt);
+
+    set<shared_ptr<Statement>> cmp_set;
+    cmp_set.insert(assignStmt);
+    cmp_set.insert(callStmt);
+    cmp_set.insert(ifStmt);
+    cmp_set.insert(printStmt);
+    cmp_set.insert(readStmt);
+    cmp_set.insert(whileStmt);
+
+    REQUIRE(store->getAllStmt().size() == 6);
+    REQUIRE(store->getAllStmt() == cmp_set);
+
+    // Test repeated insertion
+    store->storeStmt(assignStmt);
+    REQUIRE(store->getAllStmt().size() == 6);
+}
     REQUIRE(store->getAllConst().size() == 2);
 }

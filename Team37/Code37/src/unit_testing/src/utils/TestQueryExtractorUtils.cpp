@@ -14,7 +14,7 @@ vector<PqlToken> basic_tokens = {
 	PqlToken(TokenType::ASSIGN, "assign"),
 	PqlToken(TokenType::SYNONYM, "a"),
 	PqlToken(TokenType::SEMICOLON, ";"),
-	PqlToken(TokenType::EMPTY, ""),
+	PqlToken(TokenType::DECLARATION_END, ""),
 	PqlToken(TokenType::SELECT, "select"),
 	PqlToken(TokenType::SYNONYM, "v")
 };

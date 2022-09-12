@@ -22,10 +22,9 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
             PqlToken(TokenType::VARIABLE, "variable"),
             PqlToken(TokenType::SYNONYM, "v"),
             PqlToken(TokenType::SEMICOLON, ";"),
-            PqlToken(TokenType::DECLARATION_END, ""),
+            //PqlToken(TokenType::DECLARATION_END, ""),
             PqlToken(TokenType::SELECT, "Select"),
             PqlToken(TokenType::SYNONYM, "v"),
-            PqlToken(TokenType::END, "")
         };
       
         REQUIRE_NOTHROW(q.Tokenize());
@@ -57,7 +56,6 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
                 PqlToken(TokenType::COMMA, ","),
                 PqlToken(TokenType::SYNONYM, "v"),
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
-                PqlToken(TokenType::END, "")
             };
 
             REQUIRE_NOTHROW(q.Tokenize());
@@ -89,7 +87,6 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
                 PqlToken(TokenType::COMMA, ","),
                 PqlToken(TokenType::STRING, "\"x\""),
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
-                PqlToken(TokenType::END, "")
             };
 
             REQUIRE_NOTHROW(q.Tokenize());
@@ -121,7 +118,6 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
                 PqlToken(TokenType::COMMA, ","),
                 PqlToken(TokenType::SYNONYM, "a"),
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
-                PqlToken(TokenType::END, "")
             };
 
             REQUIRE_NOTHROW(q.Tokenize());
@@ -151,7 +147,6 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
                 PqlToken(TokenType::COMMA, ","),
                 PqlToken(TokenType::STRING, "\"count + 1\""),
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
-                PqlToken(TokenType::END, "")
             };
 
             REQUIRE_NOTHROW(q.Tokenize());
@@ -179,7 +174,6 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
                 PqlToken(TokenType::COMMA, ","),
                 PqlToken(TokenType::WILDCARD_STRING, "_\"x * y + z * t\"_"),
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
-                PqlToken(TokenType::END, "")
             };
 
             REQUIRE_NOTHROW(q.Tokenize());
@@ -222,7 +216,6 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
                 PqlToken(TokenType::COMMA, ","),
                 PqlToken(TokenType::WILDCARD, "_"),
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
-                PqlToken(TokenType::END, "")
             };
 
             REQUIRE_NOTHROW(q.Tokenize());
@@ -258,7 +251,6 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
                 PqlToken(TokenType::COMMA, ","),
                 PqlToken(TokenType::STRING, "\"x\""),
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
-                PqlToken(TokenType::END, "")
             };
 
             REQUIRE_NOTHROW(q.Tokenize());
@@ -289,7 +281,6 @@ TEST_CASE("Syntatically Invalid Queries") {
             PqlToken(TokenType::DECLARATION_END, ""),
             PqlToken(TokenType::SELECT, "Select"),
             PqlToken(TokenType::SYNONYM, "b"),
-            PqlToken(TokenType::END, "")
         };
 
         REQUIRE_NOTHROW(q.Tokenize());
@@ -327,7 +318,6 @@ TEST_CASE("Syntatically Invalid Queries") {
             PqlToken(TokenType::COMMA, ","),
             PqlToken(TokenType::SYNONYM, "b"),
             PqlToken(TokenType::CLOSED_BRACKET, ")"),
-            PqlToken(TokenType::END, "")
         };
 
         REQUIRE_NOTHROW(q.Tokenize());

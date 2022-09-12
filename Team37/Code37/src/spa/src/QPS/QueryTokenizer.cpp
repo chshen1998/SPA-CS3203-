@@ -125,7 +125,7 @@ void QueryTokenizer::Split() {
 void QueryTokenizer::ConvertIntoTokens() {
     // For Optimization
     tokens = vector<PqlToken>();
-    tokens.reserve(delimited_query.size() + 2); // Additional 2 for `declaration end` and `end`
+    tokens.reserve(delimited_query.size() + 1); // Additional 2 for `declaration end`
     
     int index = 0; // index of delimited_query that we are looping through
 
@@ -273,8 +273,6 @@ void QueryTokenizer::TokenizeAfterSelect(int& i) {
         tokens.push_back(PqlToken(currentToken, delimited_query[i]));
         i += 1;
     }
-
-    tokens.push_back(PqlToken(TokenType::END, ""));
 }
 
 
@@ -425,5 +423,5 @@ inline bool checkIfString(const string& s) {
 }
 
 inline bool checkIfDesignEntity(const string& s) {
-    return s == "stmt" || s == "read" || s == "print" || s == "call" || s == "while" || s == "if" || s == "assign" || s == variable" || s == "constant" || s == "procedure";
+    return s == "stmt" || s == "read" || s == "print" || s == "call" || s == "while" || s == "if" || s == "assign" || s == "variable" || s == "constant" || s == "procedure";
 }

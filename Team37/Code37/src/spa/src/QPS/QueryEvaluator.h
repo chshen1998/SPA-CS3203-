@@ -3,6 +3,8 @@
 #include <string>
 #include <set>
 #include <memory>
+#include <list>
+
 
 #include "../PKB/QueryServicer.h"
 #include "QPS.h"
@@ -15,10 +17,10 @@ class QueryEvaluator {
 public:
     PqlQuery pq;
     shared_ptr<QueryServicer> servicer;
-    set<string> selectResult;
+    list<string>  result;
 
-    QueryEvaluator(PqlQuery pqlQuery, shared_ptr<QueryServicer> s);
-    set<string> CallPKB();
+    QueryEvaluator(PqlQuery pqlQuery, shared_ptr<QueryServicer> s, list<string>& r);
+    void evaluate();
 
 private:
     void QuerySelect();

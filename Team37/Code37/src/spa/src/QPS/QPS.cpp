@@ -94,16 +94,14 @@ void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
     */
 void QPS::evaluate(string query, list<string>& results) {
 
-    /* Commented out as we are using mockTokens for now
+    /*
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
-    */
+    */ 
 
     QueryExtractor extractor = QueryExtractor(mockTokenize());
     PqlQuery pq = extractor.ExtractSemantics();
 
-    QueryEvaluator evaluator = QueryEvaluator(pq);
-    set<string> result = evaluator.CallPKB();
-
-    // string output = evaluator.convertToString(result);
+    QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+    evaluator.evaluate();
 }

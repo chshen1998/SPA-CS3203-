@@ -10,54 +10,43 @@ using namespace std;
 #include "../AST/TNode.h"
 #include "../PKB/PKB.h"
 #include "../PKB/QueryServicer.h"
-#include "../PKB/elementType.h"
 
 
-QueryEvaluator::QueryEvaluator(PqlQuery pqlQuery, shared_ptr<QueryServicer> s) {
+QueryEvaluator::QueryEvaluator(PqlQuery pqlQuery, shared_ptr<QueryServicer> s, list<string>& r) {
     pq = pqlQuery;
     servicer = s;
+    result = r;
 }
 
-set<string> QueryEvaluator::CallPKB() {
+void QueryEvaluator::evaluate() {
     QuerySelect();
-
-    evaluateSuchThatClause();
-    evaluatePatternClause();
-
-    return selectResult;
 }
 
 void QueryEvaluator::QuerySelect() {
     const string selectSynonym = pq.select;
     const TokenType type = pq.declarations[selectSynonym];
-    ElementType element;
+    set<string> setOfStrings;
 
-    switch (type) {
-    case TokenType::VARIABLE:
-        element = ElementType::VARIABLE;
-    case TokenType::CONSTANT:
-        element = ElementType::CONSTANT;
-    default:
-        throw "Token does not exists";
+    if (type == TokenType::VARIABLE) {
+        set<NameExpression> vars = servicer->getAllVar();
+        
+        for (auto v : vars) {
+            result.push_back(v.getVarName());
+        }
+    }
+    
+    else if (type == TokenType::CONSTANT) {
+        set<ConstantExpression> consts = servicer->getAllConst();
+
+        for (auto c : consts) {
+            setOfStrings.insert(to_string(c.getValue()));
+        }
     }
 
-    set<shared_ptr<TNode>> result = servicer->retrieveAll(element);
-
+    else {}
+   
 }
 
 
-void QueryEvaluator::evaluateSuchThatClause() {
-    if (pq.suchThatClause) {
-
-    }
-
-
-}
-
-void QueryEvaluator::evaluatePatternClause() {
-    if (pq.patternClause)
-
-
-}
 
 

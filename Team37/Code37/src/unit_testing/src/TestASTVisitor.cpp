@@ -21,8 +21,6 @@
 
 using namespace std;
 
-void require(bool b);
-
 
 TEST_CASE("Read Statements") {
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
@@ -43,7 +41,7 @@ TEST_CASE("Read Statements") {
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    require(storage->getAllVar().size() == 4);
+    REQUIRE(storage->getAllVar().size() == 4);
 }
 
 TEST_CASE("Print Statements") {
@@ -65,7 +63,7 @@ TEST_CASE("Print Statements") {
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    require(storage->getAllVar().size() == 4);
+    REQUIRE(storage->getAllVar().size() == 4);
 }
 
 TEST_CASE("Constant Expression") {
@@ -88,5 +86,5 @@ TEST_CASE("Constant Expression") {
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    require(storage->getAllConst().size() == 2);
+    REQUIRE(storage->getAllConst().size() == 2);
 }

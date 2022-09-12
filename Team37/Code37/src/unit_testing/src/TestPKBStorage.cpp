@@ -17,27 +17,24 @@ using namespace std;
 #include "AST/Statement/WhileStatement.h"
 
 
-void require(bool b);
-
-
 TEST_CASE("Storage - AST") {
     shared_ptr<Storage> store = make_shared<Storage>();
 
     // AST should be null if unassigned
-    require(store->retrieveAST() == nullptr);
+    REQUIRE(store->retrieveAST() == nullptr);
 
     shared_ptr<SourceCode> AST = make_shared<SourceCode>("../../../Test37/easy.txt");
     store->storeAST(AST);
 
     // Check if AST correctly stored
-    require(AST == store->retrieveAST());
+    REQUIRE(AST == store->retrieveAST());
 }
 
 TEST_CASE("Storage - Variable") {
     shared_ptr<Storage> store = make_shared<Storage>();
 
     // Var set should be empty
-    require(store->getAllVar().empty());
+    REQUIRE(store->getAllVar().empty());
 
     NameExpression var_x = NameExpression(nullptr, "x");
     NameExpression var_y = NameExpression(nullptr, "y");
@@ -45,30 +42,30 @@ TEST_CASE("Storage - Variable") {
     store->storeVar(var_x);
     store->storeVar(var_y);
 
-    require(store->getAllVar().size() == 2);
+    REQUIRE(store->getAllVar().size() == 2);
 
     set<NameExpression> cmp_set;
     cmp_set.insert(var_x);
     cmp_set.insert(var_y);
 
     //Check for correct inner items
-    require(store->getAllVar() == cmp_set);
+    REQUIRE(store->getAllVar() == cmp_set);
 
     // Check for repeated insertion of same item
     store->storeVar(var_x);
-    require(store->getAllVar().size() == 2);
+    REQUIRE(store->getAllVar().size() == 2);
 
     // Check for repeated insertion of different item
     NameExpression other_var_x = NameExpression(nullptr, "x");
     cmp_set.insert(other_var_x);
-    require(store->getAllVar().size() == 2);
+    REQUIRE(store->getAllVar().size() == 2);
 }
 
 TEST_CASE("Storage - Constant") {
     shared_ptr<Storage> store = make_shared<Storage>();
 
     // Const set should be empty
-    require(store->getAllConst().empty());
+    REQUIRE(store->getAllConst().empty());
 
     ConstantExpression const_0 = ConstantExpression(nullptr, 0);
     ConstantExpression const_1 = ConstantExpression(nullptr, -1);
@@ -76,23 +73,23 @@ TEST_CASE("Storage - Constant") {
     store->storeConst(const_0);
     store->storeConst(const_1);
 
-    require(store->getAllConst().size() == 2);
+    REQUIRE(store->getAllConst().size() == 2);
 
     set<ConstantExpression> cmp_set;
     cmp_set.insert(const_0);
     cmp_set.insert(const_1);
 
     //Check for correct inner items
-    require(store->getAllConst() == cmp_set);
+    REQUIRE(store->getAllConst() == cmp_set);
 
     // Check for repeated insertion of same item
     store->storeConst(const_1);
-    require(store->getAllConst().size() == 2);
+    REQUIRE(store->getAllConst().size() == 2);
 
     // Check for repeated insertion of different item
     ConstantExpression other_const_0 = ConstantExpression(nullptr, 0);
     cmp_set.insert(other_const_0);
-    require(store->getAllConst().size() == 2);
+    REQUIRE(store->getAllConst().size() == 2);
 }
 
 TEST_CASE("Storage - Statement") {
@@ -120,10 +117,10 @@ TEST_CASE("Storage - Statement") {
     cmp_set.insert(readStmt);
     cmp_set.insert(whileStmt);
 
-    require(store->getAllStmt().size() == 6);
-    require(store->getAllStmt() == cmp_set);
+    REQUIRE(store->getAllStmt().size() == 6);
+    REQUIRE(store->getAllStmt() == cmp_set);
 
     // Test repeated insertion
     store->storeStmt(assignStmt);
-    require(store->getAllStmt().size() == 6);
+    REQUIRE(store->getAllStmt().size() == 6);
 }

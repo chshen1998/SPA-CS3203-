@@ -8,6 +8,7 @@ using namespace std;
 #include <unordered_map>
 #include <set>
 #include <list>
+#include <iostream>
 
 #include "PKB/QueryServicer.h"
 
@@ -17,6 +18,8 @@ using namespace std;
  * existing token types
  */
 enum class TokenType {
+    UNKNOWN, 
+
     VARIABLE,
     CONSTANT,
     ASSIGN,
@@ -26,11 +29,16 @@ enum class TokenType {
     WHILE,
     IF,
     ELSE,
+    PRINT,
+    CALL,
 
+    BOOLEAN,
     SYNONYM,
     NUMBER,
-    STRING,
+    STRING, // Anything with a inverted commas ""
     STATEMENT_NUM,
+    WILDCARD,
+    WILDCARD_STRING,
 
     SELECT,
     PATTERN,
@@ -43,6 +51,7 @@ enum class TokenType {
 
     SUCH,
     THAT,
+    AND,
 
     SEMICOLON,
     COMMA,
@@ -50,6 +59,7 @@ enum class TokenType {
     CLOSED_BRACKET,
 
     EMPTY,
+    DECLARATION_END,
     END
 };
 
@@ -65,7 +75,20 @@ struct PqlToken {
         type = tokenType;
         value = tokenValue;
     }
+
+    bool operator==(const PqlToken& other) const {
+        return (other.type == type) && (other.value == value);
+    }
+
+public:
+    // For debugging when writing unit tests
+    friend ostream& operator<< (std::ostream& os, const PqlToken& token);
+       
 };
+
+// Created for debugging purposes
+ostream& operator<<(ostream& os, PqlToken& token);
+
 
 /*
  * PatternClause has 2 synonyms, the left synonym appears on the LHS of the assignment while the right synonym
@@ -83,7 +106,7 @@ struct Clause
  * ParsedQueries are created after extracting the components from the query.
  */
 struct PqlQuery {
-    unordered_map<string, TokenType> declarations;
+    unordered_map<string, TokenType> declarations = {};
     string select;
     Clause patternClause;
     Clause suchThatClause;
@@ -102,8 +125,6 @@ public:
     void evaluate(string query, list<string> &results);
 };
 
-// These are placeholder methods, delete after integration with PKB
-vector<PqlToken> mockTokenize();
 
 #endif //TEAM37_QPS_H
 

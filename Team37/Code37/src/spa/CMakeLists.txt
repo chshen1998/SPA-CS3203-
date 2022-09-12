@@ -54,7 +54,6 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
-        src/SP/ParserVisitor.h
         src/SP/SP.h
         src/SP/TokeniserVisitor.h
         src/SP/Tokenizer.h

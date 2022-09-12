@@ -83,8 +83,8 @@ set<TokenType> validPatternParameters = {
 Hard-coded for the demo for now.
 */
 vector<PqlToken> mockTokenize() {
+    //vector<PqlToken> v;
     vector<PqlToken> v;
-
     v.push_back(PqlToken(TokenType::VARIABLE, "variable"));
     v.push_back(PqlToken(TokenType::SYNONYM, "v"));
     v.push_back(PqlToken(TokenType::SEMICOLON, ";"));
@@ -104,8 +104,8 @@ void QPS::evaluate(string query, list<string>& results) {
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
     */
-
-    QueryExtractor extractor = QueryExtractor(mockTokenize());
+    auto v = mockTokenize();
+    QueryExtractor extractor = QueryExtractor(v);
     PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);

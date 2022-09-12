@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -14,7 +15,7 @@ public:
     vector<PqlToken>::iterator last;
     PqlQuery pq;
 
-    QueryExtractor(vector<PqlToken> tokens);
+    QueryExtractor(vector<PqlToken> &tokens);
 
     PqlQuery ExtractSemantics();
 

@@ -6,7 +6,7 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QPS.h"
 
-QueryExtractor::QueryExtractor(vector<PqlToken> tokens) {
+QueryExtractor::QueryExtractor(vector<PqlToken> &tokens) {
     next = tokens.begin();
     last = tokens.end();
     pq = PqlQuery();
@@ -104,11 +104,13 @@ void QueryExtractor::ExtractSuchThatClause() {
 }
 
 PqlToken QueryExtractor::getNextToken() {
-    if (next == last) {
-        return PqlToken(TokenType::END, "");
-    } else {
-        PqlToken token = *next;
+    if (next != last)
+    {
+	    PqlToken token = *next;
         ++next;
         return token;
     }
+
+    return PqlToken(TokenType::END, "");
+
 }

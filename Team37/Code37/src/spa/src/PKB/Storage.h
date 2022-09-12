@@ -21,27 +21,28 @@ private:
     shared_ptr<SourceCode> AST;
     set<NameExpression> variables;
     set<ConstantExpression> constants;
-	shared_ptr<SourceCode> AST;
-	set<NameExpression> variables;
-	set<ConstantExpression> constants;
-	set<shared_ptr<Statement>> statements;
+    set<shared_ptr<Statement>> statements;
 public:
     // Constructor
     Storage();
 
-	// AST
-	void storeAST(shared_ptr<SourceCode>);
-	shared_ptr<SourceCode> retrieveAST();
+    // AST
+    void storeAST(shared_ptr<SourceCode>);
 
-	// Variables
-	void storeVar(NameExpression);
-	set<NameExpression> getAllVar();
+    shared_ptr<SourceCode> retrieveAST();
 
-	// Constants
-	void storeConst(ConstantExpression);
-	set<ConstantExpression> getAllConst();
+    // Variables
+    void storeVar(NameExpression);
 
-	// Statements
-	void storeStmt(shared_ptr<Statement>);
-	set<shared_ptr<Statement>> getAllStmt();
+    set<NameExpression> getAllVar();
+
+    // Constants
+    void storeConst(ConstantExpression);
+
+    set<ConstantExpression> getAllConst();
+
+    // Statements
+    void storeStmt(shared_ptr<Statement>);
+
+    set<shared_ptr<Statement>> getAllStmt();
 };

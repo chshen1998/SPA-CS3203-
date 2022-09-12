@@ -73,10 +73,8 @@ add_library(spa ${srcs} ${headers}
         src/PKB/Storage.h
         src/PKB/Storage.cpp
         src/PKB/StatementType.h
-        src/PKB/ElementType.h
         src/SP/Keywords.cpp
         src/SP/Keywords.h
-        src/PKB/ElementType.h
         src/AST/ASTVisitor/ExtractASTVisitor.cpp
         src/AST/ASTVisitor/ExtractASTVisitor.h)
 

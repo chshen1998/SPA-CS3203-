@@ -12,7 +12,7 @@ public:
      * @param filepath The filepath to source code file
      * @return Sourcecode object
      */
-    static shared_ptr<SourceCode> parse(string filename);
+    static shared_ptr<SourceCode> parse(string filepath);
 };
 
 #endif

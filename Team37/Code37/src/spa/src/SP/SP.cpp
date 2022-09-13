@@ -8,8 +8,8 @@ using namespace std;
 #include "Parser.h"
 #include "Utilities/Utils.h"
 
-shared_ptr<SourceCode> SP::parse(string filename) {
-    string code = Utils::fileToString(filename);
+shared_ptr<SourceCode> SP::parse(string filepath) {
+    string code = Utils::fileToString(filepath);
     vector<string> procedures;
     procedures = Parser::extractProcedures(code, procedures);
     vector<string> procNames = Parser::extractProcNames(procedures);
@@ -20,7 +20,7 @@ shared_ptr<SourceCode> SP::parse(string filename) {
         statementLists.push_back(stmts);
     }
 
-    shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>(filename);
+    shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>(filepath);
     sourceCode = Tokenizer::tokenize(sourceCode, procNames, statementLists);
     return sourceCode;
 }

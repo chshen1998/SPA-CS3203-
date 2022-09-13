@@ -8,69 +8,6 @@ using namespace std;
 #include "SP/Utilities/Utils.h"
 #include "SP/Utilities/Keywords.h"
 
-// ================================== Utility functions ============================================
-
-//bool isNegative (int i) {
-//    return (i < 0) ;
-//}
-//
-//bool isPositive (int i) {
-//    return (i >= 0);
-//}
-//
-//vector<int> getOpIndexes(string line) {
-//    string operators[] = {"+", "-", "*", "/", "%"};
-//    vector<int> indexes;
-//    for (auto o : operators) {
-//        int i = line.find(o);
-//        indexes.push_back(i);
-//    }
-//    return indexes;
-//}
-//
-//bool isOperatedExpression(string line) {
-//    vector<int> indexes = getOpIndexes(line);
-//    bool isOpExpr = any_of(indexes.begin(), indexes.end(), isPositive);
-//    return isOpExpr;
-//}
-//
-//bool isConstant(string line) {
-//    if (!isOperatedExpression(line)) {
-//        for (char c : line) {
-//            if (std::isdigit(c) == 0) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-//    return false;
-//}
-//
-//bool isVariable(string line) {
-//    return !isConstant(line) && !isOperatedExpression(line);
-//}
-//
-//string removeParentheses(string line) {
-//    string parentheses = "(){}";
-//    for (auto p : parentheses) {
-//        line.erase(std::remove(line.begin(), line.end(), p), line.end());
-//    }
-//    return line;
-//}
-//
-//bool isRead(string line) {
-//    string keyword = Keywords::READ;
-//    int startIdx = line.find(keyword);
-//    return (startIdx != -1);
-//}
-//
-//bool isPrint(string line) {
-//    string keyword = Keywords::PRINT;
-//    int startIdx = line.find(keyword);
-//    return (startIdx != -1);
-//}
-
-// ================================== Tokenizing functions ============================================
 shared_ptr<ReadStatement> Tokenizer:: tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
     string keyword = Keywords::READ;
     int startIdx = line.find(keyword);

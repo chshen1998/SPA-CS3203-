@@ -6,6 +6,9 @@ using namespace std;
 #include <string>
 #include <vector>
 
+#include "AST/SourceCode.h"
+#include "AST/Procedure.h"
+
 class Parser {
 public:
     /**
@@ -25,11 +28,46 @@ public:
     static vector<string> extractProcNames(vector<string> procedures);
 
     /**
+     * Extracts the name of the procedure.
+     * @param procedure unprocessed procedure string
+     * @return names of the procedure
+     */
+    static string extractProcName(string procedure);
+
+    /**
      * Extracts statements of a procedure as strings.
      * @param procedure
      * @return StatementList which is a vector containing statements as strings.
      */
     static vector<string> extractStatements(string procedure);
+
+    /**
+     * Parses an unprocessed statement string and calls relevant Tokenizer method
+     * for that statement type.
+     * @param statement unprocessed statement string
+     * @param procedureNode parent Procedure node of the statement
+     * @return a Statement node
+     */
+    static shared_ptr<Statement> parseStatement(string statement, shared_ptr<Procedure> procedureNode);
+
+    /**
+     * Parses an unprocessed procedure string and produces a statement list which
+     * is a vector containing unprocessed statement strings.
+     * @param procedure unprocessed procedure string
+     * @param srcCodeNode parent SourceCode node of the procedure
+     * @return a Procedure node
+     */
+    static shared_ptr<Procedure> parseProcedure(string procedure, shared_ptr<SourceCode> srcCodeNode);
+
+    /**
+     * Parses unprocessed source code string and produces a procedure list
+     * which is a vector containing unprocessed procedures as strings.
+     * @param srcCode sourcecode which has been converted to a string
+     * @param filepath the filepath of the SIMPLE source code
+     * @return a SourceCode node
+     */
+    static shared_ptr<SourceCode> parseSourceCode(string srcCode, string filepath);
+
 };
 
 

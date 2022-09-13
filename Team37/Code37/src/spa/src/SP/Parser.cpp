@@ -4,8 +4,10 @@
 using namespace std;
 
 #include "Parser.h"
+#include "Tokenizer.h"
 #include "Utilities/Keywords.h"
 #include "Utilities/Utils.h"
+#include "AST/SourceCode.h"
 
 vector<string> Parser:: extractProcedures(string srcCode, vector<string> procedures) {
     string keyword = Keywords:: PROCEDURE;
@@ -45,6 +47,17 @@ vector<string> Parser:: extractProcNames(vector<string> procedures) {
     return names;
 }
 
+string Parser:: extractProcName(string procedure) {
+    string keyword = Keywords::PROCEDURE;
+
+    int procId = procedure.find(keyword);
+    procId = procId + keyword.length();
+    string bracket = "{";
+    int bracketId = procedure.find(bracket);
+    string name = procedure.substr(procId, bracketId - procId);
+    return Utils::trim(name);
+}
+
 vector<string> Parser:: extractStatements(string procedure) {
     vector<string> statements;
     string openBracket = Keywords::OPEN_EGYPTIAN;
@@ -64,6 +77,35 @@ vector<string> Parser:: extractStatements(string procedure) {
     }
 
     return statements;
+}
+
+shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<Procedure> procedureNode) {
+    // TODO: split into cases for (print, read, call, if-else, while, assign)
+}
+
+shared_ptr<Procedure> Parser::parseProcedure(string procedure, shared_ptr<SourceCode> srcCodeNode) {
+    vector<string> statementList = Parser::extractStatements(procedure);
+    string procedureName = Parser::extractProcName(procedure);
+    shared_ptr<Procedure> procedureNode = make_shared<Procedure>(srcCodeNode, procedureName);
+    for (auto stmt : statementList) {
+        shared_ptr<Statement> statement = Parser::parseStatement(stmt, procedureNode);
+        procedureNode->addStatement(statement);
+        statement->setParent(procedureNode);
+    }
+    return procedureNode;
+}
+
+shared_ptr<SourceCode> Parser::parseSourceCode(string srcCode, string filepath) {
+    shared_ptr<SourceCode> sourceCodeNode = make_shared<SourceCode>(filepath);
+    vector<string> procedureList;
+    procedureList = Parser::extractProcedures(srcCode, procedureList);
+    // call parseProcedure on each procedure
+    for (auto p: procedureList) {
+        shared_ptr<Procedure> procedure = Parser::parseProcedure(p, sourceCodeNode);
+        sourceCodeNode->addProcedure(procedure);
+        procedure->setParent(sourceCodeNode);
+    }
+    return sourceCodeNode;
 }
 
 // extract statements w bracket pairing

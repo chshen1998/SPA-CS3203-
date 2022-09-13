@@ -1,4 +1,4 @@
-#include "2DArray.h"
+#include "Array2D.h"
 
 Array2D::Array2D(int in_size) {
 	size = in_size;

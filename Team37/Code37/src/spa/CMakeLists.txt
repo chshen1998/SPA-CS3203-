@@ -77,8 +77,8 @@ add_library(spa ${srcs} ${headers}
         src/SP/Keywords.h
         src/AST/ASTVisitor/ExtractASTVisitor.cpp
         src/AST/ASTVisitor/ExtractASTVisitor.h 
-        src/PKB/Structures/2DArray.h
-        src/PKB/Structures/2DArray.cpp      
+        src/PKB/Structures/Array2D.h
+        src/PKB/Structures/Array2D.cpp      
         )
 
 # this makes the headers accessible for other projects which uses spa lib

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#include "PKB/Structures/2DArray.h"
+#include "PKB/Structures/Array2D.h"
 
 TEST_CASE("Structure - Matrix") {
     Array2D matrix = Array2D(2);

@@ -14,6 +14,7 @@ using namespace std;
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/ASTVisitor/ExtractASTVisitor.h"
 #include "../AST/Statement/Statement.h"
+#include "Structures/Array2D.h"
 
 
 class Storage : public enable_shared_from_this<Storage> {
@@ -21,7 +22,7 @@ private:
     shared_ptr<SourceCode> AST;
     set<NameExpression> variables;
     set<ConstantExpression> constants;
-    set<shared_ptr<Statement>> statements;
+    set<shared_ptr<Statement>> statements; 
 public:
     // Constructor
     Storage();

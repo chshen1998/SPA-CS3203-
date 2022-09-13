@@ -5,8 +5,8 @@
 using namespace std;
 
 #include "Tokenizer.h"
-#include "Utils.h"
-#include "Keywords.h"
+#include "SP/Utilities/Utils.h"
+#include "SP/Utilities/Keywords.h"
 
 // ================================== Utility functions ============================================
 

@@ -1,5 +1,4 @@
 #include <vector>
-#include <set>
 #include <algorithm>
 
 using namespace std;
@@ -8,7 +7,7 @@ using namespace std;
 #include "SP/Utilities/Utils.h"
 #include "SP/Utilities/Keywords.h"
 
-shared_ptr<ReadStatement> Tokenizer:: tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
+shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
     string keyword = Keywords::READ;
     int startIdx = line.find(keyword);
     int end = startIdx + keyword.length();
@@ -16,7 +15,7 @@ shared_ptr<ReadStatement> Tokenizer:: tokenizeRead(string line, int stmtNo, shar
     return make_shared<ReadStatement>(parent, stmtNo, Utils::trim(varName));
 }
 
-shared_ptr<PrintStatement> Tokenizer:: tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
+shared_ptr<PrintStatement> Tokenizer::tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
     string keyword = Keywords::PRINT;
     int startIdx = line.find(keyword);
     int end = startIdx + keyword.length();
@@ -24,7 +23,7 @@ shared_ptr<PrintStatement> Tokenizer:: tokenizePrint(string line, int stmtNo, sh
     return make_shared<PrintStatement>(parent, stmtNo, Utils::trim(varName));
 }
 
-vector<shared_ptr<Procedure> > Tokenizer:: tokenizeStatements(vector<shared_ptr<Procedure> > procedures, vector<vector<string> > statements) {
+vector<shared_ptr<Procedure> > Tokenizer::tokenizeStatements(vector<shared_ptr<Procedure> > procedures, vector<vector<string> > statements) {
     for (int i = 0; i < procedures.size(); i++) {
         shared_ptr<Procedure> procedure = procedures[i];
         for (int j = 0; j < statements[i].size(); j++) {
@@ -42,7 +41,7 @@ vector<shared_ptr<Procedure> > Tokenizer:: tokenizeStatements(vector<shared_ptr<
     return procedures;
 }
 
-vector<shared_ptr<Procedure> > Tokenizer:: tokenizeProcedure(vector<string> names, vector<vector<string> > statements) {
+vector<shared_ptr<Procedure> > Tokenizer::tokenizeProcedure(vector<string> names, vector<vector<string> > statements) {
     vector<shared_ptr<Procedure> > procedures;
     for (int i = 0; i < names.size(); i++) {
         shared_ptr<Procedure> procedure = make_shared<Procedure>(nullptr, names[i]);
@@ -52,7 +51,7 @@ vector<shared_ptr<Procedure> > Tokenizer:: tokenizeProcedure(vector<string> name
     return Tokenizer::tokenizeStatements(procedures, statements);
 }
 
-shared_ptr<SourceCode> Tokenizer:: tokenize(shared_ptr<SourceCode> srcCode, vector<string> names, vector<vector<string> > statements) {
+shared_ptr<SourceCode> Tokenizer::tokenize(shared_ptr<SourceCode> srcCode, vector<string> names, vector<vector<string> > statements) {
     vector<shared_ptr<Procedure> > procedures = Tokenizer::tokenizeProcedure(names, statements);
     for (auto p: procedures) {
         srcCode->addProcedure(p);

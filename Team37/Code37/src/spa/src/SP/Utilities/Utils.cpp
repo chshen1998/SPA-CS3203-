@@ -3,7 +3,7 @@
 
 const string Utils::WHITESPACE = " \n\r\t\f\v";
 
-string Utils:: fileToString(string filepath) {
+string Utils::fileToString(string filepath) {
     string s;
     string sTotal;
 

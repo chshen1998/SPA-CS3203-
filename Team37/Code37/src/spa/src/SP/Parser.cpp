@@ -1,4 +1,3 @@
-#include <sstream>
 #include <vector>
 
 using namespace std;
@@ -9,7 +8,8 @@ using namespace std;
 #include "Utilities/Utils.h"
 #include "AST/SourceCode.h"
 
-vector<string> Parser:: extractProcedures(string srcCode, vector<string> procedures) {
+//TODO: pass in pointer to procedures instead of pass by value
+vector<string> Parser::extractProcedures(string srcCode, vector<string> procedures) {
     string keyword = Keywords:: PROCEDURE;
 
     int startIdx = srcCode.find(keyword);
@@ -32,7 +32,7 @@ vector<string> Parser:: extractProcedures(string srcCode, vector<string> procedu
     return procedures;
 }
 
-string Parser:: extractProcName(string procedure) {
+string Parser::extractProcName(string procedure) {
     string keyword = Keywords::PROCEDURE;
 
     int procId = procedure.find(keyword);
@@ -43,7 +43,7 @@ string Parser:: extractProcName(string procedure) {
     return Utils::trim(name);
 }
 
-vector<string> Parser:: extractStatements(string procedure) {
+vector<string> Parser::extractStatements(string procedure) {
     vector<string> statements;
     //TODO: modify according to refactoring
     return statements;

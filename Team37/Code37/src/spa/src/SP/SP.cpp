@@ -4,7 +4,6 @@ using namespace std;
 
 #include "AST/SourceCode.h"
 #include "SP.h"
-#include "Tokenizer.h"
 #include "Parser.h"
 #include "Utilities/Utils.h"
 

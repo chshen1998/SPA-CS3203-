@@ -3,6 +3,26 @@
 
 const string Utils::WHITESPACE = " \n\r\t\f\v";
 
+string Utils:: fileToString(string filepath) {
+    string s;
+    string sTotal;
+
+    ifstream in;
+    in.open(filepath);
+
+    if (in.is_open()) {
+        while(!in.eof()) {
+            getline(in, s);
+            sTotal += s + "\n";
+        }
+        in.close();
+    } else {
+        cout << "Unable to open file." << endl;
+    }
+
+    return sTotal;
+}
+
 string Utils::ltrim(string s) {
     size_t start = s.find_first_not_of(Utils::WHITESPACE);
     return (start == std::string::npos) ? "" : s.substr(start);
@@ -134,3 +154,4 @@ bool Utils::isPrint(string line) {
     int startIdx = line.find(keyword);
     return (startIdx != -1);
 }
+

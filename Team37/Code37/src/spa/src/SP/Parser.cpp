@@ -1,33 +1,11 @@
 #include <sstream>
-#include <fstream>
 #include <vector>
-#include <iostream>
 
 using namespace std;
 
 #include "Parser.h"
 #include "Utilities/Keywords.h"
 #include "Utilities/Utils.h"
-
-string Parser:: fileToString(string filepath) {
-    string s;
-    string sTotal;
-
-    ifstream in;
-    in.open(filepath);
-
-    if (in.is_open()) {
-        while(!in.eof()) {
-            getline(in, s);
-            sTotal += s + "\n";
-        }
-        in.close();
-    } else {
-        cout << "Unable to open file." << endl;
-    }
-
-    return sTotal;
-}
 
 vector<string> Parser:: extractProcedures(string srcCode, vector<string> procedures) {
     string keyword = Keywords:: PROCEDURE;

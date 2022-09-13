@@ -9,23 +9,16 @@ using namespace std;
 class Parser {
 public:
     /**
-     * Converts a text file to a string for easier parsing.
-     * @param filepath filepath of sourcecode.
-     * @return text file as a string.
-     */
-    static string fileToString(string filename);
-
-    /**
-     * Extracts each procedure as a string.
+     * Extracts each procedure as a string. Ultimately produces ProcedureList.
      * @param srcCode source code as a string
      * @param procedures vector to store procedures as strings.
-     * @return vector containing procedures as strings
+     * @return ProcedureList which is a vector containing procedures as strings
      */
     static vector<string> extractProcedures(string srcCode, vector<string> procedures);
 
 
     /**
-     * Extracts the names of each procedure stored in a vector.
+     * Extracts the names of each procedure as strings to be stored in a vector.
      * @param procedures Vector storing the procedures.
      * @return names of each procedure.
      */
@@ -34,7 +27,7 @@ public:
     /**
      * Extracts statements of a procedure as strings.
      * @param procedure
-     * @return statements as strings.
+     * @return StatementList which is a vector containing statements as strings.
      */
     static vector<string> extractStatements(string procedure);
 };

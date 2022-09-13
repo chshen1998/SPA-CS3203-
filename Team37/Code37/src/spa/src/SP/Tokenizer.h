@@ -66,11 +66,11 @@ public:
 //    static void tokenizeOperatedExprByVar(string line, vector<int> indexes, string lhs, shared_ptr<TNode> parent, int lineNo);
 
 //    static void tokenizeCall(string line);
-//
+
 //    static void tokenizeCondition(string condition);
-//
+
 //    static void tokenizeIf(string line, int stmtNo, shared_ptr<TNode> parent);
-//
+
 //    static void tokenizeWhile(string line, int stmtNo, shared_ptr<TNode> parent);
 
 //    static void tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> parent);

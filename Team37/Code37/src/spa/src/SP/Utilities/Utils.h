@@ -5,10 +5,20 @@ using namespace std;
 
 #include <string>
 #include <vector>
+#include <sstream>
+#include <fstream>
+#include <iostream>
 
 class Utils {
 public:
     static const string WHITESPACE;
+
+    /**
+     * Converts a text file to a string for easier parsing.
+     * @param filepath filepath of sourcecode.
+     * @return text file as a string.
+     */
+    static string fileToString(string filename);
 
     /**
      * Trims whitespace on left of string

@@ -6,9 +6,10 @@ using namespace std;
 #include "SP.h"
 #include "Tokenizer.h"
 #include "Parser.h"
+#include "Utilities/Utils.h"
 
 shared_ptr<SourceCode> SP::parse(string filename) {
-    string code = Parser::fileToString(filename);
+    string code = Utils::fileToString(filename);
     vector<string> procedures;
     procedures = Parser::extractProcedures(code, procedures);
     vector<string> procNames = Parser::extractProcNames(procedures);

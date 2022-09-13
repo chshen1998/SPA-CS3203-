@@ -19,14 +19,6 @@ public:
      */
     static vector<string> extractProcedures(string srcCode, vector<string> procedures);
 
-
-    /**
-     * Extracts the names of each procedure as strings to be stored in a vector.
-     * @param procedures Vector storing the procedures.
-     * @return names of each procedure.
-     */
-    static vector<string> extractProcNames(vector<string> procedures);
-
     /**
      * Extracts the name of the procedure.
      * @param procedure unprocessed procedure string

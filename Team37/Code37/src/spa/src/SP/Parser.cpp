@@ -32,21 +32,6 @@ vector<string> Parser:: extractProcedures(string srcCode, vector<string> procedu
     return procedures;
 }
 
-vector<string> Parser:: extractProcNames(vector<string> procedures) {
-    string keyword = Keywords::PROCEDURE;
-    vector<string> names;
-
-    for (auto proc : procedures) {
-        int procId = proc.find(keyword);
-        procId = procId + keyword.length();
-        string bracket = "{";
-        int bracketId = proc.find(bracket);
-        string name = proc.substr(procId, bracketId - procId);
-        names.push_back(Utils::trim(name));
-    }
-    return names;
-}
-
 string Parser:: extractProcName(string procedure) {
     string keyword = Keywords::PROCEDURE;
 
@@ -60,22 +45,7 @@ string Parser:: extractProcName(string procedure) {
 
 vector<string> Parser:: extractStatements(string procedure) {
     vector<string> statements;
-    string openBracket = Keywords::OPEN_EGYPTIAN;
-    string closeBracket = Keywords::CLOSE_EGYPTIAN;
-    string line;
-
-    int openIdx = procedure.find(openBracket);
-    int closeIdx = procedure.find(closeBracket);
-
-    string allStatements = procedure.substr(openIdx + 1, closeIdx - openIdx - 1);
-
-    stringstream s (Utils::trim(allStatements));
-
-    while (getline(s, line, ';')) {
-        line = Utils::trim(line);
-        statements.push_back(line);
-    }
-
+    //TODO: modify according to refactoring
     return statements;
 }
 

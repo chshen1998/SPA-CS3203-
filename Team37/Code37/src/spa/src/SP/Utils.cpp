@@ -74,3 +74,63 @@ vector<vector<int> > Utils::getSets(vector<int> openIdx, vector<int> closedIdx) 
     }
     return sets;
 }
+
+bool Utils::isNegative (int i) {
+    return (i < 0) ;
+}
+
+bool Utils::isPositive (int i) {
+    return (i >= 0);
+}
+
+vector<int> Utils::getOpIndexes(string line) {
+    string operators[] = {"+", "-", "*", "/", "%"};
+    vector<int> indexes;
+    for (auto o : operators) {
+        int i = line.find(o);
+        indexes.push_back(i);
+    }
+    return indexes;
+}
+
+bool Utils::isOperatedExpression(string line) {
+    vector<int> indexes = getOpIndexes(line);
+    bool isOpExpr = any_of(indexes.begin(), indexes.end(), isPositive);
+    return isOpExpr;
+}
+
+bool Utils::isConstant(string line) {
+    if (!isOperatedExpression(line)) {
+        for (char c : line) {
+            if (std::isdigit(c) == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+bool Utils::isVariable(string line) {
+    return !isConstant(line) && !isOperatedExpression(line);
+}
+
+string Utils::removeParentheses(string line) {
+    string parentheses = "(){}";
+    for (auto p : parentheses) {
+        line.erase(std::remove(line.begin(), line.end(), p), line.end());
+    }
+    return line;
+}
+
+bool Utils::isRead(string line) {
+    string keyword = Keywords::READ;
+    int startIdx = line.find(keyword);
+    return (startIdx != -1);
+}
+
+bool Utils::isPrint(string line) {
+    string keyword = Keywords::PRINT;
+    int startIdx = line.find(keyword);
+    return (startIdx != -1);
+}

@@ -57,5 +57,23 @@ public:
      * @return vector containing all pairs of indexes (index of open bracket, index of close bracket)
      */
     static vector<vector<int> > getSets(vector<int> openIdx, vector<int> closedIdx);
+
+    static bool isNegative(int i);
+
+    static bool isPositive(int i);
+
+    static vector<int> getOpIndexes(string line);
+
+    static bool isOperatedExpression(string line);
+
+    static bool isConstant(string line);
+
+    static bool isVariable(string line);
+
+    static string removeParentheses(string line);
+
+    static bool isRead(string line);
+
+    static bool isPrint(string line);
 };
 #endif //SP_UTILS_H

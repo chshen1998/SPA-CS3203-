@@ -68,6 +68,29 @@ vector<string> SP:: extractProcNames(vector<string> procedures) {
     return names;
 }
 
+// extract statements w bracket pairing
+//vector<string> SP:: extractStatements(string procedure) {
+//    vector<string> statements;
+//    vector<int> openIndexes;
+//    vector<int> closeIndexes;
+//    openIndexes = Utils::getOpenIndexes(procedure, openIndexes, 0);
+//    closeIndexes = Utils::getClosedIndexes(procedure, closeIndexes, 0);
+//
+//    if (openIndexes.size() != closeIndexes.size()){
+//        // throw error
+//        if(openIndexes.size() < closeIndexes.size()) {
+//            cout << "Missing {" << endl;
+//        } else {
+//            cout << "Missing }" << endl;
+//        }
+//    } else {
+//        vector<vector<int> > allPairs = Utils::getSets(openIndexes, closeIndexes);
+//        sort(allPairs.begin(), allPairs.end());
+//        allPairs.erase(allPairs.begin()); // remove first set of brackets as it belongs to procedure
+//        // group if/else/while
+//    }
+//}
+
 vector<string> SP:: extractStatements(string procedure) {
     vector<string> statements;
     string openBracket = Keywords::OPEN_EGYPTIAN;

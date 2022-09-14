@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <unordered_set>
 
 using namespace std;
 
@@ -15,6 +16,7 @@ using namespace std;
 #include "../AST/ASTVisitor/ExtractASTVisitor.h"
 #include "../AST/Statement/Statement.h"
 #include "Structures/Array2D.h"
+#include "StmtStmtRelationType.h"
 
 
 class Storage : public enable_shared_from_this<Storage> {
@@ -22,7 +24,12 @@ private:
     shared_ptr<SourceCode> AST;
     set<NameExpression> variables;
     set<ConstantExpression> constants;
-    set<shared_ptr<Statement>> statements; 
+    set<shared_ptr<Statement>> statements;
+
+    Array2D Follows = NULL;
+    Array2D FollowsS = NULL;
+    Array2D Parent = NULL;
+    Array2D ParentS = NULL;
 public:
     // Constructor
     Storage();
@@ -46,4 +53,11 @@ public:
     void storeStmt(shared_ptr<Statement>);
 
     set<shared_ptr<Statement>> getAllStmt();
+
+    // Statement-Statemenet Relations
+    void storeRelation(int, int, bool, StmtStmtRelationType);
+    bool retrieveRelation(int, int, StmtStmtRelationType);
+    vector<int> forwardRetrieveRelation(int, StmtStmtRelationType);
+    vector<int> reverseRetrieveRelation(int, StmtStmtRelationType);
+    void buildStar(StmtStmtRelationType);
 };

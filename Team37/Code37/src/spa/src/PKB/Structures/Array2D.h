@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 
 using namespace std;
 
@@ -29,4 +31,7 @@ public:
 
 	// Reverse
 	vector<int> reverseRetrieve(int index2);
+
+	// Star Build
+	Array2D buildStar();
 };

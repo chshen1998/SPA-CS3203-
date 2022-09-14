@@ -1,0 +1,4 @@
+enum StmtStmtRelationType {
+	FOLLOWS,
+	PARENT
+};

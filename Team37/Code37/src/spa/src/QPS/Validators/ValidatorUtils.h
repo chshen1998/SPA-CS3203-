@@ -31,6 +31,8 @@ extern set<TokenType> validStatementRef;
 
 extern set<TokenType> validEntityRef;
 
+extern set<TokenType> validExpressionSpec;
+
 extern set<TokenType> validPatternParameterTypes;
 
 extern set<TokenType> validFollowsParameterTypes;

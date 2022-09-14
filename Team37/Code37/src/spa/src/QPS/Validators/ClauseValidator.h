@@ -19,7 +19,7 @@ public:
 protected:
 	ClauseValidator(unordered_map<string, TokenType> declarationsMap);
 
-	void validateParameters(PqlToken left, PqlToken right, set<TokenType> validTypes, string clauseType);
+	void validateParameters(PqlToken left, PqlToken right, set<TokenType> validLeftTypes, set<TokenType> validRightTypes, string clauseType);
 	bool isDeclared(PqlToken synonym);
 
 	unordered_map<string, TokenType> declarations;

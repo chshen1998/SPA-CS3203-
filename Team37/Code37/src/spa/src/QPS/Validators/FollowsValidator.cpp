@@ -11,5 +11,5 @@ FollowsValidator::FollowsValidator(unordered_map<string, TokenType> declarations
 
 void FollowsValidator::validate(PqlToken left, PqlToken right)
 {
-	validateParameters(left, right, validFollowsParameterTypes, "follows");
+	validateParameters(left, right, validStatementRef, validStatementRef, "follows");
 }

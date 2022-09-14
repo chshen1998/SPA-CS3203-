@@ -29,9 +29,9 @@ void ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken c
 	}
 }
 
-void ClauseValidator::validateParameters(PqlToken left, PqlToken right, set<TokenType> validTypes, string clauseType)
+void ClauseValidator::validateParameters(PqlToken left, PqlToken right, set<TokenType> validLeftTypes, set<TokenType> validRightTypes, string clauseType)
 {
-	if (!(validTypes.find(left.type) != validTypes.end()) || !(validTypes.find(right.type) != validTypes.end()))
+	if (!(validLeftTypes.find(left.type) != validLeftTypes.end()) || !(validRightTypes.find(right.type) != validRightTypes.end()))
 	{
 		throw SemanticError("Invalid parameters for " + clauseType + " clause");
 	}

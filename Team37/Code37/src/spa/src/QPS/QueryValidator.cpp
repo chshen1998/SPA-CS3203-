@@ -10,49 +10,45 @@ using namespace std;
 #include "Validators/DeclarationValidator.h"
 #include "Validators/PatternValidator.h"
 #include "Validators/SelectValidator.h"
+#include "Validators/ValidatorUtils.h"
 
 QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
     tokens = tokenVector;
     size = tokens.size();
     next = 0;
-    pe.type = ErrorType::NONE;
 }
 
 PqlError QueryValidator::ValidateQuery()
 {
-    validateDeclarations();
-
-    if (!errorFound()) 
-    {
-        validateSelect();
-    }
-
-    if (!errorFound())
-    {
-	    validateClauses();
-    }
+    try {
+        declarations = validateDeclarations();
     
-    return pe;
+        validateSelect();
+
+	    validateClauses();
+
+        return PqlError(ErrorType::NONE, "");
+    }
+    catch (SyntaxError e) {
+        return PqlError(ErrorType::SYNTAX_ERROR, e.message);
+    } 
+    catch (SemanticError e) {
+        return PqlError(ErrorType::SEMANTIC_ERROR, e.message);
+    }
 }
 
-void QueryValidator::validateDeclarations()
+unordered_map<string, TokenType> QueryValidator::validateDeclarations()
 {
-    DeclarationValidator validator = DeclarationValidator();
-
-    PqlToken declarationType = getNextToken();
-    while (declarationType.type != TokenType::DECLARATION_END)
-    {
-        PqlToken synonym = getNextToken();
-        PqlToken semicolon = getNextToken();
-
-        pe = validator.validate(declarationType, synonym, semicolon);
-        if (errorFound()) {
-            return;
-        }
-
-        declarations[synonym.value] = declarationType.type;
-        declarationType = getNextToken();
+    vector<PqlToken> declarationTokens;
+    PqlToken curr = getNextToken();
+    while (curr.type != TokenType::DECLARATION_END && curr.type != TokenType::END) {
+        declarationTokens.push_back(curr);
+        curr = getNextToken();
     }
+
+    DeclarationValidator validator = DeclarationValidator(declarationTokens);
+    unordered_map<string, TokenType> declarations = validator.validate();
+    return declarations;
 }
 
 void QueryValidator::validateSelect()
@@ -61,7 +57,7 @@ void QueryValidator::validateSelect()
     PqlToken select = getNextToken();
     PqlToken synonym = getNextToken();
 
-    pe = validator.validateParameters(select, synonym);
+    validator.validate(select, synonym);
 }
 
 void QueryValidator::validateClauses()
@@ -89,8 +85,8 @@ void QueryValidator::validateClauses()
         }
         else if (curr.type != TokenType::PATTERN)
         {
-            pe.type = ErrorType::SEMANTIC_ERROR;
-            pe.message = "Invalid characters after such that clause";
+           // pe.errorType = ErrorType::SEMANTIC_ERROR;
+           // pe.message = "Invalid characters after such that clause";
             return;
         }
 
@@ -100,24 +96,23 @@ void QueryValidator::validateClauses()
     curr = getNextToken();
     if (curr.type != TokenType::END)
     {
-        pe.type = ErrorType::SYNTAX_ERROR;
-        pe.message = "Invalid characters at end of query";
+        //pe.errorType = ErrorType::SYNTAX_ERROR;
+        //pe.message = "Invalid characters at end of query";
     }
 }
 
 void QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(declarations);
-    pe = validator.validateAssign(getNextToken());
-    if (errorFound()) { return; }
+    validator.validateAssign(getNextToken());
 
     PqlToken open = getNextToken();
     PqlToken left = getNextToken();
     PqlToken comma = getNextToken();
     PqlToken right = getNextToken();
     PqlToken close = getNextToken();
-    pe = validator.validateBrackets(open, comma, close);
-    pe = validator.validateParameters(left, right);
+    validator.validateBrackets(open, comma, close);
+    validator.validate(left, right);
 }
 
 void QueryValidator::validateSuchThat(PqlToken such)
@@ -125,23 +120,17 @@ void QueryValidator::validateSuchThat(PqlToken such)
     PqlToken that = getNextToken();
     unique_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
 
-    pe = validator->validateSuchThat(such, that);
-    if (errorFound()) { return; }
+    validator->validateSuchThat(such, that);
 
     PqlToken open = getNextToken();
     PqlToken left = getNextToken();
     PqlToken comma = getNextToken();
     PqlToken right = getNextToken();
     PqlToken close = getNextToken();
-    pe = validator->validateBrackets(open, comma, close);
-    pe = validator->validateParameters(left, right);
+    validator->validateBrackets(open, comma, close);
+    validator->validate(left, right);
 }
 
-
-bool QueryValidator::errorFound()
-{
-    return pe.type != ErrorType::NONE;
-}
 
 // TODO Implement Validators for such that clauses and complete this function
 unique_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)

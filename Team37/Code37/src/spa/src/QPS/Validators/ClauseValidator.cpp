@@ -6,29 +6,39 @@ using namespace std;
 
 #include "../QPS.h"
 #include "ClauseValidator.h"
+#include "ValidatorUtils.h"
 
 ClauseValidator::ClauseValidator(unordered_map<string, TokenType> declarationsMap)
 {
 	declarations = declarationsMap;
-	pe.type = ErrorType::NONE;
 }
 
-PqlError ClauseValidator::validateSuchThat(PqlToken such, PqlToken that)
+void ClauseValidator::validateSuchThat(PqlToken such, PqlToken that)
 {
 	if (such.type == TokenType::SUCH && that.type == TokenType::THAT)
 	{
-		updatePqlError(ErrorType::SYNTAX_ERROR, "Keywords such that must be used prior to a SuchThatClause");
+		throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
 	}
-	return pe;
 }
 
-PqlError ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken close)
+void ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken close)
 {
 	if (open.type == TokenType::OPEN_BRACKET && comma.type == TokenType::COMMA && close.type == TokenType::CLOSED_BRACKET)
 	{
-		updatePqlError(ErrorType::SYNTAX_ERROR, "The parameters passed to a clause must be enclosed within brackets and separated by a comma");
+		throw SyntaxError("The parameters passed to a clause must be enclosed within brackets and separated by a comma");
 	}
-	return pe;
+}
+
+void ClauseValidator::validateParameters(PqlToken left, PqlToken right, set<TokenType> validTypes, string clauseType)
+{
+	if (!(validTypes.find(left.type) != validTypes.end()) || !(validTypes.find(right.type) != validTypes.end()))
+	{
+		throw SemanticError("Invalid parameters for " + clauseType + " clause");
+	}
+	else if (!isDeclared(left) || !isDeclared(right))
+	{
+		throw SemanticError("Undeclared parameters for " + clauseType + " clause");
+	}
 }
 
 bool ClauseValidator::isDeclared(PqlToken synonym)
@@ -37,13 +47,3 @@ bool ClauseValidator::isDeclared(PqlToken synonym)
 	return (findit != declarations.end());
 }
 
-bool ClauseValidator::isTokenType(PqlToken synonym, TokenType type)
-{
-	return (declarations[synonym.value] == type);
-}
-
-void ClauseValidator::updatePqlError(ErrorType type, string msg)
-{
-	pe.type = type;
-	pe.message = msg;
-}

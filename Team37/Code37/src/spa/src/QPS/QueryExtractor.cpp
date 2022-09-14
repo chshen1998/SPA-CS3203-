@@ -87,12 +87,12 @@ void QueryExtractor::extractPatternClause() {
 
 void QueryExtractor::extractSuchThatClause() {
     PqlToken suchThatClause = getNextToken();
-    while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
-        if (suchThatClause.type == TokenType::END) {
-            return;
-        }
-        suchThatClause = getNextToken();
-    }
+    //while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
+    //    if (suchThatClause.type == TokenType::END) {
+    //        return;
+    //    }
+    //    suchThatClause = getNextToken();
+    //}
     const PqlToken openParenthesis = getNextToken();
     const PqlToken synonym1 = getNextToken();
     pq.suchThatClause.left = synonym1.value;

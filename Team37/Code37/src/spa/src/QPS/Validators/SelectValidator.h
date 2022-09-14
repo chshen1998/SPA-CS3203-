@@ -16,7 +16,7 @@
 class SelectValidator : public ClauseValidator {
 public:
 	SelectValidator(unordered_map<string, TokenType> declarations);
-	PqlError validateParameters(PqlToken declarationType, PqlToken synonym);
+	void validate(PqlToken declarationType, PqlToken synonym);
 };
 
 

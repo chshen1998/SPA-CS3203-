@@ -15,7 +15,7 @@ TEST_CASE("Valid declarations and select clause")
 	QueryValidator sut = QueryValidator(basic_tokens);
 	PqlError results = sut.ValidateQuery();
 
-	REQUIRE(results.type == ErrorType::NONE);
+	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
 
@@ -25,7 +25,7 @@ TEST_CASE("Missing semicolon")
 	QueryValidator sut = QueryValidator(missing_semicolon);
 	PqlError results = sut.ValidateQuery();
 
-	REQUIRE(results.type == ErrorType::SYNTAX_ERROR);
+	REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
 
 
@@ -35,7 +35,7 @@ TEST_CASE("Missing Select Clause")
 	QueryValidator sut = QueryValidator(missing_select);
 	PqlError results = sut.ValidateQuery();
 
-	REQUIRE(results.type == ErrorType::SEMANTIC_ERROR);
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
 }
 
 
@@ -45,5 +45,5 @@ TEST_CASE("Undeclared select parameters")
 	QueryValidator sut = QueryValidator(undeclared_select_parameter);
 	PqlError results = sut.ValidateQuery();
 
-	REQUIRE(results.type == ErrorType::SEMANTIC_ERROR);
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
 }

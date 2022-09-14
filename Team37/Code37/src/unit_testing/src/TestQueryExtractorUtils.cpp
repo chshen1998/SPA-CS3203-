@@ -20,6 +20,19 @@ vector<PqlToken> basic_tokens = {
 	PqlToken(TokenType::SYNONYM, "v")
 };
 
+vector<PqlToken> multi_declarations = {
+	PqlToken(TokenType::VARIABLE, "variable"),
+	PqlToken(TokenType::SYNONYM, "v1"),
+	PqlToken(TokenType::COMMA, ","),
+	PqlToken(TokenType::SYNONYM, "v2"),
+	PqlToken(TokenType::COMMA, ","),
+	PqlToken(TokenType::SYNONYM, "v3"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::SYNONYM, "v1")
+};
+
 vector<PqlToken> missing_semicolon = {
 	PqlToken(TokenType::VARIABLE, "variable"),
 	PqlToken(TokenType::SYNONYM, "v"),

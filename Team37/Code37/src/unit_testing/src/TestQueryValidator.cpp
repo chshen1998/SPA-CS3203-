@@ -18,6 +18,15 @@ TEST_CASE("Valid declarations and select clause")
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+TEST_CASE("Multiple variable declarations")
+{
+
+	QueryValidator sut = QueryValidator(multi_declarations);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
 
 TEST_CASE("Missing semicolon")
 {

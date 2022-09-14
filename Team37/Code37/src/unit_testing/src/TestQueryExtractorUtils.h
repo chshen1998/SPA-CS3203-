@@ -9,6 +9,8 @@ using namespace std;
 
 extern vector<PqlToken> basic_tokens;
 
+extern vector<PqlToken> multi_declarations;
+
 extern vector<PqlToken> missing_semicolon;
 
 extern vector<PqlToken> missing_select;

@@ -9,7 +9,6 @@ using namespace std;
 string inputQuery = "";
 QueryTokenizer q = QueryTokenizer("");
 
-/*
 TEST_CASE("Syntatically Valid and Correct Cases") {
 
     SECTION("Basic variable and Select statement") {
@@ -22,7 +21,7 @@ TEST_CASE("Syntatically Valid and Correct Cases") {
             PqlToken(TokenType::VARIABLE, "variable"),
             PqlToken(TokenType::SYNONYM, "v"),
             PqlToken(TokenType::SEMICOLON, ";"),
-            //PqlToken(TokenType::DECLARATION_END, ""),
+            PqlToken(TokenType::DECLARATION_END, ""),
             PqlToken(TokenType::SELECT, "Select"),
             PqlToken(TokenType::SYNONYM, "v"),
         };
@@ -359,5 +358,3 @@ TEST_CASE("Basic Invalid Query Strings") {
         REQUIRE_THROWS(q.Tokenize(), "Invalid Query syntax :: Token does not exist.");
     }
 }
-
-*/

@@ -6,11 +6,10 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QPS.h"
 
-QueryExtractor::QueryExtractor(vector<PqlToken> tokens)
+QueryExtractor::QueryExtractor(vector<PqlToken>& tokens)
 {
-    t = tokens;
-    next = 0;
-    last = tokens.size() - 1;
+    next = tokens.begin();
+    last = tokens.end();
     pq = PqlQuery();
  
 }
@@ -25,13 +24,12 @@ PqlQuery QueryExtractor::ExtractSemantics() {
 void QueryExtractor::ExtractDeclarations() {
     while (true) {
         const PqlToken declaration = getNextToken();
-        if (declaration.type == TokenType::EMPTY) {
+        if (declaration.type == TokenType::END) {
             // Reached end of declarations
             return;
         }
 
-        printf("Next: %d , Last: %d", next);
-        printf("next");
+        printf("Next: %d , Last: %d", next, last);
 
 
         const PqlToken synonym = getNextToken();
@@ -125,8 +123,8 @@ PqlToken QueryExtractor::getNextToken() {
     if (next == last) {
         return PqlToken(TokenType::END, "");
     } else {
-        PqlToken token = t[next];
-        next += 1;
+        PqlToken token = *next;
+        ++next;
         return token;
     }
 }

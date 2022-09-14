@@ -35,6 +35,7 @@ bool isSameClause(Clause ans, Clause result)
 	}
 }
 
+
 TEST_CASE("Test declartions") {
 	unordered_map<string, TokenType> ans = {
 		{"v", TokenType::VARIABLE},
@@ -46,6 +47,7 @@ TEST_CASE("Test declartions") {
 
 	REQUIRE(isSameMap(ans, results.declarations));
 }
+
 
 TEST_CASE("Test Such That clauses") {
 	QueryExtractor sut = QueryExtractor(basic_tokens);

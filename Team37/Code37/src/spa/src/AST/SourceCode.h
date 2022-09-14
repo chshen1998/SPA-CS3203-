@@ -10,7 +10,7 @@ class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
     vector<shared_ptr<Procedure> > procedureLst;
     string filename;
-    int numStmts = 0;
+    int numStmts = 3; // TEMP PLEASE REPLACE AND UPDATE STORAGE TEST
 public:
     SourceCode(string filename);
 

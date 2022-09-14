@@ -12,6 +12,7 @@ using namespace std;
 #include "QueryServicer.h"
 #include "Storage.h"
 #include "StatementType.h"
+#include "StmtStmtRelationType.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Statement/Statement.h"
@@ -35,4 +36,9 @@ public:
 	set<NameExpression> getAllVar();
     set<ConstantExpression> getAllConst();
 	set<shared_ptr<Statement>> getAllStmt(StatementType);
+
+	// Stmt Stmt Accessors
+	bool retrieveRelation(int, int, StmtStmtRelationType);
+	vector<int> forwardRetrieveRelation(int, StmtStmtRelationType);
+	vector<int> reverseRetrieveRelation(int, StmtStmtRelationType);
 };

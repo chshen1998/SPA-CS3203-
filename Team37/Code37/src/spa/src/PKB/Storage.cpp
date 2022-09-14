@@ -110,8 +110,14 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
 	case(FOLLOWS):
 		return Follows.retrieve(stmt1, stmt2);
 		break;
+	case(FOLLOWSS):
+		return FollowsS.retrieve(stmt1, stmt2);
+		break;
 	case(PARENT):
 		return Parent.retrieve(stmt1, stmt2);
+		break;
+	case(PARENTS):
+		return ParentS.retrieve(stmt1, stmt2);
 		break;
 	default:
 		throw invalid_argument("Not a Statement-Statement Realtion");
@@ -129,8 +135,14 @@ vector<int> Storage::reverseRetrieveRelation(int stmt2, StmtStmtRelationType typ
 	case(FOLLOWS):
 		return Follows.reverseRetrieve(stmt2);
 		break;
+	case(FOLLOWSS):
+		return FollowsS.reverseRetrieve(stmt2);
+		break;
 	case(PARENT):
 		return Parent.reverseRetrieve(stmt2);
+		break;
+	case(PARENTS):
+		return ParentS.reverseRetrieve(stmt2);
 		break;
 	default:
 		throw invalid_argument("Not a Statement-Statement Realtion");
@@ -148,8 +160,14 @@ vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType typ
 	case(FOLLOWS):
 		return Follows.forwardRetrieve(stmt1);
 		break;
+	case(FOLLOWSS):
+		return FollowsS.forwardRetrieve(stmt1);
+		break;
 	case(PARENT):
 		return Parent.forwardRetrieve(stmt1);
+		break;
+	case(PARENTS):
+		return ParentS.forwardRetrieve(stmt1);
 		break;
 	default:
 		throw invalid_argument("Not a Statement-Statement Realtion");

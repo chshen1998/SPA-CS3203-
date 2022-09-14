@@ -1,4 +1,7 @@
+#pragma once
 enum StmtStmtRelationType {
 	FOLLOWS,
-	PARENT
+	FOLLOWSS,
+	PARENT,
+	PARENTS
 };

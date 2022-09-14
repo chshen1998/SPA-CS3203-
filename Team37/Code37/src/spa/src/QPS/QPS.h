@@ -86,8 +86,22 @@ public:
        
 };
 
+enum class ErrorType
+{
+    SYNTAX_ERROR,
+    SEMANTIC_ERROR,
+    NONE
+};
+
+struct PqlError
+{
+    ErrorType type;
+    string message;
+};
+
 // Created for debugging purposes
 ostream& operator<<(ostream& os, PqlToken& token);
+
 
 
 /*
@@ -116,6 +130,7 @@ struct PqlQuery {
 extern unordered_map<string, TokenType> stringToTokenMap;
 extern set<TokenType> validDeclarations;
 extern set<TokenType> validSuchThatClauses;
+extern set<TokenType> validPatternParameters;
 
 class QPS {
     shared_ptr<QueryServicer> servicer;

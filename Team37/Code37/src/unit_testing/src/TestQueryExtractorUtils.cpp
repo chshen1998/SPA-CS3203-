@@ -1,5 +1,6 @@
 #include "QPS/QueryExtractor.h"
 #include "QPS/QPS.h"
+#include "TestQueryExtractorUtils.h"
 
 #include <vector>
 #include <unordered_map>
@@ -11,6 +12,30 @@ vector<PqlToken> basic_tokens = {
 	PqlToken(TokenType::VARIABLE, "variable"),
 	PqlToken(TokenType::SYNONYM, "v"),
 	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::ASSIGN, "assign"),
+	PqlToken(TokenType::SYNONYM, "a"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::SYNONYM, "v")
+};
+
+vector<PqlToken> missing_semicolon = {
+	PqlToken(TokenType::VARIABLE, "variable"),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::SYNONYM, "v")
+};
+
+vector<PqlToken> missing_select= {
+	PqlToken(TokenType::VARIABLE, "variable"),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+};
+
+vector<PqlToken> undeclared_select_parameter = {
 	PqlToken(TokenType::ASSIGN, "assign"),
 	PqlToken(TokenType::SYNONYM, "a"),
 	PqlToken(TokenType::SEMICOLON, ";"),

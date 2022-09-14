@@ -13,9 +13,9 @@ using namespace std;
 string SP:: fileToString(string filepath) {
     string s;
     string sTotal;
-
     ifstream in;
     in.open(filepath);
+
 
     if (in.is_open()) {
         while(!in.eof()) {

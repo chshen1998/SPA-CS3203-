@@ -71,6 +71,15 @@ set<TokenType> validSuchThatClauses = {
         TokenType::FOLLOWS_A
 };
 
+/*
+ * Set of valid such that clauses
+ */
+set<TokenType> validPatternParameters = {
+        TokenType::SYNONYM,
+        TokenType::CONSTANT,
+        TokenType::STRING,
+        TokenType::NUMBER
+};
 
 std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     string typeString = "Unknown";
@@ -125,14 +134,13 @@ void QPS::evaluate(string query, list<string>& results) {
     
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
-    
 
-    QueryExtractor extractor = QueryExtractor(tokens);
-    PqlQuery pq = extractor.ExtractSemantics();
+    QueryExtractor extractor(tokens);
+    PqlQuery pq = extractor.extractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);
     set<string> result = evaluator.CallPKB();
-
+ 
     // string output = evaluator.convertToString(result);
 }
 

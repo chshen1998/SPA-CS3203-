@@ -6,69 +6,60 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QPS.h"
 
-QueryExtractor::QueryExtractor(vector<PqlToken> tokens) {
-    next = tokens.begin();
-    last = tokens.end();
+QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector) {
+    tokens = tokenVector;
+    size = tokens.size();
+    next = 0;
     pq = PqlQuery();
 }
 
-PqlQuery QueryExtractor::ExtractSemantics() {
-    ExtractDeclarations();
-    ExtractSelect();
-    ExtractClauses();
+PqlQuery QueryExtractor::extractSemantics() {
+    extractDeclarations();
+    extractSelect();
+    extractClauses();
     return pq;
 }
 
-void QueryExtractor::ExtractDeclarations() {
-    while (true) {
-        const PqlToken declaration = getNextToken();
-        if (declaration.type == TokenType::EMPTY) {
-            // Reached end of declarations
-            return;
-        }
-        const PqlToken synonym = getNextToken();
-        const PqlToken semicolon = getNextToken();
+void QueryExtractor::extractDeclarations() {
+    PqlToken declaration = getNextToken();
+    while (declaration.type != TokenType::DECLARATION_END) {
+        PqlToken synonym = getNextToken();
+        getNextToken();
 
         pq.declarations[synonym.value] = declaration.type;
+        declaration = getNextToken();
     }
-
 }
 
-void QueryExtractor::ExtractSelect() {
-    const PqlToken selectClause = getNextToken();
-    if (selectClause.type != TokenType::SELECT) {
-        throw "Error: No select clause";
-    }
+void QueryExtractor::extractSelect() {
+    getNextToken();
     const PqlToken synonym = getNextToken();
-
-    for (const auto &[key, value]: pq.declarations) {
-        if (key == synonym.value) {
-            pq.select = synonym.value;
-            break;
-        }
-    }
-
-    if (pq.select.empty()) {
-        throw "Error: Invalid select clause parameter";
-    }
+    pq.select = synonym.value;
 }
 
-void QueryExtractor::ExtractClauses() {
+void QueryExtractor::extractClauses() {
     const PqlToken nextToken = getNextToken();
     if (nextToken.type == TokenType::END) {
         return;
     }
 
     if (nextToken.type == TokenType::PATTERN) {
-        ExtractPatternClause();
-        ExtractSuchThatClause();
+        extractPatternClause();
+
+        if (nextToken.type != TokenType::END) {
+			extractSuchThatClause();
+        }
+        
     } else {
-        ExtractSuchThatClause();
-        ExtractPatternClause();
+        extractSuchThatClause();
+
+        if (nextToken.type != TokenType::END) {
+            extractPatternClause();
+        }
     }
 }
 
-void QueryExtractor::ExtractPatternClause() {
+void QueryExtractor::extractPatternClause() {
     PqlToken patternSynonym = getNextToken();
     while (patternSynonym.type != TokenType::SYNONYM) {
         if (patternSynonym.type == TokenType::END) {
@@ -94,7 +85,7 @@ void QueryExtractor::ExtractPatternClause() {
     const PqlToken closedBracket = getNextToken();
 }
 
-void QueryExtractor::ExtractSuchThatClause() {
+void QueryExtractor::extractSuchThatClause() {
     PqlToken suchThatClause = getNextToken();
     while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
         if (suchThatClause.type == TokenType::END) {
@@ -114,11 +105,12 @@ void QueryExtractor::ExtractSuchThatClause() {
 }
 
 PqlToken QueryExtractor::getNextToken() {
-    if (next == last) {
+    if (next == size)
+    {
         return PqlToken(TokenType::END, "");
-    } else {
-        PqlToken token = *next;
-        ++next;
-        return token;
     }
+    PqlToken token = tokens[next];
+    next = next +1;
+    return token;
+
 }

@@ -7,7 +7,6 @@
 
 using namespace std;
 
-void require(bool b);
 
 TEST_CASE("Extract Procedures") {
     vector<string> procedures;
@@ -25,7 +24,7 @@ TEST_CASE("Extract Procedures") {
     vector<string> result;
     result = SP::extractProcedures(p, result);
 
-    require(result == procedures);
+    REQUIRE(result == procedures);
 }
 
 TEST_CASE("Extract procedure names") {
@@ -48,7 +47,7 @@ TEST_CASE("Extract procedure names") {
     string name = "main";
     expected.push_back(name);
 
-    require(expected == result);
+    REQUIRE(expected == result);
 }
 
 TEST_CASE("Extract Statements") {
@@ -77,7 +76,7 @@ TEST_CASE("Extract Statements") {
     expected.push_back(stmt5);
     expected.push_back(stmt6);
 
-    require(result == expected);
+    REQUIRE(result == expected);
 }
 
 TEST_CASE("Tokenize read") {
@@ -88,9 +87,9 @@ TEST_CASE("Tokenize read") {
     string line = "read v";
     shared_ptr<ReadStatement> result = Tokenizer::tokenizeRead(line, 1, procedure1);
 
-    require(result->getVariableName() == readStatement->getVariableName());
-    require(result->getLineNum() == readStatement->getLineNum());
-    require(result->getParent() == readStatement->getParent());
+    REQUIRE(result->getVariableName() == readStatement->getVariableName());
+    REQUIRE(result->getLineNum() == readStatement->getLineNum());
+    REQUIRE(result->getParent() == readStatement->getParent());
 }
 
 TEST_CASE("Tokenize print") {
@@ -101,9 +100,9 @@ TEST_CASE("Tokenize print") {
     string line = "print v";
     shared_ptr<PrintStatement> result = Tokenizer::tokenizePrint(line, 1, procedure1);
 
-    require(result->getVariableName() == printStatement->getVariableName());
-    require(result->getLineNum() == printStatement->getLineNum());
-    require(result->getParent() == printStatement->getParent());
+    REQUIRE(result->getVariableName() == printStatement->getVariableName());
+    REQUIRE(result->getLineNum() == printStatement->getLineNum());
+    REQUIRE(result->getParent() == printStatement->getParent());
 }
 
 TEST_CASE("Tokenize Statements") {
@@ -132,11 +131,11 @@ TEST_CASE("Tokenize Statements") {
 
     vector<shared_ptr<Statement> > resultStatements = result[0]->getStatements();
 
-    require(resultStatements[0]->getLineNum() == print1->getLineNum());
-    require(resultStatements[0]->getParent() == print1->getParent());
+    REQUIRE(resultStatements[0]->getLineNum() == print1->getLineNum());
+    REQUIRE(resultStatements[0]->getParent() == print1->getParent());
 
-    require(resultStatements[1]->getLineNum() == read1->getLineNum());
-    require(resultStatements[1]->getParent() == read1->getParent());
+    REQUIRE(resultStatements[1]->getLineNum() == read1->getLineNum());
+    REQUIRE(resultStatements[1]->getParent() == read1->getParent());
 
 }
 
@@ -170,10 +169,10 @@ TEST_CASE("Tokenize SourceCode") {
     vector<shared_ptr<Statement> > resultStmtLst = resultProcLst[0]->getStatements();
     string resultProcName = resultProcLst[0]->getProcedureName();
 
-    require(resultStmtLst[0]->getLineNum() == print1->getLineNum());
-    require(resultStmtLst[0]->getParent() == print1->getParent());
+    REQUIRE(resultStmtLst[0]->getLineNum() == print1->getLineNum());
+    REQUIRE(resultStmtLst[0]->getParent() == print1->getParent());
 
-    require(resultStmtLst[1]->getLineNum() == read1->getLineNum());
-    require(resultStmtLst[1]->getParent() == read1->getParent());
+    REQUIRE(resultStmtLst[1]->getLineNum() == read1->getLineNum());
+    REQUIRE(resultStmtLst[1]->getParent() == read1->getParent());
 
 }

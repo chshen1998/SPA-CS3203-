@@ -5,6 +5,7 @@ add_executable(unit_testing ${srcs}
         "src/TestPKBStorage.cpp"
         "src/TestAST.cpp"
         "src/TestASTVisitor.cpp"
+        "src/TestQueryTokenizer.cpp"
         "src/TestQueryExtractor.cpp"
         )
 

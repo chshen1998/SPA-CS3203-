@@ -5,7 +5,7 @@ using namespace std;
 
 #include "QueryEvaluator.h"
 #include "QPS.h"
-#include "../PKB/QueryServicer.h"
+#include "PKB/QueryServicer.h"
 
 
 QueryEvaluator::QueryEvaluator(PqlQuery pqlQuery) {

@@ -11,9 +11,10 @@ using namespace std;
 #include "Validators/PatternValidator.h"
 #include "Validators/SelectValidator.h"
 
-QueryValidator::QueryValidator(vector<PqlToken> &tokens) {
-    next = tokens.begin();
-    end = tokens.end();
+QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
+    tokens = tokenVector;
+    size = tokens.size();
+    next = 0;
     pe.type = ErrorType::NONE;
 }
 
@@ -151,14 +152,13 @@ unique_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type
 }
 
 
-PqlToken QueryValidator::getNextToken()
-{
-    if (next == end) {
+PqlToken QueryValidator::getNextToken() {
+    if (next == size)
+    {
         return PqlToken(TokenType::END, "");
     }
-    else {
-        const PqlToken token = *next;
-        next++;
-        return token;
-    }
+    PqlToken token = tokens[next];
+    next = next + 1;
+    return token;
+
 }

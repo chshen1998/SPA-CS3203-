@@ -7,8 +7,6 @@ using namespace std;
 #include "QPS.h"
 
 QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector) {
-    //next = tokens.begin();
-    //last = tokens.end();
     tokens = tokenVector;
     size = tokens.size();
     next = 0;

@@ -11,8 +11,6 @@
 
 class QueryExtractor {
 public:
-    //vector<PqlToken>::iterator next;
-    //vector<PqlToken>::iterator last;
     vector<PqlToken> tokens;
     int size;
     int next;

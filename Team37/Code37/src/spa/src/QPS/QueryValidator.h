@@ -15,12 +15,13 @@
 
 class QueryValidator {
 public:
-    vector<PqlToken>::iterator next;
-    vector<PqlToken>::iterator end;
+    vector<PqlToken> tokens;
+    int size;
+    int next;
     unordered_map<string, TokenType> declarations;
     PqlError pe;
 
-    QueryValidator(vector<PqlToken> &tokens);
+    QueryValidator(vector<PqlToken> tokens);
 
     PqlError ValidateQuery();
 

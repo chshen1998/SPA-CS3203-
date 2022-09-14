@@ -34,7 +34,7 @@ string Utils::rtrim(string s) {
 }
 
 string Utils::trim(string s) {
-    return rtrim(Utils::ltrim(s));
+    return rtrim(ltrim(s));
 }
 
 vector<int> Utils::getOpenIndexes(string procedure, vector<int> openIndexes, int offset) {

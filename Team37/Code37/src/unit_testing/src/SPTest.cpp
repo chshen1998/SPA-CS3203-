@@ -171,3 +171,16 @@ TEST_CASE("Tokenize SourceCode") {
     require(resultStmtLst[1]->getParent() == read1->getParent());
 
 }
+
+TEST_CASE("Extract Statements") {
+    string rawStatementString = "flag = 0;\n"
+                                "print flag;\n"
+                                "read flag;\n";
+    vector<string> statementList;
+    statementList = Parser::extractStatements(rawStatementString, statementList);
+
+    require(statementList[0] == "flag = 0");
+    require(statementList[1] == "print flag");
+    require(statementList[2] == "read flag");
+}
+

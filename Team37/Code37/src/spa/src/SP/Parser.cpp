@@ -10,7 +10,7 @@ using namespace std;
 
 //TODO: pass in pointer to procedures instead of pass by value
 vector<string> Parser::extractProcedures(string srcCode, vector<string> procedures) {
-    string keyword = Keywords:: PROCEDURE;
+    string keyword = Keywords::PROCEDURE;
 
     int startIdx = srcCode.find(keyword);
     if (startIdx != -1) {
@@ -43,10 +43,33 @@ string Parser::extractProcName(string procedure) {
     return Utils::trim(name);
 }
 
-vector<string> Parser::extractStatements(string procedure) {
-    vector<string> statements;
-    //TODO: modify according to refactoring
-    return statements;
+vector<string> Parser::extractStatements(string procedure, vector<string> statementList) {
+    if (procedure.length() == 0) {
+        return statementList;
+    }
+    // If it is a while or if statement, do bracket matching
+    // Else process until semicolon
+    if (procedure.substr(0, 2) == "if") {
+
+    } else if (procedure.substr(0, 5) == "while") {
+
+    } else {
+        string statement;
+        bool flag = true;
+        // Check character by character until semicolon reached
+        while (flag) {
+            char nextLetter = procedure[0];
+            procedure.erase(0, 1);
+            if (nextLetter == ';') {
+                flag = false;
+            } else {
+                statement.push_back(nextLetter);
+            }
+        }
+        statementList.push_back(statement);
+        procedure = Utils::trim(procedure);
+    }
+    return extractStatements(procedure, statementList);
 }
 
 shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<Procedure> procedureNode) {
@@ -54,7 +77,8 @@ shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<Proced
 }
 
 shared_ptr<Procedure> Parser::parseProcedure(string procedure, shared_ptr<SourceCode> srcCodeNode) {
-    vector<string> statementList = Parser::extractStatements(procedure);
+    vector<string> statementList;
+    statementList = Parser::extractStatements(procedure, statementList);
     string procedureName = Parser::extractProcName(procedure);
     shared_ptr<Procedure> procedureNode = make_shared<Procedure>(srcCodeNode, procedureName);
     for (auto stmt : statementList) {

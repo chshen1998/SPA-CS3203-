@@ -31,7 +31,7 @@ public:
      * @param procedure
      * @return StatementList which is a vector containing statements as strings.
      */
-    static vector<string> extractStatements(string procedure);
+    static vector<string> extractStatements(string procedure, vector<string> statementList);
 
     /**
      * Parses an unprocessed statement string and calls relevant Tokenizer method

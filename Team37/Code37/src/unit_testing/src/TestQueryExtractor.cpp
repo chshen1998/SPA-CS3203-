@@ -34,20 +34,21 @@ bool isSameClause(Clause ans, Clause result)
 	}
 }
 
+
 TEST_CASE("Test declartions") {
 	unordered_map<string, TokenType> ans = {
 		{"v", TokenType::VARIABLE},
 		{"a", TokenType::ASSIGN}
 	};
 
-	QueryExtractor sut = QueryExtractor(basic_tokens);
+	QueryExtractor sut(basic_tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(isSameMap(ans, results.declarations));
 }
 
 TEST_CASE("Test Select clauses") {
-	QueryExtractor sut = QueryExtractor(basic_tokens);
+	QueryExtractor sut(basic_tokens);
 	PqlQuery results = sut.ExtractSemantics();
 
 	REQUIRE(results.select == "v");

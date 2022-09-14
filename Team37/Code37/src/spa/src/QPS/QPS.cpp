@@ -105,12 +105,12 @@ void QPS::evaluate(string query, list<string>& results) {
     vector<PqlToken> tokens = tokenizer.Tokenize();
     */
     auto v = mockTokenize();
-    QueryExtractor extractor = QueryExtractor(v);
+    QueryExtractor extractor(v);
     PqlQuery pq = extractor.ExtractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);
     set<string> result = evaluator.CallPKB();
-
+ 
     // string output = evaluator.convertToString(result);
 }
 

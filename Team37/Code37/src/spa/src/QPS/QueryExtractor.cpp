@@ -6,9 +6,12 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QPS.h"
 
-QueryExtractor::QueryExtractor(vector<PqlToken> &tokens) {
-    next = tokens.begin();
-    last = tokens.end();
+QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector) {
+    //next = tokens.begin();
+    //last = tokens.end();
+    tokens = tokenVector;
+    size = tokens.size();
+    next = 0;
     pq = PqlQuery();
 }
 
@@ -104,13 +107,12 @@ void QueryExtractor::ExtractSuchThatClause() {
 }
 
 PqlToken QueryExtractor::getNextToken() {
-    if (next != last)
+    if (next == size)
     {
-	    PqlToken token = *next;
-        ++next;
-        return token;
+        return PqlToken(TokenType::END, "");
     }
-
-    return PqlToken(TokenType::END, "");
+    PqlToken token = tokens[next];
+    next = next +1;
+    return token;
 
 }

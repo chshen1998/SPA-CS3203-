@@ -11,17 +11,20 @@
 
 class QueryExtractor {
 public:
-    vector<PqlToken>::iterator next;
-    vector<PqlToken>::iterator last;
+    //vector<PqlToken>::iterator next;
+    //vector<PqlToken>::iterator last;
+    vector<PqlToken> tokens;
+    int size;
+    int next;
     PqlQuery pq;
 
-    QueryExtractor(vector<PqlToken> &tokens);
+    QueryExtractor(vector<PqlToken> tokens);
 
     PqlQuery ExtractSemantics();
 
 private:
     void ExtractDeclarations();
-
+    
     void ExtractSelect();
 
     void ExtractClauses();

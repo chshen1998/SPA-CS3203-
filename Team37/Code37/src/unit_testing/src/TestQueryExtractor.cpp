@@ -42,14 +42,14 @@ TEST_CASE("Test declartions") {
 	};
 
 	QueryExtractor sut(basic_tokens);
-	PqlQuery results = sut.ExtractSemantics();
+	PqlQuery results = sut.extractSemantics();
 
 	REQUIRE(isSameMap(ans, results.declarations));
 }
 
 TEST_CASE("Test Select clauses") {
 	QueryExtractor sut(basic_tokens);
-	PqlQuery results = sut.ExtractSemantics();
+	PqlQuery results = sut.extractSemantics();
 
 	REQUIRE(results.select == "v");
 }

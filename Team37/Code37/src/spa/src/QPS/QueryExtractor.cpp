@@ -15,14 +15,14 @@ QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector) {
     pq = PqlQuery();
 }
 
-PqlQuery QueryExtractor::ExtractSemantics() {
-    ExtractDeclarations();
-    ExtractSelect();
-    ExtractClauses();
+PqlQuery QueryExtractor::extractSemantics() {
+    extractDeclarations();
+    extractSelect();
+    extractClauses();
     return pq;
 }
 
-void QueryExtractor::ExtractDeclarations() {
+void QueryExtractor::extractDeclarations() {
     PqlToken declaration = getNextToken();
     while (declaration.type != TokenType::DECLARATION_END) {
         PqlToken synonym = getNextToken();
@@ -33,35 +33,35 @@ void QueryExtractor::ExtractDeclarations() {
     }
 }
 
-void QueryExtractor::ExtractSelect() {
+void QueryExtractor::extractSelect() {
     getNextToken();
     const PqlToken synonym = getNextToken();
     pq.select = synonym.value;
 }
 
-void QueryExtractor::ExtractClauses() {
+void QueryExtractor::extractClauses() {
     const PqlToken nextToken = getNextToken();
     if (nextToken.type == TokenType::END) {
         return;
     }
 
     if (nextToken.type == TokenType::PATTERN) {
-        ExtractPatternClause();
+        extractPatternClause();
 
         if (nextToken.type != TokenType::END) {
-			ExtractSuchThatClause();
+			extractSuchThatClause();
         }
         
     } else {
-        ExtractSuchThatClause();
+        extractSuchThatClause();
 
         if (nextToken.type != TokenType::END) {
-            ExtractPatternClause();
+            extractPatternClause();
         }
     }
 }
 
-void QueryExtractor::ExtractPatternClause() {
+void QueryExtractor::extractPatternClause() {
     PqlToken patternSynonym = getNextToken();
     while (patternSynonym.type != TokenType::SYNONYM) {
         if (patternSynonym.type == TokenType::END) {
@@ -87,7 +87,7 @@ void QueryExtractor::ExtractPatternClause() {
     const PqlToken closedBracket = getNextToken();
 }
 
-void QueryExtractor::ExtractSuchThatClause() {
+void QueryExtractor::extractSuchThatClause() {
     PqlToken suchThatClause = getNextToken();
     while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
         if (suchThatClause.type == TokenType::END) {

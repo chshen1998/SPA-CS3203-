@@ -9,7 +9,7 @@ using namespace std;
 string inputQuery = "";
 QueryTokenizer q = QueryTokenizer("");
 
-
+/*
 TEST_CASE("Syntatically Valid and Correct Cases") {
 
     SECTION("Basic variable and Select statement") {
@@ -360,3 +360,4 @@ TEST_CASE("Basic Invalid Query Strings") {
     }
 }
 
+*/

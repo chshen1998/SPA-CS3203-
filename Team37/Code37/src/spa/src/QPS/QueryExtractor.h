@@ -20,18 +20,18 @@ public:
 
     QueryExtractor(vector<PqlToken> tokens);
 
-    PqlQuery ExtractSemantics();
+    PqlQuery extractSemantics();
 
 private:
-    void ExtractDeclarations();
+    void extractDeclarations();
     
-    void ExtractSelect();
+    void extractSelect();
 
-    void ExtractClauses();
+    void extractClauses();
 
-    void ExtractPatternClause();
+    void extractPatternClause();
 
-    void ExtractSuchThatClause();
+    void extractSuchThatClause();
 
     PqlToken getNextToken();
 };

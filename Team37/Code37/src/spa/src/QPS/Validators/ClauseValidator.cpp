@@ -34,19 +34,12 @@ PqlError ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlTok
 bool ClauseValidator::isDeclared(PqlToken synonym)
 {
 	auto findit = declarations.find(synonym.value);
-	if (findit != declarations.end()) {
-		return true;
-	}
-	return false;
+	return (findit != declarations.end());
 }
 
 bool ClauseValidator::isTokenType(PqlToken synonym, TokenType type)
 {
-	if (declarations[synonym.value] == type)
-	{
-		return true;
-	}
-	return false;
+	return (declarations[synonym.value] == type);
 }
 
 void ClauseValidator::updatePqlError(ErrorType type, string msg)

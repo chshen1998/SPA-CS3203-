@@ -136,7 +136,7 @@ void QPS::evaluate(string query, list<string>& results) {
     vector<PqlToken> tokens = tokenizer.Tokenize();
 
     QueryExtractor extractor(tokens);
-    PqlQuery pq = extractor.ExtractSemantics();
+    PqlQuery pq = extractor.extractSemantics();
 
     QueryEvaluator evaluator = QueryEvaluator(pq);
     set<string> result = evaluator.CallPKB();

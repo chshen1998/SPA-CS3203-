@@ -31,9 +31,5 @@ PqlError PatternValidator::validateParameters(PqlToken left, PqlToken right)
 
 bool PatternValidator::isValidParameter(PqlToken token)
 {
-	if (validPatternParameters.find(token.type) != validPatternParameters.end())
-	{
-		return true;
-	}
-	return false;
+	return (validPatternParameters.find(token.type) != validPatternParameters.end());
 }

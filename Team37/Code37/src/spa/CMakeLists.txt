@@ -45,12 +45,15 @@ add_library(spa ${srcs} ${headers}
 
         src/AST/ASTVisitor/ASTVisitor.h
 
+        "src/QPS/Validators/ClauseValidator.h"
+        "src/QPS/Validators/DeclarationValidator.h"
+        "src/QPS/Validators/PatternValidator.h"
+        "src/QPS/Validators/SelectValidator.h"
+        "src/QPS/Validators/Validator.h"
         src/QPS/QPS.h
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
-
-        src/SP/Utils.h
         src/SP/SP.h
         src/SP/TokeniserVisitor.h
         src/SP/Tokenizer.h
@@ -61,10 +64,16 @@ add_library(spa ${srcs} ${headers}
         src/SP/Tokenizer.cpp
         src/SP/Visitor.cpp
 
+        "src/QPS/Validators/ClauseValidator.cpp"
+        "src/QPS/Validators/DeclarationValidator.cpp"
+        "src/QPS/Validators/PatternValidator.cpp"
+        "src/QPS/Validators/SelectValidator.cpp"
+        "src/QPS/Validators/Validator.cpp"
         src/QPS/QPS.cpp
         src/QPS/QueryExtractor.cpp
         src/QPS/QueryEvaluator.cpp
         src/QPS/QueryTokenizer.cpp
+        src/QPS/QueryValidator.cpp
 
         src/PKB/PKB.h
         src/PKB/PKB.cpp

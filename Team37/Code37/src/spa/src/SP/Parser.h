@@ -9,6 +9,7 @@ using namespace std;
 #include "AST/SourceCode.h"
 #include "AST/Procedure.h"
 #include "AST/Expression/ConditionalExpression/ConditionalExpression.h"
+#include "AST/Statement/WhileStatement.h"
 
 class Parser {
 public:

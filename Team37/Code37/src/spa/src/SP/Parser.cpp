@@ -58,30 +58,22 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElse) {
 }
 
 shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, int stmtNo, shared_ptr<TNode> parent) {
-    vector<int> openIndexes;
-    openIndexes = Utils::getOpenIndexes(whileBlock, openIndexes, 0, Keywords::OPEN_BRACKET);
+    size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
 
-    vector<int> closedIndexes;
-    closedIndexes = Utils::getClosedIndexes(whileBlock, closedIndexes, 0, Keywords::CLOSE_BRACKET);
-
-    vector<vector<int> > pairs = Utils::getSets(openIndexes, closedIndexes);
-    sort(pairs.begin(), pairs.end());
-
-    int condExprStart = pairs[0][0] + 1;
-    int condExprLength = pairs[0][1] - condExprStart;
-    string condExpr = whileBlock.substr(condExprStart, condExprLength);
+    string whileStr = whileBlock.substr(0, firstEgyptianOpen);
+    size_t condExprStart = whileStr.find_first_of(Keywords::OPEN_BRACKET) + 1;
+    size_t condExprEnd = whileStr.find_last_of(Keywords::CLOSE_BRACKET);
+    size_t condExprLength = condExprEnd - condExprStart;
+    string condExpr = Utils::trim(whileStr.substr(condExprStart, condExprLength));
 
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr);
     shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, stmtNo, condExprNode);
     condExprNode->setParent(whileStatement);
 
-    openIndexes = Utils::getOpenIndexes(whileBlock, openIndexes, 0, Keywords::OPEN_EGYPTIAN);
-    closedIndexes = Utils::getClosedIndexes(whileBlock, closedIndexes, 0, Keywords::CLOSE_EGYPTIAN);
-    pairs = Utils::getSets(openIndexes, closedIndexes);
-    sort(pairs.begin(), pairs.end());
-    int stmtLstStart = pairs[0][0] + 1;
-    int stmtLstLength = pairs[0][1] - stmtLstStart;
-    string stmtsBlock = whileBlock.substr(stmtLstStart, stmtLstLength);
+    size_t stmtLstStart = firstEgyptianOpen + 1;
+    size_t stmtLstEnd = whileBlock.find_last_of(Keywords::CLOSE_EGYPTIAN);
+    size_t stmtLstLength = stmtLstEnd - stmtLstStart;
+    string stmtsBlock = Utils::trim(whileBlock.substr(stmtLstStart, stmtLstLength));
     vector<string> stmts = Parser::extractStatements(stmtsBlock);
     for (auto s:stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, whileStatement);

@@ -10,6 +10,8 @@ public:
     static const string PROCEDURE;
     static const string OPEN_EGYPTIAN;
     static const string CLOSE_EGYPTIAN;
+    static const string OPEN_BRACKET;
+    static const string CLOSE_BRACKET;
     static const string PRINT;
     static const string READ;
     static const string WHILE;

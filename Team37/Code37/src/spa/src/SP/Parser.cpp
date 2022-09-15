@@ -49,7 +49,49 @@ vector<string> Parser::extractStatements(string procedure) {
     return statements;
 }
 
-shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<Procedure> procedureNode) {
+shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
+    //TODO
+}
+
+shared_ptr<IfStatement> Parser::parseIfElse(string ifElse) {
+    //TODO
+}
+
+shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, int stmtNo, shared_ptr<TNode> parent) {
+    vector<int> openIndexes;
+    openIndexes = Utils::getOpenIndexes(whileBlock, openIndexes, 0, Keywords::OPEN_BRACKET);
+
+    vector<int> closedIndexes;
+    closedIndexes = Utils::getClosedIndexes(whileBlock, closedIndexes, 0, Keywords::CLOSE_BRACKET);
+
+    vector<vector<int> > pairs = Utils::getSets(openIndexes, closedIndexes);
+    sort(pairs.begin(), pairs.end());
+
+    int condExprStart = pairs[0][0] + 1;
+    int condExprLength = pairs[0][1] - condExprStart;
+    string condExpr = whileBlock.substr(condExprStart, condExprLength);
+
+    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr);
+    shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, stmtNo, condExprNode);
+    condExprNode->setParent(whileStatement);
+
+    openIndexes = Utils::getOpenIndexes(whileBlock, openIndexes, 0, Keywords::OPEN_EGYPTIAN);
+    closedIndexes = Utils::getClosedIndexes(whileBlock, closedIndexes, 0, Keywords::CLOSE_EGYPTIAN);
+    pairs = Utils::getSets(openIndexes, closedIndexes);
+    sort(pairs.begin(), pairs.end());
+    int stmtLstStart = pairs[0][0] + 1;
+    int stmtLstLength = pairs[0][1] - stmtLstStart;
+    string stmtsBlock = whileBlock.substr(stmtLstStart, stmtLstLength);
+    vector<string> stmts = Parser::extractStatements(stmtsBlock);
+    for (auto s:stmts) {
+        shared_ptr<Statement> statement = Parser::parseStatement(s, whileStatement);
+        whileStatement->addStatement(statement);
+        statement->setParent(whileStatement);
+    }
+    return whileStatement;
+}
+
+shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode> parentNode) {
     // TODO: split into cases for (print, read, call, if-else, while, assign)
 }
 

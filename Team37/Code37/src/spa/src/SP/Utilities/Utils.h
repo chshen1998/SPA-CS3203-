@@ -46,18 +46,20 @@ public:
      * @param procedure procedure as a string
      * @param openIndexes vector to store indexes of open egyptian brackets
      * @param offset offset from the start of the string
+     * @param openBracket open bracket string, can be ( or {
      * @return Indexes of all open egyptian brackets in procedure.
      */
-    static vector<int> getOpenIndexes(string procedure, vector<int> openIndexes, int offset);
+    static vector<int> getOpenIndexes(string procedure, vector<int> openIndexes, int offset, string openBracket);
 
     /**
      * Recursively gets indexes of all close egyptian brackets in procedure string.
      * @param procedure procedure as a string
      * @param openIndexes vector to store indexes of open egyptian brackets
      * @param offset offset from the start of the string
+     * @param closeBracket close bracket string, can be } or )
      * @return Indexes of all close egyptian brackets in procedure.
      */
-    static vector<int> getClosedIndexes(string procedure, vector<int> closedIndexes, int offset);
+    static vector<int> getClosedIndexes(string procedure, vector<int> closedIndexes, int offset, string closeBracket);
 
     /**
      * Matches the open and close egyptian brackets to each other by finding the nearest close egyptian

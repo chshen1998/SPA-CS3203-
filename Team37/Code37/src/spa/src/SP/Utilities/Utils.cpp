@@ -37,28 +37,28 @@ string Utils::trim(string s) {
     return rtrim(Utils::ltrim(s));
 }
 
-vector<int> Utils::getOpenIndexes(string procedure, vector<int> openIndexes, int offset) {
-    string openBracket = Keywords::OPEN_EGYPTIAN;
+vector<int> Utils::getOpenIndexes(string procedure, vector<int> openIndexes, int offset, string openBracket) {
+//    string openBracket = Keywords::OPEN_EGYPTIAN;
 
     int idx = procedure.find(openBracket);
     if (idx != -1) {
         string remaining = procedure.substr(idx + 1, string::npos);
         idx = idx + offset;
         openIndexes.push_back(idx);
-        return getOpenIndexes(remaining, openIndexes, idx + 1);
+        return getOpenIndexes(remaining, openIndexes, idx + 1, openBracket);
     }
     return openIndexes;
 }
 
-vector<int> Utils::getClosedIndexes(string procedure, vector<int> closedIndexes, int offset) {
-    string openBracket = Keywords::CLOSE_EGYPTIAN;
+vector<int> Utils::getClosedIndexes(string procedure, vector<int> closedIndexes, int offset, string closeBracket) {
+//    string closeBracket = Keywords::CLOSE_EGYPTIAN;
 
-    int idx = procedure.find(openBracket);
+    int idx = procedure.find(closeBracket);
     if (idx != -1) {
         string remaining = procedure.substr(idx + 1, string::npos);
         idx = idx + offset;
         closedIndexes.push_back(idx);
-        return getClosedIndexes(remaining, closedIndexes, idx + 1);
+        return getClosedIndexes(remaining, closedIndexes, idx + 1, closeBracket);
     }
     return closedIndexes;
 }

@@ -7,7 +7,10 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-SelectValidator::SelectValidator(unordered_map<string, TokenType> declarations) : ClauseValidator(declarations) {}
+SelectValidator::SelectValidator(unordered_map<string, TokenType> declarationMap)
+{
+	declarations = declarationMap;
+}
 
 void SelectValidator::validate(PqlToken declarationType, PqlToken synonym)
 {
@@ -17,7 +20,7 @@ void SelectValidator::validate(PqlToken declarationType, PqlToken synonym)
 	} else if ((synonym.type != TokenType::SYNONYM))
 	{
 		throw SemanticError("Select clause must be followed by a synonym");
-	} else if (!isDeclared(synonym))
+	} else if (declarations.find(synonym.value) == declarations.end())
 	{
 		throw SemanticError("Undeclared parameter passed to select clause");
 	}

@@ -23,7 +23,7 @@ void ClauseValidator::validateSuchThat(PqlToken such, PqlToken that)
 
 void ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken close)
 {
-	if (open.type == TokenType::OPEN_BRACKET && comma.type == TokenType::COMMA && close.type == TokenType::CLOSED_BRACKET)
+	if (!(open.type == TokenType::OPEN_BRACKET) || !(comma.type == TokenType::COMMA) || !(close.type == TokenType::CLOSED_BRACKET))
 	{
 		throw SyntaxError("The parameters passed to a clause must be enclosed within brackets and separated by a comma");
 	}
@@ -34,10 +34,13 @@ void ClauseValidator::validateParameters(PqlToken left, PqlToken right, set<Toke
 	if (!(validLeftTypes.find(left.type) != validLeftTypes.end()) || !(validRightTypes.find(right.type) != validRightTypes.end()))
 	{
 		throw SemanticError("Invalid parameters for " + clauseType + " clause");
-	}
-	else if (!isDeclared(left) || !isDeclared(right))
+	} else if (left.type == TokenType::SYNONYM && !isDeclared(left))
 	{
-		throw SemanticError("Undeclared parameters for " + clauseType + " clause");
+		throw SemanticError(left.value + " is undeclared parameter for " + clauseType + " clause");
+	}
+	else if (right.type == TokenType::SYNONYM && !isDeclared(right))
+	{
+		throw SemanticError(right.value + " is undeclared parameter for " + clauseType + " clause");
 	}
 }
 

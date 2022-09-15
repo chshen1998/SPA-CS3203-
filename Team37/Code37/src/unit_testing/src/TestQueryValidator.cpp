@@ -9,9 +9,8 @@ using namespace std;
 
 #include "catch.hpp"
 
-TEST_CASE("Valid declarations and select clause")
+TEST_CASE("Valid declarations and select")
 {
-
 	QueryValidator sut = QueryValidator(basic_tokens);
 	PqlError results = sut.ValidateQuery();
 
@@ -20,7 +19,6 @@ TEST_CASE("Valid declarations and select clause")
 
 TEST_CASE("Multiple variable declarations")
 {
-
 	QueryValidator sut = QueryValidator(multi_declarations);
 	PqlError results = sut.ValidateQuery();
 
@@ -28,9 +26,8 @@ TEST_CASE("Multiple variable declarations")
 }
 
 
-TEST_CASE("Missing semicolon")
+TEST_CASE("Error: Missing semicolon")
 {
-
 	QueryValidator sut = QueryValidator(missing_semicolon);
 	PqlError results = sut.ValidateQuery();
 
@@ -38,9 +35,8 @@ TEST_CASE("Missing semicolon")
 }
 
 
-TEST_CASE("Missing Select Clause")
+TEST_CASE("Error: Missing Select Clause")
 {
-
 	QueryValidator sut = QueryValidator(missing_select);
 	PqlError results = sut.ValidateQuery();
 
@@ -48,11 +44,51 @@ TEST_CASE("Missing Select Clause")
 }
 
 
-TEST_CASE("Undeclared select parameters")
+TEST_CASE("Error: Undeclared select parameters")
 {
-
 	QueryValidator sut = QueryValidator(undeclared_select_parameter);
 	PqlError results = sut.ValidateQuery();
 
 	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Valid Pattern clause")
+{
+	QueryValidator sut = QueryValidator(valid_pattern);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+	//REQUIRE(results.message == "");
+}
+
+TEST_CASE("Error: Undeclared Pattern assign")
+{
+	QueryValidator sut = QueryValidator(undeclared_pattern_assign);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Error: Undeclared Pattern parameters")
+{
+	QueryValidator sut = QueryValidator(undeclared_pattern_parameter);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Error: Invalid Pattern parameter type")
+{
+	QueryValidator sut = QueryValidator(invalid_pattern_parameter);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Error: Missing open bracket")
+{
+	QueryValidator sut = QueryValidator(pattern_missing_open_bracket);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }

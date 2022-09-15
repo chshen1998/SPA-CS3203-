@@ -33,15 +33,4 @@ extern set<TokenType> validEntityRef;
 
 extern set<TokenType> validExpressionSpec;
 
-extern set<TokenType> validPatternParameterTypes;
-
-extern set<TokenType> validFollowsParameterTypes;
-
-extern set<TokenType> validUsesParameterTypes;
-
-extern set<TokenType> validModifiesParameterTypes;
-
-extern set<TokenType> validParentParameterTypes;
-
-
 #endif //TEAM37_VALIDATORUTILS_H

@@ -13,10 +13,13 @@
 #define TEAM37_SELECTVALIDATOR_H
 
 
-class SelectValidator : public ClauseValidator {
+class SelectValidator {
 public:
 	SelectValidator(unordered_map<string, TokenType> declarations);
 	void validate(PqlToken declarationType, PqlToken synonym);
+
+private:
+	unordered_map<string, TokenType> declarations;
 };
 
 

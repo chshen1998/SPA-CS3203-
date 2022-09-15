@@ -8,8 +8,12 @@ using namespace std;
 #include "QueryValidator.h"
 #include "Validators/ClauseValidator.h"
 #include "Validators/DeclarationValidator.h"
+#include "Validators/FollowsValidator.h"
+#include "Validators/ModifiesValidator.h"
 #include "Validators/PatternValidator.h"
+#include "Validators/ParentValidator.h"
 #include "Validators/SelectValidator.h"
+#include "Validators/UsesValidator.h"
 #include "Validators/ValidatorUtils.h"
 
 QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
@@ -66,7 +70,9 @@ void QueryValidator::validateClauses()
     if (curr.type == TokenType::END)
     {
         return;
-    } else if (curr.type == TokenType::PATTERN)
+    }
+
+	if (curr.type == TokenType::PATTERN)
     {
         validatePattern();
 
@@ -85,9 +91,7 @@ void QueryValidator::validateClauses()
         }
         else if (curr.type != TokenType::PATTERN)
         {
-           // pe.errorType = ErrorType::SEMANTIC_ERROR;
-           // pe.message = "Invalid characters after such that clause";
-            return;
+            throw SemanticError("Invalid characters after such that clause");
         }
 
         validatePattern();
@@ -96,8 +100,7 @@ void QueryValidator::validateClauses()
     curr = getNextToken();
     if (curr.type != TokenType::END)
     {
-        //pe.errorType = ErrorType::SYNTAX_ERROR;
-        //pe.message = "Invalid characters at end of query";
+        throw SyntaxError("Invalid characters at end of query");
     }
 }
 
@@ -132,11 +135,23 @@ void QueryValidator::validateSuchThat(PqlToken such)
 }
 
 
-// TODO Implement Validators for such that clauses and complete this function
 unique_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
 {
-    if (type == TokenType::USES) {
-        return make_unique<PatternValidator>(declarations);
+    if (type == TokenType::USES) 
+    {
+        return make_unique<UsesValidator>(declarations);
+    } else if (type == TokenType::FOLLOWS)
+    {
+        return make_unique<FollowsValidator>(declarations);
+    } else if (type == TokenType::MODIFIES)
+    {
+        return make_unique<ModifiesValidator>(declarations);
+    } else if (type == TokenType::PARENT)
+    {
+        return make_unique<ParentValidator>(declarations);
+    } else
+    {
+        throw SemanticError("Invalid relationship type");
     }
 }
 

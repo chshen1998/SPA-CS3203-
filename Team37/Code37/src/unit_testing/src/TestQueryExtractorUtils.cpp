@@ -23,15 +23,15 @@ vector<PqlToken> basic_tokens = {
 	PqlToken(TokenType::SYNONYM, "v")
 };
 
-vector<PqlToken> valid_pattern = addPatternClause(basic_tokens);
+// vector<PqlToken> valid_pattern = addPatternClause(basic_tokens);
 
-vector<PqlToken> valid_uses = addUsesClause(basic_tokens);
+//vector<PqlToken> valid_uses = addUsesClause(basic_tokens);
 
-vector<PqlToken> valid_modifies = addModifiesClause(basic_tokens);
+//vector<PqlToken> valid_modifies = addModifiesClause(basic_tokens);
 
-vector<PqlToken> valid_follows = addFollowsClause(basic_tokens);
+//vector<PqlToken> valid_follows = addFollowsClause(basic_tokens);
 
-vector<PqlToken> valid_parent = addParentClause(basic_tokens);
+//vector<PqlToken> valid_parent = addParentClause(basic_tokens);
 
 vector<PqlToken> multi_declarations = {
 	PqlToken(TokenType::VARIABLE, "variable"),

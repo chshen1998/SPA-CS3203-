@@ -9,15 +9,15 @@ using namespace std;
 
 extern vector<PqlToken> basic_tokens;
 
-extern vector<PqlToken> valid_pattern;
+//extern vector<PqlToken> valid_pattern;
 
-extern vector<PqlToken> valid_uses;
+//extern vector<PqlToken> valid_uses;
 
-extern vector<PqlToken> valid_modifies;
+//extern vector<PqlToken> valid_modifies;
 
-extern vector<PqlToken> valid_follows;
+//extern vector<PqlToken> valid_follows;
 
-extern vector<PqlToken> valid_parent;
+//extern vector<PqlToken> valid_parent;
 
 extern vector<PqlToken> multi_declarations;
 

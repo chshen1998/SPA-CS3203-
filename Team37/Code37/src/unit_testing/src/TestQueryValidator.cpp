@@ -54,7 +54,7 @@ TEST_CASE("Error: Undeclared select parameters")
 
 TEST_CASE("Valid Pattern clause")
 {
-	QueryValidator sut = QueryValidator(valid_pattern);
+	QueryValidator sut = QueryValidator(addPatternClause(basic_tokens));
 	PqlError results = sut.ValidateQuery();
 
 	REQUIRE(results.errorType == ErrorType::NONE);
@@ -102,7 +102,7 @@ TEST_CASE("Error: Missing such that")
 
 TEST_CASE("Valid Uses clause")
 {
-	QueryValidator sut = QueryValidator(valid_uses);
+	QueryValidator sut = QueryValidator(addUsesClause(basic_tokens));
 	PqlError results = sut.ValidateQuery();
 
 	REQUIRE(results.errorType == ErrorType::NONE);
@@ -110,7 +110,7 @@ TEST_CASE("Valid Uses clause")
 
 TEST_CASE("Valid Follows clause")
 {
-	QueryValidator sut = QueryValidator(valid_follows);
+	QueryValidator sut = QueryValidator(addFollowsClause(basic_tokens));
 	PqlError results = sut.ValidateQuery();
 
 	REQUIRE(results.errorType == ErrorType::NONE);
@@ -118,7 +118,7 @@ TEST_CASE("Valid Follows clause")
 
 TEST_CASE("Valid Modifies clause")
 {
-	QueryValidator sut = QueryValidator(valid_modifies);
+	QueryValidator sut = QueryValidator(addModifiesClause(basic_tokens));
 	PqlError results = sut.ValidateQuery();
 
 	REQUIRE(results.errorType == ErrorType::NONE);
@@ -126,7 +126,7 @@ TEST_CASE("Valid Modifies clause")
 
 TEST_CASE("Valid Parent clause")
 {
-	QueryValidator sut = QueryValidator(valid_parent);
+	QueryValidator sut = QueryValidator(addPatternClause(basic_tokens));
 	PqlError results = sut.ValidateQuery();
 
 	REQUIRE(results.errorType == ErrorType::NONE);

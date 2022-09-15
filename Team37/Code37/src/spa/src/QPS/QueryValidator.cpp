@@ -126,7 +126,7 @@ void QueryValidator::validateSuchThat(PqlToken such)
         throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
     }
 
-    unique_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
+    shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
 
     PqlToken open = getNextToken();
     PqlToken left = getNextToken();
@@ -138,20 +138,20 @@ void QueryValidator::validateSuchThat(PqlToken such)
 }
 
 
-unique_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
+shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
 {
     if (type == TokenType::USES) 
     {
-        return make_unique<UsesValidator>(declarations);
+        return shared_ptr<UsesValidator>(new UsesValidator(declarations));
     } else if (type == TokenType::FOLLOWS)
     {
-        return make_unique<FollowsValidator>(declarations);
+        return shared_ptr<FollowsValidator>(new FollowsValidator(declarations));
     } else if (type == TokenType::MODIFIES)
     {
-        return make_unique<ModifiesValidator>(declarations);
+        return shared_ptr<ModifiesValidator>(new ModifiesValidator(declarations));
     } else if (type == TokenType::PARENT)
     {
-        return make_unique<ParentValidator>(declarations);
+        return shared_ptr<ParentValidator>(new ParentValidator(declarations));
     } else
     {
         throw SemanticError("Invalid relationship type");

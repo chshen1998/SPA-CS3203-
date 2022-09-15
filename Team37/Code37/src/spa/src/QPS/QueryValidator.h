@@ -31,7 +31,7 @@ private:
     void validatePattern();
     void validateSuchThat(PqlToken such);
 
-    unique_ptr<ClauseValidator> createClauseValidator(TokenType type);
+    shared_ptr<ClauseValidator> createClauseValidator(TokenType type);
     PqlToken getNextToken();
 
 };

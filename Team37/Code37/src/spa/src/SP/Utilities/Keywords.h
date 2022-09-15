@@ -17,6 +17,7 @@ public:
     static const string WHILE;
     static const string IF;
     static const string ELSE;
+    static const string THEN;
 };
 
 

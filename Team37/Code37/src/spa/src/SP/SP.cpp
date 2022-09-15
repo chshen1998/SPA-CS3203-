@@ -6,10 +6,16 @@ using namespace std;
 #include "SP.h"
 #include "Parser.h"
 #include "Utilities/Utils.h"
+#include "InvalidSyntaxException.h"
 
 shared_ptr<SourceCode> SP::parse(string filepath) {
-    string srcCode = Utils::fileToString(filepath);
-    return Parser::parseSourceCode(srcCode, filepath);
+    try {
+        string srcCode = Utils::fileToString(filepath);
+        return Parser::parseSourceCode(srcCode, filepath);
+    } catch (InvalidSyntaxException e) {
+        return make_shared<SourceCode>(filepath);
+    }
+
 }
 
 // prev implementation of parse

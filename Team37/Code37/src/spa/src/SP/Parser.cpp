@@ -7,6 +7,7 @@ using namespace std;
 #include "Utilities/Keywords.h"
 #include "Utilities/Utils.h"
 #include "AST/SourceCode.h"
+#include "InvalidSyntaxException.h"
 
 //TODO: pass in pointer to procedures instead of pass by value
 vector<string> Parser::extractProcedures(string srcCode, vector<string> procedures) {
@@ -70,6 +71,15 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
 
 shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shared_ptr<TNode> parent) {
     size_t elseIndex = ifElseBlock.find(Keywords::ELSE);
+    size_t thenIndex = ifElseBlock.find(Keywords::THEN);
+
+    // Throw exceptions for missing else or then statements, will be caught in SP::Parser()
+    if ((int) elseIndex == -1) {
+        throw InvalidSyntaxException((char *)"Syntax error: if-else must have else block.");
+    }
+    if ((int) thenIndex == -1) {
+        throw InvalidSyntaxException((char *)"Syntax error: if statement must have 'then'.");
+    }
     string ifBlock = ifElseBlock.substr(0, elseIndex);
     string elseBlock = ifElseBlock.substr(elseIndex, string::npos);
 
@@ -80,7 +90,8 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shar
     shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, stmtNo, condExprNode);
     string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
     vector<string> stmts = Parser::extractStatements(ifStmtBlock);
-    for (auto s:stmts) {
+
+    for (auto s: stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
         ifNode->addThenStatement(statement);
         statement->setParent(ifNode);
@@ -89,12 +100,11 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shar
     firstEgyptianOpen = elseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string elseStmtBlock = Parser::extractStatementBlock(elseBlock, firstEgyptianOpen);
     stmts = Parser::extractStatements(elseStmtBlock);
-    for (auto s:stmts) {
+    for (auto s: stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
         ifNode->addElseStatement(statement);
         statement->setParent(ifNode);
     }
-
 //    parent->addStatement(ifNode); //TODO TNode has no addStatement method
 //    ifNode->setParent(parent); //not sure if this is done in parseStatement
     return ifNode;

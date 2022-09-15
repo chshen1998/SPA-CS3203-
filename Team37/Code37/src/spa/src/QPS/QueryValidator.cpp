@@ -22,7 +22,7 @@ QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
     next = 0;
 }
 
-PqlError QueryValidator::ValidateQuery()
+PqlError QueryValidator::validateQuery()
 {
     try {
         declarations = validateDeclarations();

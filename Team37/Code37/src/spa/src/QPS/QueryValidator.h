@@ -22,7 +22,7 @@ public:
 
     QueryValidator(vector<PqlToken> tokens);
 
-    PqlError ValidateQuery();
+    PqlError validateQuery();
 
 private:
     unordered_map<string, TokenType> validateDeclarations();

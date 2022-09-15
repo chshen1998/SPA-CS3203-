@@ -26,7 +26,6 @@ ExtractGeneralASTVisitor::ExtractGeneralASTVisitor(shared_ptr<Storage> storage) 
  * @param sourceCode
  */
 void ExtractGeneralASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
-
     vector<shared_ptr<Procedure>> procedures = sourceCode->getProcedures();
 
     for (auto procedure: procedures) {

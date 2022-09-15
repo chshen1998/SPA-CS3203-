@@ -14,9 +14,21 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     Follows = Array2D(AST->getNumStmts());
     Parent = Array2D(AST->getNumStmts());
 
-    // We start by traversing the AST using a Extract AST Visitor
-    shared_ptr<ExtractGeneralASTVisitor> visitor = make_shared<ExtractGeneralASTVisitor>(shared_from_this());
-    AST->accept(visitor);
+    shared_ptr<ExtractGeneralASTVisitor> generalAstVisitor = make_shared<ExtractGeneralASTVisitor>(shared_from_this());
+    shared_ptr<ExtractParentsASTVisitor> parentsAstVisitor = make_shared<ExtractParentsASTVisitor>(shared_from_this());
+    shared_ptr<ExtractFollowsASTVisitor> followsAstVisitor = make_shared<ExtractFollowsASTVisitor>(shared_from_this());
+
+    // we start by traversing the AST using a Extract AST Visitor
+    AST->accept(generalAstVisitor);
+
+    // traverse the AST using a parents AST Visitor
+    AST->accept(parentsAstVisitor);
+    this->buildStar(PARENT);
+
+    // traverse the AST using a follows AST Visitor
+    AST->accept(followsAstVisitor);
+    this->buildStar(FOLLOWS);
+
 }
 
 /*

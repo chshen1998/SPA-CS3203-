@@ -14,6 +14,9 @@ using namespace std;
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/ASTVisitor/ExtractGeneralASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractFollowsASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractParentsASTVisitor.h"
+
 #include "../AST/Statement/Statement.h"
 #include "Structures/Array2D.h"
 #include "StmtStmtRelationType.h"

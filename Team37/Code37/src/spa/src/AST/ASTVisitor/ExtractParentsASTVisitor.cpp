@@ -26,7 +26,11 @@ ExtractParentsASTVisitor::ExtractParentsASTVisitor(shared_ptr<Storage> storage) 
  * @param sourceCode
  */
 void ExtractParentsASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
+    vector<shared_ptr<Procedure>> procedures = sourceCode->getProcedures();
 
+    for (auto procedure: procedures) {
+        procedure->accept(shared_from_this());
+    }
 }
 
 /**
@@ -34,6 +38,10 @@ void ExtractParentsASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode
  * @param procedure
  */
 void ExtractParentsASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
+    vector<shared_ptr<Statement>> statements = procedure->getStatements();
+    for (auto statement: statements) {
+        statement->accept(shared_from_this());
+    }
 }
 
 // Statements
@@ -43,7 +51,6 @@ void ExtractParentsASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
  * @param readStmt
  */
 void ExtractParentsASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
-
 }
 
 /**
@@ -51,7 +58,6 @@ void ExtractParentsASTVisitor::visitReadStatement(shared_ptr<ReadStatement> read
  * @param printStmt
  */
 void ExtractParentsASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt) {
-
 }
 
 /**
@@ -59,7 +65,6 @@ void ExtractParentsASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> pr
  * @param callStmt
  */
 void ExtractParentsASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt) {
-
 }
 
 /**
@@ -67,7 +72,17 @@ void ExtractParentsASTVisitor::visitCallStatement(shared_ptr<CallStatement> call
  * @param whileStmt
  */
 void ExtractParentsASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> whileStmt) {
+    int parentLineNum = whileStmt->getLineNum();
 
+    vector<shared_ptr<Statement>> statements = whileStmt->getStatements();
+
+    for (auto statement: statements) {
+        // store Parent relationship
+        this->storage->storeRelation(parentLineNum, statement->getLineNum(), true, PARENT);
+
+        // iterate children
+        statement->accept(shared_from_this());
+    }
 }
 
 /**
@@ -75,7 +90,25 @@ void ExtractParentsASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> wh
  * @param ifStmt
  */
 void ExtractParentsASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
+    int parentLineNum = ifStmt->getLineNum();
 
+    vector<shared_ptr<Statement>> thenStmts = ifStmt->getThenStatements();
+    for (auto statement: thenStmts) {
+        // store Parent relationship
+        this->storage->storeRelation(parentLineNum, statement->getLineNum(), true, PARENT);
+
+        // iterate children
+        statement->accept(shared_from_this());
+    }
+
+    vector<shared_ptr<Statement>> elseStmts = ifStmt->getElseStatements();
+    for (auto statement: elseStmts) {
+        // store Parent relationship
+        this->storage->storeRelation(parentLineNum, statement->getLineNum(), true, PARENT);
+
+        // iterate children
+        statement->accept(shared_from_this());
+    }
 }
 
 /**

@@ -183,6 +183,22 @@ vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType typ
             return ParentS.forwardRetrieve(stmt1);
             break;
         default:
+            throw invalid_argument("Not a Statement-Statement Realtion");
+    }
+    switch (type) {
+        case (FOLLOWS):
+            return Follows.forwardRetrieve(stmt1);
+            break;
+        case (FOLLOWSS):
+            return FollowsS.forwardRetrieve(stmt1);
+            break;
+        case (PARENT):
+            return Parent.forwardRetrieve(stmt1);
+            break;
+        case (PARENTS):
+            return ParentS.forwardRetrieve(stmt1);
+            break;
+        default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }
 }

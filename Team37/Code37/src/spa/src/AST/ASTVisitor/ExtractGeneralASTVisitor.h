@@ -9,8 +9,13 @@ using namespace std;
 #include <vector>
 #include <memory>
 
+/**
+ * ExtractASTVisitor is responsible for visiting AST
+ */
 class ExtractGeneralASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
+    vector<shared_ptr<NameExpression>> VisitedTNodeVariables;
+    vector<shared_ptr<ConstantExpression>> VisitedConstants;
     shared_ptr<Storage> storage;
 public:
     // Constructor

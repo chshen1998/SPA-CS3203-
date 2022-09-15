@@ -140,8 +140,8 @@ void QPS::evaluate(string query, list<string>& results) {
     QueryExtractor extractor(tokens);
     PqlQuery pq = extractor.extractSemantics();
 
-    QueryEvaluator evaluator = QueryEvaluator(pq);
-    set<string> result = evaluator.CallPKB();
+    QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+    evaluator.evaluate();
  
     // string output = evaluator.convertToString(result);
 }

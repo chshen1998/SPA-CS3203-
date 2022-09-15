@@ -16,7 +16,7 @@ public:
     int next;
     PqlQuery pq;
 
-    QueryExtractor(vector<PqlToken>& tokens);
+    QueryExtractor(vector<PqlToken> tokenVector);
 
     PqlQuery extractSemantics();
 

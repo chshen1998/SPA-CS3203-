@@ -46,6 +46,9 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {",", TokenType::COMMA},
         {"(", TokenType::OPEN_BRACKET},
         {")", TokenType::CLOSED_BRACKET},
+        {"<", TokenType::OPEN_ARROW},
+        {">", TokenType::CLOSED_ARROW},
+
 };
 
 /*

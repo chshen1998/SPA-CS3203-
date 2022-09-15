@@ -11,14 +11,6 @@ using namespace std;
 #include <algorithm>
 
 
-int suchThatClauseTypeIndex = 2;
-int suchThatClauseFirstArgIndex = 4;
-int suchThatClauseSecondArgIndex = 6;
-
-int patternClauseFirstArgIndex = 1;
-int patternClauseSecondArgIndex = 3;
-int patternClauseThirdArgIndex = 5;
-
 unordered_map<TokenType, SpecificClause> tokenToClauseMap = {
     {TokenType::USES, SpecificClause::USE},
     {TokenType::FOLLOWS, SpecificClause::FOLLOWS},
@@ -31,18 +23,14 @@ unordered_map<TokenType, SpecificClause> tokenToClauseMap = {
     {TokenType::IF, SpecificClause::IF }
 };
 
-QueryTokenizer::QueryTokenizer(string queryString) {
-    query = queryString;
-}
+QueryTokenizer::QueryTokenizer(string queryString) : query(queryString) { }
 
 void QueryTokenizer::resetQueryString(string queryString) {
     query = queryString;
-    delimited_query = vector<string>();
 }
 
-
 vector<PqlToken> QueryTokenizer::Tokenize() {
-    if (query.size() == 0) {
+    if (query.empty()) {
         throw "Invalid Query Syntax :: Query Length is zero.";
     }
 
@@ -52,11 +40,10 @@ vector<PqlToken> QueryTokenizer::Tokenize() {
     return tokens;
 }
 
-
 void QueryTokenizer::Split() {
     string currentString;
     bool selectExists = false;
-    bool inString = false;
+    bool insideInvertedCommas = false;
 
     // Optimization of vector
     delimited_query = vector<string>();
@@ -65,11 +52,10 @@ void QueryTokenizer::Split() {
     for (int i = 0; i < query.size(); i++) {
         // If the character is a blank (whitespace or tab etc)
         if (isspace(query[i])) {
-            if (currentString.size() == 0) {
+            if (currentString.empty()) {
                 continue;
             }
-           // TODO: Confirm if we want to keep the spaces for pattern arguments with ""
-            else if (inString) {
+            else if (insideInvertedCommas) {
                 currentString += query[i];
             }
             else {
@@ -89,7 +75,7 @@ void QueryTokenizer::Split() {
 
         else {
             if (query[i] == '"') {
-                inString = !inString;
+                insideInvertedCommas = !insideInvertedCommas;
             }
             currentString += query[i];
             selectExists = selectExists || currentString == "Select";
@@ -97,11 +83,11 @@ void QueryTokenizer::Split() {
     }
 
   
-    if (currentString.size() > 0) {
+    if (!currentString.empty()) {
         delimited_query.push_back(currentString);
     }
 
-    if (delimited_query.size() == 0) {
+    if (delimited_query.empty()) {
         throw "Invalid Query Syntax :: Query is blank.";
     }
 
@@ -162,7 +148,7 @@ void QueryTokenizer::TokenizeBeforeSelect(int& i) {
 
         else {
             // Similarly, this should be a synonym after a design entity, but we pass it whatever fits
-            currentToken = checkTokenType(delimited_query[i], TokenizeState::DECLARATION, SpecificClause::NONE, ClauseArgNumber::NONE);
+            currentToken = checkDeclarationTokenType(delimited_query[i]);
         }
 
         tokens.push_back(PqlToken(currentToken, delimited_query[i]));
@@ -170,6 +156,7 @@ void QueryTokenizer::TokenizeBeforeSelect(int& i) {
     }
 }
 
+// Add 'AND' logic for Such That and Pattern Clause
 
 void QueryTokenizer::TokenizeAfterSelect(int& i) {
     TokenizeState currentState = TokenizeState::FINDING_KEYWORDS;
@@ -194,14 +181,12 @@ void QueryTokenizer::TokenizeAfterSelect(int& i) {
                 }
             }
             else {
-                currentToken = checkTokenType(delimited_query[i], currentState, clauseType, ClauseArgNumber::NONE);
+                // If this token is not where it is supposed to be, it will throw an error anyway
+                currentToken = TokenType::UNKNOWN;
             }
         }
 
-        /*
-        * For basic PQL, We only check for ONE synonym after 'Select'
-        * TODO: For Advanced PQL, we need to check of elem | tuple etc.
-        */
+        // TODO: add tuple of elements logic
         else if (currentState == TokenizeState::SELECT) {
             // If it is a symbol like semicolon, or comma
             // Validator will throw an error here
@@ -210,21 +195,17 @@ void QueryTokenizer::TokenizeAfterSelect(int& i) {
             }
             else {
                 // If it is not a synonym, checkTokenType will assign whatever token the string is, and validator will catch this error
-                currentToken = checkTokenType(delimited_query[i], TokenizeState::SELECT, SpecificClause::NONE, ClauseArgNumber::NONE);
+                currentToken = checkSelectTokenType(delimited_query[i]);
             }
             currentState = TokenizeState::FINDING_KEYWORDS; 
         }
 
+        // TODO: "Add AND logic for advanced SPA"
         else {
-
             if (currentState == TokenizeState::SUCH_THAT) {
-                // This should handle Such / that / relRef keyword / openbracket
-                // If we catch any other keyword such as 'Select' or 'semicolon', validator will throw an error anyway
-                if (clauseCounter == suchThatClauseFirstArgIndex) {
-                    currentToken = checkTokenType(delimited_query[i], currentState, clauseType,  ClauseArgNumber::FIRST);
-                }
-                else if (clauseCounter == suchThatClauseSecondArgIndex) {
-                    currentToken = checkTokenType(delimited_query[i], currentState, clauseType , ClauseArgNumber::SECOND);
+                if (clauseCounter == suchThatClauseFirstArgIndex || 
+                    clauseCounter == suchThatClauseSecondArgIndex) {
+                    currentToken = checkSuchThatTokenType(delimited_query[i], clauseType, clauseCounter);
                 }
                 else {
                     if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end()) {
@@ -236,22 +217,10 @@ void QueryTokenizer::TokenizeAfterSelect(int& i) {
                     }
                 }
             }
-
+            // CurrentState == PATTERN
             else {
-                // [pattern, token, (, token, comma, token, )
-                 // This should handle Such / that / relRef keyword / openbracket
-                 // If we catch any other keyword such as 'Select' or 'semicolon', validator will throw an error anyway
-
-                if (clauseCounter == patternClauseFirstArgIndex) {
-                    currentToken = checkTokenType(delimited_query[i], currentState, clauseType, ClauseArgNumber::FIRST);
-                }
-
-                else if (clauseCounter == patternClauseSecondArgIndex) {
-                    currentToken = checkTokenType(delimited_query[i],  currentState, clauseType, ClauseArgNumber::SECOND);
-                }
-
-                else if (clauseCounter == patternClauseThirdArgIndex) {
-                    currentToken = checkTokenType(delimited_query[i], currentState, clauseType, ClauseArgNumber::THIRD);
+                if (clauseCounter % 2 != 0) {
+                    currentToken = checkPatternTokenType(delimited_query[i], clauseCounter);
                 }
                 else {
                     if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end()) {
@@ -276,79 +245,47 @@ void QueryTokenizer::TokenizeAfterSelect(int& i) {
 }
 
 
+// Helper Methods that check of token type of different tokenize states
 
-// Helper Methods for Query Tokenizer
-TokenType checkTokenType(const string& s, const TokenizeState& state, const SpecificClause& type, const ClauseArgNumber& argnum) {
-    // Declarations
-    if (state == TokenizeState::DECLARATION && checkIfSynonym(s)) {
-        return TokenType::SYNONYM;
-    }
-    
-    // Select Keyword (Creating a separate if statement from declarations because there will be additional logic for select in advanced SPA)
-    if (state == TokenizeState::SELECT && checkIfSynonym(s)) {
-        return TokenType::SYNONYM;
-    }
-    
-    // Such that Clauase
-    if (state == TokenizeState::SUCH_THAT) {
-        if (type == SpecificClause::USE || type == SpecificClause::MODIFIES) {
-            if (argnum == ClauseArgNumber::FIRST && checkIfStmtRef(s)) {
-                return getStmtRefToken(s);
-            }
-            if (checkIfEntRef(s)) {
-                return getEntRefToken(s);
-            }
-        }
-        else if (type == SpecificClause::CALL && checkIfEntRef(s)) {
+inline TokenType checkDeclarationTokenType(const string& s) {
+    return checkIfSynonym(s) ? TokenType::SYNONYM : TokenType::UNKNOWN;
+}
+
+inline TokenType checkSelectTokenType(const string& s) {
+    return s == "BOOLEAN" ? TokenType::BOOLEAN
+         : checkIfSynonym(s) ? TokenType::SYNONYM
+         : TokenType::UNKNOWN;
+}
+
+TokenType checkSuchThatTokenType(const string& s, const SpecificClause& clauseType, const int& argNum) {
+    switch (clauseType) {
+        case SpecificClause::USE:
+        case SpecificClause::MODIFIES:
+            return argNum == suchThatClauseFirstArgIndex ? getStmtRefToken(s) : getEntRefToken(s);
+        case SpecificClause::CALL:
             return getEntRefToken(s);
-        }
-        else {
-            if (checkIfStmtRef(s)) {
-                return getStmtRefToken(s);
-            }
-        }
-    }
-
-    // Pattern Clauses
-    if (state == TokenizeState::PATTERN) {
-
-        // Check whether string is a synonym after the 'pattern' keyword
-        if (argnum == ClauseArgNumber::FIRST && checkIfSynonym(s)) {
-            return TokenType::SYNONYM;
-        }
-
-        // Check whether it is entRef
-        if (argnum == ClauseArgNumber::SECOND && checkIfEntRef(s)) {
-            return getEntRefToken(s);
-        }
-
-        // check expression if assign pattern
-        if (argnum == ClauseArgNumber::THIRD && checkIfExpressionSpec(s)) {
-            return getExpressionSpec(s);
-        }
-    }
-    
-    // If our token is not valid (if it is valid it should pass one of the above cases)
-    if (checkIfSynonym(s)) {
-        return TokenType::SYNONYM;
-    }
-
-    else if (checkIfInteger(s)) {
-        return TokenType::NUMBER;
-    }
-
-    else {
-        return TokenType::UNKNOWN;
+        default:
+            return getStmtRefToken(s);
     }
 }
 
+TokenType checkPatternTokenType(const string& s, const int& argNum) {
+    switch (argNum) {
+        case patternClauseFirstArgIndex:
+            return checkIfSynonym(s) ? TokenType::SYNONYM : TokenType::UNKNOWN;
+        case patternClauseSecondArgIndex:
+            return getEntRefToken(s);
+        case patternClauseThirdArgIndex:
+            return getExpressionSpec(s);
+        default:
+            return TokenType::UNKNOWN;
+    }
+}
 
+// Helper Methods that checks lexical tokens
 
-// Check Token Methods
 inline bool checkIfSynonym(const string& s) {
-    return isalpha(s[0]) 
-        && all_of(s.begin(), s.end(), 
-            [](char c) { return isdigit(c) || isalpha(c); });
+    return isalpha(s[0]) && all_of(s.begin(), s.end(), [](char c) { return isdigit(c) || isalpha(c); });
 }
 
 inline bool checkIfInteger(const string& s) {
@@ -357,10 +294,6 @@ inline bool checkIfInteger(const string& s) {
     }
 
     return s[0] != '0' && all_of(s.begin(), s.end(), [](char c) { return isdigit(c); });
-}
-
-inline bool checkIfStmtRef(const string& s) {
-    return s == "_" || checkIfSynonym(s) || checkIfInteger(s);
 }
 
 inline TokenType getStmtRefToken(const string& s) {
@@ -373,10 +306,8 @@ inline TokenType getStmtRefToken(const string& s) {
     if (checkIfInteger(s)) {
         return TokenType::STATEMENT_NUM;
     }
-}
 
-inline bool checkIfEntRef(const string& s) {
-    return s == "_" || checkIfSynonym(s) || checkIfString(s);
+    return TokenType::UNKNOWN;
 }
 
 inline TokenType getEntRefToken(const string& s) {
@@ -386,10 +317,11 @@ inline TokenType getEntRefToken(const string& s) {
     if (checkIfSynonym(s)) {
         return TokenType::SYNONYM;
     }
-    if (checkIfString(s)) {
+    if (checkIfString(s) && checkIfSynonym(s.substr(1, s.size() - 2))) {
         return TokenType::STRING;
     }
 
+    return TokenType::UNKNOWN;
 }
 
 inline TokenType getExpressionSpec(const string& s) {
@@ -402,24 +334,16 @@ inline TokenType getExpressionSpec(const string& s) {
     if (checkIfWildCardString(s)) {
         return TokenType::WILDCARD_STRING;
     }
-}
 
-inline bool checkIfExpressionSpec(const string& s) {
-    return s == "_" || checkIfString(s) || checkIfWildCardString(s);
+    return TokenType::UNKNOWN;
 }
 
 inline bool checkIfWildCardString(const string& s) {
-    // TODO: decide if we want to tokenize the assign arguments for easier parsing later
     return s[0] == '_' && s[s.size() - 1] == '_' && checkIfString(s.substr(1, s.size() - 2));
 }
 
 inline bool checkIfString(const string& s) {
-    if (s.size() < 3) {
-        return false;
-    }
-    return s[0] == '"' && s[s.size() - 1] == '"';
-    // Add in this when we implement second argument of pattern clause
-    //checkIfSynonym(s.substr(1, s.size() - 2));
+    return s.size() > 2 && s[0] == '"' && s[s.size() - 1] == '"';
 }
 
 inline bool checkIfDesignEntity(const string& s) {

@@ -55,6 +55,8 @@ enum class TokenType {
     COMMA,
     OPEN_BRACKET,
     CLOSED_BRACKET,
+    OPEN_ARROW,
+    CLOSED_ARROW,
 
     EMPTY,
     DECLARATION_END,

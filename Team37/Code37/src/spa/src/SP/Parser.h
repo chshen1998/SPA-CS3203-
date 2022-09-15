@@ -10,6 +10,7 @@ using namespace std;
 #include "AST/Procedure.h"
 #include "AST/Expression/ConditionalExpression/ConditionalExpression.h"
 #include "AST/Statement/WhileStatement.h"
+#include "AST/Statement/IfStatement.h"
 
 class Parser {
 public:
@@ -65,11 +66,12 @@ public:
     /**
      * Parses unprocessed if-else block string and produces a statement list
      * which is a vector containing unprocessed statements as strings.
-     * @param ifElse if-else block string
+     * @param ifElseBlock if-else block string
+     * @param stmtNo statement number of if statement
+     * @param parent parent node of the if statement
      * @return an IfStatement node
      */
-    static shared_ptr<IfStatement> parseIfElse(string ifElse);
-
+    shared_ptr<IfStatement> parseIfElse(string ifElseBlock, int stmtNo, shared_ptr<TNode> parent);
     /**
      * Parses unprocessed while block string and produces a statement list
      * which is a vector containing unprocessed statements as strings.
@@ -86,6 +88,27 @@ public:
      * @return a ConditionalExpression node
      */
     static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr);
+
+    /**
+     * Parses an if or while block string and extracts the conditional
+     * expression as a string
+     * @param block an if or while block that contains a
+     * conditional expression
+     * @param firstEgyptianOpen index of the first egyptian open bracket
+     * @return the conditional expression as a string
+     */
+    static string extractConditionalExpr(string block, size_t firstEgyptianOpen);
+
+    /**
+     * Parses a block of code and extracts a statement block that sits between
+     * a pair of open and closed egyptian brackets
+     * @param block SIMPLE code block as a string
+     * @param firstEgyptianOpen index of the first open egyptian bracket
+     * @return a statement block of all statements as one string
+     */
+    static string extractStatementBlock(string block, size_t firstEgyptianOpen);
+
+
 };
 
 

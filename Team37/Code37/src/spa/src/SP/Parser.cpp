@@ -49,37 +49,74 @@ vector<string> Parser::extractStatements(string procedure) {
     return statements;
 }
 
+string Parser::extractConditionalExpr(string block, size_t firstEgyptianOpen) {
+    string stmtStr = block.substr(0, firstEgyptianOpen);
+    size_t condExprStart = stmtStr.find_first_of(Keywords::OPEN_BRACKET) + 1;
+    size_t condExprEnd = stmtStr.find_last_of(Keywords::CLOSE_BRACKET);
+    size_t condExprLength = condExprEnd - condExprStart;
+    return Utils::trim(stmtStr.substr(condExprStart, condExprLength));
+}
+
+string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {
+    size_t stmtLstStart = firstEgyptianOpen + 1;
+    size_t stmtLstEnd = block.find_last_of(Keywords::CLOSE_EGYPTIAN);
+    size_t stmtLstLength = stmtLstEnd - stmtLstStart;
+    return Utils::trim(block.substr(stmtLstStart, stmtLstLength));
+}
+
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
     //TODO
 }
 
-shared_ptr<IfStatement> Parser::parseIfElse(string ifElse) {
-    //TODO
+shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shared_ptr<TNode> parent) {
+    size_t elseIndex = ifElseBlock.find(Keywords::ELSE);
+    string ifBlock = ifElseBlock.substr(0, elseIndex);
+    string elseBlock = ifElseBlock.substr(elseIndex, string::npos);
+
+    size_t firstEgyptianOpen = ifElseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
+    string condExpr = Parser::extractConditionalExpr(ifElseBlock, firstEgyptianOpen);
+    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr);
+
+    shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, stmtNo, condExprNode);
+    string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
+    vector<string> stmts = Parser::extractStatements(ifStmtBlock);
+    for (auto s:stmts) {
+        shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
+        ifNode->addThenStatement(statement);
+        statement->setParent(ifNode);
+    }
+
+    firstEgyptianOpen = elseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
+    string elseStmtBlock = Parser::extractStatementBlock(elseBlock, firstEgyptianOpen);
+    stmts = Parser::extractStatements(elseStmtBlock);
+    for (auto s:stmts) {
+        shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
+        ifNode->addElseStatement(statement);
+        statement->setParent(ifNode);
+    }
+
+//    parent->addStatement(ifNode); //TODO TNode has no addStatement method
+//    ifNode->setParent(parent); //not sure if this is done in parseStatement
+    return ifNode;
 }
 
 shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, int stmtNo, shared_ptr<TNode> parent) {
     size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
-
-    string whileStr = whileBlock.substr(0, firstEgyptianOpen);
-    size_t condExprStart = whileStr.find_first_of(Keywords::OPEN_BRACKET) + 1;
-    size_t condExprEnd = whileStr.find_last_of(Keywords::CLOSE_BRACKET);
-    size_t condExprLength = condExprEnd - condExprStart;
-    string condExpr = Utils::trim(whileStr.substr(condExprStart, condExprLength));
+    string condExpr = Parser::extractConditionalExpr(whileBlock, firstEgyptianOpen);
 
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr);
     shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, stmtNo, condExprNode);
     condExprNode->setParent(whileStatement);
 
-    size_t stmtLstStart = firstEgyptianOpen + 1;
-    size_t stmtLstEnd = whileBlock.find_last_of(Keywords::CLOSE_EGYPTIAN);
-    size_t stmtLstLength = stmtLstEnd - stmtLstStart;
-    string stmtsBlock = Utils::trim(whileBlock.substr(stmtLstStart, stmtLstLength));
+    string stmtsBlock = Parser::extractStatementBlock(whileBlock, firstEgyptianOpen);
     vector<string> stmts = Parser::extractStatements(stmtsBlock);
     for (auto s:stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, whileStatement);
         whileStatement->addStatement(statement);
         statement->setParent(whileStatement);
     }
+//    parent->addStatement(whileStatement); //TODO not sure if this is done in parseStatement
+//    whileStatement->setParent(parent);
     return whileStatement;
 }
 

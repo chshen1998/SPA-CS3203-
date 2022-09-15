@@ -53,8 +53,12 @@ void ExtractASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
  * @param readStmt
  */
 void ExtractASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
+
     NameExpression expression = NameExpression(readStmt->getParent(),
                                                readStmt->getVariableName());
+    // store itself in statements
+    this->storage->storeStmt(readStmt);
+    // store the variable
     this->storage->storeVar(expression);
 }
 
@@ -65,6 +69,9 @@ void ExtractASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
 void ExtractASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt) {
     NameExpression expression = NameExpression(printStmt->getParent(),
                                                printStmt->getVariableName());
+    // store itself in statements
+    this->storage->storeStmt(printStmt);
+    // store the variable
     this->storage->storeVar(expression);
 }
 
@@ -73,7 +80,8 @@ void ExtractASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt
  * @param callStmt
  */
 void ExtractASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt) {
-
+    // store itself in statements
+    this->storage->storeStmt(callStmt);
 }
 
 /**
@@ -81,13 +89,17 @@ void ExtractASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt) {
  * @param whileStmt
  */
 void ExtractASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> whileStmt) {
+    // iterate into  statements
     vector<shared_ptr<Statement>> statements = whileStmt->getStatements();
-
     for (auto statement: statements) {
         statement->accept(shared_from_this());
     }
 
+    // iterate into conditional expressions
     whileStmt->getConditionalExpression()->accept(shared_from_this());
+
+    // store itself in statements
+    this->storage->storeStmt(whileStmt);
 }
 
 /**
@@ -95,6 +107,7 @@ void ExtractASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> whileStmt
  * @param ifStmt
  */
 void ExtractASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
+    // iterate into statements
     vector<shared_ptr<Statement>> thenStmts = ifStmt->getThenStatements();
     for (auto statement: thenStmts) {
         statement->accept(shared_from_this());
@@ -103,6 +116,9 @@ void ExtractASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
     for (auto statement: elseStmts) {
         statement->accept(shared_from_this());
     }
+
+    // store itself in statements
+    this->storage->storeStmt(ifStmt);
 }
 
 /**
@@ -110,8 +126,12 @@ void ExtractASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
  * @param assignStmt
  */
 void ExtractASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
+
     NameExpression expression = NameExpression(assignStmt->getParent(),
                                                assignStmt->getVarName());
+    // store itself in statements
+    this->storage->storeStmt(assignStmt);
+    // store the variable
     this->storage->storeVar(expression);
 }
 
@@ -126,6 +146,7 @@ void ExtractASTVisitor::visitNameExpression(shared_ptr<NameExpression> nameExpr)
  * @param constantExpr
  */
 void ExtractASTVisitor::visitConstantExpression(shared_ptr<ConstantExpression> constantExpr) {
+    // store itself in constants
     this->storage->storeConst(*constantExpr.get());
 }
 
@@ -134,6 +155,7 @@ void ExtractASTVisitor::visitConstantExpression(shared_ptr<ConstantExpression> c
  * @param operatedExpr
  */
 void ExtractASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpression> operatedExpr) {
+    // iterate into expressions
     operatedExpr->getExpression1()->accept(shared_from_this());
     operatedExpr->getExpression2()->accept(shared_from_this());
 }
@@ -145,6 +167,7 @@ void ExtractASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpression> o
  * @param relationalExpr
  */
 void ExtractASTVisitor::visitRelationalExpression(shared_ptr<RelationalExpression> relationalExpr) {
+    // iterate into expressions
     relationalExpr->getRelFactor1()->accept(shared_from_this());
     relationalExpr->getRelFactor2()->accept(shared_from_this());
 }
@@ -154,6 +177,7 @@ void ExtractASTVisitor::visitRelationalExpression(shared_ptr<RelationalExpressio
  * @param notCondition
  */
 void ExtractASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCondition) {
+    // iterate into expressions
     notCondition->getConditionalExpression()->accept(shared_from_this());
 }
 
@@ -162,6 +186,7 @@ void ExtractASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCondition)
  * @param andCondition
  */
 void ExtractASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCondition) {
+    // iterate into expressions
     andCondition->getConditionalExpression1()->accept(shared_from_this());
     andCondition->getConditionalExpression2()->accept(shared_from_this());
 }
@@ -171,6 +196,7 @@ void ExtractASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCondition)
  * @param orCondition
  */
 void ExtractASTVisitor::visitOrCondition(shared_ptr<OrCondition> orCondition) {
+    // iterate into expressions
     orCondition->getConditionalExpression1()->accept(shared_from_this());
     orCondition->getConditionalExpression2()->accept(shared_from_this());
 }

@@ -12,6 +12,7 @@ using namespace std;
 #include "AST/Expression/ConditionalExpression/ConditionalExpression.h"
 #include "AST/Statement/WhileStatement.h"
 #include "AST/Statement/IfStatement.h"
+#include "AST/Expression/ConditionalExpression/NotCondition.h"
 
 class Parser {
 public:
@@ -86,9 +87,10 @@ public:
     /**
      * Parses unprocessed conditional expression string
      * @param condExprStr conditional expression string
+     * @param parent parent node of the conditional expression
      * @return a ConditionalExpression node
      */
-    static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr);
+    static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr, shared_ptr<TNode> parent);
 
     /**
      * Parses an if or while block string and extracts the conditional

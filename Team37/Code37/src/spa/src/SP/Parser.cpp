@@ -65,8 +65,15 @@ string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {
     return Utils::trim(block.substr(stmtLstStart, stmtLstLength));
 }
 
-shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
-    //TODO
+shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shared_ptr<TNode> parent) {
+    int NotOpIdx = condExprStr.find_first_of(Keywords::NOT_OPERATOR);
+    int NotEqOpIdx = condExprStr.find(Keywords::NOT_EQUALS);
+    if (NotEqOpIdx != NotOpIdx) {
+        // NOT statement
+        string innerCondExpr = condExprStr.substr(NotOpIdx + 1, string::npos);
+        shared_ptr<ConditionalExpression> condExpr = Parser::parseCondExpr(innerCondExpr, parent);
+        return make_shared<NotCondition>(parent, condExpr);
+    }
 }
 
 shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shared_ptr<TNode> parent) {

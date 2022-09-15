@@ -26,7 +26,11 @@ ExtractFollowsASTVisitor::ExtractFollowsASTVisitor(shared_ptr<Storage> storage) 
  * @param sourceCode
  */
 void ExtractFollowsASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
+    vector<shared_ptr<Procedure>> procedures = sourceCode->getProcedures();
 
+    for (auto procedure: procedures) {
+        procedure->accept(shared_from_this());
+    }
 }
 
 /**
@@ -34,6 +38,19 @@ void ExtractFollowsASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode
  * @param procedure
  */
 void ExtractFollowsASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
+    vector<shared_ptr<Statement>> statements = procedure->getStatements();
+
+    //storing Follows relationship, we loop from first to second last element and store (index,index+1)
+    for (int index = 0; index < statements.size() - 1; index++) {
+        int followeeLineNum = statements[index]->getLineNum();
+        int followerLineNum = statements[index + 1]->getLineNum();
+        this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
+    }
+
+    // iterate statements
+    for (auto statement: statements) {
+        statement->accept(shared_from_this());
+    }
 }
 
 // Statements
@@ -67,7 +84,20 @@ void ExtractFollowsASTVisitor::visitCallStatement(shared_ptr<CallStatement> call
  * @param whileStmt
  */
 void ExtractFollowsASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> whileStmt) {
+    vector<shared_ptr<Statement>> statements = whileStmt->getStatements();
 
+    // loop through all nested statements
+    // storing Follows relationship, we loop from first to second last element and store (index,index+1)
+    for (int index = 0; index < statements.size() - 1; index++) {
+        int followeeLineNum = statements[index]->getLineNum();
+        int followerLineNum = statements[index + 1]->getLineNum();
+        this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
+    }
+
+    for (auto statement: statements) {
+        // iterate children
+        statement->accept(shared_from_this());
+    }
 }
 
 /**
@@ -75,7 +105,35 @@ void ExtractFollowsASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> wh
  * @param ifStmt
  */
 void ExtractFollowsASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
+    vector<shared_ptr<Statement>> thenStmts = ifStmt->getThenStatements();
 
+    // loop through all nested then statements
+    // storing Follows relationship, we loop from first to second last element and store (index,index+1)
+    for (int index = 0; index < thenStmts.size() - 1; index++) {
+        int followeeLineNum = thenStmts[index]->getLineNum();
+        int followerLineNum = thenStmts[index + 1]->getLineNum();
+        this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
+    }
+
+    for (auto statement: thenStmts) {
+        // iterate children
+        statement->accept(shared_from_this());
+    }
+
+    vector<shared_ptr<Statement>> elseStmts = ifStmt->getElseStatements();
+
+    // loop through all nested then statements
+    // storing Follows relationship, we loop from first to second last element and store (index,index+1)
+    for (int index = 0; index < elseStmts.size() - 1; index++) {
+        int followeeLineNum = elseStmts[index]->getLineNum();
+        int followerLineNum = elseStmts[index + 1]->getLineNum();
+        this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
+    }
+
+    for (auto statement: elseStmts) {
+        // iterate children
+        statement->accept(shared_from_this());
+    }
 }
 
 /**

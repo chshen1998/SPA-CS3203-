@@ -84,11 +84,14 @@ add_library(spa ${srcs} ${headers}
         src/PKB/StatementType.h
         src/SP/Keywords.cpp
         src/SP/Keywords.h
-        src/AST/ASTVisitor/ExtractASTVisitor.cpp
-        src/AST/ASTVisitor/ExtractASTVisitor.h 
+        src/AST/ASTVisitor/ExtractGeneralASTVisitor.cpp
+        src/AST/ASTVisitor/ExtractGeneralASTVisitor.h
         src/PKB/Structures/Array2D.h
-        src/PKB/Structures/Array2D.cpp      
-        )
+        src/PKB/Structures/Array2D.cpp
+        src/AST/ASTVisitor/ExtractFollowsASTVisitor.cpp
+        src/AST/ASTVisitor/ExtractFollowsASTVisitor.h
+        src/AST/ASTVisitor/ExtractParentsASTVisitor.cpp
+        src/AST/ASTVisitor/ExtractParentsASTVisitor.h)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

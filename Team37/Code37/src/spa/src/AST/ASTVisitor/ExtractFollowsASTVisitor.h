@@ -1,25 +1,19 @@
-#ifndef TEAM_37_CONCRETEASTVISITOR_H
-#define TEAM_37_CONCRETEASTVISITOR_H
+#ifndef TEAM_37_EXTRACTFOLLOWSASTVISITOR_H
+#define TEAM_37_EXTRACTFOLLOWSASTVISITOR_H
 
 using namespace std;
-
 
 #include "AST/ASTVisitor/ASTVisitor.h"
 
 #include <vector>
 #include <memory>
 
-/**
- * ExtractASTVisitor is responsible for visiting AST
- */
-class ExtractASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
+class ExtractFollowsASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
-    vector<shared_ptr<NameExpression>> VisitedTNodeVariables;
-    vector<shared_ptr<ConstantExpression>> VisitedConstants;
     shared_ptr<Storage> storage;
 public:
     // Constructor
-    ExtractASTVisitor(shared_ptr<Storage> storage);
+    ExtractFollowsASTVisitor(shared_ptr<Storage> storage);
 
     // Statements
     void visitSourceCode(shared_ptr<SourceCode> sourceCode);
@@ -53,7 +47,6 @@ public:
     void visitAndCondition(shared_ptr<AndCondition> andCondition);
 
     void visitOrCondition(shared_ptr<OrCondition> orCondition);
-
 
 };
 

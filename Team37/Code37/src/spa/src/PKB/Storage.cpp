@@ -14,9 +14,21 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     Follows = Array2D(AST->getNumStmts());
     Parent = Array2D(AST->getNumStmts());
 
-    // We start by traversing the AST using a Extract AST Visitor
-    shared_ptr<ExtractASTVisitor> visitor = make_shared<ExtractASTVisitor>(shared_from_this());
-    AST->accept(visitor);
+    shared_ptr<ExtractGeneralASTVisitor> generalAstVisitor = make_shared<ExtractGeneralASTVisitor>(shared_from_this());
+    shared_ptr<ExtractParentsASTVisitor> parentsAstVisitor = make_shared<ExtractParentsASTVisitor>(shared_from_this());
+    shared_ptr<ExtractFollowsASTVisitor> followsAstVisitor = make_shared<ExtractFollowsASTVisitor>(shared_from_this());
+
+    // we start by traversing the AST using a Extract AST Visitor
+    AST->accept(generalAstVisitor);
+
+    // traverse the AST using a parents AST Visitor
+    AST->accept(parentsAstVisitor);
+    this->buildStar(PARENT);
+
+    // traverse the AST using a follows AST Visitor
+    AST->accept(followsAstVisitor);
+    this->buildStar(FOLLOWS);
+
 }
 
 /*
@@ -56,7 +68,7 @@ void Storage::storeConst(ConstantExpression constNode) {
 
 /*
 Retrieve all stored constants
-@return Set of of constants stored
+@return Set of constants stored
 */
 set<ConstantExpression> Storage::getAllConst() {
     return this->constants;
@@ -73,7 +85,7 @@ void Storage::storeStmt(shared_ptr<Statement> stmtNode) {
 
 /*
 Retrieve all stored statements
-@return Set of shared pointers of statments stored
+@return Set of shared pointers of statements stored
 */
 set<shared_ptr<Statement>> Storage::getAllStmt() {
     return this->statements;
@@ -154,7 +166,7 @@ vector<int> Storage::reverseRetrieveRelation(int stmt2, StmtStmtRelationType typ
 Retrieve Forward Relation Stored. For Relation(stmt1, stmt2)
 @param stmt1
 @param type Type of relation
-@returns All stmt2 such that Relatioin(stmt1, stmt2) is True
+@returns All stmt2 such that Relation(stmt1, stmt2) is True
 */
 vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType type) {
     switch (type) {
@@ -172,6 +184,22 @@ vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType typ
             break;
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
+    }
+    switch (type) {
+        case (FOLLOWS):
+            return Follows.forwardRetrieve(stmt1);
+            break;
+        case (FOLLOWSS):
+            return FollowsS.forwardRetrieve(stmt1);
+            break;
+        case (PARENT):
+            return Parent.forwardRetrieve(stmt1);
+            break;
+        case (PARENTS):
+            return ParentS.forwardRetrieve(stmt1);
+            break;
+        default:
+            throw invalid_argument("Not a Statement-Statement Relation");
     }
 }
 

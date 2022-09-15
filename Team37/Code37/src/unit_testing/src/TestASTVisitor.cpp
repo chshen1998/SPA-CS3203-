@@ -12,9 +12,8 @@
 
 #include "AST/Operators/RelationalOperator.h"
 
-#include "AST/ASTVisitor/ExtractASTVisitor.h"
+#include "AST/ASTVisitor/ExtractGeneralASTVisitor.h"
 
-#include "PKB/PKB.h"
 #include "PKB/Storage.h"
 
 #include "catch.hpp"
@@ -79,7 +78,6 @@ TEST_CASE("Constant Expression") {
             make_shared<WhileStatement>(procedure, 1, expr1);
 
     procedure->addStatement(whileStmt);
-
 
     sc->addProcedure(procedure);
 

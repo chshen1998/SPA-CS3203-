@@ -131,3 +131,19 @@ TEST_CASE("Valid Parent clause")
 
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
+
+TEST_CASE("Valid Follows* clause")
+{
+	QueryValidator sut = QueryValidator(valid_follows_a);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Parent* clause")
+{
+	QueryValidator sut = QueryValidator(valid_parent_a);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}

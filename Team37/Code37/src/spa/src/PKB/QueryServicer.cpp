@@ -5,9 +5,6 @@ QueryServicer::QueryServicer(shared_ptr<Storage> storage) {
 	this->storage = storage;
 }
 
-// Retrieve all of an element
-// TEMP: Return all variables only
-// GOAL: Take in element type and return correct type
 set<NameExpression> QueryServicer::getAllVar() {
 	return storage->getAllVar();
 }	
@@ -60,4 +57,34 @@ set<shared_ptr<Statement>> QueryServicer::getAllStmt(StatementType type) {
 		throw invalid_argument("No Statement Type Specified");
 		break;
 	}
+}
+
+/*
+Retrieve Reverse Relation Stored. For Relation(stmt1, stmt2)
+@param stmt2
+@param type Type of relation
+@returns All stmt1 such that Relation(stmt1, stmt2) is True
+*/
+bool QueryServicer::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) {
+	return storage->retrieveRelation(stmt1, stmt2, type);
+}
+
+/*
+Retrieve Forward Relation Stored. For Relation(stmt1, stmt2)
+@param stmt1
+@param type Type of relation
+@returns All stmt2 such that Relatioin(stmt1, stmt2) is True
+*/
+vector<int> QueryServicer::forwardRetrieveRelation(int stmt1, StmtStmtRelationType type) {
+	return storage->forwardRetrieveRelation(stmt1, type);
+}
+
+/*
+Retrieve Reverse Relation Stored. For Relation(stmt1, stmt2)
+@param stmt2
+@param type Type of relation
+@returns All stmt1 such that Relation(stmt1, stmt2) is True
+*/
+vector<int> QueryServicer::reverseRetrieveRelation(int stmt2, StmtStmtRelationType type) {
+	return storage->reverseRetrieveRelation(stmt2, type);
 }

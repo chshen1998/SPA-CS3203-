@@ -1,5 +1,5 @@
-#ifndef TEAM_37_CONCRETEASTVISITOR_H
-#define TEAM_37_CONCRETEASTVISITOR_H
+#ifndef TEAM_37_EXTRACTGENERALASTVISITOR_H
+#define TEAM_37_EXTRACTGENERALASTVISITOR_H
 
 using namespace std;
 
@@ -9,14 +9,14 @@ using namespace std;
 #include <vector>
 #include <memory>
 
-class ExtractASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
+class ExtractGeneralASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
     vector<shared_ptr<NameExpression>> VisitedTNodeVariables;
     vector<shared_ptr<ConstantExpression>> VisitedConstants;
     shared_ptr<Storage> storage;
 public:
     // Constructor
-    ExtractASTVisitor(shared_ptr<Storage> storage);
+    ExtractGeneralASTVisitor(shared_ptr<Storage> storage);
 
     // Statements
     void visitSourceCode(shared_ptr<SourceCode> sourceCode);

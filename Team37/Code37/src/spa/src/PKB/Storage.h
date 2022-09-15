@@ -13,7 +13,7 @@ using namespace std;
 #include "../AST/SourceCode.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
-#include "../AST/ASTVisitor/ExtractASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractGeneralASTVisitor.h"
 #include "../AST/Statement/Statement.h"
 #include "Structures/Array2D.h"
 #include "StmtStmtRelationType.h"
@@ -56,8 +56,12 @@ public:
 
     // Statement-Statemenet Relations
     void storeRelation(int, int, bool, StmtStmtRelationType);
+
     bool retrieveRelation(int, int, StmtStmtRelationType);
+
     vector<int> forwardRetrieveRelation(int, StmtStmtRelationType);
+
     vector<int> reverseRetrieveRelation(int, StmtStmtRelationType);
+
     void buildStar(StmtStmtRelationType);
 };

@@ -12,7 +12,7 @@
 
 #include "AST/Operators/RelationalOperator.h"
 
-#include "AST/ASTVisitor/ExtractASTVisitor.h"
+#include "AST/ASTVisitor/ExtractGeneralASTVisitor.h"
 
 #include "PKB/PKB.h"
 #include "PKB/Storage.h"

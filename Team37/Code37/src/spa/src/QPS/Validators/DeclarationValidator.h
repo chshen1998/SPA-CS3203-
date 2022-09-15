@@ -8,19 +8,25 @@
 
 #include "../QPS.h"
 #include "ClauseValidator.h"
-#include "Validator.h"
 
 #ifndef TEAM37_DECLARATIONVALIDATOR_H
 #define TEAM37_DECLARATIONVALIDATOR_H
 
 
-class DeclarationValidator : public Validator {
+class DeclarationValidator {
 public:
-	DeclarationValidator();
-	PqlError validate(PqlToken declarationType, PqlToken synonym, PqlToken semicolon);
+	DeclarationValidator(vector<PqlToken> tokens);
+	unordered_map<string, TokenType> validate();
 
 private:
-	bool isValidDeclarationType(TokenType type);
+	void isValidDesignEntity(PqlToken token);
+	void isSynonym(PqlToken token);
+	void isSemicolonOrComma(PqlToken token);
+	PqlToken getNextToken();
+
+	int next;
+	int size;
+	vector<PqlToken> tokens;
 };
 
 

@@ -16,11 +16,8 @@
 class PatternValidator : public ClauseValidator {
 public:
 	PatternValidator(unordered_map<string, TokenType> declarations);
-	PqlError validateAssign(PqlToken assign);
-	PqlError validateParameters(PqlToken left, PqlToken right);
-
-private:
-	bool isValidParameter(PqlToken token);
+	void validateAssign(PqlToken assign);
+	void validate(PqlToken left, PqlToken right);
 };
 
 

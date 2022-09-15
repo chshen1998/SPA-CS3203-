@@ -48,38 +48,6 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {")", TokenType::CLOSED_BRACKET},
 };
 
-/*
- * Set of valid declaration types
- */
-set<TokenType> validDeclarations = {
-        TokenType::VARIABLE,
-        TokenType::PROCEDURE,
-        TokenType::WHILE,
-        TokenType::ASSIGN,
-        TokenType::STATEMENT
-};
-
-/*
- * Set of valid such that clauses
- */
-set<TokenType> validSuchThatClauses = {
-        TokenType::USES,
-        TokenType::MODIFIES,
-        TokenType::PARENT,
-        TokenType::PARENT_A,
-        TokenType::FOLLOWS,
-        TokenType::FOLLOWS_A
-};
-
-/*
- * Set of valid such that clauses
- */
-set<TokenType> validPatternParameters = {
-        TokenType::SYNONYM,
-        TokenType::CONSTANT,
-        TokenType::STRING,
-        TokenType::NUMBER
-};
 
 std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     string typeString = "Unknown";

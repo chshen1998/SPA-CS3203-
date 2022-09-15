@@ -47,9 +47,13 @@ add_library(spa ${srcs} ${headers}
 
         "src/QPS/Validators/ClauseValidator.h"
         "src/QPS/Validators/DeclarationValidator.h"
+        "src/QPS/Validators/FollowsValidator.h"
         "src/QPS/Validators/PatternValidator.h"
+        "src/QPS/Validators/ParentValidator.h"
         "src/QPS/Validators/SelectValidator.h"
-        "src/QPS/Validators/Validator.h"
+        "src/QPS/Validators/ModifiesValidator.h" 
+        "src/QPS/Validators/UsesValidator.h"
+        "src/QPS/Validators/ValidatorUtils.h"
         src/QPS/QPS.h
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
@@ -66,9 +70,14 @@ add_library(spa ${srcs} ${headers}
 
         "src/QPS/Validators/ClauseValidator.cpp"
         "src/QPS/Validators/DeclarationValidator.cpp"
+        "src/QPS/Validators/FollowsValidator.cpp"
         "src/QPS/Validators/PatternValidator.cpp"
+        "src/QPS/Validators/ParentValidator.cpp"
         "src/QPS/Validators/SelectValidator.cpp"
-        "src/QPS/Validators/Validator.cpp"
+        "src/QPS/Validators/ModifiesValidator.cpp" 
+        "src/QPS/Validators/UsesValidator.cpp"
+        "src/QPS/Validators/ValidatorUtils.cpp"
+        
         src/QPS/QPS.cpp
         src/QPS/QueryExtractor.cpp
         src/QPS/QueryEvaluator.cpp

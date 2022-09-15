@@ -68,7 +68,7 @@ void Storage::storeConst(ConstantExpression constNode) {
 
 /*
 Retrieve all stored constants
-@return Set of of constants stored
+@return Set of constants stored
 */
 set<ConstantExpression> Storage::getAllConst() {
     return this->constants;
@@ -85,7 +85,7 @@ void Storage::storeStmt(shared_ptr<Statement> stmtNode) {
 
 /*
 Retrieve all stored statements
-@return Set of shared pointers of statments stored
+@return Set of shared pointers of statements stored
 */
 set<shared_ptr<Statement>> Storage::getAllStmt() {
     return this->statements;
@@ -183,7 +183,7 @@ vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType typ
             return ParentS.forwardRetrieve(stmt1);
             break;
         default:
-            throw invalid_argument("Not a Statement-Statement Realtion");
+            throw invalid_argument("Not a Statement-Statement Relation");
     }
 }
 

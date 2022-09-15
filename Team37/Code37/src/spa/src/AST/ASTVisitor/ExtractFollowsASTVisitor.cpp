@@ -88,7 +88,7 @@ void ExtractFollowsASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> wh
 
     // loop through all nested statements
     // storing Follows relationship, we loop from first to second last element and store (index,index+1)
-    for (int index = 0; index < statements.size() - 1; index++) {
+    for (int index = 0; index < (int) statements.size() - 1; index++) {
         int followeeLineNum = statements[index]->getLineNum();
         int followerLineNum = statements[index + 1]->getLineNum();
         this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
@@ -109,7 +109,7 @@ void ExtractFollowsASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
 
     // loop through all nested then statements
     // storing Follows relationship, we loop from first to second last element and store (index,index+1)
-    for (int index = 0; index < thenStmts.size() - 1; index++) {
+    for (int index = 0; index < (int) thenStmts.size() - 1; index++) {
         int followeeLineNum = thenStmts[index]->getLineNum();
         int followerLineNum = thenStmts[index + 1]->getLineNum();
         this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
@@ -124,7 +124,7 @@ void ExtractFollowsASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
 
     // loop through all nested then statements
     // storing Follows relationship, we loop from first to second last element and store (index,index+1)
-    for (int index = 0; index < elseStmts.size() - 1; index++) {
+    for (int index = 0; index < (int) elseStmts.size() - 1; index++) {
         int followeeLineNum = elseStmts[index]->getLineNum();
         int followerLineNum = elseStmts[index + 1]->getLineNum();
         this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);

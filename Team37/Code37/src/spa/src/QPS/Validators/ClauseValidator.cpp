@@ -13,14 +13,6 @@ ClauseValidator::ClauseValidator(unordered_map<string, TokenType> declarationsMa
 	declarations = declarationsMap;
 }
 
-void ClauseValidator::validateSuchThat(PqlToken such, PqlToken that)
-{
-	if (such.type == TokenType::SUCH && that.type == TokenType::THAT)
-	{
-		throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
-	}
-}
-
 void ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken close)
 {
 	if (!(open.type == TokenType::OPEN_BRACKET) || !(comma.type == TokenType::COMMA) || !(close.type == TokenType::CLOSED_BRACKET))

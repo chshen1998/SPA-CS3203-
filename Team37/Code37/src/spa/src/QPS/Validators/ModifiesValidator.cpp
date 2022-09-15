@@ -11,5 +11,5 @@ ModifiesValidator::ModifiesValidator(unordered_map<string, TokenType> declaratio
 
 void ModifiesValidator::validate(PqlToken left, PqlToken right)
 {
-	validateParameters(left, right, validStatementRef, validEntityRef, "follows");
+	validateParameters(left, right, validStatementRef, validEntityRef, "modifies");
 }

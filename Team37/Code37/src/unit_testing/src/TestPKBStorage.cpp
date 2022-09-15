@@ -124,3 +124,73 @@ TEST_CASE("Storage - Statement") {
     store->storeStmt(assignStmt);
     REQUIRE(store->getAllStmt().size() == 6);
 }
+
+TEST_CASE("Storage - Stmt-Stmt Relation") {
+    shared_ptr<Storage> store = make_shared<Storage>();
+
+    // ASSUMES AST HAS 3 STMTS - CHANGE IF IMPLEMENTATION CHANGED
+    shared_ptr<SourceCode> AST = make_shared<SourceCode>("../../../Test37/easy.txt");
+    store->storeAST(AST);
+
+    // Initally Empty
+    REQUIRE(!store->retrieveRelation(1, 1, PARENT));
+    REQUIRE(!store->retrieveRelation(1, 2, PARENT));
+    REQUIRE(!store->retrieveRelation(1, 3, PARENT));
+    REQUIRE(!store->retrieveRelation(1, 1, FOLLOWS));
+    REQUIRE(!store->retrieveRelation(1, 2, FOLLOWS));
+    REQUIRE(!store->retrieveRelation(1, 3, FOLLOWS));
+
+    // Parent
+    store->storeRelation(1, 2, true, PARENT);
+    store->storeRelation(2, 3, true, PARENT);
+
+    vector<int> cmp_1{ 2 };
+    vector<int> cmp_2{ 3 };
+    vector<int> cmp_3{};
+    REQUIRE(store->forwardRetrieveRelation(1, PARENT) == cmp_1);
+    REQUIRE(store->forwardRetrieveRelation(2, PARENT) == cmp_2);
+    REQUIRE(store->forwardRetrieveRelation(3, PARENT) == cmp_3);
+
+    cmp_1 = {};
+    cmp_2 = { 1 };
+    cmp_3 = { 2 };
+    REQUIRE(store->reverseRetrieveRelation(1, PARENT) == cmp_1);
+    REQUIRE(store->reverseRetrieveRelation(2, PARENT) == cmp_2);
+    REQUIRE(store->reverseRetrieveRelation(3, PARENT) == cmp_3);
+
+    store->buildStar(PARENT);
+
+    vector<int> cmp_star_1{ 2, 3 };
+    vector<int> cmp_star_2{ 3 };
+    vector<int> cmp_star_3{};
+
+    REQUIRE(store->forwardRetrieveRelation(1, PARENTS) == cmp_star_1);
+    REQUIRE(store->forwardRetrieveRelation(2, PARENTS) == cmp_star_2);
+    REQUIRE(store->forwardRetrieveRelation(3, PARENTS) == cmp_star_3);
+
+    // Follows
+    store->storeRelation(1, 2, true, FOLLOWS);
+    store->storeRelation(2, 3, true, FOLLOWS);
+
+    cmp_1 = { 2 };
+    cmp_2 = { 3 };
+    cmp_3 = {};
+    REQUIRE(store->forwardRetrieveRelation(1, FOLLOWS) == cmp_1);
+    REQUIRE(store->forwardRetrieveRelation(2, FOLLOWS) == cmp_2);
+    REQUIRE(store->forwardRetrieveRelation(3, FOLLOWS) == cmp_3);
+
+    cmp_1 = {};
+    cmp_2 = { 1 };
+    cmp_3 = { 2 };
+    REQUIRE(store->reverseRetrieveRelation(1, FOLLOWS) == cmp_1);
+    REQUIRE(store->reverseRetrieveRelation(2, FOLLOWS) == cmp_2);
+    REQUIRE(store->reverseRetrieveRelation(3, FOLLOWS) == cmp_3);
+
+    store->buildStar(FOLLOWS);
+
+
+    REQUIRE(store->forwardRetrieveRelation(1, FOLLOWSS) == cmp_star_1);
+    REQUIRE(store->forwardRetrieveRelation(2, FOLLOWSS) == cmp_star_2);
+    REQUIRE(store->forwardRetrieveRelation(3, FOLLOWSS) == cmp_star_3);
+
+}

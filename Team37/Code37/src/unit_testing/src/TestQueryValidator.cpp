@@ -58,7 +58,6 @@ TEST_CASE("Valid Pattern clause")
 	PqlError results = sut.ValidateQuery();
 
 	REQUIRE(results.errorType == ErrorType::NONE);
-	//REQUIRE(results.message == "");
 }
 
 TEST_CASE("Error: Undeclared Pattern assign")
@@ -91,4 +90,44 @@ TEST_CASE("Error: Missing open bracket")
 	PqlError results = sut.ValidateQuery();
 
 	REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
+}
+
+TEST_CASE("Error: Missing such that")
+{
+	QueryValidator sut = QueryValidator(missing_such_that);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
+}
+
+TEST_CASE("Valid Uses clause")
+{
+	QueryValidator sut = QueryValidator(valid_uses);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Follows clause")
+{
+	QueryValidator sut = QueryValidator(valid_follows);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Modifies clause")
+{
+	QueryValidator sut = QueryValidator(valid_modifies);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Parent clause")
+{
+	QueryValidator sut = QueryValidator(valid_parent);
+	PqlError results = sut.ValidateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
 }

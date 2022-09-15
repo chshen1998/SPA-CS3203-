@@ -11,5 +11,5 @@ UsesValidator::UsesValidator(unordered_map<string, TokenType> declarations) : Cl
 
 void UsesValidator::validate(PqlToken left, PqlToken right)
 {
-	validateParameters(left, right, validStatementRef, validEntityRef, "follows");
+	validateParameters(left, right, validStatementRef, validEntityRef, "uses");
 }

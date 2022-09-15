@@ -12,7 +12,6 @@
 class ClauseValidator
 {
 public:
-	void validateSuchThat(PqlToken such, PqlToken that);
 	void validateBrackets(PqlToken open, PqlToken comma, PqlToken close);
 	virtual void validate(PqlToken left, PqlToken right) = 0;
 

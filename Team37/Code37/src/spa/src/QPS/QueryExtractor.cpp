@@ -39,6 +39,7 @@ void QueryExtractor::extractSelect() {
 
 void QueryExtractor::extractClauses() {
     const PqlToken nextToken = getNextToken();
+
     if (nextToken.type == TokenType::END) {
         return;
     }

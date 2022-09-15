@@ -121,9 +121,12 @@ void QueryValidator::validatePattern()
 void QueryValidator::validateSuchThat(PqlToken such)
 {
     PqlToken that = getNextToken();
-    unique_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
+    if (such.type != TokenType::SUCH || that.type != TokenType::THAT)
+    {
+        throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
+    }
 
-    validator->validateSuchThat(such, that);
+    unique_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
 
     PqlToken open = getNextToken();
     PqlToken left = getNextToken();

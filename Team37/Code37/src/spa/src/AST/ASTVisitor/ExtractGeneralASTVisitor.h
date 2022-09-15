@@ -49,7 +49,6 @@ public:
 
     void visitOrCondition(shared_ptr<OrCondition> orCondition);
 
-
 };
 
 

@@ -71,8 +71,13 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
     if (NotEqOpIdx != NotOpIdx) {
         // NOT statement
         string innerCondExpr = condExprStr.substr(NotOpIdx + 1, string::npos);
-        shared_ptr<ConditionalExpression> condExpr = Parser::parseCondExpr(innerCondExpr, parent);
-        return make_shared<NotCondition>(parent, condExpr);
+        shared_ptr<ConditionalExpression> condExpr = Parser::parseCondExpr(innerCondExpr, nullptr);
+        shared_ptr<NotCondition> NotCondExpr = make_shared<NotCondition>(parent, condExpr);
+        condExpr->setParent(NotCondExpr);
+        return NotCondExpr;
+    }
+    if () {
+
     }
 }
 
@@ -92,9 +97,9 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shar
 
     size_t firstEgyptianOpen = ifElseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string condExpr = Parser::extractConditionalExpr(ifElseBlock, firstEgyptianOpen);
-    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr);
-
+    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
     shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, stmtNo, condExprNode);
+    condExprNode->setParent(ifNode);
     string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
     vector<string> stmts = Parser::extractStatements(ifStmtBlock);
 
@@ -121,7 +126,7 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, int stmtNo, sha
     size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string condExpr = Parser::extractConditionalExpr(whileBlock, firstEgyptianOpen);
 
-    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr);
+    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
     shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, stmtNo, condExprNode);
     condExprNode->setParent(whileStatement);
 

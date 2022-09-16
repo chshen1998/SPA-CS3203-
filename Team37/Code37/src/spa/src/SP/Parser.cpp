@@ -43,15 +43,139 @@ string Parser::extractProcName(string procedure) {
     return Utils::trim(name);
 }
 
+string Parser::removeProcedureWrapper(string procedure) {
+    string statements;
+
+    // Process until first open bracket of procedure
+    while (true) {
+        char nextLetter = procedure[0];
+        procedure.erase(0, 1);
+        if (nextLetter == '{') {
+            break;
+        }
+    }
+
+    int numBrackets = 1;
+
+    // Do bracket counting UNTIL end of procedure
+    while (numBrackets != 0) {
+        char nextLetter = procedure[0];
+        procedure.erase(0, 1);
+
+        if (nextLetter == '{') {
+            numBrackets += 1;
+        } else if (nextLetter == '}') {
+            numBrackets -= 1;
+        }
+
+        if (numBrackets != 0) {
+            statements.push_back(nextLetter);
+        }
+    }
+
+    if (Utils::trim(procedure).length() != 0) {
+        // Return an error, procedure not valid
+    }
+
+    return Utils::trim(statements);
+}
+
 vector<string> Parser::extractStatements(string procedure, vector<string> statementList) {
+    // Assume that the raw procedure string is already trimmed
     if (procedure.length() == 0) {
         return statementList;
     }
     // If it is a while or if statement, do bracket matching
     // Else process until semicolon
     if (procedure.substr(0, 2) == "if") {
+        string statement;
+
+        // Process until first open bracket of if block
+        while (true) {
+            char nextLetter = procedure[0];
+            procedure.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                break;
+            }
+        }
+
+        int numBrackets = 1;
+
+        // Do bracket counting UNTIL end of if block
+        while (numBrackets != 0) {
+            char nextLetter = procedure[0];
+            procedure.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                numBrackets += 1;
+            } else if (nextLetter == '}') {
+                numBrackets -= 1;
+            }
+        }
+
+        // Process until first open bracket of else block
+        while (true) {
+            char nextLetter = procedure[0];
+            procedure.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                break;
+            }
+        }
+
+        numBrackets = 1;
+
+        // Do bracket counting UNTIL end of else block
+        while (numBrackets != 0) {
+            char nextLetter = procedure[0];
+            procedure.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                numBrackets += 1;
+            } else if (nextLetter == '}') {
+                numBrackets -= 1;
+            }
+        }
+
+        statementList.push_back(statement);
+        procedure = Utils::trim(procedure);
 
     } else if (procedure.substr(0, 5) == "while") {
+        string statement;
+
+        // Process until first open bracket
+        while (true) {
+            char nextLetter = procedure[0];
+            procedure.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                break;
+            }
+        }
+
+        int numBrackets = 1;
+
+        // Do bracket counting
+        while (numBrackets != 0) {
+            char nextLetter = procedure[0];
+            procedure.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                numBrackets += 1;
+            } else if (nextLetter == '}') {
+                numBrackets -= 1;
+            }
+        }
+
+        statementList.push_back(statement);
+        procedure = Utils::trim(procedure);
 
     } else {
         string statement;
@@ -78,7 +202,7 @@ shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<Proced
 
 shared_ptr<Procedure> Parser::parseProcedure(string procedure, shared_ptr<SourceCode> srcCodeNode) {
     vector<string> statementList;
-    statementList = Parser::extractStatements(procedure, statementList);
+    statementList = Parser::extractStatements(removeProcedureWrapper(procedure), statementList);
     string procedureName = Parser::extractProcName(procedure);
     shared_ptr<Procedure> procedureNode = make_shared<Procedure>(srcCodeNode, procedureName);
     for (auto stmt : statementList) {

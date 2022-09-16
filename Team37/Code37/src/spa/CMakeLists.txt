@@ -97,6 +97,9 @@ add_library(spa ${srcs} ${headers}
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.h
         src/PKB/Structures/Array2D.h
         src/PKB/Structures/Array2D.cpp
+        src/PKB/Structures/StatementVariableStorage.h
+        src/PKB/Structures/StatementVariableStorage.cpp
+        src/PKB/Structures/Array2D.cpp
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.cpp
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.h
         src/AST/ASTVisitor/ExtractParentsASTVisitor.cpp

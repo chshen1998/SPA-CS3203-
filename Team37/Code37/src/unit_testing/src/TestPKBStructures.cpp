@@ -1,9 +1,9 @@
 #include "catch.hpp"
 
-
 using namespace std;
 
 #include "PKB/Structures/Array2D.h"
+#include "PKB/Structures/StatementVariableStorage.h"
 
 TEST_CASE("Structure - Matrix") {
     Array2D matrix = Array2D(2);
@@ -64,4 +64,39 @@ TEST_CASE("Structure - Matrix") {
     REQUIRE(StarMatrixLoop.retrieve(1, 1));
     REQUIRE(StarMatrixLoop.retrieve(2, 1));
     REQUIRE(StarMatrixLoop.retrieve(2, 2));
+}
+
+TEST_CASE("Structure - StatementVariableStorage") {
+    StatementVariableStorage store = StatementVariableStorage();
+
+    // Initally Empty
+    REQUIRE(!store.retrieve(1, "x"));
+    REQUIRE(store.forwardRetrieve(1).size() == 0);
+    REQUIRE(store.reverseRetrieve("x").size() == 0);
+
+    store.store(1, "x");
+    store.store(2, "x");
+    store.store(2, "y");
+    store.store(3, "y");
+    store.store(3, "z");
+
+    REQUIRE(store.retrieve(1, "x"));
+    REQUIRE(store.retrieve(2, "y"));
+    REQUIRE(!store.retrieve(1, "z"));
+
+    vector<string> cmp_1 = { "x" };
+    vector<string> cmp_2 = { "x", "y" };
+    vector<string> cmp_3 = { "y", "z" };
+
+    REQUIRE(store.forwardRetrieve(1) == cmp_1);
+    REQUIRE(store.forwardRetrieve(2) == cmp_2);
+    REQUIRE(store.forwardRetrieve(3) == cmp_3);
+
+    vector<int> cmp_x = { 1, 2 };
+    vector<int> cmp_y = { 2, 3 };
+    vector<int> cmp_z = { 3 };
+
+    REQUIRE(store.reverseRetrieve("x") == cmp_x);
+    REQUIRE(store.reverseRetrieve("y") == cmp_y);
+    REQUIRE(store.reverseRetrieve("z") == cmp_z);
 }

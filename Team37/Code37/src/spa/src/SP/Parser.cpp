@@ -251,7 +251,9 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shar
     shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, stmtNo, condExprNode);
     condExprNode->setParent(ifNode);
     string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
-    vector<string> stmts = Parser::extractStatements(ifStmtBlock);
+
+    vector<string> stmts;
+    stmts = Parser::extractStatements(ifStmtBlock, stmts);
 
     for (auto s: stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
@@ -261,7 +263,8 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shar
 
     firstEgyptianOpen = elseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string elseStmtBlock = Parser::extractStatementBlock(elseBlock, firstEgyptianOpen);
-    stmts = Parser::extractStatements(elseStmtBlock);
+    stmts.clear();
+    stmts = Parser::extractStatements(elseStmtBlock, stmts);
     for (auto s: stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
         ifNode->addElseStatement(statement);
@@ -281,7 +284,8 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, int stmtNo, sha
     condExprNode->setParent(whileStatement);
 
     string stmtsBlock = Parser::extractStatementBlock(whileBlock, firstEgyptianOpen);
-    vector<string> stmts = Parser::extractStatements(stmtsBlock);
+    vector<string> stmts;
+    stmts = Parser::extractStatements(stmtsBlock, stmts);
     for (auto s:stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, whileStatement);
         whileStatement->addStatement(statement);

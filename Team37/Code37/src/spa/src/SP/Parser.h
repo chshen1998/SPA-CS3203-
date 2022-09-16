@@ -32,11 +32,19 @@ public:
     static string extractProcName(string procedure);
 
     /**
-     * Extracts statements of a procedure as strings.
-     * @param procedure
-     * @return StatementList which is a vector containing statements as strings.
+     * Takes in a raw procedure string and only returns the statements within the curly braces of the procedure
+     * @param procedure a raw procedure string
+     * @return a raw string of the statements in the procedure
      */
-    static vector<string> extractStatements(string procedure);
+    static string removeProcedureWrapper(string procedure);
+
+    /**
+     * Extracts statements of a procedure as strings.
+     * @param procedure a raw list of statements
+     * @param statementList a predeclared vector of statements so that we can do recursion with it
+     * @return StatementList which is a vector containing statements (without semicolon) as strings.
+     */
+    static vector<string> extractStatements(string procedure, vector<string> statementList);
 
     /**
      * Parses an unprocessed statement string and calls relevant Tokenizer method

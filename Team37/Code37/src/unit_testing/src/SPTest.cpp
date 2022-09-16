@@ -30,14 +30,14 @@ TEST_CASE("Extract Procedures") {
 
 TEST_CASE("Extract procedure names") {
     string procedure = "procedure main {\n"
-               "    flag = 0;\n"
-               "    print flag;\n"
-               "    read flag;\n"
-               "\n"
-               "    x = 1;\n"
-               "    y = 2;\n"
-               "    print x;\n"
-               "}";
+                       "    flag = 0;\n"
+                       "    print flag;\n"
+                       "    read flag;\n"
+                       "\n"
+                       "    x = 1;\n"
+                       "    y = 2;\n"
+                       "    print x;\n"
+                       "}";
 
     string result = Parser::extractProcName(procedure);
 
@@ -45,34 +45,59 @@ TEST_CASE("Extract procedure names") {
     require(expectedName == result);
 }
 
-//TEST_CASE("Extract Statements") {
-//    string procedure = "procedure main {\n"
-//                       "    flag = 0;\n"
-//                       "    print flag;\n"
-//                       "    read flag;\n"
-//                       "\n"
-//                       "    x = 1;\n"
-//                       "    y = 2;\n"
-//                       "    print x;\n"
-//                       "}";
-//    vector<string> result = Parser::extractStatements(procedure);
-//    vector<string> expected;
-//    string stmt1 = "flag = 0";
-//    string stmt2 = "print flag";
-//    string stmt3 = "read flag";
-//    string stmt4 = "x = 1";
-//    string stmt5 = "y = 2";
-//    string stmt6 = "print x";
-//
-//    expected.push_back(stmt1);
-//    expected.push_back(stmt2);
-//    expected.push_back(stmt3);
-//    expected.push_back(stmt4);
-//    expected.push_back(stmt5);
-//    expected.push_back(stmt6);
-//
-//    require(result == expected);
-//}
+TEST_CASE("Remove procedure wrapper - Good input") {
+    string procedure = "procedure main {\n"
+                       "    flag = 0;\n"
+                       "    print flag;\n"
+                       "    read flag;\n"
+                       "\n"
+                       "    x = 1;\n"
+                       "    y = 2;\n"
+                       "    print x;\n"
+                       "}";
+
+    string result = Parser::removeProcedureWrapper(procedure);
+    string expected = "flag = 0;\n"
+                      "    print flag;\n"
+                      "    read flag;\n"
+                      "\n"
+                      "    x = 1;\n"
+                      "    y = 2;\n"
+                      "    print x;";
+
+    require(result == expected);
+}
+
+
+TEST_CASE("Extract Statements - Good input") {
+    string procedure = "flag = 0;\n"
+                       "    print flag;\n"
+                       "    read flag;\n"
+                       "\n"
+                       "    x = 1;\n"
+                       "    y = 2;\n"
+                       "print x;";
+
+    vector<string> statementList;
+
+    vector<string> result = Parser::extractStatements(procedure, statementList);
+    vector<string> expected;
+    string stmt1 = "flag = 0";
+    string stmt2 = "print flag";
+    string stmt3 = "read flag";
+    string stmt4 = "x = 1";
+    string stmt5 = "y = 2";
+    string stmt6 = "print x";
+
+    expected.push_back(stmt1);
+    expected.push_back(stmt2);
+    expected.push_back(stmt3);
+    expected.push_back(stmt4);
+    expected.push_back(stmt5);
+    expected.push_back(stmt6);
+
+    require(result == expected);
+}
 
 TEST_CASE("Tokenize read") {
     shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>("");

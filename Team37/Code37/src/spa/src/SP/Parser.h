@@ -94,7 +94,7 @@ public:
 
     /**
      * Parses an if or while block string and extracts the conditional
-     * expression as a string
+     * expression as a string that sits between the first set of parentheses ( )
      * @param block an if or while block that contains a
      * conditional expression
      * @param firstEgyptianOpen index of the first egyptian open bracket

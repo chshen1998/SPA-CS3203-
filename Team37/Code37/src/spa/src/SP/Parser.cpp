@@ -8,6 +8,7 @@ using namespace std;
 #include "Utilities/Utils.h"
 #include "AST/SourceCode.h"
 #include "InvalidSyntaxException.h"
+#include "Utilities/ConditionalExpressionNode.h"
 
 //TODO: pass in pointer to procedures instead of pass by value
 vector<string> Parser::extractProcedures(string srcCode, vector<string> procedures) {
@@ -66,19 +67,21 @@ string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {
 }
 
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shared_ptr<TNode> parent) {
+    condExprStr = Utils::trim(condExprStr);
     int NotOpIdx = condExprStr.find_first_of(Keywords::NOT_OPERATOR);
     int NotEqOpIdx = condExprStr.find(Keywords::NOT_EQUALS);
-    if (NotEqOpIdx != NotOpIdx) {
-        // NOT statement
+    if (NotEqOpIdx != NotOpIdx && NotOpIdx == 0) {
+        // NOT statement - ! operator is the first character of the trimmed string
         string innerCondExpr = condExprStr.substr(NotOpIdx + 1, string::npos);
         shared_ptr<ConditionalExpression> condExpr = Parser::parseCondExpr(innerCondExpr, nullptr);
         shared_ptr<NotCondition> NotCondExpr = make_shared<NotCondition>(parent, condExpr);
         condExpr->setParent(NotCondExpr);
         return NotCondExpr;
     }
-    if () {
 
-    }
+    // if no operators found, throw error, invalid conditional expression
+    throw InvalidSyntaxException((char *)"No operators found. Invalid conditional expression.");
+    return nullptr;
 }
 
 shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shared_ptr<TNode> parent) {

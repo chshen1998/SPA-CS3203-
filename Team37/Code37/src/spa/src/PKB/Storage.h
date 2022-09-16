@@ -19,7 +19,9 @@ using namespace std;
 
 #include "../AST/Statement/Statement.h"
 #include "Structures/Array2D.h"
-#include "StmtStmtRelationType.h"
+#include "Structures/StatementVariableStorage.h"
+#include "Types/StmtStmtRelationType.h"
+#include "Types/StmtVarRelationType.h"
 
 
 class Storage : public enable_shared_from_this<Storage> {
@@ -33,6 +35,9 @@ private:
     Array2D FollowsS = NULL;
     Array2D Parent = NULL;
     Array2D ParentS = NULL;
+
+    StatementVariableStorage UsesV;
+    StatementVariableStorage ModifiesV;
 public:
     // Constructor
     Storage();
@@ -67,4 +72,13 @@ public:
     vector<int> reverseRetrieveRelation(int, StmtStmtRelationType);
 
     void buildStar(StmtStmtRelationType);
+
+    // Statement-Variable Relations
+    void storeRelation(int, string, StmtVarRelationType);
+
+    bool retrieveRelation(int, string, StmtVarRelationType);
+
+    vector<string> forwardRetrieveRelation(int, StmtVarRelationType);
+
+    vector<int> reverseRetrieveRelation(string, StmtVarRelationType);
 };

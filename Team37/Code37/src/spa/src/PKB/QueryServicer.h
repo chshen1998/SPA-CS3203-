@@ -11,8 +11,8 @@ using namespace std;
 
 #include "QueryServicer.h"
 #include "Storage.h"
-#include "StatementType.h"
-#include "StmtStmtRelationType.h"
+#include "Types/StatementType.h"
+#include "Types/StmtStmtRelationType.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Statement/Statement.h"

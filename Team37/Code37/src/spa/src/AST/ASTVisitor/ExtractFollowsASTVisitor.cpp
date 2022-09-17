@@ -42,6 +42,9 @@ void ExtractFollowsASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
 
     //storing Follows relationship, we loop from first to second last element and store (index,index+1)
     for (int index = 0; index < statements.size() - 1; index++) {
+        if (statements[index] == nullptr || statements[index + 1] == nullptr) {
+            continue;
+        }
         int followeeLineNum = statements[index]->getLineNum();
         int followerLineNum = statements[index + 1]->getLineNum();
         this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
@@ -49,7 +52,11 @@ void ExtractFollowsASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
 
     // iterate statements
     for (auto statement: statements) {
-        statement->accept(shared_from_this());
+        if (statement == nullptr) {
+            continue;
+        } else {
+            statement->accept(shared_from_this());
+        }
     }
 }
 

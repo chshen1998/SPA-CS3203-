@@ -40,7 +40,11 @@ void ExtractParentsASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode
 void ExtractParentsASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
     vector<shared_ptr<Statement>> statements = procedure->getStatements();
     for (auto statement: statements) {
-        statement->accept(shared_from_this());
+        if (statement == nullptr) {
+            continue;
+        } else {
+            statement->accept(shared_from_this());
+        }
     }
 }
 

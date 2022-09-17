@@ -22,7 +22,7 @@ QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
     next = 0;
 }
 
-PqlError QueryValidator::ValidateQuery()
+PqlError QueryValidator::validateQuery()
 {
     try {
         declarations = validateDeclarations();
@@ -143,13 +143,15 @@ shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type
     if (type == TokenType::USES) 
     {
         return shared_ptr<UsesValidator>(new UsesValidator(declarations));
-    } else if (type == TokenType::FOLLOWS)
-    {
-        return shared_ptr<FollowsValidator>(new FollowsValidator(declarations));
-    } else if (type == TokenType::MODIFIES)
+    }  else if (type == TokenType::MODIFIES)
     {
         return shared_ptr<ModifiesValidator>(new ModifiesValidator(declarations));
-    } else if (type == TokenType::PARENT)
+    }
+    else if (type == TokenType::FOLLOWS || type == TokenType::FOLLOWS_A)
+    {
+        return shared_ptr<FollowsValidator>(new FollowsValidator(declarations));
+    }
+    else if (type == TokenType::PARENT || type == TokenType::PARENT_A)
     {
         return shared_ptr<ParentValidator>(new ParentValidator(declarations));
     } else

@@ -11,6 +11,7 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
+#include "QueryValidator.h"
 #include "AST/TNode.h"
 #include "PKB/PKB.h"
 #include <unordered_map>
@@ -46,6 +47,11 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {",", TokenType::COMMA},
         {"(", TokenType::OPEN_BRACKET},
         {")", TokenType::CLOSED_BRACKET},
+};
+
+unordered_map<ErrorType, string> errorTypeToStringMap = {
+    {ErrorType::SEMANTIC_ERROR, "Semantic Error"},
+    {ErrorType::SYNTAX_ERROR, "Syntax Error"}
 };
 
 
@@ -102,6 +108,15 @@ void QPS::evaluate(string query, list<string>& results) {
     
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
+
+    QueryValidator validator = QueryValidator(tokens);
+    PqlError pe = validator.validateQuery();
+
+    if (pe.errorType != ErrorType::NONE)
+    {
+        results.push_back(errorTypeToStringMap[pe.errorType]);
+        return;
+    }
 
     QueryExtractor extractor(tokens);
     PqlQuery pq = extractor.extractSemantics();

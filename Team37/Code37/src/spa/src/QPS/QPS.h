@@ -117,6 +117,8 @@ struct Clause
 {
     string left;
     string right;
+
+    Clause(string l, string r) : left(l), right(r) {}
 };
 
 /*
@@ -125,8 +127,8 @@ struct Clause
 struct PqlQuery {
     unordered_map<string, TokenType> declarations = {};
     string select;
-    Clause patternClause;
-    Clause suchThatClause;
+    vector<Clause> patternClauses;
+    vector<Clause> suchThatClauses;
 };
 
 

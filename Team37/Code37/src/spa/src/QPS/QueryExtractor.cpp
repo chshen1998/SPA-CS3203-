@@ -38,71 +38,38 @@ void QueryExtractor::extractSelect() {
 }
 
 void QueryExtractor::extractClauses() {
-    const PqlToken nextToken = getNextToken();
+    PqlToken nextToken = getNextToken();
 
-    if (nextToken.type == TokenType::END) {
-        return;
-    }
-
-    if (nextToken.type == TokenType::PATTERN) {
-        extractPatternClause();
-
-        if (nextToken.type != TokenType::END) {
-			extractSuchThatClause();
-        }
-        
-    } else {
-        extractSuchThatClause();
-
-        if (nextToken.type != TokenType::END) {
+    while (nextToken.type != TokenType::END)
+    {
+	    if (nextToken.type == TokenType::PATTERN)
+	    {
             extractPatternClause();
+	    }
+        else
+        {
+            extractSuchThatClause();
         }
+        nextToken = getNextToken();
     }
 }
 
 void QueryExtractor::extractPatternClause() {
-    PqlToken patternSynonym = getNextToken();
-    while (patternSynonym.type != TokenType::SYNONYM) {
-        if (patternSynonym.type == TokenType::END) {
-            return;
-        }
-        patternSynonym = getNextToken();
-    }
-    const PqlToken openBracket = getNextToken();
-    const PqlToken synonym1 = getNextToken();
-
-    if (synonym1.type != TokenType::VARIABLE) {
-        throw "Error: Pattern clause parameters must be variable type";
-    }
-    pq.patternClause.left = synonym1.value;
-
-    const PqlToken comma = getNextToken();
-    const PqlToken synonym2 = getNextToken();
-
-    if (synonym1.type != TokenType::VARIABLE) {
-        throw "Error: Pattern clause parameters must be variable type";
-    }
-    pq.patternClause.right = synonym2.value;
-    const PqlToken closedBracket = getNextToken();
+    while (getNextToken().type != TokenType::OPEN_BRACKET) {}
+    PqlToken left = getNextToken();
+    getNextToken();
+    PqlToken right = getNextToken();
+    getNextToken();
+    pq.patternClauses.push_back(Clause(left.value, right.value));
 }
 
 void QueryExtractor::extractSuchThatClause() {
-    PqlToken suchThatClause = getNextToken();
-    //while (!(validSuchThatClauses.find(suchThatClause.type) != validSuchThatClauses.end())) {
-    //    if (suchThatClause.type == TokenType::END) {
-    //        return;
-    //    }
-    //    suchThatClause = getNextToken();
-    //}
-    const PqlToken openParenthesis = getNextToken();
-    const PqlToken synonym1 = getNextToken();
-    pq.suchThatClause.left = synonym1.value;
-
-    const PqlToken comma = getNextToken();
-    const PqlToken synonym2 = getNextToken();
-    pq.suchThatClause.right = synonym2.value;
-
-    const PqlToken closeParenthesis = getNextToken();
+    while (getNextToken().type != TokenType::OPEN_BRACKET) {}
+    PqlToken left = getNextToken();
+    getNextToken();
+    PqlToken right = getNextToken();
+    getNextToken();
+    pq.suchThatClauses.push_back(Clause(left.value, right.value));
 }
 
 PqlToken QueryExtractor::getNextToken() {

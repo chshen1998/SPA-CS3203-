@@ -77,20 +77,18 @@ public:
      * Parses unprocessed if-else block string and produces a statement list
      * which is a vector containing unprocessed statements as strings.
      * @param ifElseBlock if-else block string
-     * @param stmtNo statement number of if statement
      * @param parent parent node of the if statement
      * @return an IfStatement node
      */
-    shared_ptr<IfStatement> parseIfElse(string ifElseBlock, int stmtNo, shared_ptr<TNode> parent);
+    static shared_ptr<IfStatement> parseIfElse(string ifElseBlock, shared_ptr<TNode> parent);
     /**
      * Parses unprocessed while block string and produces a statement list
      * which is a vector containing unprocessed statements as strings.
      * @param whileBlock while block string
-     * @param stmtNo statement number of while statement
      * @param parent parent node of the while statement
      * @return a WhileStatement node
      */
-    static shared_ptr<WhileStatement> parseWhile(string whileBlock, int stmtNo, shared_ptr<TNode> parent);
+    static shared_ptr<WhileStatement> parseWhile(string whileBlock, shared_ptr<TNode> parent);
 
     /**
      * Parses unprocessed conditional expression string

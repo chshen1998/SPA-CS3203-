@@ -226,12 +226,13 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
         return NotCondExpr;
     }
 
+
     // if no operators found, throw error, invalid conditional expression
     throw InvalidSyntaxException((char *)"No operators found. Invalid conditional expression.");
     return nullptr;
 }
 
-shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shared_ptr<TNode> parent) {
+shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode> parent) {
     size_t elseIndex = ifElseBlock.find(Keywords::ELSE);
     size_t thenIndex = ifElseBlock.find(Keywords::THEN);
 
@@ -271,12 +272,10 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shar
         ifNode->addElseStatement(statement);
         statement->setParent(ifNode);
     }
-//    parent->addStatement(ifNode); //TODO TNode has no addStatement method
-//    ifNode->setParent(parent); //not sure if this is done in parseStatement
     return ifNode;
 }
 
-shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, int stmtNo, shared_ptr<TNode> parent) {
+shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNode> parent) {
     size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string condExpr = Parser::extractConditionalExpr(whileBlock, firstEgyptianOpen);
 
@@ -292,13 +291,31 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, int stmtNo, sha
         whileStatement->addStatement(statement);
         statement->setParent(whileStatement);
     }
-//    parent->addStatement(whileStatement); //TODO not sure if this is done in parseStatement
-//    whileStatement->setParent(parent);
     return whileStatement;
 }
 
 shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode> parentNode) {
     // TODO: split into cases for (print, read, call, if-else, while, assign)
+    statement = Utils::trim(statement);
+    shared_ptr<Statement> statementNode;
+    if ((int)statement.find("print") == 0) {
+        statementNode = Tokenizer::tokenizePrint(statement, stmtNo, parentNode);
+    }
+    if ((int)statement.find("read") == 0) {
+        statementNode = Tokenizer::tokenizeRead(statement, stmtNo, parentNode);
+    }
+    if ((int)statement.find("call") == 0) {
+        statementNode = Tokenizer::tokenizeCall(statement, stmtNo, parentNode);// TODO tokenizeCall not implemented yet
+    }
+    if ((int)statement.find("if") == 0) {
+        statementNode = Parser::parseIfElse(statement, stmtNo, parentNode);
+    }
+    if ((int)statement.find("while") == 0) {
+        statementNode = Parser::parseWhile(statement, stmtNo, parentNode);
+    }
+    parentNode->addStatement(statementNode); //TODO TNode does not have addStatement yet
+    statementNode->setParent(parentNode);
+    return statementNode;
 }
 
 shared_ptr<Procedure> Parser::parseProcedure(string procedure, shared_ptr<SourceCode> srcCodeNode) {

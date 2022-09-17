@@ -4,8 +4,7 @@ using namespace std;
 
 PrintStatement::PrintStatement(
         shared_ptr<TNode> parent,
-        int lineNum,
-        string variableName) : Statement(parent, lineNum), variableName(variableName) { }
+        string variableName) : Statement(parent), variableName(variableName) { }
 
 string PrintStatement::getVariableName() {
     return this->variableName;

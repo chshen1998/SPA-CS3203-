@@ -2,9 +2,8 @@
 
 IfStatement::IfStatement(
         shared_ptr<TNode> parent,
-        int lineNum,
         shared_ptr<ConditionalExpression> condExpr)
-        : Statement(parent, lineNum), condExpr(condExpr) { }
+        : Statement(parent), condExpr(condExpr) { }
 
 void IfStatement::addThenStatement(shared_ptr<Statement> stmt) {
     this->thenStmtLst.push_back(stmt);

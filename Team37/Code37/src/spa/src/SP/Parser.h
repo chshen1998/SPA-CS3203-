@@ -80,7 +80,8 @@ public:
      * @param parent parent node of the if statement
      * @return an IfStatement node
      */
-    shared_ptr<IfStatement> parseIfElse(string ifElseBlock, shared_ptr<TNode> parent);
+    static shared_ptr<IfStatement> parseIfElse(string ifElseBlock, shared_ptr<TNode> parent);
+
     /**
      * Parses unprocessed while block string and produces a statement list
      * which is a vector containing unprocessed statements as strings.

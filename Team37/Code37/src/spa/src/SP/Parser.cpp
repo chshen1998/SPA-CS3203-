@@ -226,6 +226,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
         return NotCondExpr;
     }
 
+
     // if no operators found, throw error, invalid conditional expression
     throw InvalidSyntaxException((char *)"No operators found. Invalid conditional expression.");
     return nullptr;
@@ -270,8 +271,6 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
         ifNode->addElseStatement(statement);
         statement->setParent(ifNode);
     }
-//    parent->addStatement(ifNode); //TODO TNode has no addStatement method
-//    ifNode->setParent(parent); //not sure if this is done in parseStatement
     return ifNode;
 }
 
@@ -291,13 +290,29 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNod
         whileStatement->addStatement(statement);
         statement->setParent(whileStatement);
     }
-//    parent->addStatement(whileStatement); //TODO not sure if this is done in parseStatement
-//    whileStatement->setParent(parent);
     return whileStatement;
 }
 
 shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode> parentNode) {
     // TODO: split into cases for (print, read, call, if-else, while, assign)
+    statement = Utils::trim(statement);
+    shared_ptr<Statement> statementNode;
+    if ((int)statement.find("print") == 0) {
+        statementNode = Tokenizer::tokenizePrint(statement, parentNode); //TODO remove stmtNo as param in tokenizePrint
+    }
+    if ((int)statement.find("read") == 0) {
+        statementNode = Tokenizer::tokenizeRead(statement, parentNode); //TODO remove stmtNo as param in tokenizeRead
+    }
+    if ((int)statement.find("call") == 0) {
+        statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
+    }
+    if ((int)statement.find("if") == 0) {
+        statementNode = Parser::parseIfElse(statement, parentNode);
+    }
+    if ((int)statement.find("while") == 0) {
+        statementNode = Parser::parseWhile(statement, parentNode);
+    }
+    return statementNode;
 }
 
 shared_ptr<Procedure> Parser::parseProcedure(string procedure, shared_ptr<SourceCode> srcCodeNode) {

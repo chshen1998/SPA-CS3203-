@@ -81,6 +81,7 @@ public:
      * @return an IfStatement node
      */
     static shared_ptr<IfStatement> parseIfElse(string ifElseBlock, shared_ptr<TNode> parent);
+
     /**
      * Parses unprocessed while block string and produces a statement list
      * which is a vector containing unprocessed statements as strings.

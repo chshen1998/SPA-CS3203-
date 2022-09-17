@@ -27,10 +27,10 @@ void require(bool b);
 TEST_CASE("Read Statements") {
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
-    shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, 1, "a");
-    shared_ptr<ReadStatement> readStmt2 = make_shared<ReadStatement>(procedure, 2, "b");
-    shared_ptr<ReadStatement> readStmt3 = make_shared<ReadStatement>(procedure, 3, "c");
-    shared_ptr<ReadStatement> readStmt4 = make_shared<ReadStatement>(procedure, 4, "d");
+    shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, "a");
+    shared_ptr<ReadStatement> readStmt2 = make_shared<ReadStatement>(procedure, "b");
+    shared_ptr<ReadStatement> readStmt3 = make_shared<ReadStatement>(procedure, "c");
+    shared_ptr<ReadStatement> readStmt4 = make_shared<ReadStatement>(procedure, "d");
     shared_ptr<Storage> storage = make_shared<Storage>();
 
     procedure->addStatement(readStmt1);
@@ -49,10 +49,10 @@ TEST_CASE("Read Statements") {
 TEST_CASE("Print Statements") {
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
-    shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure, 1, "a");
-    shared_ptr<PrintStatement> printStmt2 = make_shared<PrintStatement>(procedure, 2, "b");
-    shared_ptr<PrintStatement> printStmt3 = make_shared<PrintStatement>(procedure, 3, "c");
-    shared_ptr<PrintStatement> printStmt4 = make_shared<PrintStatement>(procedure, 4, "d");
+    shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure, "a");
+    shared_ptr<PrintStatement> printStmt2 = make_shared<PrintStatement>(procedure, "b");
+    shared_ptr<PrintStatement> printStmt3 = make_shared<PrintStatement>(procedure, "c");
+    shared_ptr<PrintStatement> printStmt4 = make_shared<PrintStatement>(procedure, "d");
     shared_ptr<Storage> storage = make_shared<Storage>();
 
     procedure->addStatement(printStmt1);
@@ -78,7 +78,7 @@ TEST_CASE("Constant Expression") {
             make_shared<ConstantExpression>(nullptr, 10),
             make_shared<ConstantExpression>(nullptr, 11));
     shared_ptr<Statement> whileStmt =
-            make_shared<WhileStatement>(procedure, 1, expr1);
+            make_shared<WhileStatement>(procedure, expr1);
 
     procedure->addStatement(whileStmt);
 

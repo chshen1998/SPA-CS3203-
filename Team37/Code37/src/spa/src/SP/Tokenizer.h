@@ -20,20 +20,18 @@ public:
     /**
      * Creates ReadStatement object with specified parent and stmtNo.
      * @param line read statement in string
-     * @param stmtNo statement number of statement
      * @param parent parent node of read statement
      * @return ReadStatement object
      */
-    static shared_ptr<ReadStatement> tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent);
+    static shared_ptr<ReadStatement> tokenizeRead(string line, shared_ptr<TNode> parent);
 
     /**
      * Creates PrintStatement object with specified parent and stmtNo.
      * @param line print statement in string
-     * @param stmtNo statement number of statement
      * @param parent parent node of read statement
      * @return PrintStatement object
      */
-    static shared_ptr<PrintStatement> tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent);
+    static shared_ptr<PrintStatement> tokenizePrint(string line, shared_ptr<TNode> parent);
 
 
     /**

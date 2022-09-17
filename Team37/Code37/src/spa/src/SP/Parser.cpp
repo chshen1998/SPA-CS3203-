@@ -249,7 +249,7 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
     size_t firstEgyptianOpen = ifElseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string condExpr = Parser::extractConditionalExpr(ifElseBlock, firstEgyptianOpen);
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
-    shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, stmtNo, condExprNode);
+    shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, condExprNode);
     condExprNode->setParent(ifNode);
     string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
 
@@ -279,7 +279,7 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNod
     string condExpr = Parser::extractConditionalExpr(whileBlock, firstEgyptianOpen);
 
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
-    shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, stmtNo, condExprNode);
+    shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, condExprNode);
     condExprNode->setParent(whileStatement);
 
     string stmtsBlock = Parser::extractStatementBlock(whileBlock, firstEgyptianOpen);

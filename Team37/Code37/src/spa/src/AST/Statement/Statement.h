@@ -7,11 +7,15 @@ using namespace std;
 
 #include "AST/TNode.h"
 
+static int lineNumCount = 1;
+
 class Statement : public TNode {
 private:
     int lineNum;
 public:
-    Statement(shared_ptr<TNode> parent, int lineNum) : TNode(parent), lineNum(lineNum) { }
+    Statement(shared_ptr<TNode> parent) : TNode(parent), lineNum(lineNumCount) {
+        lineNumCount += 1;
+    }
 
     /**
      * Gets the line number of the statement
@@ -20,6 +24,22 @@ public:
      */
      int getLineNum() {
         return lineNum;
+     }
+
+     /**
+      * Gets the total amount of statements created so far
+      *
+      * @return an int
+      */
+     int getLineNumCount() {
+         return lineNumCount - 1;
+     }
+
+     /**
+      * Resets the global lineNumCount back to 1
+      */
+     void resetLineNumCount() {
+         lineNumCount = 1;
      }
 };
 

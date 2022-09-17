@@ -8,51 +8,51 @@ using namespace std;
 #include "QueryValidator.h"
 #include "Validators/ClauseValidator.h"
 #include "Validators/DeclarationValidator.h"
+#include "Validators/FollowsValidator.h"
+#include "Validators/ModifiesValidator.h"
 #include "Validators/PatternValidator.h"
+#include "Validators/ParentValidator.h"
 #include "Validators/SelectValidator.h"
+#include "Validators/UsesValidator.h"
+#include "Validators/ValidatorUtils.h"
 
 QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
     tokens = tokenVector;
     size = tokens.size();
     next = 0;
-    pe.type = ErrorType::NONE;
 }
 
-PqlError QueryValidator::ValidateQuery()
+PqlError QueryValidator::validateQuery()
 {
-    validateDeclarations();
-
-    if (!errorFound()) 
-    {
-        validateSelect();
-    }
-
-    if (!errorFound())
-    {
-	    validateClauses();
-    }
+    try {
+        declarations = validateDeclarations();
     
-    return pe;
+        validateSelect();
+
+	    validateClauses();
+
+        return PqlError(ErrorType::NONE, "");
+    }
+    catch (SyntaxError e) {
+        return PqlError(ErrorType::SYNTAX_ERROR, e.message);
+    } 
+    catch (SemanticError e) {
+        return PqlError(ErrorType::SEMANTIC_ERROR, e.message);
+    }
 }
 
-void QueryValidator::validateDeclarations()
+unordered_map<string, TokenType> QueryValidator::validateDeclarations()
 {
-    DeclarationValidator validator = DeclarationValidator();
-
-    PqlToken declarationType = getNextToken();
-    while (declarationType.type != TokenType::DECLARATION_END)
-    {
-        PqlToken synonym = getNextToken();
-        PqlToken semicolon = getNextToken();
-
-        pe = validator.validate(declarationType, synonym, semicolon);
-        if (errorFound()) {
-            return;
-        }
-
-        declarations[synonym.value] = declarationType.type;
-        declarationType = getNextToken();
+    vector<PqlToken> declarationTokens;
+    PqlToken curr = getNextToken();
+    while (curr.type != TokenType::DECLARATION_END && curr.type != TokenType::END) {
+        declarationTokens.push_back(curr);
+        curr = getNextToken();
     }
+
+    DeclarationValidator validator = DeclarationValidator(declarationTokens);
+    unordered_map<string, TokenType> declarations = validator.validate();
+    return declarations;
 }
 
 void QueryValidator::validateSelect()
@@ -61,7 +61,7 @@ void QueryValidator::validateSelect()
     PqlToken select = getNextToken();
     PqlToken synonym = getNextToken();
 
-    pe = validator.validateParameters(select, synonym);
+    validator.validate(select, synonym);
 }
 
 void QueryValidator::validateClauses()
@@ -70,7 +70,9 @@ void QueryValidator::validateClauses()
     if (curr.type == TokenType::END)
     {
         return;
-    } else if (curr.type == TokenType::PATTERN)
+    }
+
+	if (curr.type == TokenType::PATTERN)
     {
         validatePattern();
 
@@ -89,9 +91,7 @@ void QueryValidator::validateClauses()
         }
         else if (curr.type != TokenType::PATTERN)
         {
-            pe.type = ErrorType::SEMANTIC_ERROR;
-            pe.message = "Invalid characters after such that clause";
-            return;
+            throw SemanticError("Invalid characters after such that clause");
         }
 
         validatePattern();
@@ -100,54 +100,63 @@ void QueryValidator::validateClauses()
     curr = getNextToken();
     if (curr.type != TokenType::END)
     {
-        pe.type = ErrorType::SYNTAX_ERROR;
-        pe.message = "Invalid characters at end of query";
+        throw SyntaxError("Invalid characters at end of query");
     }
 }
 
 void QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(declarations);
-    pe = validator.validateAssign(getNextToken());
-    if (errorFound()) { return; }
+    validator.validateAssign(getNextToken());
 
     PqlToken open = getNextToken();
     PqlToken left = getNextToken();
     PqlToken comma = getNextToken();
     PqlToken right = getNextToken();
     PqlToken close = getNextToken();
-    pe = validator.validateBrackets(open, comma, close);
-    pe = validator.validateParameters(left, right);
+    validator.validateBrackets(open, comma, close);
+    validator.validate(left, right);
 }
 
 void QueryValidator::validateSuchThat(PqlToken such)
 {
     PqlToken that = getNextToken();
-    unique_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
+    if (such.type != TokenType::SUCH || that.type != TokenType::THAT)
+    {
+        throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
+    }
 
-    pe = validator->validateSuchThat(such, that);
-    if (errorFound()) { return; }
+    shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
 
     PqlToken open = getNextToken();
     PqlToken left = getNextToken();
     PqlToken comma = getNextToken();
     PqlToken right = getNextToken();
     PqlToken close = getNextToken();
-    pe = validator->validateBrackets(open, comma, close);
-    pe = validator->validateParameters(left, right);
+    validator->validateBrackets(open, comma, close);
+    validator->validate(left, right);
 }
 
 
-bool QueryValidator::errorFound()
+shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
 {
-    return pe.type != ErrorType::NONE;
-}
-
-// TODO Implement Validators for such that clauses and complete this function
-unique_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
-{
-    if (type == TokenType::USES) {
-        return make_unique<PatternValidator>(declarations);
+    if (type == TokenType::USES) 
+    {
+        return shared_ptr<UsesValidator>(new UsesValidator(declarations));
+    }  else if (type == TokenType::MODIFIES)
+    {
+        return shared_ptr<ModifiesValidator>(new ModifiesValidator(declarations));
+    }
+    else if (type == TokenType::FOLLOWS || type == TokenType::FOLLOWS_A)
+    {
+        return shared_ptr<FollowsValidator>(new FollowsValidator(declarations));
+    }
+    else if (type == TokenType::PARENT || type == TokenType::PARENT_A)
+    {
+        return shared_ptr<ParentValidator>(new ParentValidator(declarations));
+    } else
+    {
+        throw SemanticError("Invalid relationship type");
     }
 }
 

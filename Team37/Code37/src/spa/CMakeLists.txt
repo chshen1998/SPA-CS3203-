@@ -47,9 +47,13 @@ add_library(spa ${srcs} ${headers}
 
         "src/QPS/Validators/ClauseValidator.h"
         "src/QPS/Validators/DeclarationValidator.h"
+        "src/QPS/Validators/FollowsValidator.h"
         "src/QPS/Validators/PatternValidator.h"
+        "src/QPS/Validators/ParentValidator.h"
         "src/QPS/Validators/SelectValidator.h"
-        "src/QPS/Validators/Validator.h"
+        "src/QPS/Validators/ModifiesValidator.h" 
+        "src/QPS/Validators/UsesValidator.h"
+        "src/QPS/Validators/ValidatorUtils.h"
         src/QPS/QPS.h
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
@@ -66,9 +70,14 @@ add_library(spa ${srcs} ${headers}
 
         "src/QPS/Validators/ClauseValidator.cpp"
         "src/QPS/Validators/DeclarationValidator.cpp"
+        "src/QPS/Validators/FollowsValidator.cpp"
         "src/QPS/Validators/PatternValidator.cpp"
+        "src/QPS/Validators/ParentValidator.cpp"
         "src/QPS/Validators/SelectValidator.cpp"
-        "src/QPS/Validators/Validator.cpp"
+        "src/QPS/Validators/ModifiesValidator.cpp" 
+        "src/QPS/Validators/UsesValidator.cpp"
+        "src/QPS/Validators/ValidatorUtils.cpp"
+        
         src/QPS/QPS.cpp
         src/QPS/QueryExtractor.cpp
         src/QPS/QueryEvaluator.cpp
@@ -81,14 +90,21 @@ add_library(spa ${srcs} ${headers}
         src/PKB/QueryServicer.cpp
         src/PKB/Storage.h
         src/PKB/Storage.cpp
-        src/PKB/StatementType.h
+        src/PKB/Types/StatementType.h
         src/SP/Keywords.cpp
         src/SP/Keywords.h
-        src/AST/ASTVisitor/ExtractASTVisitor.cpp
-        src/AST/ASTVisitor/ExtractASTVisitor.h 
+        src/AST/ASTVisitor/ExtractGeneralASTVisitor.cpp
+        src/AST/ASTVisitor/ExtractGeneralASTVisitor.h
         src/PKB/Structures/Array2D.h
-        src/PKB/Structures/Array2D.cpp      
-        )
+        src/PKB/Structures/Array2D.cpp
+        src/PKB/Structures/StatementVariableStorage.h
+        src/PKB/Structures/StatementVariableStorage.cpp
+        src/PKB/Structures/Array2D.cpp
+        src/AST/ASTVisitor/ExtractFollowsASTVisitor.cpp
+        src/AST/ASTVisitor/ExtractFollowsASTVisitor.h
+        src/AST/ASTVisitor/ExtractParentsASTVisitor.cpp
+        src/AST/ASTVisitor/ExtractParentsASTVisitor.h 
+        src/PKB/Types/StmtStmtRelationType.h)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

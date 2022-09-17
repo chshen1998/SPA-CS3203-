@@ -11,6 +11,7 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
+#include "QueryValidator.h"
 #include "AST/TNode.h"
 #include "PKB/PKB.h"
 #include <unordered_map>
@@ -48,38 +49,11 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {")", TokenType::CLOSED_BRACKET},
 };
 
-/*
- * Set of valid declaration types
- */
-set<TokenType> validDeclarations = {
-        TokenType::VARIABLE,
-        TokenType::PROCEDURE,
-        TokenType::WHILE,
-        TokenType::ASSIGN,
-        TokenType::STATEMENT
+unordered_map<ErrorType, string> errorTypeToStringMap = {
+    {ErrorType::SEMANTIC_ERROR, "Semantic Error"},
+    {ErrorType::SYNTAX_ERROR, "Syntax Error"}
 };
 
-/*
- * Set of valid such that clauses
- */
-set<TokenType> validSuchThatClauses = {
-        TokenType::USES,
-        TokenType::MODIFIES,
-        TokenType::PARENT,
-        TokenType::PARENT_A,
-        TokenType::FOLLOWS,
-        TokenType::FOLLOWS_A
-};
-
-/*
- * Set of valid such that clauses
- */
-set<TokenType> validPatternParameters = {
-        TokenType::SYNONYM,
-        TokenType::CONSTANT,
-        TokenType::STRING,
-        TokenType::NUMBER
-};
 
 std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     string typeString = "Unknown";
@@ -137,9 +111,13 @@ void QPS::evaluate(string query, list<string>& results) {
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
 
-    cout << "\n" << endl;
-    for (auto t : tokens) {
-        cout << t << endl;
+    QueryValidator validator = QueryValidator(tokens);
+    PqlError pe = validator.validateQuery();
+
+    if (pe.errorType != ErrorType::NONE)
+    {
+        results.push_back(errorTypeToStringMap[pe.errorType]);
+        return;
     }
 
     QueryExtractor extractor(tokens);

@@ -29,6 +29,7 @@ enum class TokenType {
     WHILE,
     IF,
     ELSE,
+    READ,
     PRINT,
     CALL,
 
@@ -43,7 +44,9 @@ enum class TokenType {
     SELECT,
     PATTERN,
     USES,
+    USES_P,
     MODIFIES,
+    MODIFIES_P,
     PARENT,
     PARENT_A,
     FOLLOWS,
@@ -95,8 +98,10 @@ enum class ErrorType
 
 struct PqlError
 {
-    ErrorType type;
+    ErrorType errorType;
     string message;
+
+    PqlError(ErrorType type, string msg) : errorType(type), message(msg) {}
 };
 
 // Created for debugging purposes
@@ -114,6 +119,8 @@ struct Clause
 {
     string left;
     string right;
+
+    Clause(string l, string r) : left(l), right(r) {}
 };
 
 /*
@@ -122,15 +129,12 @@ struct Clause
 struct PqlQuery {
     unordered_map<string, TokenType> declarations = {};
     string select;
-    Clause patternClause;
-    Clause suchThatClause;
+    vector<Clause> patternClauses;
+    vector<Clause> suchThatClauses;
 };
 
 
 extern unordered_map<string, TokenType> stringToTokenMap;
-extern set<TokenType> validDeclarations;
-extern set<TokenType> validSuchThatClauses;
-extern set<TokenType> validPatternParameters;
 
 class QPS {
     shared_ptr<QueryServicer> servicer;

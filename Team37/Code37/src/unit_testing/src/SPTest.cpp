@@ -102,26 +102,24 @@ TEST_CASE("Extract Statements - Good input") {
 TEST_CASE("Tokenize read") {
     shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>("");
     shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sourceCode, "p1");
-    shared_ptr<ReadStatement> readStatement = make_shared<ReadStatement>(procedure1, 1, "v");
+    shared_ptr<ReadStatement> readStatement = make_shared<ReadStatement>(procedure1, "v");
 
     string line = "read v";
-    shared_ptr<ReadStatement> result = Tokenizer::tokenizeRead(line, 1, procedure1);
+    shared_ptr<ReadStatement> result = Tokenizer::tokenizeRead(line, procedure1);
 
     require(result->getVariableName() == readStatement->getVariableName());
-    require(result->getLineNum() == readStatement->getLineNum());
     require(result->getParent() == readStatement->getParent());
 }
 
 TEST_CASE("Tokenize print") {
     shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>("");
     shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sourceCode, "p1");
-    shared_ptr<PrintStatement> printStatement = make_shared<PrintStatement>(procedure1, 1, "v");
+    shared_ptr<PrintStatement> printStatement = make_shared<PrintStatement>(procedure1, "v");
 
     string line = "print v";
-    shared_ptr<PrintStatement> result = Tokenizer::tokenizePrint(line, 1, procedure1);
+    shared_ptr<PrintStatement> result = Tokenizer::tokenizePrint(line, procedure1);
 
     require(result->getVariableName() == printStatement->getVariableName());
-    require(result->getLineNum() == printStatement->getLineNum());
     require(result->getParent() == printStatement->getParent());
 }
 
@@ -146,15 +144,13 @@ TEST_CASE("Tokenize Statements") {
     vector<shared_ptr<Procedure> > result = Tokenizer::tokenizeStatements(procedures, statements);
 
     vector<shared_ptr<Procedure> > expected;
-    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(procedure1, 1, "flag");
-    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(procedure1, 2, "flag");
+    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(procedure1, "flag");
+    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(procedure1, "flag");
 
     vector<shared_ptr<Statement> > resultStatements = result[0]->getStatements();
 
-    require(resultStatements[0]->getLineNum() == print1->getLineNum());
     require(resultStatements[0]->getParent() == print1->getParent());
 
-    require(resultStatements[1]->getLineNum() == read1->getLineNum());
     require(resultStatements[1]->getParent() == read1->getParent());
 
 }
@@ -175,8 +171,8 @@ TEST_CASE("Tokenize SourceCode") {
     stmtlst.push_back(s2);
     statements.push_back(stmtlst);
 
-    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(p1, 1, "flag");
-    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(p1, 2, "flag");
+    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(p1, "flag");
+    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(p1, "flag");
 
     p1->addStatement(print1);
     p1->addStatement(read1);

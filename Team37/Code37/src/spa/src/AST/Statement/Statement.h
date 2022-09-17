@@ -7,7 +7,7 @@ using namespace std;
 
 #include "AST/TNode.h"
 
-static int lineNumCount = 0;
+static int lineNumCount = 1;
 
 class Statement : public TNode {
 private:

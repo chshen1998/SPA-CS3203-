@@ -7,20 +7,20 @@ using namespace std;
 #include "SP/Utilities/Utils.h"
 #include "SP/Utilities/Keywords.h"
 
-shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
+shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line, shared_ptr<TNode> parent) {
     string keyword = Keywords::READ;
     int startIdx = line.find(keyword);
     int end = startIdx + keyword.length();
     string varName = line.substr(end, string::npos);
-    return make_shared<ReadStatement>(parent, stmtNo, Utils::trim(varName));
+    return make_shared<ReadStatement>(parent, Utils::trim(varName));
 }
 
-shared_ptr<PrintStatement> Tokenizer::tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
+shared_ptr<PrintStatement> Tokenizer::tokenizePrint(string line, shared_ptr<TNode> parent) {
     string keyword = Keywords::PRINT;
     int startIdx = line.find(keyword);
     int end = startIdx + keyword.length();
     string varName = line.substr(end, string::npos);
-    return make_shared<PrintStatement>(parent, stmtNo, Utils::trim(varName));
+    return make_shared<PrintStatement>(parent, Utils::trim(varName));
 }
 
 vector<shared_ptr<Procedure> > Tokenizer::tokenizeStatements(vector<shared_ptr<Procedure> > procedures, vector<vector<string> > statements) {
@@ -30,10 +30,10 @@ vector<shared_ptr<Procedure> > Tokenizer::tokenizeStatements(vector<shared_ptr<P
             shared_ptr<Statement> stmt;
             string s = statements[i][j];
             if (Utils::isRead(s)) {
-                stmt = Tokenizer::tokenizeRead(s, j + 1, procedure);
+                stmt = Tokenizer::tokenizeRead(s, procedure);
             }
             if (Utils::isPrint(s)) {
-                stmt = Tokenizer::tokenizePrint(s, j + 1, procedure);
+                stmt = Tokenizer::tokenizePrint(s, procedure);
             }
             procedure->addStatement(stmt);
         }

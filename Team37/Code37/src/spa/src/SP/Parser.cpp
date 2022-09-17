@@ -231,7 +231,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
     return nullptr;
 }
 
-shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shared_ptr<TNode> parent) {
+shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode> parent) {
     size_t elseIndex = ifElseBlock.find(Keywords::ELSE);
     size_t thenIndex = ifElseBlock.find(Keywords::THEN);
 
@@ -248,7 +248,7 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shar
     size_t firstEgyptianOpen = ifElseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string condExpr = Parser::extractConditionalExpr(ifElseBlock, firstEgyptianOpen);
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
-    shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, stmtNo, condExprNode);
+    shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, condExprNode);
     condExprNode->setParent(ifNode);
     string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
 
@@ -275,12 +275,12 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, int stmtNo, shar
     return ifNode;
 }
 
-shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, int stmtNo, shared_ptr<TNode> parent) {
+shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNode> parent) {
     size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string condExpr = Parser::extractConditionalExpr(whileBlock, firstEgyptianOpen);
 
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
-    shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, stmtNo, condExprNode);
+    shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, condExprNode);
     condExprNode->setParent(whileStatement);
 
     string stmtsBlock = Parser::extractStatementBlock(whileBlock, firstEgyptianOpen);

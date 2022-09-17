@@ -18,7 +18,7 @@ public:
     Tokenizer();
 
     /**
-     * Creates ReadStatement object with specified parent and stmtNo.
+     * Creates ReadStatement object with specified parent.
      * @param line read statement in string
      * @param parent parent node of read statement
      * @return ReadStatement object
@@ -26,12 +26,28 @@ public:
     static shared_ptr<ReadStatement> tokenizeRead(string line, shared_ptr<TNode> parent);
 
     /**
-     * Creates PrintStatement object with specified parent and stmtNo.
+     * Creates PrintStatement object with specified parent.
      * @param line print statement in string
      * @param parent parent node of read statement
      * @return PrintStatement object
      */
     static shared_ptr<PrintStatement> tokenizePrint(string line, shared_ptr<TNode> parent);
+
+    /**
+     * Creates a AssignStatement object with specified parent.
+     * @param line raw assign statement string, no semicolons, trimmed
+     * @param parent parent node of assign statement
+     * @return AssignStatement object
+     */
+    static shared_ptr<AssignStatement> tokenizeAssign(string line, shared_ptr<TNode> parent);
+
+    /**
+     * Creates a RelationalFactor object with the specified parent.
+     * @param line a raw relFactor string, trimmed
+     * @param parent parent of relFactor
+     * @return
+     */
+    static shared_ptr<RelationalFactor> tokenizeRelFactor(string line);
 
 
     /**

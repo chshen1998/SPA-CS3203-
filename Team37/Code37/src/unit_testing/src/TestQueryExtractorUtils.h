@@ -27,6 +27,10 @@ extern vector<PqlToken> valid_follows_a;
 
 extern vector<PqlToken> valid_parent_a;
 
+extern vector<PqlToken> valid_such_that_then_pattern;
+
+extern vector<PqlToken> valid_pattern_then_such_that;
+
 extern vector<PqlToken> multi_declarations;
 
 extern vector<PqlToken> missing_semicolon;

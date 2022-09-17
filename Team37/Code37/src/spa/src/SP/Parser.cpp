@@ -8,7 +8,6 @@ using namespace std;
 #include "Utilities/Utils.h"
 #include "AST/SourceCode.h"
 #include "InvalidSyntaxException.h"
-#include "Utilities/ConditionalExpressionNode.h"
 
 //TODO: pass in pointer to procedures instead of pass by value
 vector<string> Parser::extractProcedures(string srcCode, vector<string> procedures) {
@@ -198,12 +197,12 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
     return extractStatements(procedure, statementList);
 }
 
-string Parser::extractConditionalExpr(string block, size_t firstEgyptianOpen) {
-    string stmtStr = block.substr(0, firstEgyptianOpen);
-    size_t condExprStart = stmtStr.find_first_of(Keywords::OPEN_BRACKET) + 1;
-    size_t condExprEnd = stmtStr.find_last_of(Keywords::CLOSE_BRACKET);
+string Parser::extractConditionalExpr(string str) {
+    str = Utils::trim(str);
+    size_t condExprStart = str.find_first_of(Keywords::OPEN_BRACKET) + 1;
+    size_t condExprEnd = str.find_last_of(Keywords::CLOSE_BRACKET);
     size_t condExprLength = condExprEnd - condExprStart;
-    return Utils::trim(stmtStr.substr(condExprStart, condExprLength));
+    return Utils::trim(str.substr(condExprStart, condExprLength));
 }
 
 string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {
@@ -213,19 +212,60 @@ string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {
     return Utils::trim(block.substr(stmtLstStart, stmtLstLength));
 }
 
+shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_ptr<TNode> parent) {
+
+}
+
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shared_ptr<TNode> parent) {
     condExprStr = Utils::trim(condExprStr);
-    int NotOpIdx = condExprStr.find_first_of(Keywords::NOT_OPERATOR);
-    int NotEqOpIdx = condExprStr.find(Keywords::NOT_EQUALS);
-    if (NotEqOpIdx != NotOpIdx && NotOpIdx == 0) {
-        // NOT statement - ! operator is the first character of the trimmed string
-        string innerCondExpr = condExprStr.substr(NotOpIdx + 1, string::npos);
-        shared_ptr<ConditionalExpression> condExpr = Parser::parseCondExpr(innerCondExpr, nullptr);
-        shared_ptr<NotCondition> NotCondExpr = make_shared<NotCondition>(parent, condExpr);
-        condExpr->setParent(NotCondExpr);
-        return NotCondExpr;
+
+    // if no brackets, it is a relational expression
+    int openIdx = condExprStr.find(Keywords::OPEN_BRACKET);
+    int closedIdx = condExprStr.find(Keywords::CLOSE_BRACKET);
+    if (openIdx == -1 && closedIdx == -1) {
+        return Parser::parseRelExpr(condExprStr, parent);
     }
 
+    // if not a relational expression, do bracket counting instead
+    int numBrackets;
+    string condition;
+
+    while (condExprStr.length() != 0) {
+        char nextLetter = condExprStr[0];
+        condExprStr.erase(0, 1);
+
+        // Check for NOT conditional expression
+        if ((nextLetter == '!') && (condExprStr[0] != '=')) {
+            condition.clear();
+            // parse until first open bracket
+            while (true) {
+                nextLetter = condExprStr[0];
+                condExprStr.erase(0, 1);
+                if (nextLetter == '(') {
+                    numBrackets = 1;
+                    break;
+                }
+            }
+            while (numBrackets != 0) {
+                nextLetter = condExprStr[0];
+                condExprStr.erase(0, 1);
+                if (nextLetter == '(') {
+                    numBrackets += 1;
+                } else if (nextLetter == ')') {
+                    numBrackets -= 1;
+                }
+                if (numBrackets != 0) {
+                    condition.push_back(nextLetter);
+                }
+            }
+            shared_ptr<ConditionalExpression> condExpr = Parser::parseCondExpr(condition, nullptr);
+            shared_ptr<NotCondition> NotCondExpr = make_shared<NotCondition>(parent, condExpr);
+            condExpr->setParent(NotCondExpr);
+            return NotCondExpr;
+        }
+
+
+    }
 
     // if no operators found, throw error, invalid conditional expression
     throw InvalidSyntaxException((char *)"No operators found. Invalid conditional expression.");
@@ -247,7 +287,8 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
     string elseBlock = ifElseBlock.substr(elseIndex, string::npos);
 
     size_t firstEgyptianOpen = ifElseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
-    string condExpr = Parser::extractConditionalExpr(ifElseBlock, firstEgyptianOpen);
+    string ifStmtStr = ifElseBlock.substr(0, firstEgyptianOpen);
+    string condExpr = Parser::extractConditionalExpr(ifStmtStr);
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
     shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, condExprNode);
     condExprNode->setParent(ifNode);
@@ -276,7 +317,8 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
 
 shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNode> parent) {
     size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
-    string condExpr = Parser::extractConditionalExpr(whileBlock, firstEgyptianOpen);
+    string whileStmtStr = whileBlock.substr(0, firstEgyptianOpen);
+    string condExpr = Parser::extractConditionalExpr(whileStmtStr);
 
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
     shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, condExprNode);
@@ -303,9 +345,9 @@ shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode>
     if ((int)statement.find("read") == 0) {
         statementNode = Tokenizer::tokenizeRead(statement, parentNode); //TODO remove stmtNo as param in tokenizeRead
     }
-    if ((int)statement.find("call") == 0) {
-        statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
-    }
+//    if ((int)statement.find("call") == 0) {
+//        statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
+//    }
     if ((int)statement.find("if") == 0) {
         statementNode = Parser::parseIfElse(statement, parentNode);
     }

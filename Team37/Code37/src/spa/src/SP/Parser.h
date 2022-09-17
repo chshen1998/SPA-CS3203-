@@ -10,6 +10,7 @@ using namespace std;
 #include "AST/SourceCode.h"
 #include "AST/Procedure.h"
 #include "AST/Expression/ConditionalExpression/ConditionalExpression.h"
+#include "AST/Expression/ConditionalExpression/RelationalExpression.h"
 #include "AST/Statement/WhileStatement.h"
 #include "AST/Statement/IfStatement.h"
 #include "AST/Expression/ConditionalExpression/NotCondition.h"
@@ -100,14 +101,13 @@ public:
     static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr, shared_ptr<TNode> parent);
 
     /**
-     * Parses an if or while block string and extracts the conditional
+     * Parses an if or while statement string and extracts the conditional
      * expression as a string that sits between the first set of parentheses ( )
-     * @param block an if or while block that contains a
+     * @param str an if or while statement string that contains a
      * conditional expression
-     * @param firstEgyptianOpen index of the first egyptian open bracket
-     * @return the conditional expression as a string
+     * @return the conditional expression as a string without the bracket wrapper
      */
-    static string extractConditionalExpr(string block, size_t firstEgyptianOpen);
+    static string extractConditionalExpr(string str);
 
     /**
      * Parses a block of code and extracts a statement block that sits between
@@ -118,7 +118,13 @@ public:
      */
     static string extractStatementBlock(string block, size_t firstEgyptianOpen);
 
-
+    /**
+     * Parses a relational expression string
+     * @param relExprStr relational expression string that has not been processed
+     * @param parent parent node of the relational expression
+     * @return a RelationalExpression node
+     */
+    static shared_ptr<RelationalExpression> parseRelExpr(string relExprStr, shared_ptr<TNode> parent);
 };
 
 

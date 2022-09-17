@@ -100,7 +100,7 @@ struct PqlError
 };
 
 // Created for debugging purposes
-ostream& operator<<(ostream& os, PqlToken& token);
+//ostream& operator<<(ostream& os, PqlToken& token);
 
 
 

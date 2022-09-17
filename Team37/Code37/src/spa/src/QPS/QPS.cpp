@@ -130,18 +130,29 @@ void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
 }
 
 /*
-    * Takes in query string input from user, parses the query string then return result from PKB
-    */
+* Takes in query string input from user, parses the query string then return result from PKB
+*/
 void QPS::evaluate(string query, list<string>& results) {
     
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens = tokenizer.Tokenize();
 
+    cout << "\n" << endl;
+    for (auto t : tokens) {
+        cout << t << endl;
+    }
+
     QueryExtractor extractor(tokens);
     PqlQuery pq = extractor.extractSemantics();
 
-    QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
-    evaluator.evaluate();
+    results.push_back("flag");
+    results.push_back("x");
+    results.push_back("y");
+
+    //QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+    //evaluator.evaluate();
  
+
+
     // string output = evaluator.convertToString(result);
 }

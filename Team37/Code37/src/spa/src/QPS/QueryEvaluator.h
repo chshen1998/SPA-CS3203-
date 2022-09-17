@@ -19,13 +19,17 @@ public:
     shared_ptr<QueryServicer> servicer;
     list<string>&  result;
 
-    QueryEvaluator(PqlQuery pqlQuery, shared_ptr<QueryServicer> s, list<string>& r);
+    QueryEvaluator(PqlQuery& pqlQuery, shared_ptr<QueryServicer> s, list<string>& r);
     void evaluate();
 
 private:
     void QuerySelect();
     void evaluateSuchThatClause();
     void evaluatePatternClause();
+    void QueryEvaluator::selectAll(TokenType type);
+
+    inline bool checkIfClauseExists();
+    bool checkIfSelectSynonymExistsInClause();
 };
 
 

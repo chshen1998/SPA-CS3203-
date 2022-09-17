@@ -123,14 +123,8 @@ void QPS::evaluate(string query, list<string>& results) {
     QueryExtractor extractor(tokens);
     PqlQuery pq = extractor.extractSemantics();
 
-    results.push_back("flag");
-    results.push_back("x");
-    results.push_back("y");
 
-    //QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
-    //evaluator.evaluate();
- 
+    QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+    evaluator.evaluate();
 
-
-    // string output = evaluator.convertToString(result);
 }

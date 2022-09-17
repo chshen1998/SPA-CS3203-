@@ -117,6 +117,7 @@ struct PqlError
  */
 struct Clause
 {
+    
     string left;
     string right;
 

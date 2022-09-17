@@ -26,8 +26,8 @@ TestWrapper::~TestWrapper() {
 // method for parsing the SIMPLE source
 void TestWrapper::parse(string filename) {
 	shared_ptr<SourceCode> AST = SP::parse(filename);
-	//knowledgeBase->buildFromAst(AST);
-	//queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
+	knowledgeBase->buildFromAst(AST);
+	queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
 }
 
 // method to evaluating a query

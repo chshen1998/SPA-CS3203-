@@ -25,6 +25,22 @@ public:
      int getLineNum() {
         return lineNum;
      }
+
+     /**
+      * Gets the total amount of statements created so far
+      *
+      * @return an int
+      */
+     int getLineNumCount() {
+         return lineNumCount - 1;
+     }
+
+     /**
+      * Resets the global lineNumCount back to 1
+      */
+     void resetLineNumCount() {
+         lineNumCount = 1;
+     }
 };
 
 #endif //TEAM37_STATEMENT_H

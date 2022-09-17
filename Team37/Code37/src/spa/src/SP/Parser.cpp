@@ -264,7 +264,6 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
 
     firstEgyptianOpen = elseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string elseStmtBlock = Parser::extractStatementBlock(elseBlock, firstEgyptianOpen);
-
     stmts.clear();
     stmts = Parser::extractStatements(elseStmtBlock, stmts);
     for (auto s: stmts) {
@@ -299,22 +298,20 @@ shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode>
     statement = Utils::trim(statement);
     shared_ptr<Statement> statementNode;
     if ((int)statement.find("print") == 0) {
-        statementNode = Tokenizer::tokenizePrint(statement, stmtNo, parentNode);
+        statementNode = Tokenizer::tokenizePrint(statement, parentNode); //TODO remove stmtNo as param in tokenizePrint
     }
     if ((int)statement.find("read") == 0) {
-        statementNode = Tokenizer::tokenizeRead(statement, stmtNo, parentNode);
+        statementNode = Tokenizer::tokenizeRead(statement, parentNode); //TODO remove stmtNo as param in tokenizeRead
     }
     if ((int)statement.find("call") == 0) {
-        statementNode = Tokenizer::tokenizeCall(statement, stmtNo, parentNode);// TODO tokenizeCall not implemented yet
+        statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
     }
     if ((int)statement.find("if") == 0) {
-        statementNode = Parser::parseIfElse(statement, stmtNo, parentNode);
+        statementNode = Parser::parseIfElse(statement, parentNode);
     }
     if ((int)statement.find("while") == 0) {
-        statementNode = Parser::parseWhile(statement, stmtNo, parentNode);
+        statementNode = Parser::parseWhile(statement, parentNode);
     }
-    parentNode->addStatement(statementNode); //TODO TNode does not have addStatement yet
-    statementNode->setParent(parentNode);
     return statementNode;
 }
 

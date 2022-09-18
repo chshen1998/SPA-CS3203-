@@ -1,0 +1,40 @@
+1 - variable
+variable v;
+Select v
+flag, x, i
+5000
+2 - assign
+assign a;
+Select a
+1, 4, 6, 9, 10, 12, 15
+5000
+3 - print
+print p;
+Select p
+2, 7, 13
+5000
+4 - if
+if ifs;
+Select ifs
+5
+5000
+5 - while
+while w;
+Select w
+11
+5000
+6 - constant
+constant c;
+Select c
+0, 1, 2, 100
+5000
+7 - statement
+stmt s;
+Select s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+8 - read statement
+read r;
+Select r
+3, 8, 14
+5000

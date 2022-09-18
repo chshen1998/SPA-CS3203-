@@ -89,5 +89,7 @@ public:
     static bool isPrint(string line);
 
     static bool isRelExpr(string line);
+
+    static bool isAndOrExpr(string line);
 };
 #endif //SP_UTILS_H

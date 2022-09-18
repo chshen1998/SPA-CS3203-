@@ -171,3 +171,14 @@ bool Utils::isRelExpr(string line) {
     return std::any_of(indexes.begin(), indexes.end(), isPositive);
 }
 
+bool Utils::isAndOrExpr(string line) {
+    vector<string> operators;
+    vector<int> indexes;
+    operators.push_back("&&");
+    operators.push_back("||");
+    for (auto o: operators) {
+        int idx = line.find(o);
+        indexes.push_back(idx);
+    }
+    return std::any_of(indexes.begin(), indexes.end(), isPositive);
+}

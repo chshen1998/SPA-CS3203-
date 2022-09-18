@@ -87,5 +87,7 @@ public:
     static bool isRead(string line);
 
     static bool isPrint(string line);
+
+    static bool isRelExpr(string line);
 };
 #endif //SP_UTILS_H

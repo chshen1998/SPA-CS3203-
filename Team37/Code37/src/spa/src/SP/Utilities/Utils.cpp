@@ -155,3 +155,19 @@ bool Utils::isPrint(string line) {
     return (startIdx != -1);
 }
 
+bool Utils::isRelExpr(string line) {
+    vector<string> relOperators;
+    vector<int> indexes;
+    relOperators.push_back(">");
+    relOperators.push_back(">=");
+    relOperators.push_back("<=");
+    relOperators.push_back("<");
+    relOperators.push_back("==");
+    relOperators.push_back("!=");
+    for (auto o: relOperators) {
+        int idx = line.find(o);
+        indexes.push_back(idx);
+    }
+    return std::any_of(indexes.begin(), indexes.end(), isPositive);
+}
+

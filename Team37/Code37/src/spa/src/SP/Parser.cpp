@@ -264,10 +264,8 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shared_ptr<TNode> parent) {
     condExprStr = Utils::trim(condExprStr);
 
-    // if no brackets, it is a relational expression
-    int openIdx = condExprStr.find(Keywords::OPEN_BRACKET);
-    int closedIdx = condExprStr.find(Keywords::CLOSE_BRACKET);
-    if (openIdx == -1 && closedIdx == -1) {
+    // if it is a relational expression
+    if (Utils::isRelExpr(condExprStr)) {
         return Parser::parseRelExpr(condExprStr, parent);
     }
 

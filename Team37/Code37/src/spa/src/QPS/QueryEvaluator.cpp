@@ -61,11 +61,48 @@ void QueryEvaluator::evaluate() {
         return;
     }
 
+    // If Pattern Clause only
+    if (patternTable.size() > 1 && suchThatTable.size() <= 1) {
+        int index = 0;
+
+        for (int i = 0; i < patternTable[0].size(); i++) {
+            if (patternTable[0][i] == selectSynonym) {
+                index = i;
+                break;
+            }
+        }
+
+        for (int j = 1; j < patternTable.size(); j++) {
+            result.push_back(patternTable[j][index]);
+        }
+
+        return;
+    }
+
+    // If Such that Cluase Only
+    else if (suchThatTable.size() > 1 && patternTable.size() <= 1) {
+        int index = 0;
+
+        for (int i = 0; i < suchThatTable[0].size(); i++) {
+            if (suchThatTable[0][i] == selectSynonym) {
+                index = i;
+                break;
+            }
+        }
+
+        for (int j = 1; j < suchThatTable.size(); j++) {
+            result.push_back(suchThatTable[j][index]);
+        }
+
+        return;
+    }
     // Combine the two tables
     // We can hardcode this part since maximum of 4 variables due to max 1 such-that, 1 pattern
-    
-    // find two common variables from 2 tables 
-    //
+    else {
+
+
+
+    }
 }
 
 /*
@@ -345,6 +382,8 @@ bool QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate
             }
         }
     }
+
+    return true;
 }
 
 

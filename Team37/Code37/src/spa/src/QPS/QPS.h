@@ -118,10 +118,10 @@ struct PqlError
 struct Clause
 {
     PqlToken clauseType;
-    PqlToken left;
-    PqlToken right;
+    string left;
+    string right;
 
-    Clause(PqlToken type, PqlToken l, PqlToken r) : clauseType(type), left(l), right(r) {}
+    Clause(PqlToken type, string l, string r) : clauseType(type), left(l), right(r) {}
 };
 
 /*

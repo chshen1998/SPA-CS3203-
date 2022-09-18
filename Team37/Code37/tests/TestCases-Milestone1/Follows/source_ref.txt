@@ -1,0 +1,20 @@
+procedure main {
+1    flag = 0;
+2    print flag;
+3    read flag;
+4    x = "test";
+5    if (flag == 0) then {
+6        flag = 0;
+7        print flag;
+8        read flag;
+    } else {
+9        flag = x + 1 + 0 + flag;
+    }
+10    i = 100;
+11    while(i == 0) {
+12        flag = 0;
+13        print flag;
+14        read flag;
+15        x = x + 2 + 0 + flag;
+    }
+}

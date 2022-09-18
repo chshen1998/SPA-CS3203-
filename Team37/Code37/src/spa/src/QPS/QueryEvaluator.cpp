@@ -197,11 +197,11 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
     intermediate.push_back(vector<string>());
 
     for (Clause clause : pq.patternClauses) {
-        PqlToken leftArg = clause.left;
-        PqlToken rightArg = clause.right;
+        string leftValue = clause.left;
+        string rightValue = clause.right;
         intermediate[0].push_back(clause.clauseType.value);
 
-        if (leftArg.value == "_" && rightArg.value == "_") {
+        if (leftValue == "_" && rightValue == "_") {
             // Update code in the future for the different
             set<shared_ptr<Statement>> statements = servicer->getAllStmt(StatementType::ASSIGN);
             intermediate.push_back(vector<string> {clause.clauseType.value});
@@ -271,7 +271,7 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
                 return;
             }
             else {
-                intermediate[0].push_back(leftArg.value);
+                intermediate[0].push_back(leftValue);
 
                 set<shared_ptr<Statement>> statements = servicer->getAllStmt(StatementType::ASSIGN);
 
@@ -283,10 +283,10 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
         }
 
         else {
-            vector<int> stmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESV);
+            vector<int> stmtWithRightArg = servicer->reverseRetrieveRelation(rightValue, StmtVarRelationType::USESV);
 
-            if (pq.declarations[leftArg.value] != TokenType::VARIABLE) {
-                vector<int> stmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::MODIFIESV);
+            if (pq.declarations[leftValue] != TokenType::VARIABLE) {
+                vector<int> stmtWithLeftArg = servicer->reverseRetrieveRelation(leftValue, StmtVarRelationType::MODIFIESV);
                 vector<int> assignStmts;
 
                 // Gets the intersections of the two list of assign stmt numbers
@@ -304,7 +304,7 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
             }
 
             else {
-                intermediate[0].push_back(leftArg.value);
+                intermediate[0].push_back(leftValue);
 
                 for (int i : stmtWithRightArg) {
                     vector<string> variables = servicer->forwardRetrieveRelation(i, StmtVarRelationType::MODIFIESV);
@@ -332,10 +332,10 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
         TokenType clauseType = clause.clauseType.type;
 
         // If Both arguments are NOT synonyms
-        if (leftArg.type != TokenType::SYNONYM && rightArg.type != TokenType::SYNONYM) {
+        if (leftType != TokenType::SYNONYM && rightType != TokenType::SYNONYM) {
 
             // If right arg is a variable aka Uses/Modifies
-            if (rightArg.type == TokenType::STRING) {
+            if (rightType == TokenType::STRING) {
                 StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clauseType];
 
                 if (leftArg.type == TokenType::STATEMENT_NUM) {
@@ -347,7 +347,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
             }
 
             // if right side is statement number aka Follows/Parents
-            else if (rightArg.type == TokenType::STATEMENT_NUM) {
+            else if (rightType == TokenType::STATEMENT_NUM) {
                 StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clauseType];
 
                 if (leftArg.type == TokenType::STATEMENT_NUM) {
@@ -356,8 +356,8 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
 
                 // If left side is a wildcard, returns a list of statement numbers as well
                 else {
-                    intermediate.push_back(vector<string> {leftArg.value});
-                    vector<int> stmtNums = servicer->reverseRetrieveRelation(stoi(rightArg.value), ss);
+                    intermediate.push_back(vector<string> {leftValue});
+                    vector<int> stmtNums = servicer->reverseRetrieveRelation(stoi(rightValue), ss);
 
                     for (int i : stmtNums) {
                         intermediate.push_back(vector<string> { to_string(i) });
@@ -369,7 +369,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
 
             // If right side is a wildcard
             else {
-                if (leftArg.type == TokenType::STATEMENT_NUM &&
+                if (leftType == TokenType::STATEMENT_NUM &&
                     (clauseType == TokenType::FOLLOWS || clauseType == TokenType::FOLLOWS_A ||
                         clauseType == TokenType::PARENT || clauseType == TokenType::PARENT_A)) {
                     StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clauseType];
@@ -383,16 +383,16 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
         }
 
         // If left side is a synonym and right is NOT synonym
-        else if (leftArg.type == TokenType::SYNONYM && rightArg.type != TokenType::SYNONYM) {
-            intermediate.push_back(vector<string> {leftArg.value});
+        else if (leftType == TokenType::SYNONYM && rightType != TokenType::SYNONYM) {
+            intermediate.push_back(vector<string> {leftValue});
 
             if (clauseType == TokenType::FOLLOWS || clauseType == TokenType::FOLLOWS_A ||
                 clauseType == TokenType::PARENT || clauseType == TokenType::PARENT_A) {
 
                 StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clauseType];
 
-                if (rightArg.type == TokenType::STATEMENT_NUM) {
-                    vector<int> result = servicer->reverseRetrieveRelation(stoi(rightArg.value), ss);
+                if (rightType == TokenType::STATEMENT_NUM) {
+                    vector<int> result = servicer->reverseRetrieveRelation(stoi(rightValue), ss);
 
                     for (int i : result) {
                         intermediate.push_back(vector<string> { to_string(i) });
@@ -400,7 +400,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
                 }
                 // if right side is a wildcard
                 else {
-                    set<shared_ptr<Statement>> result = servicer->getAllStmt(tokenTypeToStatementType[leftArg.type]);
+                    set<shared_ptr<Statement>> result = servicer->getAllStmt(tokenTypeToStatementType[leftType]);
 
                     for (shared_ptr<Statement> s : result) {
                         if (!servicer->forwardRetrieveRelation(s->getLineNum(), ss).empty()) {
@@ -413,8 +413,8 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
             else {
                 StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clauseType];
 
-                if (rightArg.type == TokenType::STRING) {
-                    vector<int> result = servicer->reverseRetrieveRelation(rightArg.value, sv);
+                if (rightType == TokenType::STRING) {
+                    vector<int> result = servicer->reverseRetrieveRelation(rightValue, sv);
 
                     for (int i : result) {
                         intermediate.push_back(vector<string> { to_string(i) });
@@ -422,7 +422,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
                 }
                 // if right side is a wildcard
                 else {
-                    set<shared_ptr<Statement>> result = servicer->getAllStmt(tokenTypeToStatementType[leftArg.type]);
+                    set<shared_ptr<Statement>> result = servicer->getAllStmt(tokenTypeToStatementType[leftType]);
 
                     for (shared_ptr<Statement> s : result) {
                         if (!servicer->forwardRetrieveRelation(s->getLineNum(), sv).empty()) {
@@ -434,16 +434,16 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
         }
 
         // If left side is NOT a synonym and right is synonym
-        else if (leftArg.type != TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
-            intermediate.push_back(vector<string> {rightArg.value});
+        else if (leftType != TokenType::SYNONYM && rightType == TokenType::SYNONYM) {
+            intermediate.push_back(vector<string> {rightValue});
 
             if (clauseType == TokenType::FOLLOWS || clauseType == TokenType::FOLLOWS_A ||
                 clauseType == TokenType::PARENT || clauseType == TokenType::PARENT_A) {
 
                 StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clauseType];
 
-                if (leftArg.type == TokenType::STATEMENT_NUM) {
-                    vector<int> result = servicer->forwardRetrieveRelation(stoi(leftArg.value), ss);
+                if (leftType == TokenType::STATEMENT_NUM) {
+                    vector<int> result = servicer->forwardRetrieveRelation(stoi(leftValue), ss);
 
                     for (int i : result) {
                         intermediate.push_back(vector<string> { to_string(i) });
@@ -451,7 +451,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
                 }
                 // if left side is a wildcard
                 else {
-                    set<shared_ptr<Statement>> result = servicer->getAllStmt(tokenTypeToStatementType[rightArg.type]);
+                    set<shared_ptr<Statement>> result = servicer->getAllStmt(tokenTypeToStatementType[rightType]);
 
                     for (shared_ptr<Statement> s : result) {
                         if (!servicer->reverseRetrieveRelation(s->getLineNum(), ss).empty()) {
@@ -463,8 +463,8 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
             else {
                 StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clauseType];
 
-                if (leftArg.type == TokenType::STATEMENT_NUM) {
-                    vector<string> result = servicer->forwardRetrieveRelation(stoi(leftArg.value), sv);
+                if (leftType == TokenType::STATEMENT_NUM) {
+                    vector<string> result = servicer->forwardRetrieveRelation(stoi(leftValue), sv);
 
                     for (string s : result) {
                         intermediate.push_back(vector<string> { s });
@@ -475,8 +475,8 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
 
             // Both are synonyms
         else {
-            intermediate.push_back(vector<string>{ leftArg.value, rightArg.value });
-            set<shared_ptr<Statement>> left = servicer->getAllStmt(tokenTypeToStatementType[leftArg.type]);
+            intermediate.push_back(vector<string>{ leftValue, rightValue });
+            set<shared_ptr<Statement>> left = servicer->getAllStmt(tokenTypeToStatementType[leftType]);
 
             if (clauseType == TokenType::FOLLOWS || clauseType == TokenType::FOLLOWS_A ||
                 clauseType == TokenType::PARENT || clauseType == TokenType::PARENT_A) {
@@ -544,14 +544,14 @@ inline bool QueryEvaluator::checkIfClauseExists() {
 
 bool QueryEvaluator::checkIfSelectSynonymExistsInClause() {
     for (auto clause : pq.suchThatClauses) {
-        if (pq.select == clause.left.value || pq.select == clause.right.value) {
+        if (pq.select == clause.left || pq.select == clause.right) {
             return true;
         }
     }
 
     for (auto clause : pq.patternClauses) {
         if (pq.select == clause.clauseType.value || 
-            pq.select == clause.left.value || pq.select == clause.right.value) {
+            pq.select == clause.left || pq.select == clause.right) {
             return true;
         }
     }

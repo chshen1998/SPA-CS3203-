@@ -9,6 +9,23 @@ using namespace std;
 
 #include "catch.hpp"
 
+TEST_CASE("READ")
+{
+	vector<PqlToken> tokens = {
+	PqlToken(TokenType::READ, "read"),
+	PqlToken(TokenType::SYNONYM, "r"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::SYNONYM, "r")
+	};
+	QueryValidator sut = QueryValidator(tokens);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+
 TEST_CASE("Valid declarations and select")
 {
 	QueryValidator sut = QueryValidator(basic_tokens);

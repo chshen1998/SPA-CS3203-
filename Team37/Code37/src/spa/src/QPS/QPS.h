@@ -134,7 +134,6 @@ struct PqlQuery {
     vector<Clause> suchThatClauses;
 };
 
-
 extern unordered_map<string, TokenType> stringToTokenMap;
 
 class QPS {

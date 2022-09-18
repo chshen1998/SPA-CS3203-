@@ -30,6 +30,7 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {"else", TokenType::ELSE},
         {"print", TokenType::PRINT},
         {"call", TokenType::CALL},
+		{"read", TokenType::READ},
 
         {"Select", TokenType::SELECT},
         {"pattern", TokenType::PATTERN},

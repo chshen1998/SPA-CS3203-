@@ -18,3 +18,23 @@ stmt s;
 Select s such that Parent(s,9)
 5
 5000
+4 - parent star of stmt in if
+stmt s;
+Select s such that Parent*(s,6)
+5
+5000
+5 - parent star of stmt in while
+stmt s;
+Select s such that Parent*(s,16)
+13
+5000
+6 - parent star of stmt in nested while
+stmt s;
+Select s such that Parent*(s,10)
+5, 9
+5000
+7 - parent star of nested while
+stmt s;
+Select s such that Parent*(s,9)
+5
+5000

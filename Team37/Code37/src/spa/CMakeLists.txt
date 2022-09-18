@@ -72,7 +72,7 @@ add_library(spa ${srcs} ${headers}
         src/SP/Utilities/Keywords.cpp
         src/SP/Utilities/Keywords.h
         src/AST/ASTVisitor/ExtractASTVisitor.cpp
-        src/AST/ASTVisitor/ExtractASTVisitor.h src/SP/Parser.cpp src/SP/Parser.h src/SP/InvalidSyntaxException.h src/SP/Utilities/ConditionalExpressionNode.h)
+        src/AST/ASTVisitor/ExtractASTVisitor.h src/SP/Parser.cpp src/SP/Parser.h src/SP/InvalidSyntaxException.h)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

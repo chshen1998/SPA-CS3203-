@@ -24,10 +24,10 @@ using namespace std;
 TEST_CASE("Follow statements") {
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
-    shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, 1, "a");
-    shared_ptr<ReadStatement> readStmt2 = make_shared<ReadStatement>(procedure, 2, "b");
-    shared_ptr<ReadStatement> readStmt3 = make_shared<ReadStatement>(procedure, 3, "c");
-    shared_ptr<ReadStatement> readStmt4 = make_shared<ReadStatement>(procedure, 4, "d");
+    shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, "a");
+    shared_ptr<ReadStatement> readStmt2 = make_shared<ReadStatement>(procedure, "b");
+    shared_ptr<ReadStatement> readStmt3 = make_shared<ReadStatement>(procedure, "c");
+    shared_ptr<ReadStatement> readStmt4 = make_shared<ReadStatement>(procedure, "d");
     shared_ptr<Storage> storage = make_shared<Storage>();
 
     procedure->addStatement(readStmt1);
@@ -52,10 +52,10 @@ TEST_CASE("Follow statements") {
 TEST_CASE("Follow Star statements") {
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
-    shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, 1, "a");
-    shared_ptr<ReadStatement> readStmt2 = make_shared<ReadStatement>(procedure, 2, "b");
-    shared_ptr<ReadStatement> readStmt3 = make_shared<ReadStatement>(procedure, 3, "c");
-    shared_ptr<ReadStatement> readStmt4 = make_shared<ReadStatement>(procedure, 4, "d");
+    shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, "a");
+    shared_ptr<ReadStatement> readStmt2 = make_shared<ReadStatement>(procedure, "b");
+    shared_ptr<ReadStatement> readStmt3 = make_shared<ReadStatement>(procedure, "c");
+    shared_ptr<ReadStatement> readStmt4 = make_shared<ReadStatement>(procedure, "d");
     shared_ptr<Storage> storage = make_shared<Storage>();
 
     procedure->addStatement(readStmt1);

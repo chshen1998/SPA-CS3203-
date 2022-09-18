@@ -13,7 +13,7 @@ private:
     shared_ptr<ConditionalExpression> condExpr;
     vector<shared_ptr<Statement> > stmtLst;
 public:
-    WhileStatement(shared_ptr<TNode> parent, int lineNum, shared_ptr<ConditionalExpression> condExpr);
+    WhileStatement(shared_ptr<TNode> parent, shared_ptr<ConditionalExpression> condExpr);
 
     /**
      * Adds a statement to the while statement list

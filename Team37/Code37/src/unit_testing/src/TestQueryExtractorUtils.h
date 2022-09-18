@@ -49,6 +49,10 @@ extern vector<PqlToken> pattern_missing_open_bracket;
 
 extern vector<PqlToken> missing_such_that;
 
+extern vector<PqlToken> invalid_wildcard_uses;
+
+extern vector<PqlToken> invalid_wildcard_modifies;
+
 extern vector<PqlToken> addPatternClause(vector<PqlToken> tokens);
 
 extern vector<PqlToken> addUsesClause(vector<PqlToken> tokens);

@@ -12,4 +12,7 @@ ModifiesValidator::ModifiesValidator(unordered_map<string, TokenType> declaratio
 void ModifiesValidator::validate(PqlToken left, PqlToken right)
 {
 	validateParameters(left, right, validStatementRef, validEntityRef, "modifies");
+	if (left.type == TokenType::WILDCARD) {
+		throw SemanticError("Modifies clause arg1 cannot be wildcard");
+	}
 }

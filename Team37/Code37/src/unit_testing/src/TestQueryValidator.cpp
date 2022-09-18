@@ -147,3 +147,19 @@ TEST_CASE("Valid Parent* clause")
 
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
+
+TEST_CASE("Invalid Uses arg1 wildcard")
+{
+	QueryValidator sut = QueryValidator(invalid_wildcard_uses);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Invalid Modifies arg1 wildcard")
+{
+	QueryValidator sut = QueryValidator(invalid_wildcard_modifies);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}

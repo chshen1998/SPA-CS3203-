@@ -88,14 +88,11 @@ add_library(spa ${srcs} ${headers}
         src/PKB/QueryServicer.cpp
         src/PKB/Storage.h
         src/PKB/Storage.cpp
-        src/PKB/StatementType.h
         src/SP/Utilities/Keywords.cpp
         src/SP/Utilities/Keywords.h
-        src/AST/ASTVisitor/ExtractASTVisitor.cpp
-        src/AST/ASTVisitor/ExtractASTVisitor.h
         src/SP/Parser.cpp
-        src/SP/Parser.h s
-        rc/SP/InvalidSyntaxException.h
+        src/SP/Parser.h
+        src/SP/InvalidSyntaxException.h
         src/PKB/Types/StatementType.h
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.cpp
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.h

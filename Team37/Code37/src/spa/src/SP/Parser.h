@@ -14,6 +14,8 @@ using namespace std;
 #include "AST/Statement/WhileStatement.h"
 #include "AST/Statement/IfStatement.h"
 #include "AST/Expression/ConditionalExpression/NotCondition.h"
+#include "AST/Expression/ConditionalExpression/AndCondition.h"
+#include "AST/Expression/ConditionalExpression/OrCondition.h"
 
 class Parser {
 public:

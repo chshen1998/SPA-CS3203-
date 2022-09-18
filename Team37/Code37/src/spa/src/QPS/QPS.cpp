@@ -12,6 +12,7 @@ using namespace std;
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
 #include "QueryValidator.h"
+#include "./Validators/ValidatorUtils.h"
 #include "AST/TNode.h"
 #include "PKB/PKB.h"
 #include <unordered_map>
@@ -110,7 +111,17 @@ void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
 void QPS::evaluate(string query, list<string>& results) {
     
     QueryTokenizer tokenizer = QueryTokenizer(query);
-    vector<PqlToken> tokens = tokenizer.Tokenize();
+    vector<PqlToken> tokens;
+    try
+    {
+	    tokens = tokenizer.Tokenize();
+    } catch (SyntaxError e)
+    {
+        results.push_back("Syntax Error");
+        results.push_back(e.message);
+        return;
+    } 
+    
 
     QueryValidator validator = QueryValidator(tokens);
     PqlError pe = validator.validateQuery();

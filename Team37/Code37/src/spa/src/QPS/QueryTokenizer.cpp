@@ -6,6 +6,7 @@ using namespace std;
 
 #include <ctype.h>
 
+#include "./Validators/ValidatorUtils.h"
 #include "QueryTokenizer.h"
 #include "QPS.h"
 #include <algorithm>
@@ -43,7 +44,7 @@ void QueryTokenizer::resetQueryString(string queryString) {
 
 vector<PqlToken> QueryTokenizer::Tokenize() {
     if (query.size() == 0) {
-        throw "Invalid Query Syntax :: Query Length is zero.";
+        throw SyntaxError("Query Length is zero");
     }
 
     Split();
@@ -102,21 +103,21 @@ void QueryTokenizer::Split() {
     }
 
     if (delimited_query.size() == 0) {
-        throw "Invalid Query Syntax :: Query is blank.";
+        throw SyntaxError("Query is blank");
     }
 
     if (!selectExists) {
-        throw "Invalid Query Syntax :: Select keyword does not exist.";
+        throw SyntaxError("Select keyword does not exist");
     }
 
     delimited_query.shrink_to_fit(); //Shrinking the final capacity (not size) of the vector for space optimizations
 
     if (!checkIfDesignEntity(delimited_query[0]) && delimited_query[0] != "Select") {
-        throw "Invalid Query Syntax :: Query must either start with a declaration or 'Select' keyword.";
+        throw SyntaxError("Query must either start with a declaration or 'Select' keyword");
     }
 
     if (delimited_query.back() == ";") {
-        throw "Invalid Query Syntax :: Query String should not end with a semicolon.";
+        throw SyntaxError("Query String should not end with a semicolon");
     }
 }
 

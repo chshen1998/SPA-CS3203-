@@ -264,15 +264,9 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shared_ptr<TNode> parent) {
     condExprStr = Utils::trim(condExprStr);
 
-    // if it is a relational expression
-//    if (Utils::isRelExpr(condExprStr)) {
-//        return Parser::parseRelExpr(condExprStr, parent);
-//    }
-
     // if not a relational expression, do bracket counting instead
     int numBrackets;
     char nextLetter = condExprStr[0];
-//    condExprStr.erase(0, 1);
 
     // Check for NOT conditional expression
     if ((nextLetter == '!') && (condExprStr[0] != '=')) {

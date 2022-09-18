@@ -227,31 +227,27 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_
     string relFactorStr2;
 
     if (greaterEqIdx != -1) {
+        cout << "greater than" << endl;
         opr = RelationalOperator::GREATER_THAN_OR_EQUALS;
         relFactorStr1 = Utils::trim(relExprStr.substr(0, greaterEqIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(greaterEqIdx + 2, string::npos));
-    }
-    if (lessEqIdx != -1) {
+    } else if (lessEqIdx != -1) {
         opr = RelationalOperator::LESS_THAN_OR_EQUALS;
         relFactorStr1 = Utils::trim(relExprStr.substr(0, lessEqIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(lessEqIdx + 2, string::npos));
-    }
-    if (notEqIdx != -1) {
+    } else if (notEqIdx != -1) {
         opr = RelationalOperator::NOT_EQUALS;
         relFactorStr1 = Utils::trim(relExprStr.substr(0, notEqIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(notEqIdx + 2, string::npos));
-    }
-    if (eqIdx != -1) {
+    } else if (eqIdx != -1) {
         opr = RelationalOperator::EQUALS;
         relFactorStr1 = Utils::trim(relExprStr.substr(0, eqIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(eqIdx + 2, string::npos));
-    }
-    if (greaterIdx != -1) {
+    } else if (greaterIdx != -1) {
         opr = RelationalOperator::GREATER_THAN;
         relFactorStr1 = Utils::trim(relExprStr.substr(0, greaterIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(greaterIdx + 1, string::npos));
-    }
-    if (lesserIdx != -1) {
+    } else if (lesserIdx != -1) {
         opr = RelationalOperator::LESS_THAN;
         relFactorStr1 = Utils::trim(relExprStr.substr(0, lesserIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(lesserIdx + 1, string::npos));

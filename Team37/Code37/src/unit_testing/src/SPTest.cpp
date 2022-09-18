@@ -655,3 +655,48 @@ TEST_CASE("Parse conditional with nested Not") {
     shared_ptr<ConstantExpression> constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr->getRelFactor2());
     REQUIRE(constExpr->getValue() == 5);
 }
+
+TEST_CASE("Parse statement") {
+    string stmt1 = "print x";
+    string stmt2 = "read x";
+    string stmt3 = "if (!(x == y)) then {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t} else {\n"
+                   "\t\t\t\tprint x;\n"
+                   "\t\t}";
+    string stmt4 = "while (x >= y) {\n"
+                   "\t\tprint x;\n"
+                   "\t\tread x;\n"
+                   "\t\t}\n";
+
+    shared_ptr<PrintStatement> printStmt = dynamic_pointer_cast<PrintStatement>(Parser::parseStatement(stmt1, nullptr));
+    REQUIRE(printStmt->getVariableName() == "x");
+
+    shared_ptr<ReadStatement> readStatement = dynamic_pointer_cast<ReadStatement>(Parser::parseStatement(stmt2, nullptr));
+    REQUIRE(readStatement->getVariableName() == "x");
+
+    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(Parser::parseStatement(stmt3, nullptr));
+    shared_ptr<NotCondition> condExpr = dynamic_pointer_cast<NotCondition>(ifStatement->getConditionalExpression());
+    shared_ptr<RelationalExpression> relExpr = dynamic_pointer_cast<RelationalExpression>(condExpr->getConditionalExpression());
+    REQUIRE(relExpr->getOperator() == RelationalOperator::EQUALS);
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "x");
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor2());
+    REQUIRE(nameExpr->getVarName() == "y");
+    readStatement = dynamic_pointer_cast<ReadStatement>((ifStatement->getThenStatements())[0]);
+    REQUIRE(readStatement->getVariableName() == "x");
+    printStmt = dynamic_pointer_cast<PrintStatement>((ifStatement->getElseStatements())[0]);
+    REQUIRE(printStmt->getVariableName() == "x");
+
+    shared_ptr<WhileStatement> whileStatement = dynamic_pointer_cast<WhileStatement>(Parser::parseStatement(stmt4, nullptr));
+    relExpr = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "x");
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor2());
+    REQUIRE(nameExpr->getVarName() == "y");
+    printStmt = dynamic_pointer_cast<PrintStatement>((whileStatement->getStatements())[0]);
+    REQUIRE(printStmt->getVariableName() == "x");
+    readStatement = dynamic_pointer_cast<ReadStatement>((whileStatement->getStatements())[1]);
+    REQUIRE(readStatement->getVariableName() == "x");
+}

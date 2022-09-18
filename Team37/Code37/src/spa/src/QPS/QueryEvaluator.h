@@ -12,6 +12,7 @@
 #ifndef TEAM37_QUERYEVALUATOR_H
 #define TEAM37_QUERYEVALUATOR_H
 
+unordered_map<TokenType, StatementType> tokenTypeTostatementType;
 
 class QueryEvaluator {
 public:
@@ -24,8 +25,8 @@ public:
 
 private:
     void QuerySelect();
-    void evaluateSuchThatClause();
-    void evaluatePatternClause();
+    bool evaluateSuchThatClause(vector<vector<string>>&);
+    void evaluatePatternClause(vector<vector<string>>&);
     void QueryEvaluator::selectAll(TokenType type);
 
     inline bool checkIfClauseExists();

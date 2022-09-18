@@ -10,6 +10,8 @@ using namespace std;
 #include <list>
 #include <iostream>
 
+#include "PKB/QueryServicer.h"
+
 
 /*
  * TokenTypes are used to tokenize query string, each word in the query string should be able to fit in one of the
@@ -103,7 +105,7 @@ struct PqlError
 };
 
 // Created for debugging purposes
-ostream& operator<<(ostream& os, PqlToken& token);
+//ostream& operator<<(ostream& os, PqlToken& token);
 
 
 
@@ -115,10 +117,11 @@ ostream& operator<<(ostream& os, PqlToken& token);
  */
 struct Clause
 {
+    PqlToken clauseType;
     string left;
     string right;
 
-    Clause(string l, string r) : left(l), right(r) {}
+    Clause(PqlToken type, string l, string r) : clauseType(type), left(l), right(r) {}
 };
 
 /*
@@ -135,7 +138,10 @@ struct PqlQuery {
 extern unordered_map<string, TokenType> stringToTokenMap;
 
 class QPS {
+    shared_ptr<QueryServicer> servicer;
+
 public:
+    void setQueryServicer(shared_ptr<QueryServicer> s);
     void evaluate(string query, list<string> &results);
 };
 

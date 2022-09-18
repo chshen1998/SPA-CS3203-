@@ -99,11 +99,13 @@ std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
 }
 
 
-
+void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
+    QPS::servicer = s;
+}
 
 /*
- * Takes in query string input from user, parses the query string then return result from PKB
- */
+* Takes in query string input from user, parses the query string then return result from PKB
+*/
 void QPS::evaluate(string query, list<string>& results) {
     
     QueryTokenizer tokenizer = QueryTokenizer(query);
@@ -122,9 +124,8 @@ void QPS::evaluate(string query, list<string>& results) {
     QueryExtractor extractor(tokens);
     PqlQuery pq = extractor.extractSemantics();
 
-    QueryEvaluator evaluator = QueryEvaluator(pq);
-    set<string> result = evaluator.CallPKB();
- 
-    // string output = evaluator.convertToString(result);
-}
 
+    QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+    evaluator.evaluate();
+
+}

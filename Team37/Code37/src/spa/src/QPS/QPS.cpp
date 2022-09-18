@@ -115,6 +115,7 @@ void QPS::evaluate(string query, list<string>& results) {
     if (pe.errorType != ErrorType::NONE)
     {
         results.push_back(errorTypeToStringMap[pe.errorType]);
+        results.push_back(pe.message);
         return;
     }
 

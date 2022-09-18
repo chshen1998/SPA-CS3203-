@@ -25,7 +25,7 @@ TEST_CASE("Uses assign statements") {
     // TODO: change nullptr to assignStmt
     shared_ptr<RelationalFactor> rf = make_shared<NameExpression>(nullptr, "b");
 
-    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(procedure, 1, "a", rf);
+    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(procedure, "a", rf);
 
     shared_ptr<Storage> storage = make_shared<Storage>();
 
@@ -46,7 +46,7 @@ TEST_CASE("Uses print statements") {
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
 
 
-    shared_ptr<PrintStatement> readStmt = make_shared<PrintStatement>(procedure, 1, "b");
+    shared_ptr<PrintStatement> readStmt = make_shared<PrintStatement>(procedure, "b");
 
     shared_ptr<Storage> storage = make_shared<Storage>();
 

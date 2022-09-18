@@ -542,9 +542,9 @@ shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode>
     if ((int)statement.find("read") == 0) {
         statementNode = Tokenizer::tokenizeRead(statement, parentNode); //TODO remove stmtNo as param in tokenizeRead
     }
-//    if ((int)statement.find("call") == 0) {
+    if ((int)statement.find("call") == 0) {
 //        statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
-//    }
+    }
     if ((int)statement.find("if") == 0) {
         statementNode = Parser::parseIfElse(statement, parentNode);
     }

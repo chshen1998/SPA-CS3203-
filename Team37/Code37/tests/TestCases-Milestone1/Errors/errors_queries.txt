@@ -1,0 +1,44 @@
+1 - No semicolon after declarations
+variable v
+Select v
+Syntax Error 
+5000
+2 - Variable not declared
+Select v
+Semantic Error 
+5000
+3 - Invalid trailing character
+variable v;
+Select v;
+Syntax Error 
+5000
+4 - Mispelt Select 
+variable v;
+select v
+Syntax Error
+5000
+5 - Missing such that 
+stmt s;
+select s Uses(s, "x")
+Syntax Error 
+5000
+6 - Invalid pattern assign 
+stmt s;
+Select s pattern s(_, _)
+Semantic Error 
+5000
+7 - Invalid uses parameters 
+variable v;
+Select v such that Uses(_, v)
+Semantic Error 
+5000
+8 - Invalid extra such that clause
+variable v; stmt s;
+Select s such that Uses(s, v) such that Modifies(s, v)
+Semantic Error 
+5000
+9 - Missing Select
+variable v; assign a;
+pattern a (v, "x")
+Semantic Error
+5000

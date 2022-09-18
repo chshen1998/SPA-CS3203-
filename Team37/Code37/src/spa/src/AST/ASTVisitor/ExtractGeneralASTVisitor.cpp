@@ -132,12 +132,7 @@ void ExtractGeneralASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
 void ExtractGeneralASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
     NameExpression expression = NameExpression(assignStmt,
                                                assignStmt->getVarName());
-
-    if (assignStmt->getVarName() == "") {
-        printf("WTF");
-    }
-    printf("VARNAME: %s \n", expression.getVarName().c_str());
-
+    
     // store itself in statements
     this->storage->storeStmt(assignStmt);
     // store the variable

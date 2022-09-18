@@ -128,8 +128,8 @@ TEST_CASE("Storage - Statement") {
 TEST_CASE("Storage - Stmt-Stmt Relation") {
     shared_ptr<Storage> store = make_shared<Storage>();
 
-    // ASSUMES AST HAS 3 STMTS - CHANGE IF IMPLEMENTATION CHANGED
     shared_ptr<SourceCode> AST = make_shared<SourceCode>("../../../Test37/easy.txt");
+    AST->setNumOfStatements(3);
     store->storeAST(AST);
 
     // Initally Empty

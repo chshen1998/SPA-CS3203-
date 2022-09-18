@@ -53,7 +53,7 @@ read r;
 Select r such that Follows*(read,15)
 14
 5000
-12 - follows print
+12 - follows star print
 print p;
 Select p such that Follows*(p,3)
 2

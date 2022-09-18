@@ -33,7 +33,7 @@ public:
 private:
     void QuerySelect();
 
-    bool evaluateSuchThatClause(vector<vector<string>> &);
+    int evaluateSuchThatClause(vector<vector<string>> &);
 
     void evaluatePatternClause(vector<vector<string>> &);
 

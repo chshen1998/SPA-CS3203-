@@ -66,11 +66,45 @@ TEST_CASE("Remove procedure wrapper - Good input") {
                       "    print x;";
 
     require(result == expected);
+
+    // With while and if-else blocks
+    procedure = "procedure main {\n"
+               "    while () {\n"
+               "        print flag;\n"
+               "        read flag;\n"
+               "\n"
+               "        x = 1;\n"
+               "        y = 2;\n"
+               "    }\n"
+               "    print x;\n"
+               "    if () then {\n"
+               "        print flag;\n"
+               "    } else {\n"
+               "        read flag;\n"
+               "    }"
+               "}\n";
+
+    result = Parser::removeProcedureWrapper(procedure);
+    expected = "while () {\n"
+               "        print flag;\n"
+               "        read flag;\n"
+               "\n"
+               "        x = 1;\n"
+               "        y = 2;\n"
+               "    }\n"
+               "    print x;\n"
+               "    if () then {\n"
+               "        print flag;\n"
+               "    } else {\n"
+               "        read flag;\n"
+               "    }";
+
+    require(result == expected);
 }
 
 
-TEST_CASE("Extract Statements - Good input") {
-    string procedure = "flag = 0;\n"
+TEST_CASE("Extract Statements - No while and if-else") {
+    string rawStatementList = "flag = 0;\n"
                        "    print flag;\n"
                        "    read flag;\n"
                        "\n"
@@ -80,7 +114,7 @@ TEST_CASE("Extract Statements - Good input") {
 
     vector<string> statementList;
 
-    vector<string> result = Parser::extractStatements(procedure, statementList);
+    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
     vector<string> expected;
     string stmt1 = "flag = 0";
     string stmt2 = "print flag";
@@ -95,6 +129,105 @@ TEST_CASE("Extract Statements - Good input") {
     expected.push_back(stmt4);
     expected.push_back(stmt5);
     expected.push_back(stmt6);
+
+    require(result == expected);
+}
+
+TEST_CASE("Extract Statements - While and if-else included") {
+    string rawStatementList = "while () {\n"
+                       "    print flag;\n"
+                       "    read flag;\n"
+                       "\n"
+                       "    x = 1;\n"
+                       "    y = 2;\n"
+                       "    }\n"
+                       "    print x;\n"
+                       "    if () then {\n"
+                       "        print flag;\n"
+                       "    } else {\n"
+                       "        read flag;\n"
+                       "    }";
+
+    vector<string> statementList;
+
+    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
+    vector<string> expected;
+    string stmt1 = "while () {\n"
+                   "    print flag;\n"
+                   "    read flag;\n"
+                   "\n"
+                   "    x = 1;\n"
+                   "    y = 2;\n"
+                   "    }";
+    string stmt2 = "print x";
+    string stmt3 = "if () then {\n"
+                    "        print flag;\n"
+                    "    } else {\n"
+                    "        read flag;\n"
+                    "    }";
+
+    expected.push_back(stmt1);
+    expected.push_back(stmt2);
+    expected.push_back(stmt3);
+
+    require(result == expected);
+}
+
+TEST_CASE("Extract Statements - Nested While and if-else") {
+    string rawStatementList = "while () {\n"
+                              "\t\tcall x;\n"
+                              "\t\tread x;\n"
+                              "\t\twhile () {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t}\n"
+                              "\t\tif () then {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t} else {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t}\n"
+                              "}\n"
+                              "\n"
+                              "if () then {\n"
+                              "\t\twhile () {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t}\n"
+                              "} else {\n"
+                              "\t\tif () then {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t} else {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t}\n"
+                              "}";
+    vector<string> statementList;
+    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
+
+    vector<string> expected;
+    string stmt1 = "while () {\n"
+                   "\t\tcall x;\n"
+                   "\t\tread x;\n"
+                   "\t\twhile () {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t}\n"
+                   "\t\tif () then {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t} else {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t}\n"
+                   "}";
+    string stmt2 = "if () then {\n"
+                   "\t\twhile () {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t}\n"
+                   "} else {\n"
+                   "\t\tif () then {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t} else {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t}\n"
+                   "}";
+
+    expected.push_back(stmt1);
+    expected.push_back(stmt2);
 
     require(result == expected);
 }

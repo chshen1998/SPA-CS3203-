@@ -1,7 +1,7 @@
 1 - follows constant-constant
-statement s;
-Select s such that Follows(s,2)
-1
+variable v;
+Select v such that Follows(1,2)
+flag, x, i
 5000
 2 - follows constant-constant error
 variable v;
@@ -32,4 +32,14 @@ None
 variable v;
 Select v such that Parent(5,9)
 flag, x, i
+5000
+8 - parent star constant-constant
+variable v;
+Select v such that Parent*(5,10)
+flag, x, i
+5000
+9 - parent star constant-constant error
+variable v;
+Select v such that Parent*(10,5)
+None
 5000

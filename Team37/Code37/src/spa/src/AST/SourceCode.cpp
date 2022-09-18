@@ -22,7 +22,7 @@ void SourceCode::setNumOfStatements(int num) {
     numOfStatements = num;
 }
 
-int SourceCode::getNumOfStatements() {
+int SourceCode::getNumOfStatements() const {
     return numOfStatements;
 }
 

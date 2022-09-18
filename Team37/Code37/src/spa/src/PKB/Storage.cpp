@@ -230,14 +230,14 @@ Store Relation of a Statement-Variable Relationship. For Relation(stmt, var)
 */
 void Storage::storeRelation(int stmt, string var, StmtVarRelationType type) {
     switch (type) {
-    case (USESV):
-        UsesV.store(stmt, var);
-        break;
-    case (MODIFIESV):
-        ModifiesV.store(stmt, var);
-        break;
-    default:
-        throw invalid_argument("Not a Statement-Variable Realtion");
+        case (USESV):
+            UsesV.store(stmt, var);
+            break;
+        case (MODIFIESV):
+            ModifiesV.store(stmt, var);
+            break;
+        default:
+            throw invalid_argument("Not a Statement-Variable Realtion");
     }
 }
 
@@ -250,14 +250,14 @@ Retrieve Statement-Statement Relation Stored. For For Relation(stmt, var)
 */
 bool Storage::retrieveRelation(int stmt, string var, StmtVarRelationType type) {
     switch (type) {
-    case (USESV):
-        return UsesV.retrieve(stmt, var);
-        break;
-    case (MODIFIESV):
-        return ModifiesV.retrieve(stmt, var);
-        break;
-    default:
-        throw invalid_argument("Not a Statement-Variable Realtion");
+        case (USESV):
+            return UsesV.retrieve(stmt, var);
+            break;
+        case (MODIFIESV):
+            return ModifiesV.retrieve(stmt, var);
+            break;
+        default:
+            throw invalid_argument("Not a Statement-Variable Realtion");
     }
 }
 
@@ -269,14 +269,14 @@ Retrieve Forward Relation Stored. For For Relation(stmt, var)
 */
 vector<string> Storage::forwardRetrieveRelation(int stmt, StmtVarRelationType type) {
     switch (type) {
-    case (USESV):
-        return UsesV.forwardRetrieve(stmt);
-        break;
-    case (MODIFIESV):
-        return ModifiesV.forwardRetrieve(stmt);
-        break;
-    default:
-        throw invalid_argument("Not a Statement-Variable Realtion");
+        case (USESV):
+            return UsesV.forwardRetrieve(stmt);
+            break;
+        case (MODIFIESV):
+            return ModifiesV.forwardRetrieve(stmt);
+            break;
+        default:
+            throw invalid_argument("Not a Statement-Variable Realtion");
     }
 }
 
@@ -288,13 +288,13 @@ Retrieve Reverse Relation Stored. For For Relation(stmt, var)
 */
 vector<int> Storage::reverseRetrieveRelation(string var, StmtVarRelationType type) {
     switch (type) {
-    case (USESV):
-        return UsesV.reverseRetrieve(var);
-        break;
-    case (MODIFIESV):
-        return ModifiesV.reverseRetrieve(var);
-        break;
-    default:
-        throw invalid_argument("Not a Statement-Variable Realtion");
+        case (USESV):
+            return UsesV.reverseRetrieve(var);
+            break;
+        case (MODIFIESV):
+            return ModifiesV.reverseRetrieve(var);
+            break;
+        default:
+            throw invalid_argument("Not a Statement-Variable Realtion");
     }
 }

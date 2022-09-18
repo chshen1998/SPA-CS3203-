@@ -18,10 +18,18 @@ string SourceCode::getFileName() {
     return this->filename;
 }
 
+void SourceCode::setNumOfStatements(int num) {
+    numOfStatements = num;
+}
+
+int SourceCode::getNumOfStatements() {
+    return numOfStatements;
+}
+
 void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitSourceCode(shared_from_this());
 }
 
-int SourceCode::getNumStmts() {
-    return this->numStmts;
-}
+//int SourceCode::getNumStmts() {
+//    return this->numStmts;
+//}

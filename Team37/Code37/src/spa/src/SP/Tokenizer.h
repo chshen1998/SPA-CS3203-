@@ -18,22 +18,36 @@ public:
     Tokenizer();
 
     /**
-     * Creates ReadStatement object with specified parent and stmtNo.
+     * Creates ReadStatement object with specified parent.
      * @param line read statement in string
-     * @param stmtNo statement number of statement
      * @param parent parent node of read statement
      * @return ReadStatement object
      */
-    static shared_ptr<ReadStatement> tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent);
+    static shared_ptr<ReadStatement> tokenizeRead(string line, shared_ptr<TNode> parent);
 
     /**
-     * Creates PrintStatement object with specified parent and stmtNo.
+     * Creates PrintStatement object with specified parent.
      * @param line print statement in string
-     * @param stmtNo statement number of statement
      * @param parent parent node of read statement
      * @return PrintStatement object
      */
-    static shared_ptr<PrintStatement> tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent);
+    static shared_ptr<PrintStatement> tokenizePrint(string line, shared_ptr<TNode> parent);
+
+    /**
+     * Creates a AssignStatement object with specified parent.
+     * @param line raw assign statement string, no semicolons, trimmed
+     * @param parent parent node of assign statement
+     * @return AssignStatement object
+     */
+    static shared_ptr<AssignStatement> tokenizeAssign(string line, shared_ptr<TNode> parent);
+
+    /**
+     * Creates a RelationalFactor object with the specified parent.
+     * @param line a raw relFactor string, trimmed
+     * @param parent parent of relFactor
+     * @return
+     */
+    static shared_ptr<RelationalFactor> tokenizeRelFactor(string line);
 
 
     /**
@@ -66,11 +80,11 @@ public:
 //    static void tokenizeOperatedExprByVar(string line, vector<int> indexes, string lhs, shared_ptr<TNode> parent, int lineNo);
 
 //    static void tokenizeCall(string line);
-//
+
 //    static void tokenizeCondition(string condition);
-//
+
 //    static void tokenizeIf(string line, int stmtNo, shared_ptr<TNode> parent);
-//
+
 //    static void tokenizeWhile(string line, int stmtNo, shared_ptr<TNode> parent);
 
 //    static void tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> parent);

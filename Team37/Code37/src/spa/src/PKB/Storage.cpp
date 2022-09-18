@@ -11,8 +11,8 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     this->AST = AST;
 
     // Get AST statement num and intialise Array2D
-    Follows = Array2D(AST->getNumStmts());
-    Parent = Array2D(AST->getNumStmts());
+    Follows = Array2D(AST->getNumOfStatements());
+    Parent = Array2D(AST->getNumOfStatements());
 
     shared_ptr<ExtractGeneralASTVisitor> generalAstVisitor = make_shared<ExtractGeneralASTVisitor>(shared_from_this());
     shared_ptr<ExtractParentsASTVisitor> parentsAstVisitor = make_shared<ExtractParentsASTVisitor>(shared_from_this());

@@ -9,7 +9,7 @@ class CallStatement : public Statement, public enable_shared_from_this<CallState
 private:
     string procedureName;
 public:
-    CallStatement(shared_ptr<TNode> parent, int lineNum, string procedureName);
+    CallStatement(shared_ptr<TNode> parent, string procedureName);
 
     /**
      * Gets the name of the procedure in the call statement

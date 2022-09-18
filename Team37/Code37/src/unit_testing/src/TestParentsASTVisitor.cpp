@@ -29,11 +29,11 @@ TEST_CASE("Parent statements") {
             make_shared<ConstantExpression>(nullptr, 10),
             make_shared<ConstantExpression>(nullptr, 11));
     shared_ptr<WhileStatement> whileStmt =
-            make_shared<WhileStatement>(procedure, 1, expr1);
-    shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure, 2, "a");
-    shared_ptr<PrintStatement> printStmt2 = make_shared<PrintStatement>(procedure, 3, "b");
-    shared_ptr<PrintStatement> printStmt3 = make_shared<PrintStatement>(procedure, 4, "c");
-    shared_ptr<PrintStatement> printStmt4 = make_shared<PrintStatement>(procedure, 5, "d");
+            make_shared<WhileStatement>(procedure, expr1);
+    shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure, "a");
+    shared_ptr<PrintStatement> printStmt2 = make_shared<PrintStatement>(procedure, "b");
+    shared_ptr<PrintStatement> printStmt3 = make_shared<PrintStatement>(procedure, "c");
+    shared_ptr<PrintStatement> printStmt4 = make_shared<PrintStatement>(procedure, "d");
 
     whileStmt->addStatement(printStmt1);
     whileStmt->addStatement(printStmt2);
@@ -66,11 +66,11 @@ TEST_CASE("Parent Star statements") {
             make_shared<ConstantExpression>(nullptr, 10),
             make_shared<ConstantExpression>(nullptr, 11));
     shared_ptr<WhileStatement> whileStmt =
-            make_shared<WhileStatement>(procedure, 1, expr1);
-    shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure, 2, "a");
-    shared_ptr<PrintStatement> printStmt2 = make_shared<PrintStatement>(procedure, 3, "b");
-    shared_ptr<PrintStatement> printStmt3 = make_shared<PrintStatement>(procedure, 4, "c");
-    shared_ptr<PrintStatement> printStmt4 = make_shared<PrintStatement>(procedure, 5, "d");
+            make_shared<WhileStatement>(procedure, expr1);
+    shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure, "a");
+    shared_ptr<PrintStatement> printStmt2 = make_shared<PrintStatement>(procedure, "b");
+    shared_ptr<PrintStatement> printStmt3 = make_shared<PrintStatement>(procedure, "c");
+    shared_ptr<PrintStatement> printStmt4 = make_shared<PrintStatement>(procedure, "d");
 
     whileStmt->addStatement(printStmt1);
     whileStmt->addStatement(printStmt2);

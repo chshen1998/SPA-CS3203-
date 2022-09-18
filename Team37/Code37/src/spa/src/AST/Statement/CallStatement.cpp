@@ -4,9 +4,8 @@ using namespace std;
 
 CallStatement::CallStatement(
         shared_ptr<TNode> parent,
-        int lineNum,
         string procedureName)
-        : Statement(parent, lineNum), procedureName(procedureName) { }
+        : Statement(parent), procedureName(procedureName) { }
 
 string CallStatement::getProcedureName() {
     return this->procedureName;

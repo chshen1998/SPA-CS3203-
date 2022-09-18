@@ -58,15 +58,13 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
+
+        src/SP/Utilities/Utils.h
         src/SP/SP.h
-        src/SP/TokeniserVisitor.h
         src/SP/Tokenizer.h
-        src/SP/Visitor.h
-        src/SP/Utils.cpp
+        src/SP/Utilities/Utils.cpp
         src/SP/SP.cpp
-        src/SP/TokeniserVisitor.cpp
         src/SP/Tokenizer.cpp
-        src/SP/Visitor.cpp
 
         "src/QPS/Validators/ClauseValidator.cpp"
         "src/QPS/Validators/DeclarationValidator.cpp"
@@ -90,9 +88,12 @@ add_library(spa ${srcs} ${headers}
         src/PKB/QueryServicer.cpp
         src/PKB/Storage.h
         src/PKB/Storage.cpp
+        src/SP/Utilities/Keywords.cpp
+        src/SP/Utilities/Keywords.h
+        src/SP/Parser.cpp
+        src/SP/Parser.h
+        src/SP/InvalidSyntaxException.h
         src/PKB/Types/StatementType.h
-        src/SP/Keywords.cpp
-        src/SP/Keywords.h
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.cpp
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.h
         src/PKB/Structures/Array2D.h
@@ -103,6 +104,8 @@ add_library(spa ${srcs} ${headers}
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.cpp
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.h
         src/AST/ASTVisitor/ExtractParentsASTVisitor.cpp
+        src/AST/ASTVisitor/ExtractParentsASTVisitor.h
+        src/PKB/Types/StmtStmtRelationType.h
         src/AST/ASTVisitor/ExtractParentsASTVisitor.h
         src/PKB/Types/StmtStmtRelationType.h
         src/AST/ASTVisitor/ExtractModifiesASTVisitor.cpp

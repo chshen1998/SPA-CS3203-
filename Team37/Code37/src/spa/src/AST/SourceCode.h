@@ -10,7 +10,7 @@ class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
     vector<shared_ptr<Procedure> > procedureLst;
     string filename;
-    int numStmts = 100; // TEMP PLEASE REPLACE AND UPDATE STORAGE TEST
+    int numOfStatements;
 public:
     SourceCode(string filename);
 
@@ -36,23 +36,30 @@ public:
      */
     string getFileName();
 
+    /**
+     * Sets the total number of statements
+     *
+     * @param num number to set
+     */
+    void setNumOfStatements(int num);
 
     /**
-     * Gets num of statements
+     * Gets the total number of statements
      *
-     * @return numStmts
+     * @return the total number of statements
      */
-    int getNumStmts();
+    int getNumOfStatements();
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
-    bool operator==(const SourceCode &other) {
+    bool operator == (const SourceCode& other) {
         return procedureLst == other.procedureLst && filename == other.filename;
     };
 
-    bool operator<(const SourceCode &other) {
+    bool operator < (const SourceCode& other) {
         return filename < other.filename;
     };
+
 };
 
 #endif

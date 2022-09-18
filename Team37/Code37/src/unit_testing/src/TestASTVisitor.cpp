@@ -52,12 +52,13 @@ TEST_CASE("Print Statements") {
     shared_ptr<PrintStatement> printStmt4 = make_shared<PrintStatement>(procedure, "d");
     shared_ptr<Storage> storage = make_shared<Storage>();
 
+    sc->addProcedure(procedure);
+
     procedure->addStatement(printStmt1);
     procedure->addStatement(printStmt2);
     procedure->addStatement(printStmt3);
     procedure->addStatement(printStmt4);
 
-    sc->addProcedure(procedure);
 
     // We start by traversing the AST
     storage->storeAST(sc);

@@ -58,7 +58,7 @@ void ExtractModifiesASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) 
 void ExtractModifiesASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
     string variable = readStmt->getVariableName();
     this->storage->storeRelation(readStmt->getLineNum(), variable, MODIFIESV);
-    this->visitParentAndStore(readStmt, variable);
+    this->visitParentAndStore(readStmt->getParent(), variable);
 }
 
 
@@ -124,7 +124,7 @@ void ExtractModifiesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement>
     string variable = assignStmt->getVarName();
 
     this->storage->storeRelation(assignStmt->getLineNum(), variable, MODIFIESV);
-    this->visitParentAndStore(assignStmt, variable);
+    this->visitParentAndStore(assignStmt->getParent(), variable);
 }
 
 // RelationalFactor
@@ -134,7 +134,7 @@ void ExtractModifiesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement>
  * @param nameExpr
  */
 void ExtractModifiesASTVisitor::visitNameExpression(shared_ptr<NameExpression> nameExpr) {
-    this->visitParentAndStore(nameExpr, nameExpr->getVarName());
+    this->visitParentAndStore(nameExpr->getParent(), nameExpr->getVarName());
 }
 
 /**

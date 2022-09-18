@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -10,24 +11,25 @@
 
 class QueryExtractor {
 public:
-    vector<PqlToken>::iterator next;
-    vector<PqlToken>::iterator last;
+    vector<PqlToken> tokens;
+    int size;
+    int next;
     PqlQuery pq;
 
     QueryExtractor(vector<PqlToken> tokens);
 
-    PqlQuery ExtractSemantics();
+    PqlQuery extractSemantics();
 
 private:
-    void ExtractDeclarations();
+    void extractDeclarations();
+    
+    void extractSelect();
 
-    void ExtractSelect();
+    void extractClauses();
 
-    void ExtractClauses();
+    void extractPatternClause();
 
-    void ExtractPatternClause();
-
-    void ExtractSuchThatClause();
+    void extractSuchThatClause();
 
     PqlToken getNextToken();
 };

@@ -12,16 +12,13 @@
 
 #include "AST/Operators/RelationalOperator.h"
 
-#include "AST/ASTVisitor/ExtractASTVisitor.h"
+#include "AST/ASTVisitor/ExtractGeneralASTVisitor.h"
 
-#include "PKB/PKB.h"
 #include "PKB/Storage.h"
 
 #include "catch.hpp"
 
 using namespace std;
-
-void require(bool b);
 
 
 TEST_CASE("Read Statements") {
@@ -43,7 +40,7 @@ TEST_CASE("Read Statements") {
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    require(storage->getAllVar().size() == 4);
+    REQUIRE(storage->getAllVar().size() == 4);
 }
 
 TEST_CASE("Print Statements") {
@@ -65,7 +62,7 @@ TEST_CASE("Print Statements") {
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    require(storage->getAllVar().size() == 4);
+    REQUIRE(storage->getAllVar().size() == 4);
 }
 
 TEST_CASE("Constant Expression") {
@@ -82,11 +79,46 @@ TEST_CASE("Constant Expression") {
 
     procedure->addStatement(whileStmt);
 
+    sc->addProcedure(procedure);
+
+    // We start by traversing the AST
+    storage->storeAST(sc);
+
+    REQUIRE(storage->getAllConst().size() == 2);
+}
+
+TEST_CASE("Statements") {
+    shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
+    shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
+    shared_ptr<ConditionalExpression> expr = make_shared<RelationalExpression>(
+            nullptr,
+            RelationalOperator::EQUALS,
+            make_shared<ConstantExpression>(nullptr, 10),
+            make_shared<ConstantExpression>(nullptr, 11));
+    shared_ptr<RelationalFactor> rf = make_shared<ConstantExpression>(nullptr, 1);
+
+
+    shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(procedure, 2, "b");
+    shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(procedure, 1, "a");
+    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(procedure, 3, "Test Procedure");
+    shared_ptr<WhileStatement> whileStmt = make_shared<WhileStatement>(procedure, 4, expr);
+    shared_ptr<IfStatement> ifStmt = make_shared<IfStatement>(procedure, 4, expr);
+    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(procedure, 4, "c", rf);
+
+    shared_ptr<Storage> storage = make_shared<Storage>();
+
+    procedure->addStatement(readStmt);
+    procedure->addStatement(printStmt);
+    procedure->addStatement(callStmt);
+    procedure->addStatement(whileStmt);
+    procedure->addStatement(ifStmt);
+    procedure->addStatement(assignStmt);
+
 
     sc->addProcedure(procedure);
 
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    require(storage->getAllConst().size() == 2);
+    REQUIRE(storage->getAllStmt().size() == 6);
 }

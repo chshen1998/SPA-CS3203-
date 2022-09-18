@@ -29,3 +29,7 @@ int SourceCode::getNumOfStatements() {
 void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitSourceCode(shared_from_this());
 }
+
+int SourceCode::getNumStmts() {
+    return this->numStmts;
+}

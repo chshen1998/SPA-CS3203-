@@ -50,10 +50,12 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
     // push_back "left" side expression to this variable
     string expression;
     // Counter in case brackets are encountered. Essentially if this value is not 0 then just keep parsing
-    int bracketCounter;
+    int bracketCounter = 0;
+    // Checking if some kind of outer layer of bracket was removed
+    bool bracketsDetected = false;
 
     // Only checks low priority operators, creates operated expression if found
-    while(true) {
+    while(line.length() > 0) {
         nextChar = line[0];
         // Logic to handle "skipping" when bracket counting has started
         if (bracketCounter != 0) {
@@ -69,6 +71,13 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
             continue;
         }
 
+        if (nextChar == '(') {
+            bracketCounter += 1;
+            line.erase(0, 1);
+            bracketsDetected = true;
+            continue;
+        }
+
         if (lowPriorityOperators.find(nextChar) == string::npos) {
             expression.push_back(nextChar);
             line.erase(0, 1);
@@ -79,25 +88,127 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
                     tokenizeRelFactor(Utils::trim(expression));
             shared_ptr<RelationalFactor> rightSide =
                     tokenizeRelFactor(Utils::trim(line.substr(1)));
+            shared_ptr<OperatedExpression> operatedExpression;
             // Create operated expressions
             if (nextChar == '+') {
-                return make_shared<OperatedExpression>(
+                operatedExpression = make_shared<OperatedExpression>(
                         nullptr,
                         Operator::ADD,
                         leftSide,
                         rightSide);
             } else if (nextChar == '-') {
-                return make_shared<OperatedExpression>(
+                operatedExpression = make_shared<OperatedExpression>(
                         nullptr,
                         Operator::SUBTRACT,
                         leftSide,
                         rightSide);
             }
-        }
+            leftSide->setParent(operatedExpression);
+            rightSide->setParent(operatedExpression);
 
+            return operatedExpression;
+        }
     }
 
-    // TODO: Another while loop that checks high priority stuff
+    if (bracketsDetected) {
+        return tokenizeRelFactor(Utils::trim(expression));
+    }
+
+    // Reset variables
+    line = expression;
+    expression.clear();
+    bracketCounter = 0;
+    // Another while loop that checks high priority stuff
+    while(line.length() > 0) {
+        nextChar = line[0];
+        // Logic to handle "skipping" when bracket counting has started
+        if (bracketCounter != 0) {
+            if (nextChar == '(') {
+                bracketCounter += 1;
+            } else if (nextChar == ')') {
+                bracketCounter -= 1;
+            }
+            if (bracketCounter != 0) { // Don't add the final close bracket
+                expression.push_back(nextChar);
+            }
+            line.erase(0, 1);
+            continue;
+        }
+
+        if (nextChar == '(') {
+            bracketCounter += 1;
+            line.erase(0, 1);
+            bracketsDetected = true;
+            continue;
+        }
+
+        if (highPriorityOperators.find(nextChar) == string::npos) {
+            expression.push_back(nextChar);
+            line.erase(0, 1);
+            continue;
+        } else {
+            // Recursive calls
+            shared_ptr<RelationalFactor> leftSide =
+                    tokenizeRelFactor(Utils::trim(expression));
+            shared_ptr<RelationalFactor> rightSide =
+                    tokenizeRelFactor(Utils::trim(line.substr(1)));
+            shared_ptr<OperatedExpression> operatedExpression;
+            // Create operated expressions
+            if (nextChar == '*') {
+                operatedExpression = make_shared<OperatedExpression>(
+                        nullptr,
+                        Operator::MULTIPLY,
+                        leftSide,
+                        rightSide);
+            } else if (nextChar == '/') {
+                operatedExpression = make_shared<OperatedExpression>(
+                        nullptr,
+                        Operator::DIVIDE,
+                        leftSide,
+                        rightSide);
+            } else if (nextChar == '%') {
+                operatedExpression = make_shared<OperatedExpression>(
+                        nullptr,
+                        Operator::MODULO,
+                        leftSide,
+                        rightSide);
+            }
+            leftSide->setParent(operatedExpression);
+            rightSide->setParent(operatedExpression);
+
+            return operatedExpression;
+        }
+    }
+
+    if (bracketsDetected) {
+        return tokenizeRelFactor(Utils::trim(expression));
+    }
+
+    // If code reaches this point there should be no more brackets or operators
+    // If still no return by this point, then the relFactor is either a variable or a const
+
+    // Reset variables
+    line = expression;
+    expression.clear();
+
+    string digits = "0123456789";
+
+    // Check if it is a variable
+    nextChar = line[0];
+    // Must be variable since first letter is not a DIGIT
+    if (digits.find(nextChar) == string::npos) {
+        return make_shared<NameExpression>(nullptr, line);
+    }
+
+    // Make sure everything inside is a digit
+    for (char& c: line)  {
+        if (digits.find(c) != string::npos) {
+            // Either return an error here, or catch the stoi error
+        }
+    }
+    // stoi converts std::string to int
+    return make_shared<ConstantExpression>(nullptr, stoi(line));
+
 }
 
 vector<shared_ptr<Procedure> > Tokenizer::tokenizeStatements(vector<shared_ptr<Procedure> > procedures, vector<vector<string> > statements) {

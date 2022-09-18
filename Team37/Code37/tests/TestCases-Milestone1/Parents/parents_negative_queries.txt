@@ -1,0 +1,15 @@
+1 - parent stmt
+stmt s;
+Select s such that Parent(1,s)
+None
+5000
+2 - parent stmt inside if
+stmt s;
+Select s such that Parent(7,s)
+None
+5000
+2 - parent stmt inside while
+stmt s;
+Select s such that Parent(15,s)
+None
+5000

@@ -1,0 +1,11 @@
+1 - Modifies assign negative
+variable v;
+Select v such that Modifies(2,v)
+none
+5000
+
+2 - Modifies while negative
+variable v;
+Select v such that Modifies(16,v)
+none
+5000

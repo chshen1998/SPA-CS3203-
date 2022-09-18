@@ -6,6 +6,7 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #include "AST/SourceCode.h"
 #include "AST/Procedure.h"

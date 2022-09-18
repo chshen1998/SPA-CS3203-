@@ -12,8 +12,6 @@
 
 #include "AST/Operators/RelationalOperator.h"
 
-#include "AST/ASTVisitor/ExtractGeneralASTVisitor.h"
-
 #include "PKB/Storage.h"
 
 #include "catch.hpp"

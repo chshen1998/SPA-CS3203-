@@ -9,7 +9,8 @@ add_executable(unit_testing ${srcs}
         "src/TestQueryExtractor.cpp"
         "src/TESTPKBStructures.cpp"
         "src/TestFollowsASTVisitor.cpp"
-        "src/TestParentsASTVisitor.cpp")
+        "src/TestParentsASTVisitor.cpp"
+        "src/TestModifiesASTVisitor.cpp")
 
 target_link_libraries(unit_testing spa)
 

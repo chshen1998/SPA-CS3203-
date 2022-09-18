@@ -8,6 +8,7 @@ using namespace std;
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 class Utils {
 public:
@@ -92,4 +93,5 @@ public:
 
     static bool isAndOrExpr(string line);
 };
+
 #endif //SP_UTILS_H

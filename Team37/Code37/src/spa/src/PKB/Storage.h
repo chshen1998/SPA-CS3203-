@@ -17,6 +17,7 @@ using namespace std;
 #include "../AST/ASTVisitor/ExtractFollowsASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractParentsASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractModifiesASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractUsesASTVisitor.h"
 
 #include "../AST/Statement/Statement.h"
 #include "Structures/Array2D.h"

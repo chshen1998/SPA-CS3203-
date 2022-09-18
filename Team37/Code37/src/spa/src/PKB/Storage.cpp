@@ -19,6 +19,8 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     shared_ptr<ExtractFollowsASTVisitor> followsAstVisitor = make_shared<ExtractFollowsASTVisitor>(shared_from_this());
     shared_ptr<ExtractModifiesASTVisitor> modifiesAstVisitor = make_shared<ExtractModifiesASTVisitor>(
             shared_from_this());
+    shared_ptr<ExtractUsesASTVisitor> usesAstVisitor = make_shared<ExtractUsesASTVisitor>(
+            shared_from_this());
 
     // we start by traversing the AST using a Extract AST Visitor
     AST->accept(generalAstVisitor);
@@ -33,6 +35,9 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
 
     // traverse the AST using a modifies AST Visitor
     AST->accept(modifiesAstVisitor);
+
+    // traverse the AST using a modifies AST Visitor
+    AST->accept(usesAstVisitor);
 
 }
 

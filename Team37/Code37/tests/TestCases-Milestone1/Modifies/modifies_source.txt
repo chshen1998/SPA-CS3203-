@@ -17,4 +17,7 @@ procedure main {
         read flag;
         x = x + 2 + 0 + flag;
     }
+    while(i == 1) {
+        print i;
+    }
 }

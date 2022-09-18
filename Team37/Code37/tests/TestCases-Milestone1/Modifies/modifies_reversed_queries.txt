@@ -10,11 +10,16 @@ Select a such that Modifies(a,"flag")
 5000
 3 - Modifies while
 while w;
-Select w such that Modifies(a,"i")
-16
+Select w such that Modifies(w,"flag")
+11
 5000
 4 - Modifies if
 if ifs;
 Select ifs such that Modifies(ifs,"flag")
 5
+5000
+5 - Modifies read
+read r;
+Select ifs such that Modifies(r,"flag")
+3, 8, 14
 5000

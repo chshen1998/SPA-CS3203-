@@ -1,0 +1,30 @@
+1 - follows stmt
+stmt s;
+Select s such that Follows(15,s)
+None
+5000
+2 - follows assign
+assign a;
+Select a such that Follows(4,a)
+None
+5000
+3 - follows while
+while w;
+Select w such that Follows(11,w)
+None
+5000
+4 - follows if
+if ifs;
+Select ifs such that Follows(5,ifs)
+None
+5000
+5 - follows read
+read r;
+Select r such that Follows(3,r)
+None
+5000
+6 - follows print
+print p;
+Select p such that Follows(2,p)
+None
+5000

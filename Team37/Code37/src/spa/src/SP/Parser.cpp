@@ -538,18 +538,17 @@ shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode>
     shared_ptr<Statement> statementNode;
     if ((int)statement.find("print") == 0) {
         statementNode = Tokenizer::tokenizePrint(statement, parentNode); //TODO remove stmtNo as param in tokenizePrint
-    }
-    if ((int)statement.find("read") == 0) {
+    } else if ((int)statement.find("read") == 0) {
         statementNode = Tokenizer::tokenizeRead(statement, parentNode); //TODO remove stmtNo as param in tokenizeRead
-    }
-    if ((int)statement.find("call") == 0) {
+    } else if ((int)statement.find("call") == 0) {
 //        statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
-    }
-    if ((int)statement.find("if") == 0) {
+    } else if ((int)statement.find("if") == 0) {
         statementNode = Parser::parseIfElse(statement, parentNode);
-    }
-    if ((int)statement.find("while") == 0) {
+    } else if ((int)statement.find("while") == 0) {
         statementNode = Parser::parseWhile(statement, parentNode);
+    } else {
+        // otherwise is an assign statement
+        statementNode = Tokenizer::tokenizeAssign(statement, parentNode);
     }
     return statementNode;
 }

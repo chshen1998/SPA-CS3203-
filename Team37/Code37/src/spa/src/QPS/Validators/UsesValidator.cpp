@@ -12,4 +12,7 @@ UsesValidator::UsesValidator(unordered_map<string, TokenType> declarations) : Cl
 void UsesValidator::validate(PqlToken left, PqlToken right)
 {
 	validateParameters(left, right, validStatementRef, validEntityRef, "uses");
+	if (left.type == TokenType::WILDCARD) {
+		throw SemanticError("Modifies clause arg1 cannot be wildcard");
+	}
 }

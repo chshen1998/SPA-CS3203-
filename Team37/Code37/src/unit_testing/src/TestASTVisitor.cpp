@@ -98,12 +98,12 @@ TEST_CASE("Statements") {
     shared_ptr<RelationalFactor> rf = make_shared<ConstantExpression>(nullptr, 1);
 
 
-    shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(procedure, 2, "b");
-    shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(procedure, 1, "a");
-    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(procedure, 3, "Test Procedure");
-    shared_ptr<WhileStatement> whileStmt = make_shared<WhileStatement>(procedure, 4, expr);
-    shared_ptr<IfStatement> ifStmt = make_shared<IfStatement>(procedure, 4, expr);
-    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(procedure, 4, "c", rf);
+    shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(procedure, "b");
+    shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(procedure, "a");
+    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(procedure, "Test Procedure");
+    shared_ptr<WhileStatement> whileStmt = make_shared<WhileStatement>(procedure, expr);
+    shared_ptr<IfStatement> ifStmt = make_shared<IfStatement>(procedure, expr);
+    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(procedure, "c", rf);
 
     shared_ptr<Storage> storage = make_shared<Storage>();
 

@@ -95,12 +95,12 @@ TEST_CASE("Storage - Constant") {
 TEST_CASE("Storage - Statement") {
     shared_ptr<Storage> store = make_shared<Storage>();
 
-    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(nullptr, 1, "x", nullptr);
-    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(nullptr, 2, "procedure_x");
-    shared_ptr<IfStatement> ifStmt = make_shared<IfStatement>(nullptr, 3, nullptr);
-    shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(nullptr, 4, "x");
-    shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(nullptr, 5, "x");
-    shared_ptr<WhileStatement> whileStmt = make_shared<WhileStatement>(nullptr, 6, nullptr);
+    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(nullptr, "x", nullptr);
+    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(nullptr, "procedure_x");
+    shared_ptr<IfStatement> ifStmt = make_shared<IfStatement>(nullptr, nullptr);
+    shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(nullptr, "x");
+    shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(nullptr, "x");
+    shared_ptr<WhileStatement> whileStmt = make_shared<WhileStatement>(nullptr, nullptr);
 
     store->storeStmt(assignStmt);
     store->storeStmt(callStmt);
@@ -144,24 +144,24 @@ TEST_CASE("Storage - Stmt-Stmt Relation") {
     store->storeRelation(1, 2, true, PARENT);
     store->storeRelation(2, 3, true, PARENT);
 
-    vector<int> cmp_1{ 2 };
-    vector<int> cmp_2{ 3 };
+    vector<int> cmp_1{2};
+    vector<int> cmp_2{3};
     vector<int> cmp_3{};
     REQUIRE(store->forwardRetrieveRelation(1, PARENT) == cmp_1);
     REQUIRE(store->forwardRetrieveRelation(2, PARENT) == cmp_2);
     REQUIRE(store->forwardRetrieveRelation(3, PARENT) == cmp_3);
 
     cmp_1 = {};
-    cmp_2 = { 1 };
-    cmp_3 = { 2 };
+    cmp_2 = {1};
+    cmp_3 = {2};
     REQUIRE(store->reverseRetrieveRelation(1, PARENT) == cmp_1);
     REQUIRE(store->reverseRetrieveRelation(2, PARENT) == cmp_2);
     REQUIRE(store->reverseRetrieveRelation(3, PARENT) == cmp_3);
 
     store->buildStar(PARENT);
 
-    vector<int> cmp_star_1{ 2, 3 };
-    vector<int> cmp_star_2{ 3 };
+    vector<int> cmp_star_1{2, 3};
+    vector<int> cmp_star_2{3};
     vector<int> cmp_star_3{};
 
     REQUIRE(store->forwardRetrieveRelation(1, PARENTS) == cmp_star_1);
@@ -172,16 +172,16 @@ TEST_CASE("Storage - Stmt-Stmt Relation") {
     store->storeRelation(1, 2, true, FOLLOWS);
     store->storeRelation(2, 3, true, FOLLOWS);
 
-    cmp_1 = { 2 };
-    cmp_2 = { 3 };
+    cmp_1 = {2};
+    cmp_2 = {3};
     cmp_3 = {};
     REQUIRE(store->forwardRetrieveRelation(1, FOLLOWS) == cmp_1);
     REQUIRE(store->forwardRetrieveRelation(2, FOLLOWS) == cmp_2);
     REQUIRE(store->forwardRetrieveRelation(3, FOLLOWS) == cmp_3);
 
     cmp_1 = {};
-    cmp_2 = { 1 };
-    cmp_3 = { 2 };
+    cmp_2 = {1};
+    cmp_3 = {2};
     REQUIRE(store->reverseRetrieveRelation(1, FOLLOWS) == cmp_1);
     REQUIRE(store->reverseRetrieveRelation(2, FOLLOWS) == cmp_2);
     REQUIRE(store->reverseRetrieveRelation(3, FOLLOWS) == cmp_3);
@@ -207,14 +207,14 @@ TEST_CASE("Storage - Stmt-Var Relation") {
     REQUIRE(store->forwardRetrieveRelation(1, MODIFIESV).size() == 0);
     REQUIRE(store->reverseRetrieveRelation("x", MODIFIESV).size() == 0);
 
-    
-    vector<string> cmp_1 = { "x" };
-    vector<string> cmp_2 = { "x", "y" };
-    vector<string> cmp_3 = { "y", "z" };
 
-    vector<int> cmp_x = { 1, 2 };
-    vector<int> cmp_y = { 2, 3 };
-    vector<int> cmp_z = { 3 };
+    vector<string> cmp_1 = {"x"};
+    vector<string> cmp_2 = {"x", "y"};
+    vector<string> cmp_3 = {"y", "z"};
+
+    vector<int> cmp_x = {1, 2};
+    vector<int> cmp_y = {2, 3};
+    vector<int> cmp_z = {3};
 
     // UsesV
     store->storeRelation(1, "x", USESV);

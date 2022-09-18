@@ -3,13 +3,19 @@ using namespace std;
 #include <string>
 #include <set>
 #include <memory>
+#include <unordered_map>
 
 #include "QueryEvaluator.h"
 #include "QPS.h"
 
-#include "../AST/TNode.h"
-#include "../PKB/PKB.h"
-#include "../PKB/QueryServicer.h"
+#include "AST/Expression/RelationalFactor/NameExpression.h"
+#include "AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "AST/Statement/Statement.h"
+#include "PKB/PKB.h"
+#include "PKB/QueryServicer.h"
+#include "PKB/Types/StatementType.h"
+#include "PKB/Types/StmtStmtRelationType.h"
+#include "PKB/Types/StmtVarRelationType.h"
 
 
 unordered_map<TokenType, StatementType> tokenTypeToStatementType = {
@@ -45,7 +51,7 @@ void QueryEvaluator::evaluate() {
     const TokenType type = pq.declarations[selectSynonym];
 
     // If there are no clauses / select synonym not in any clauses
-    if (checkIfClauseExists() || checkIfSelectSynonymExistsInClause) {
+    if (checkIfClauseExists() || checkIfSelectSynonymExistsInClause()) {
         selectAll(type);
         return;
     }
@@ -465,8 +471,8 @@ void QueryEvaluator::selectAll(TokenType type) {
     }
 
     else {
-        if (tokenTypeTostatementType.find(type) != tokenTypeTostatementType.end()) {
-            StatementType stmtType = tokenTypeTostatementType[type];
+        if (tokenTypeToStatementType.find(type) != tokenTypeToStatementType.end()) {
+            StatementType stmtType = tokenTypeToStatementType[type];
             set<shared_ptr<Statement>> statements = servicer->getAllStmt(stmtType);
             
             for (shared_ptr<Statement> s : statements) {

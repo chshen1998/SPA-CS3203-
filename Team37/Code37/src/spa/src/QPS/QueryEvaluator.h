@@ -4,15 +4,21 @@
 #include <set>
 #include <memory>
 #include <list>
+#include <unordered_map>
 
 
-#include "../PKB/QueryServicer.h"
+#include "PKB/QueryServicer.h"
+#include "PKB/Types/StatementType.h"
+#include "PKB/Types/StmtStmtRelationType.h"
+#include "PKB/Types/StmtVarRelationType.h"
 #include "QPS.h"
 
 #ifndef TEAM37_QUERYEVALUATOR_H
 #define TEAM37_QUERYEVALUATOR_H
 
-unordered_map<TokenType, StatementType> tokenTypeTostatementType;
+extern unordered_map<TokenType, StatementType> tokenTypeToStatementType;
+extern unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType;
+extern unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType;
 
 class QueryEvaluator {
 public:

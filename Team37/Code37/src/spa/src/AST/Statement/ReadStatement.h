@@ -11,7 +11,7 @@ class ReadStatement : public Statement, public enable_shared_from_this<ReadState
 private:
     string variableName;
 public:
-    ReadStatement(shared_ptr<TNode> parent, int lineNum, string variableName);
+    ReadStatement(shared_ptr<TNode> parent, string variableName);
 
     /**
      * Gets the name of the variable in the read statement

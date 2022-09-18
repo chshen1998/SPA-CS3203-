@@ -11,7 +11,7 @@ private:
     string varName;
     shared_ptr<RelationalFactor> relFactor;
 public:
-    AssignStatement(shared_ptr<TNode> parent, int lineNum, string varName, shared_ptr<RelationalFactor> relFactor);
+    AssignStatement(shared_ptr<TNode> parent, string varName, shared_ptr<RelationalFactor> relFactor);
 
     /**
      * Get the variable name of the assign statement

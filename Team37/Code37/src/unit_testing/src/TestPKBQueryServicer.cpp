@@ -48,12 +48,12 @@ TEST_CASE("QueryServicer - Statements") {
     // Storage Stub
     shared_ptr<Storage> store = make_shared<Storage>();
 
-    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(nullptr, 1, "x", nullptr);
-    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(nullptr, 2, "procedure_x");
-    shared_ptr<IfStatement> ifStmt = make_shared<IfStatement>(nullptr, 3, nullptr);
-    shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(nullptr, 4, "x");
-    shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(nullptr, 5, "x");
-    shared_ptr<WhileStatement> whileStmt = make_shared<WhileStatement>(nullptr, 6, nullptr);
+    shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(nullptr, "x", nullptr);
+    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(nullptr, "procedure_x");
+    shared_ptr<IfStatement> ifStmt = make_shared<IfStatement>(nullptr, nullptr);
+    shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(nullptr, "x");
+    shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(nullptr, "x");
+    shared_ptr<WhileStatement> whileStmt = make_shared<WhileStatement>(nullptr, nullptr);
 
     store->storeStmt(assignStmt);
     store->storeStmt(callStmt);

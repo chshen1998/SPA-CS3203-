@@ -65,17 +65,17 @@ TEST_CASE("Simple Specific Statements") {
 
     // Initialize all types of statements
     shared_ptr<Statement> readStmt =
-            make_shared<ReadStatement>(procedure1, 1, "x");
+            make_shared<ReadStatement>(procedure1, "x");
     shared_ptr<Statement> printStmt =
-            make_shared<PrintStatement>(procedure1, 2, "y");
+            make_shared<PrintStatement>(procedure1, "y");
     shared_ptr<Statement> callStmt =
-            make_shared<CallStatement>(procedure1, 3, "z");
+            make_shared<CallStatement>(procedure1, "z");
     shared_ptr<Statement> whileStmt =
-            make_shared<WhileStatement>(procedure1, 1, expr1);
+            make_shared<WhileStatement>(procedure1, expr1);
     shared_ptr<Statement> ifStmt =
-            make_shared<IfStatement>(procedure1, 1, expr2);
+            make_shared<IfStatement>(procedure1, expr2);
     shared_ptr<Statement> assignStmt =
-            make_shared<AssignStatement>(procedure1, 6, "c", expr3);
+            make_shared<AssignStatement>(procedure1, "c", expr3);
 
     procedure1->addStatement(readStmt);
     procedure1->addStatement(printStmt);

@@ -2,9 +2,8 @@
 
 WhileStatement::WhileStatement(
         shared_ptr<TNode> parent,
-        int lineNum,
         shared_ptr<ConditionalExpression> condExpr
-        ) : Statement(parent, lineNum), condExpr(condExpr) { }
+        ) : Statement(parent), condExpr(condExpr) { }
 
 void WhileStatement::addStatement(shared_ptr<Statement> stmt) {
     WhileStatement::stmtLst.push_back(stmt);

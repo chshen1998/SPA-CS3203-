@@ -11,7 +11,7 @@ Select a such that Follows(a,5)
 3 - follows while
 while w;
 Select w such that Follows(w,12)
-None
+none
 5000
 4 - follows if
 if ifs;
@@ -26,5 +26,35 @@ Select r such that Follows(read,4)
 6 - follows print
 print p;
 Select p such that Follows(p,3)
+2
+5000
+7 - follows star stmt
+stmt s;
+Select s such that Follows*(s,2)
+1
+5000
+8 - follows star assign
+assign a;
+Select a such that Follows*(a,5)
+1, 4
+5000
+9 - follows star while
+while w;
+Select w such that Follows*(w,12)
+None
+5000
+10 - follows star if
+if ifs;
+Select ifs such that Follows*(ifs,10)
+5
+5000
+11 - follows star read
+read r;
+Select r such that Follows*(read,15)
+14
+5000
+12 - follows print
+print p;
+Select p such that Follows*(p,3)
 2
 5000

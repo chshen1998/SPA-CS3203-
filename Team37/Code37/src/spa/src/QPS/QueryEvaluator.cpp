@@ -63,47 +63,105 @@ void QueryEvaluator::evaluate() {
 
     // If Pattern Clause only
     if (patternTable.size() > 1 && suchThatTable.size() <= 1) {
-        int index = 0;
-
-        for (int i = 0; i < patternTable[0].size(); i++) {
-            if (patternTable[0][i] == selectSynonym) {
-                index = i;
-                break;
-            }
-        }
-
-        for (int j = 1; j < patternTable.size(); j++) {
-            result.push_back(patternTable[j][index]);
-        }
-
-        return;
+        getResultFromFinalTable(patternTable);
     }
 
     // If Such that Cluase Only
     else if (suchThatTable.size() > 1 && patternTable.size() <= 1) {
-        int index = 0;
-
-        for (int i = 0; i < suchThatTable[0].size(); i++) {
-            if (suchThatTable[0][i] == selectSynonym) {
-                index = i;
-                break;
-            }
-        }
-
-        for (int j = 1; j < suchThatTable.size(); j++) {
-            result.push_back(suchThatTable[j][index]);
-        }
-
-        return;
+        getResultFromFinalTable(suchThatTable);
     }
     // Combine the two tables
     // We can hardcode this part since maximum of 4 variables due to max 1 such-that, 1 pattern
     else {
+        int patternIndex = -1;
+        int suchThatIndex = -1;
+        bool inPattern = false;
 
+        for (int i = 0; i < patternTable[0].size(); i++) {
+            for (int j = 0; j < suchThatTable[0].size(); j++) {
+                if (patternTable[0][i] == suchThatTable[0][j]) {
+                    patternIndex = i;
+                    suchThatIndex = j;
+                }
+            }
+            if (!inPattern && patternTable[0][i] == selectSynonym) {
+                inPattern = true;
+            }
+        }
 
+        if (patternIndex != -1 && suchThatIndex != -1) {
+            vector<vector<string>> finalTable = joinTwoTable(patternTable, patternIndex, suchThatTable, suchThatIndex);
+            getResultFromFinalTable(finalTable);
+        }
 
+        else if (inPattern) {
+            getResultFromFinalTable(patternTable);
+        }
+
+        else {
+            getResultFromFinalTable(suchThatTable);
+        }
     }
 }
+
+
+vector<vector<string>> QueryEvaluator::joinTwoTable(const vector<vector<string>>& a, size_t columna,
+    const vector<vector<string>>& b, size_t columnb)
+{
+    unordered_multimap<string, size_t> hashmap;
+
+    // Use of Hashmap
+    for (size_t i = 0;
+        i < a.size(); ++i) {
+        hashmap.insert({ a[i][columna], i });
+    }
+
+    // Perform Mapping
+    vector<vector<string>> result;
+    for (size_t i = 0; i < b.size(); ++i) {
+
+        auto range = hashmap.equal_range(
+            b[i][columnb]);
+
+        // Create new joined table
+        for (auto it = range.first;
+            it != range.second; ++it) {
+
+            vector<vector<string>>::value_type row;
+
+            // Insert values to row
+            row.insert(row.end(),
+                a[it->second].begin(),
+                a[it->second].end());
+            row.insert(row.end(),
+                b[i].begin(),
+                b[i].end());
+
+            // Push the row
+            result.push_back(move(row));
+        }
+    }
+    return result;
+}
+
+
+void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table) {
+    int index = 0;
+
+    for (int i = 0; i < table[0].size(); i++) {
+        if (table[0][i] == pq.select) {
+            index = i;
+            break;
+        }
+    }
+
+    for (int j = 1; j < table.size(); j++) {
+        result.push_back(table[j][index]);
+    }
+
+    return;
+}
+
 
 /*
 Returns me a vector of:

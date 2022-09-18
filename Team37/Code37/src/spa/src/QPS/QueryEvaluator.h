@@ -27,6 +27,8 @@ private:
     void QuerySelect();
     bool evaluateSuchThatClause(vector<vector<string>>&);
     void evaluatePatternClause(vector<vector<string>>&);
+    void getResultFromFinalTable(const vector<vector<string>>&);
+    vector<vector<string>> joinTwoTable(const vector<vector<string>>& a, size_t columna, const vector<vector<string>>& b, size_t columnb);
     void QueryEvaluator::selectAll(TokenType type);
 
     inline bool checkIfClauseExists();

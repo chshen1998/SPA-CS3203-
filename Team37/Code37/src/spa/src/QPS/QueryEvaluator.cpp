@@ -72,7 +72,7 @@ void QueryEvaluator::evaluate() {
         getResultFromFinalTable(patternTable);
     }
 
-    // If Such that Cluase Only
+    // If Such that Clause Only
     else if (suchThatTable.size() > 1 && patternTable.size() <= 1) {
         getResultFromFinalTable(suchThatTable);
     }
@@ -154,6 +154,7 @@ vector<vector<string>> QueryEvaluator::joinTwoTable(const vector<vector<string>>
 void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table) {
     int index = 0;
 
+    // Find the column index where the synonym value == select synonym value
     for (int i = 0; i < table[0].size(); i++) {
         if (table[0][i] == pq.select) {
             index = i;
@@ -161,8 +162,11 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
         }
     }
 
+    // Add the result values of that column into result
     for (int j = 1; j < table.size(); j++) {
-        result.push_back(table[j][index]);
+        if (find(result.begin(), result.end(), table[j][index]) == result.end()) {
+            result.push_back(table[j][index]);
+        }
     }
 
     return;
@@ -204,24 +208,28 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
         }
 
         else if (leftValue != "_" && rightValue == "_") {
-            vector<int> result = servicer->reverseRetrieveRelation(leftValue, StmtVarRelationType::MODIFIESV);
             
-            if (pq.declarations[leftValue] == TokenType::VARIABLE) {
-                intermediate[0].push_back(leftValue);
-            }
+            // If leftValue is a string
+            if (pq.declarations.find(leftValue) == pq.declarations.end()) {
+                vector<int> result = servicer->reverseRetrieveRelation(leftValue, StmtVarRelationType::MODIFIESV);
 
-            for (int i : result) {
-                if (pq.declarations[leftValue] == TokenType::VARIABLE) {
-                    vector<string> variables = servicer->forwardRetrieveRelation(i, StmtVarRelationType::MODIFIESV);
-
-                    for (string v : variables) {
-                        intermediate.push_back(vector<string> {to_string(i), v});
-                    }
-                }
-                else {
+                for (int i : result) {
                     intermediate.push_back(vector<string> {to_string(i)});
                 }
+
+                return;
             }
+            
+            else {
+                intermediate[0].push_back(leftValue);
+
+                set<shared_ptr<Statement>> statements = servicer->getAllStmt(StatementType::ASSIGN);
+
+                for (shared_ptr<Statement> s : statements) {
+                    string v = servicer->forwardRetrieveRelation(s->getLineNum(), StmtVarRelationType::MODIFIESV)[0];
+                    intermediate.push_back(vector<string> {to_string(s->getLineNum()), v });
+                }
+            }   
         }
 
         else {

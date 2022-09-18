@@ -51,7 +51,7 @@ add_library(spa ${srcs} ${headers}
         "src/QPS/Validators/PatternValidator.h"
         "src/QPS/Validators/ParentValidator.h"
         "src/QPS/Validators/SelectValidator.h"
-        "src/QPS/Validators/ModifiesValidator.h" 
+        "src/QPS/Validators/ModifiesValidator.h"
         "src/QPS/Validators/UsesValidator.h"
         "src/QPS/Validators/ValidatorUtils.h"
         src/QPS/QPS.h
@@ -74,10 +74,10 @@ add_library(spa ${srcs} ${headers}
         "src/QPS/Validators/PatternValidator.cpp"
         "src/QPS/Validators/ParentValidator.cpp"
         "src/QPS/Validators/SelectValidator.cpp"
-        "src/QPS/Validators/ModifiesValidator.cpp" 
+        "src/QPS/Validators/ModifiesValidator.cpp"
         "src/QPS/Validators/UsesValidator.cpp"
         "src/QPS/Validators/ValidatorUtils.cpp"
-        
+
         src/QPS/QPS.cpp
         src/QPS/QueryExtractor.cpp
         src/QPS/QueryEvaluator.cpp
@@ -103,8 +103,10 @@ add_library(spa ${srcs} ${headers}
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.cpp
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.h
         src/AST/ASTVisitor/ExtractParentsASTVisitor.cpp
-        src/AST/ASTVisitor/ExtractParentsASTVisitor.h 
-        src/PKB/Types/StmtStmtRelationType.h)
+        src/AST/ASTVisitor/ExtractParentsASTVisitor.h
+        src/PKB/Types/StmtStmtRelationType.h
+        src/AST/ASTVisitor/ExtractModifiesASTVisitor.cpp
+        src/AST/ASTVisitor/ExtractModifiesASTVisitor.h)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

@@ -37,7 +37,7 @@ Select s such that Follows*(1,s)
 8 - follows star assign
 assign a;
 Select a such that Follows*(3,a)
-4, 6, 9, 10, 12, 15
+4, 10
 5000
 9 - follows star while
 while w;
@@ -51,11 +51,11 @@ Select ifs such that Follows*(4,ifs)
 5000
 11 - follows star read
 read r;
-Select r such that Follows(2,r)
-3, 8, 14
+Select r such that Follows*(2,r)
+3
 5000
 12 - follows star print
 print p;
-Select p such that Follows(1,p)
-2, 7, 13
+Select p such that Follows*(1,p)
+2
 5000

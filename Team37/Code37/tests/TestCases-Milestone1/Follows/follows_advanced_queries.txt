@@ -6,7 +6,7 @@ Select s1 such that Follows(s1,s2)
 2 - follows assign-print
 assign a; print p;
 Select a such that Follows(a,p)
-1, 12
+1, 6, 12
 5000
 3 - follows assign-while
 assign a; while w;
@@ -26,7 +26,7 @@ Select s1 such that Follows*(s1,s2)
 6 - follows star assign-print
 assign a; print p;
 Select a such that Follows*(a,p)
-1, 4, 6, 9, 10, 12
+1, 6, 12
 5000
 7 - follows star assign-while
 assign a; while w;

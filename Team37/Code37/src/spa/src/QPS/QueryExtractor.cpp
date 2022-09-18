@@ -63,7 +63,7 @@ void QueryExtractor::extractPatternClause() {
     getNextToken();
     PqlToken right = getNextToken();
     getNextToken();
-    pq.patternClauses.push_back(Clause(synonym, left.value, right.value));
+    pq.patternClauses.push_back(Clause(synonym, left, right));
 }
 
 void QueryExtractor::extractSuchThatClause() {
@@ -75,7 +75,7 @@ void QueryExtractor::extractSuchThatClause() {
     getNextToken();
     PqlToken right = getNextToken();
     getNextToken();
-    pq.suchThatClauses.push_back(Clause(suchThatClause, left.value, right.value));
+    pq.suchThatClauses.push_back(Clause(suchThatClause, left, right));
 }
 
 PqlToken QueryExtractor::getNextToken() {

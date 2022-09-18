@@ -111,6 +111,9 @@ void ExtractModifiesASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt)
         // iterate children
         statement->accept(shared_from_this());
     }
+
+    // iterate into conditional expressions
+    ifStmt->getConditionalExpression()->accept(shared_from_this());
 }
 
 /**
@@ -131,6 +134,7 @@ void ExtractModifiesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement>
  * @param nameExpr
  */
 void ExtractModifiesASTVisitor::visitNameExpression(shared_ptr<NameExpression> nameExpr) {
+    this->visitParentAndStore(nameExpr, nameExpr->getVarName());
 }
 
 /**
@@ -141,42 +145,54 @@ void ExtractModifiesASTVisitor::visitConstantExpression(shared_ptr<ConstantExpre
 }
 
 /**
- * We visit an operated expression and do nothing
+ * We visit an operated expression
  * @param operatedExpr
  */
 void ExtractModifiesASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpression> operatedExpr) {
+    operatedExpr->getExpression1()->accept(shared_from_this());
+    operatedExpr->getExpression2()->accept(shared_from_this());
+
 }
 
 // ConditionalExpression
 
 /**
- * We visit a relational expression and do nothing
+ * We visit a relational expression
  * @param relationalExpr
  */
 void ExtractModifiesASTVisitor::visitRelationalExpression(shared_ptr<RelationalExpression> relationalExpr) {
+    relationalExpr->getRelFactor1()->accept(shared_from_this());
+    relationalExpr->getRelFactor2()->accept(shared_from_this());
 }
 
 /**
- * We visit a not condition and do nothing
+ * We visit a not condition
  * @param notCondition
  */
 void ExtractModifiesASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCondition) {
+    // iterate into conditional expressions
+    notCondition->getConditionalExpression()->accept(shared_from_this());
 }
 
 /**
- * We visit an And condition and do nothing
+ * We visit an And condition
  * @param andCondition
  */
 void ExtractModifiesASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCondition) {
+    // iterate into conditional expressions
+    andCondition->getConditionalExpression1()->accept(shared_from_this());
+    andCondition->getConditionalExpression2()->accept(shared_from_this());
 
 }
 
 /**
- * We visit an Or condition and do nothing
+ * We visit an Or condition
  * @param orCondition
  */
 void ExtractModifiesASTVisitor::visitOrCondition(shared_ptr<OrCondition> orCondition) {
-
+    // iterate into conditional expressions
+    orCondition->getConditionalExpression1()->accept(shared_from_this());
+    orCondition->getConditionalExpression2()->accept(shared_from_this());
 }
 
 /**

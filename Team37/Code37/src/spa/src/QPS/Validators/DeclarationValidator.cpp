@@ -51,7 +51,7 @@ void DeclarationValidator::isValidDesignEntity(PqlToken token)
 
 void DeclarationValidator::isSynonym(PqlToken token) {
     if (token.type != TokenType::SYNONYM) {
-        throw SemanticError("Declarations must be a synonym");
+        throw SyntaxError("Declarations must be a synonym");
     }
 }
 

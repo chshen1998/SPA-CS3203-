@@ -1,7 +1,7 @@
 1 - follows constant-constant
-variable v;
-Select v such that Follows(1,2)
-flag, x, i
+statement s;
+Select s such that Follows(s,2)
+1
 5000
 2 - follows constant-constant error
 variable v;

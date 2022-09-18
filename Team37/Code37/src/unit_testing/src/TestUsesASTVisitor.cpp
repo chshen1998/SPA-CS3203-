@@ -22,6 +22,7 @@ using namespace std;
 TEST_CASE("Uses assign statements") {
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
+    // TODO: change nullptr to assignStmt
     shared_ptr<RelationalFactor> rf = make_shared<NameExpression>(nullptr, "b");
 
     shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(procedure, 1, "a", rf);
@@ -30,12 +31,10 @@ TEST_CASE("Uses assign statements") {
 
     procedure->addStatement(assignStmt);
 
-
     sc->addProcedure(procedure);
 
     // We start by traversing the AST
     storage->storeAST(sc);
-
 
     vector<string> usesVariables = storage->forwardRetrieveRelation(1, USESV);
 

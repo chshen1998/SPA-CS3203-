@@ -42,6 +42,10 @@ unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType =
     { TokenType::PARENT_A, StmtStmtRelationType::PARENTS },
 };
 
+set<TokenType> suchThatStmtRefStmtRef = {
+    TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A
+};
+
 
 QueryEvaluator::QueryEvaluator(PqlQuery& pqlQuery, shared_ptr<QueryServicer> s, list<string>& r) :
     result(r), servicer(s), pq(pqlQuery) {}
@@ -49,9 +53,9 @@ QueryEvaluator::QueryEvaluator(PqlQuery& pqlQuery, shared_ptr<QueryServicer> s, 
 void QueryEvaluator::evaluate() {
     const string selectSynonym = pq.select;
     const TokenType type = pq.declarations[selectSynonym];
-
+ 
     // If there are no clauses / select synonym not in any clauses
-    if (checkIfClauseExists() || !checkIfSelectSynonymExistsInClause()) {
+    if (checkIfClauseNoExists() || !checkIfSelectSynonymExistsInClause()) {
         selectAll(type);
         return;
     }
@@ -202,85 +206,82 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
     intermediate.push_back(vector<string>());
 
     for (Clause clause : pq.patternClauses) {
-        PqlToken leftArg = clause.left;
-        PqlToken rightArg = clause.right;
         intermediate[0].push_back(clause.clauseType.value);
 
-        if (leftArg.value == "_" && rightArg.value == "_") {
-            // Update code in the future for the different
-            set<shared_ptr<Statement>> statements = servicer->getAllStmt(StatementType::ASSIGN);
-            intermediate.push_back(vector<string> {clause.clauseType.value});
+        PqlToken leftArg = clause.left;
+        PqlToken rightArg = clause.right;
+        set<shared_ptr<Statement>> allAssignStmts = servicer->getAllStmt(StatementType::ASSIGN);
+        vector<string> allAssignStmtLinesString;
 
-            for (shared_ptr<Statement> s : statements) {
-                intermediate.push_back(vector<string> {to_string(s->getLineNum())});
+        for (shared_ptr<Statement> s : allAssignStmts) {
+            allAssignStmtLinesString.push_back(to_string(s->getLineNum()));
+        }
+
+        sort(allAssignStmtLinesString.begin(), allAssignStmtLinesString.end());
+
+
+        if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::WILDCARD) {
+            for (string s : allAssignStmtLinesString) {
+                intermediate.push_back(vector<string> { s });
             }
         }
 
-        else if (leftArg.value == "_" && rightArg.value != "_") {
-            string parsed;
-            //Wild card string
-            if (rightArg.type == TokenType::WILDCARD_STRING) {
-                parsed = rightArg.value.substr(2, rightArg.value.size() - 4);
-            }
-            // Normal String
-            else {
-                parsed = rightArg.value.substr(1, rightArg.value.size() - 2);
-            }
+        else if (leftArg.type == TokenType::WILDCARD && rightArg.type != TokenType::WILDCARD) {
+            string parsed = rightArg.type == TokenType::WILDCARD_STRING ?
+                            rightArg.value.substr(2, rightArg.value.size() - 4) :
+                            rightArg.value.substr(1, rightArg.value.size() - 2);
+            
 
-            vector<int> stmtWithLeftArg = servicer->reverseRetrieveRelation(parsed, StmtVarRelationType::USESV);
-            set<shared_ptr<Statement>> statements = servicer->getAllStmt(StatementType::ASSIGN);
-            vector<int> stmtWithRightArg;
-            vector<int> result;
+            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(parsed, StmtVarRelationType::USESV);
+            vector<string> allStmtWithRightArgString;
+            vector<string> finalResult;
 
-            for (shared_ptr<Statement> s : statements) {
-                stmtWithRightArg.push_back(s->getLineNum());
+            for (int i : allStmtWithRightArg) {
+                allStmtWithRightArgString.push_back(to_string(i));
             }
 
-            sort(stmtWithLeftArg.begin(), stmtWithLeftArg.end());
-            sort(stmtWithRightArg.begin(), stmtWithRightArg.end());
+            sort(allStmtWithRightArgString.begin(), allStmtWithRightArgString.end());
 
-            set_intersection(stmtWithLeftArg.begin(), stmtWithLeftArg.end(),
-                stmtWithRightArg.begin(), stmtWithRightArg.end(),
-                back_inserter(result));
+            set_intersection(allStmtWithRightArgString.begin(), allStmtWithRightArgString.end(),
+                             allAssignStmtLinesString.begin(), allAssignStmtLinesString.end(),
+                             back_inserter(finalResult));
 
-            for (int stmtNum : result) {
-                intermediate.push_back(vector<string> {to_string(stmtNum)});
+            for (string s : finalResult) {
+                intermediate.push_back(vector<string> { s });
             }
         }
 
-        else if (leftArg.value != "_" && rightArg.value == "_") {
+        else if (leftArg.type != TokenType::WILDCARD && rightArg.type == TokenType::WILDCARD) {
+            
             // If leftArg.value is a string
             if (leftArg.type == TokenType::STRING) {
                 string value = leftArg.value.substr(1, leftArg.value.size() - 2);
-                vector<int> stmtWithLeftArg = servicer->reverseRetrieveRelation(value, StmtVarRelationType::MODIFIESV);
+                vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(value, StmtVarRelationType::MODIFIESV);
+                vector<string> allStmtWithLeftArgString;
+                vector<string> finalResult;
 
-                set<shared_ptr<Statement>> statements = servicer->getAllStmt(StatementType::ASSIGN);
-                vector<int> stmtWithRightArg;
-                vector<int> result;
-
-                for (shared_ptr<Statement> s : statements) {
-                    stmtWithRightArg.push_back(s->getLineNum());
+                
+                for (int i : allStmtWithLeftArg) {
+                    allStmtWithLeftArgString.push_back(to_string(i));
                 }
 
-                sort(stmtWithLeftArg.begin(), stmtWithLeftArg.end());
-                sort(stmtWithRightArg.begin(), stmtWithRightArg.end());
+                sort(allStmtWithLeftArgString.begin(), allStmtWithLeftArgString.end());
 
-                set_intersection(stmtWithLeftArg.begin(), stmtWithLeftArg.end(),
-                    stmtWithRightArg.begin(), stmtWithRightArg.end(),
-                    back_inserter(result));
+                set_intersection(allStmtWithLeftArgString.begin(), allStmtWithLeftArgString.end(),
+                    allAssignStmtLinesString.begin(), allAssignStmtLinesString.end(),
+                    back_inserter(finalResult));
 
-                for (int i : result) {
-                    intermediate.push_back(vector<string> {to_string(i)});
+                for (string s : finalResult) {
+                    intermediate.push_back(vector<string> { s });
                 }
 
-                return;
             }
+
+            // if leftArg is a synonym
             else {
                 intermediate[0].push_back(leftArg.value);
 
-                set<shared_ptr<Statement>> statements = servicer->getAllStmt(StatementType::ASSIGN);
-
-                for (shared_ptr<Statement> s : statements) {
+                for (shared_ptr<Statement> s : allAssignStmts) {
                     string v = servicer->forwardRetrieveRelation(s->getLineNum(), StmtVarRelationType::MODIFIESV)[0];
                     intermediate.push_back(vector<string> {to_string(s->getLineNum()), v });
                 }
@@ -442,9 +443,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
         else if (leftArg.type != TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
             intermediate.push_back(vector<string> {rightArg.value});
 
-            if (clauseType == TokenType::FOLLOWS || clauseType == TokenType::FOLLOWS_A ||
-                clauseType == TokenType::PARENT || clauseType == TokenType::PARENT_A) {
-
+            if (suchThatStmtRefStmtRef.find(clauseType) != suchThatStmtRefStmtRef.end()) {
                 StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clauseType];
 
                 if (leftArg.type == TokenType::STATEMENT_NUM) {
@@ -478,7 +477,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
             }
         }
 
-            // Both are synonyms
+        // Both are synonyms
         else {
             intermediate.push_back(vector<string>{ leftArg.value, rightArg.value });
             set<shared_ptr<Statement>> left = servicer->getAllStmt(tokenTypeToStatementType[leftArg.type]);
@@ -490,6 +489,10 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
 
                 for (shared_ptr<Statement> s : left) {
                     for (int i : servicer->forwardRetrieveRelation(s->getLineNum(), ss)) {
+                        // If its not stmt, we have to filter again!!
+
+
+
                         intermediate.push_back(vector<string>
                         { to_string(s->getLineNum()), to_string(i) });
                     }
@@ -510,8 +513,6 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
 
     return 0;
 }
-
-
 
 
 void QueryEvaluator::selectAll(TokenType type) {
@@ -543,7 +544,7 @@ void QueryEvaluator::selectAll(TokenType type) {
     }
 }
 
-inline bool QueryEvaluator::checkIfClauseExists() {
+inline bool QueryEvaluator::checkIfClauseNoExists() {
     return pq.patternClauses.empty() && pq.suchThatClauses.empty();
 }
 
@@ -563,3 +564,4 @@ bool QueryEvaluator::checkIfSelectSynonymExistsInClause() {
 
     return false;
 }
+

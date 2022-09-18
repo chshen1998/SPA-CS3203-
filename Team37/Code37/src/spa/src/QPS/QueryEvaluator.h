@@ -19,6 +19,7 @@
 extern unordered_map<TokenType, StatementType> tokenTypeToStatementType;
 extern unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType;
 extern unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType;
+extern set<TokenType> suchThatStmtRefStmtRef;
 
 class QueryEvaluator {
 public:
@@ -44,7 +45,7 @@ private:
 
     void selectAll(TokenType type);
 
-    inline bool checkIfClauseExists();
+    inline bool checkIfClauseNoExists();
 
     bool checkIfSelectSynonymExistsInClause();
 };

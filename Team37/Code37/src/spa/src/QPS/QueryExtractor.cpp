@@ -25,10 +25,12 @@ void QueryExtractor::extractDeclarations() {
     PqlToken declaration = getNextToken();
     while (declaration.type != TokenType::DECLARATION_END) {
         PqlToken synonym = getNextToken();
-        getNextToken();
-
+        PqlToken symbol = getNextToken();
         pq.declarations[synonym.value] = declaration.type;
-        declaration = getNextToken();
+
+        if (symbol.type == TokenType::SEMICOLON) {
+            declaration = getNextToken();
+        }
     }
 }
 

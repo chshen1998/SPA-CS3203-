@@ -66,11 +66,45 @@ TEST_CASE("Remove procedure wrapper - Good input") {
                       "    print x;";
 
     require(result == expected);
+
+    // With while and if-else blocks
+    procedure = "procedure main {\n"
+               "    while () {\n"
+               "        print flag;\n"
+               "        read flag;\n"
+               "\n"
+               "        x = 1;\n"
+               "        y = 2;\n"
+               "    }\n"
+               "    print x;\n"
+               "    if () then {\n"
+               "        print flag;\n"
+               "    } else {\n"
+               "        read flag;\n"
+               "    }"
+               "}\n";
+
+    result = Parser::removeProcedureWrapper(procedure);
+    expected = "while () {\n"
+               "        print flag;\n"
+               "        read flag;\n"
+               "\n"
+               "        x = 1;\n"
+               "        y = 2;\n"
+               "    }\n"
+               "    print x;\n"
+               "    if () then {\n"
+               "        print flag;\n"
+               "    } else {\n"
+               "        read flag;\n"
+               "    }";
+
+    require(result == expected);
 }
 
 
-TEST_CASE("Extract Statements - Good input") {
-    string procedure = "flag = 0;\n"
+TEST_CASE("Extract Statements - No while and if-else") {
+    string rawStatementList = "flag = 0;\n"
                        "    print flag;\n"
                        "    read flag;\n"
                        "\n"
@@ -80,7 +114,7 @@ TEST_CASE("Extract Statements - Good input") {
 
     vector<string> statementList;
 
-    vector<string> result = Parser::extractStatements(procedure, statementList);
+    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
     vector<string> expected;
     string stmt1 = "flag = 0";
     string stmt2 = "print flag";
@@ -95,6 +129,105 @@ TEST_CASE("Extract Statements - Good input") {
     expected.push_back(stmt4);
     expected.push_back(stmt5);
     expected.push_back(stmt6);
+
+    require(result == expected);
+}
+
+TEST_CASE("Extract Statements - While and if-else included") {
+    string rawStatementList = "while () {\n"
+                       "    print flag;\n"
+                       "    read flag;\n"
+                       "\n"
+                       "    x = 1;\n"
+                       "    y = 2;\n"
+                       "    }\n"
+                       "    print x;\n"
+                       "    if () then {\n"
+                       "        print flag;\n"
+                       "    } else {\n"
+                       "        read flag;\n"
+                       "    }";
+
+    vector<string> statementList;
+
+    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
+    vector<string> expected;
+    string stmt1 = "while () {\n"
+                   "    print flag;\n"
+                   "    read flag;\n"
+                   "\n"
+                   "    x = 1;\n"
+                   "    y = 2;\n"
+                   "    }";
+    string stmt2 = "print x";
+    string stmt3 = "if () then {\n"
+                    "        print flag;\n"
+                    "    } else {\n"
+                    "        read flag;\n"
+                    "    }";
+
+    expected.push_back(stmt1);
+    expected.push_back(stmt2);
+    expected.push_back(stmt3);
+
+    require(result == expected);
+}
+
+TEST_CASE("Extract Statements - Nested While and if-else") {
+    string rawStatementList = "while () {\n"
+                              "\t\tcall x;\n"
+                              "\t\tread x;\n"
+                              "\t\twhile () {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t}\n"
+                              "\t\tif () then {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t} else {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t}\n"
+                              "}\n"
+                              "\n"
+                              "if () then {\n"
+                              "\t\twhile () {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t}\n"
+                              "} else {\n"
+                              "\t\tif () then {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t} else {\n"
+                              "\t\t\t\tread x;\n"
+                              "\t\t}\n"
+                              "}";
+    vector<string> statementList;
+    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
+
+    vector<string> expected;
+    string stmt1 = "while () {\n"
+                   "\t\tcall x;\n"
+                   "\t\tread x;\n"
+                   "\t\twhile () {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t}\n"
+                   "\t\tif () then {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t} else {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t}\n"
+                   "}";
+    string stmt2 = "if () then {\n"
+                   "\t\twhile () {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t}\n"
+                   "} else {\n"
+                   "\t\tif () then {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t} else {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t}\n"
+                   "}";
+
+    expected.push_back(stmt1);
+    expected.push_back(stmt2);
 
     require(result == expected);
 }
@@ -191,4 +324,162 @@ TEST_CASE("Tokenize SourceCode") {
     require(resultStmtLst[1]->getLineNum() == read1->getLineNum());
     require(resultStmtLst[1]->getParent() == read1->getParent());
 
+}
+
+TEST_CASE("Tokenize RelFactor - Simple Addition / Subtraction") {
+    string rawAssignStatement = "a - 1 + hmm - 9312";
+    shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
+
+    shared_ptr<NameExpression> nameExpression;
+    shared_ptr<ConstantExpression> constantExpression;
+    shared_ptr<OperatedExpression> operatedExpression;
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::SUBTRACT);
+    REQUIRE(nameExpression->getVarName() == "a");
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::ADD);
+    REQUIRE(constantExpression->getValue() == 1);
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::SUBTRACT);
+    REQUIRE(nameExpression->getVarName() == "hmm");
+
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(operatedExpression->getExpression2());
+
+    REQUIRE(constantExpression->getValue() == 9312);
+}
+
+TEST_CASE("Tokenize RelFactor - Simple Multiplication / Division / Modulo") {
+    string rawAssignStatement = "a % 1 / hmm * 9312";
+    shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
+
+    shared_ptr<NameExpression> nameExpression;
+    shared_ptr<ConstantExpression> constantExpression;
+    shared_ptr<OperatedExpression> operatedExpression;
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::MODULO);
+    REQUIRE(nameExpression->getVarName() == "a");
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::DIVIDE);
+    REQUIRE(constantExpression->getValue() == 1);
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::MULTIPLY);
+    REQUIRE(nameExpression->getVarName() == "hmm");
+
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(operatedExpression->getExpression2());
+
+    REQUIRE(constantExpression->getValue() == 9312);
+}
+
+TEST_CASE("Tokenize RelFactor - Simple, ALL Operators") {
+    string rawAssignStatement = "a % b - c / d + e % f * g + h - i";
+    shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
+
+    shared_ptr<NameExpression> nameExpression;
+    shared_ptr<OperatedExpression> operatedExpression;
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    REQUIRE(operatedExpression->getOperator() == Operator::SUBTRACT);
+
+    // a % b
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::MODULO);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "a");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "b");
+
+    // c / d   +   e % f * g + h - i
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    REQUIRE(operatedExpression->getOperator() == Operator::ADD);
+
+    // c / d
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::DIVIDE);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "c");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "d");
+
+
+    // e % f * g + h - i
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    shared_ptr<OperatedExpression> savePoint;
+    savePoint = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    REQUIRE(savePoint->getOperator() == Operator::ADD);
+
+    // e % f * g
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(savePoint->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::MODULO);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "e");
+
+    // f * g
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    REQUIRE(operatedExpression->getOperator() == Operator::MULTIPLY);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "f");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "g");
+
+    // h - i
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(savePoint->getExpression2());
+    REQUIRE(operatedExpression->getOperator() == Operator::SUBTRACT);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "h");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "i");
+}
+
+TEST_CASE("Tokenize RelFactor - Annoying Brackets") {
+    string rawAssignStatement = "(((a + b)))";
+    shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
+
+    shared_ptr<NameExpression> nameExpression;
+    shared_ptr<OperatedExpression> operatedExpression;
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    REQUIRE(operatedExpression->getOperator() == Operator::ADD);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "a");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "b");
+}
+
+TEST_CASE("Tokenize RelFactor - Brackets reversing the order") {
+    string rawAssignStatement = "(((a + b) + c) + d)";
+    shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
+
+    shared_ptr<NameExpression> nameExpression;
+    shared_ptr<OperatedExpression> operatedExpression;
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    REQUIRE(operatedExpression->getOperator() == Operator::ADD);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "d");
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::ADD);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "c");
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::ADD);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "b");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "a");
 }

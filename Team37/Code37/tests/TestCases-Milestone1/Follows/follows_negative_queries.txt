@@ -33,27 +33,27 @@ stmt s;
 Select s such that Follows*(15,s)
 none
 5000
-2 - follows assign
+8 - follows assign
 assign a;
-Select a such that Follows*(4,a)
+Select a such that Follows*(10,a)
 none
 5000
-3 - follows while
+9 - follows while
 while w;
 Select w such that Follows*(11,w)
 none
 5000
-4 - follows if
+10 - follows if
 if ifs;
 Select ifs such that Follows*(5,ifs)
 none
 5000
-5 - follows read
+11 - follows read
 read r;
 Select r such that Follows*(3,r)
 none
 5000
-6 - follows print
+12 - follows print
 print p;
 Select p such that Follows*(2,p)
 none

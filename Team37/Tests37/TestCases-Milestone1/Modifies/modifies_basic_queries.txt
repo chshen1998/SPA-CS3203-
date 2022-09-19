@@ -1,0 +1,20 @@
+1 - Modifies const-const
+variable v;
+Select v such that Modifies(1,"flag")
+flag, i, x
+5000
+2 - Modifies const-const container
+variable v;
+Select v such that Modifies(5,"flag")
+flag, i, x
+5000
+3 - Modifies const-const negative
+variable v;
+Select v such that Modifies(2,"flag")
+none
+5000
+4 - Modifies const-const container negative
+variable v;
+Select v such that Modifies(16,"flag")
+none
+5000

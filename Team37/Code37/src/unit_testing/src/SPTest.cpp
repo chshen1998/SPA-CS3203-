@@ -484,6 +484,42 @@ TEST_CASE("Tokenize RelFactor - Brackets reversing the order") {
     REQUIRE(nameExpression->getVarName() == "a");
 }
 
+TEST_CASE("Tokenize RelFactor - Brackets changing priority") {
+    string rawAssignStatement = "((a % b) - c)";
+    shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
+
+    shared_ptr<NameExpression> nameExpression;
+    shared_ptr<OperatedExpression> operatedExpression;
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    REQUIRE(operatedExpression->getOperator() == Operator::SUBTRACT);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "c");
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression1());
+    REQUIRE(operatedExpression->getOperator() == Operator::MODULO);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "a");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "b");
+
+
+    rawAssignStatement = "(a % (b - c))";
+    relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
+    REQUIRE(operatedExpression->getOperator() == Operator::MODULO);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "a");
+
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(operatedExpression->getExpression2());
+    REQUIRE(operatedExpression->getOperator() == Operator::SUBTRACT);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "b");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "c");
+}
+
+
 TEST_CASE("Extract Conditional Expression") {
     string ifStatementStr = "if ((x != 9) && (x <= y))";
     string expected = "(x != 9) && (x <= y)";

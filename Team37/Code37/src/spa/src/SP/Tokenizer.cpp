@@ -64,15 +64,15 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
             } else if (nextChar == ')') {
                 bracketCounter -= 1;
             }
-            if (bracketCounter != 0) { // Don't add the final close bracket
-                expression.push_back(nextChar);
-            }
+
+            expression.push_back(nextChar);
             line.erase(0, 1);
             continue;
         }
 
         if (nextChar == '(') {
             bracketCounter += 1;
+            expression.push_back(nextChar);
             line.erase(0, 1);
             bracketsDetected = true;
             continue;
@@ -108,10 +108,6 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
 
             return operatedExpression;
         }
-    }
-
-    if (bracketsDetected) {
-        return tokenizeRelFactor(Utils::trim(expression));
     }
 
     // Reset variables

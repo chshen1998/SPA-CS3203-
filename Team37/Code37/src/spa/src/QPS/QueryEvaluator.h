@@ -48,6 +48,8 @@ private:
     inline bool checkIfClauseNoExists();
 
     bool checkIfSelectSynonymExistsInClause();
+
+    void QueryEvaluator::getListOfStmtNumbersIntersection(vector<int>&, vector<int>&, vector<int>&);
 };
 
 

@@ -5,8 +5,8 @@ none
 5000
 2 - follows assign
 assign a;
-Select a such that Follows(4,a)
-none
+Select a such that Follows*(4,a)
+10
 5000
 3 - follows while
 while w;

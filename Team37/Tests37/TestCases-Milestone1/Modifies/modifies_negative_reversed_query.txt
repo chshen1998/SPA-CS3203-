@@ -1,22 +1,22 @@
 1 - Modifies stmt
 stmt s;
 Select s such that Modifies(s,"random")
-None
+none
 5000
 2 - Modifies assign
 assign a;
 Select a such that Modifies(a,"random")
-None
+none
 5000
 3 - Modifies while
 while w;
 Select w such that Modifies(a,"random")
-None
+none
 5000
 4 - Modifies if
 if ifs;
 Select ifs such that Modifies(ifs,"random")
-None
+none
 5000
 5 - Modifies print
 print p;

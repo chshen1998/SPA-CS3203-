@@ -49,7 +49,7 @@ private:
 
     bool checkIfSelectSynonymExistsInClause();
 
-    void QueryEvaluator::getListOfStmtNumbersIntersection(vector<int>&, vector<int>&, vector<int>&);
+    void getListOfStmtNumbersIntersection(vector<int> &, vector<int> &, vector<int> &);
 };
 
 

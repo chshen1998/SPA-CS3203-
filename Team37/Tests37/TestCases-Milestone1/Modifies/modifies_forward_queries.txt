@@ -3,13 +3,11 @@ variable v;
 Select v such that Modifies(1,v)
 flag
 5000
-
 2 - Modifies read
 variable v;
 Select v such that Modifies(15,v)
 x
 5000
-
 3 - Modifies while
 variable v;
 Select v such that Modifies(11,v)

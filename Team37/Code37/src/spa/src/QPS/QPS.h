@@ -122,6 +122,10 @@ struct Clause
     PqlToken right;
 
     Clause(PqlToken type, PqlToken l, PqlToken r) : clauseType(type), left(l), right(r) {}
+
+    bool operator==(const Clause& other) const {
+        return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
+    }
 };
 
 /*

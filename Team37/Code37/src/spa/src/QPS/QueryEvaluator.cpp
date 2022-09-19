@@ -70,7 +70,6 @@ void QueryEvaluator::evaluate() {
     int boolSuchThat = evaluateSuchThatClause(suchThatTable);
 
     if (boolSuchThat == -1) {
-        result.push_back("none");
         return;
     }
 
@@ -79,7 +78,6 @@ void QueryEvaluator::evaluate() {
         getResultFromFinalTable(patternTable);
 
         if (result.empty()) {
-            result.push_back("none");
             return;
         }
     }
@@ -90,7 +88,6 @@ void QueryEvaluator::evaluate() {
             getResultFromFinalTable(suchThatTable);
 
             if (result.empty()) {
-                result.push_back("none");
                 return;
             }
         }

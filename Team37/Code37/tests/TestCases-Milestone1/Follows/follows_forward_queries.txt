@@ -28,7 +28,6 @@ print p;
 Select p such that Follows(1,p)
 2
 5000
-
 7 - follows star stmt
 stmt s;
 Select s such that Follows*(1,s)

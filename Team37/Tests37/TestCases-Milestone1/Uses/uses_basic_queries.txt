@@ -21,10 +21,10 @@ flag
 5 - uses statement-variable
 stmt s; variable v;
 Select s such that Uses(s, v)
-2, 3, 5, 7, 8, 9, 11, 13, 14, 15
+2, 5, 7, 9, 11, 13, 15
 5000
 6 - uses statement-variable
 stmt s; variable v;
 Select v such that Uses(s, v)
-flag, x, i
+flag, x
 5000

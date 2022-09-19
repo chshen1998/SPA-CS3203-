@@ -57,7 +57,7 @@ void ExtractGeneralASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
  * @param readStmt
  */
 void ExtractGeneralASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
-    NameExpression expression = NameExpression(readStmt->getParent(),
+    NameExpression expression = NameExpression(readStmt,
                                                readStmt->getVariableName());
     // store itself in statements
     this->storage->storeStmt(readStmt);
@@ -70,7 +70,7 @@ void ExtractGeneralASTVisitor::visitReadStatement(shared_ptr<ReadStatement> read
  * @param printStmt
  */
 void ExtractGeneralASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt) {
-    NameExpression expression = NameExpression(printStmt->getParent(),
+    NameExpression expression = NameExpression(printStmt,
                                                printStmt->getVariableName());
     // store itself in statements
     this->storage->storeStmt(printStmt);
@@ -130,12 +130,15 @@ void ExtractGeneralASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
  * @param assignStmt
  */
 void ExtractGeneralASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
-    NameExpression expression = NameExpression(assignStmt->getParent(),
+    NameExpression expression = NameExpression(assignStmt,
                                                assignStmt->getVarName());
+
     // store itself in statements
     this->storage->storeStmt(assignStmt);
     // store the variable
     this->storage->storeVar(expression);
+
+    assignStmt->getRelFactor()->accept(shared_from_this());
 }
 
 // RelationalFactor

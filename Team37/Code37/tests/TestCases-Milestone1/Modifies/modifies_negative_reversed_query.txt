@@ -1,0 +1,25 @@
+1 - Modifies stmt
+stmt s;
+Select s such that Modifies(s,"random")
+none
+5000
+2 - Modifies assign
+assign a;
+Select a such that Modifies(a,"random")
+none
+5000
+3 - Modifies while
+while w;
+Select w such that Modifies(w,"random")
+none
+5000
+4 - Modifies if
+if ifs;
+Select ifs such that Modifies(ifs,"random")
+none
+5000
+5 - Modifies print
+print p;
+Select p such that Modifies(p,"flag"")
+none
+5000

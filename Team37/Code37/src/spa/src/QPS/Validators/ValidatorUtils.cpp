@@ -57,7 +57,7 @@ set<TokenType> validStatementRef = {
 set<TokenType> validEntityRef = {
     TokenType::SYNONYM,
     TokenType::WILDCARD,
-    // What is IDENT?
+    TokenType::STRING,
 };
 
 set<TokenType> validExpressionSpec = {

@@ -12,6 +12,7 @@ using namespace std;
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
 #include "QueryValidator.h"
+#include "./Validators/ValidatorUtils.h"
 #include "AST/TNode.h"
 #include "PKB/PKB.h"
 #include <unordered_map>
@@ -30,6 +31,7 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {"else", TokenType::ELSE},
         {"print", TokenType::PRINT},
         {"call", TokenType::CALL},
+		{"read", TokenType::READ},
 
         {"Select", TokenType::SELECT},
         {"pattern", TokenType::PATTERN},
@@ -99,15 +101,27 @@ std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
 }
 
 
-
+void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
+    QPS::servicer = s;
+}
 
 /*
- * Takes in query string input from user, parses the query string then return result from PKB
- */
+* Takes in query string input from user, parses the query string then return result from PKB
+*/
 void QPS::evaluate(string query, list<string>& results) {
     
     QueryTokenizer tokenizer = QueryTokenizer(query);
-    vector<PqlToken> tokens = tokenizer.Tokenize();
+    vector<PqlToken> tokens;
+    try
+    {
+	    tokens = tokenizer.Tokenize();
+    } catch (SyntaxError e)
+    {
+        results.push_back("Syntax Error");
+        results.push_back(e.message);
+        return;
+    } 
+    
 
     QueryValidator validator = QueryValidator(tokens);
     PqlError pe = validator.validateQuery();
@@ -122,9 +136,8 @@ void QPS::evaluate(string query, list<string>& results) {
     QueryExtractor extractor(tokens);
     PqlQuery pq = extractor.extractSemantics();
 
-    QueryEvaluator evaluator = QueryEvaluator(pq);
-    set<string> result = evaluator.CallPKB();
- 
-    // string output = evaluator.convertToString(result);
-}
 
+    QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+    evaluator.evaluate();
+
+}

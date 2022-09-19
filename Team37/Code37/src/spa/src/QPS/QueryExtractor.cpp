@@ -11,6 +11,7 @@ QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector) {
     size = tokens.size();
     next = 0;
     pq = PqlQuery();
+ 
 }
 
 PqlQuery QueryExtractor::extractSemantics() {
@@ -24,10 +25,12 @@ void QueryExtractor::extractDeclarations() {
     PqlToken declaration = getNextToken();
     while (declaration.type != TokenType::DECLARATION_END) {
         PqlToken synonym = getNextToken();
-        getNextToken();
-
+        PqlToken symbol = getNextToken();
         pq.declarations[synonym.value] = declaration.type;
-        declaration = getNextToken();
+
+        if (symbol.type == TokenType::SEMICOLON) {
+            declaration = getNextToken();
+        }
     }
 }
 
@@ -55,21 +58,26 @@ void QueryExtractor::extractClauses() {
 }
 
 void QueryExtractor::extractPatternClause() {
-    while (getNextToken().type != TokenType::OPEN_BRACKET) {}
+    PqlToken synonym = getNextToken();
+    getNextToken(); // OPEN BRACKET
+    //while (getNextToken().type != TokenType::OPEN_BRACKET) {}
     PqlToken left = getNextToken();
     getNextToken();
     PqlToken right = getNextToken();
     getNextToken();
-    pq.patternClauses.push_back(Clause(left.value, right.value));
+    pq.patternClauses.push_back(Clause(synonym, left, right));
 }
 
 void QueryExtractor::extractSuchThatClause() {
-    while (getNextToken().type != TokenType::OPEN_BRACKET) {}
+    getNextToken(); // THAT
+    PqlToken suchThatClause = getNextToken();
+    getNextToken(); // OPEN BRACKET
+    //while (getNextToken().type != TokenType::OPEN_BRACKET) {}
     PqlToken left = getNextToken();
     getNextToken();
     PqlToken right = getNextToken();
     getNextToken();
-    pq.suchThatClauses.push_back(Clause(left.value, right.value));
+    pq.suchThatClauses.push_back(Clause(suchThatClause, left, right));
 }
 
 PqlToken QueryExtractor::getNextToken() {

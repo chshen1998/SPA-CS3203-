@@ -6,6 +6,7 @@ using namespace std;
 #include "Tokenizer.h"
 #include "SP/Utilities/Utils.h"
 #include "SP/Utilities/Keywords.h"
+#include "InvalidSyntaxException.h"
 
 shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line, shared_ptr<TNode> parent) {
     string keyword = Keywords::READ;
@@ -198,8 +199,9 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
 
     // Make sure everything inside is a digit
     for (char& c: line)  {
-        if (digits.find(c) != string::npos) {
+        if (digits.find(c) == string::npos) {
             // Either return an error here, or catch the stoi error
+            throw InvalidSyntaxException((char *) "Invalid constant for assign statement.");
         }
     }
     // stoi converts std::string to int

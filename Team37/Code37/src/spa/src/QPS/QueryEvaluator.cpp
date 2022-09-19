@@ -538,7 +538,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
                 }
             }
             else {
-                // Example: Uses(s, v);
+                // Example: Uses(s, v) or Modifies(s, v);
                 StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clauseType];
 
                 for (int line : allStmtLinesOfLeftArgDeclaration) {

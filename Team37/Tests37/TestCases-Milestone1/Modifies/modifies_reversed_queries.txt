@@ -20,6 +20,6 @@ Select ifs such that Modifies(ifs,"flag")
 5000
 5 - Modifies read
 read r;
-Select ifs such that Modifies(r,"flag")
+Select r such that Modifies(r,"flag")
 3, 8, 14
 5000

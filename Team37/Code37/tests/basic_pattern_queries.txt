@@ -21,5 +21,5 @@ Select a pattern a ("flag", _"flag"_)
 5 - advanced pattern both sides
 assign a, a1;
 Select a1 pattern a (_, _"flag"_)
-1, 4, 6, 9, 10, 11, 13, 15
+1, 4, 6, 9, 10, 12, 15
 10000

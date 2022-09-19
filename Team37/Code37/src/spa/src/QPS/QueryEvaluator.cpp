@@ -322,9 +322,12 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
             if (rightArg.type == TokenType::STRING) {
                 StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clauseType];
 
+                // Remove the inverted commas
+                string parsed = rightArg.value.substr(1, rightArg.value.size() - 2);
+
                 // Example: Uses(1, "x") / Modifies(1, "x")
                 if (leftArg.type == TokenType::STATEMENT_NUM) {
-                    return servicer->retrieveRelation(stoi(leftArg.value), rightArg.value, sv) ? 1 : -1;
+                    return servicer->retrieveRelation(stoi(leftArg.value), parsed, sv) ? 1 : -1;
                 }
 
                 // This is for procedures but not covered in milestone 1
@@ -416,7 +419,9 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
 
                 // Example: Uses(s, "x") <- s is a statement
                 if (rightArg.type == TokenType::STRING) {
-                    vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, sv);
+                    // Remove the inverted commas
+                    string parsed = rightArg.value.substr(1, rightArg.value.size() - 2);
+                    vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(parsed, sv);
                     vector<int> finalResult;
 
                     getListOfStmtNumbersIntersection(finalResult, allStmtLinesOfLeftArgDeclaration, allStmtWithRightArg);
@@ -477,9 +482,9 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
                 StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clauseType];
 
                 if (leftArg.type == TokenType::STATEMENT_NUM) {
-                    vector<string> allStmtWithLeftArg = servicer->forwardRetrieveRelation(stoi(leftArg.value), sv);
+                    vector<string> allVariablesWithLeftArg = servicer->forwardRetrieveRelation(stoi(leftArg.value), sv);
 
-                    for (string s : result) {
+                    for (string s : allVariablesWithLeftArg) {
                         intermediate.push_back(vector<string> { s });
                     }
                 }
@@ -540,7 +545,9 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
                 StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clauseType];
 
                 for (int line : allStmtLinesOfLeftArgDeclaration) {
-                    for (string v : servicer->forwardRetrieveRelation(line, sv)) {
+                    vector<string> allVariables = servicer->forwardRetrieveRelation(line, sv);
+
+                    for (string v : allVariables) {
                         intermediate.push_back(vector<string> { to_string(line), v });
                     }
                 }
@@ -588,6 +595,11 @@ inline bool QueryEvaluator::checkIfClauseNoExists() {
 bool QueryEvaluator::checkIfSelectSynonymExistsInClause() {
     for (auto clause : pq.suchThatClauses) {
         if (pq.select == clause.left.value || pq.select == clause.right.value) {
+            return true;
+        }
+
+        // If its a boolean such-that, we must check it
+        if (clause.left.type != TokenType::SYNONYM && clause.right.type != TokenType::SYNONYM) {
             return true;
         }
     }

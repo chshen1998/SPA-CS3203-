@@ -2,7 +2,7 @@ procedure main {
     flag = 0;
     print flag;
     read flag;
-    x = "test";
+    x = 0;
     if (flag == 0) then {
         flag = 0;
         print flag;

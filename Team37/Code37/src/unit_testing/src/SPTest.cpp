@@ -813,3 +813,10 @@ TEST_CASE("Syntax Error for invalid conditional, missing condition") {
                  "\t\t}";
     REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
 }
+
+TEST_CASE("Syntax Error for invalid conditional, extra bracket") {
+    string str = "while (!(x == y))) {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}

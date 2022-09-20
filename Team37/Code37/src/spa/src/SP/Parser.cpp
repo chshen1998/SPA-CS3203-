@@ -11,26 +11,42 @@ using namespace std;
 
 //TODO: pass in pointer to procedures instead of pass by value
 vector<string> Parser::extractProcedures(string srcCode, vector<string> procedures) {
-    string keyword = Keywords::PROCEDURE;
-
-    int startIdx = srcCode.find(keyword);
-    if (startIdx != -1) {
-        int len = startIdx + keyword.length();
-        string remaining = srcCode.substr(len, string::npos);
-
-        int next = remaining.find(keyword);
-        if (next != -1) {
-            string statements = remaining.substr(0, next);
-            string nextBlock = remaining.substr(next, string:: npos);
-
-            string p = keyword + statements;
-            procedures.push_back(p);
-            procedures = extractProcedures(nextBlock, procedures);
-        } else {
-            procedures.push_back(keyword + remaining);
-        }
+    if (srcCode.length() == 0) {
+        return procedures;
     }
-    return procedures;
+
+    if (srcCode.substr(0, 9) == Keywords::PROCEDURE) {
+        string procedure;
+
+        // Process until first open bracket
+        while (true) {
+            char nextChar = srcCode[0];
+            procedure.push_back(nextChar);
+            srcCode.erase(0, 1);
+            if (nextChar == '{') {
+                break;
+            }
+        }
+
+        int bracketCounter = 1;
+
+        // Process until close bracket
+        while (bracketCounter != 0) {
+            char nextChar = srcCode[0];
+            procedure.push_back(nextChar);
+            srcCode.erase(0, 1);
+            if (nextChar == '{') {
+                bracketCounter += 1;
+            }
+            if (nextChar == '}') {
+                bracketCounter -= 1;
+            }
+        }
+        procedures.push_back(procedure);
+        return (Utils::trim(srcCode), procedures);
+    } else {
+        throw InvalidSyntaxException((char *) "Incorrect procedure syntax");
+    }
 }
 
 string Parser::extractProcName(string procedure) {
@@ -492,15 +508,15 @@ shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode>
     // TODO: split into cases for (print, read, call, if-else, while, assign)
     statement = Utils::trim(statement);
     shared_ptr<Statement> statementNode;
-    if ((int)statement.find("print") == 0) {
+    if (statement.substr(0, 5) == "print") {
         statementNode = Tokenizer::tokenizePrint(statement, parentNode);
-    } else if ((int)statement.find("read") == 0) {
+    } else if (statement.substr(0, 4) == "read") {
         statementNode = Tokenizer::tokenizeRead(statement, parentNode);
-    } else if ((int)statement.find("call") == 0) {
-//        statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
-    } else if ((int)statement.find("if") == 0) {
+    } else if (statement.substr(0, 4) == "call") {
+//      statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
+    } else if (statement.substr(0, 2) == "if") {
         statementNode = Parser::parseIfElse(statement, parentNode);
-    } else if ((int)statement.find("while") == 0) {
+    } else if (statement.substr(0, 5) == "while") {
         statementNode = Parser::parseWhile(statement, parentNode);
     } else {
         // otherwise is an assign statement
@@ -525,7 +541,7 @@ shared_ptr<Procedure> Parser::parseProcedure(string procedure, shared_ptr<Source
 shared_ptr<SourceCode> Parser::parseSourceCode(string srcCode, string filepath) {
     shared_ptr<SourceCode> sourceCodeNode = make_shared<SourceCode>(filepath);
     vector<string> procedureList;
-    procedureList = Parser::extractProcedures(srcCode, procedureList);
+    procedureList = Parser::extractProcedures(Utils::trim(srcCode), procedureList);
     // call parseProcedure on each procedure
     for (auto p: procedureList) {
         shared_ptr<Procedure> procedure = Parser::parseProcedure(p, sourceCodeNode);

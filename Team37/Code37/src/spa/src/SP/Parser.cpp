@@ -54,12 +54,18 @@ string Parser::removeProcedureWrapper(string procedure) {
         if (nextLetter == '{') {
             break;
         }
+        if (procedure.length() == 0) {
+            throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
+        }
     }
 
     int numBrackets = 1;
 
     // Do bracket counting UNTIL end of procedure
     while (numBrackets != 0) {
+        if (numBrackets < 0) {
+            throw InvalidSyntaxException((char *)"Invalid Syntax, extra '}' found");
+        }
         char nextLetter = procedure[0];
         procedure.erase(0, 1);
 
@@ -72,10 +78,14 @@ string Parser::removeProcedureWrapper(string procedure) {
         if (numBrackets != 0) {
             statements.push_back(nextLetter);
         }
+        if (procedure.length() == 0 && numBrackets > 0) {
+            throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
+        }
     }
 
     if (Utils::trim(procedure).length() != 0) {
         // Return an error, procedure not valid
+        throw InvalidSyntaxException((char *) "Invalid Syntax");
     }
 
     return Utils::trim(statements);
@@ -99,6 +109,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
             statement.push_back(nextLetter);
             if (nextLetter == '{') {
                 break;
+            }
+            if (procedure.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
         }
 
@@ -131,6 +144,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
             statement.push_back(nextLetter);
             if (nextLetter == '{') {
                 break;
+            }
+            if (procedure.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
         }
 
@@ -170,6 +186,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
             if (nextLetter == '{') {
                 break;
             }
+            if (procedure.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
+            }
         }
 
         int numBrackets = 1;
@@ -187,6 +206,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
                 numBrackets += 1;
             } else if (nextLetter == '}') {
                 numBrackets -= 1;
+            }
+            if (procedure.length() == 0 && numBrackets >0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found"); //TODO
             }
         }
 
@@ -226,6 +248,9 @@ string Parser::extractConditionalExpr(string str) {
 string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {
     size_t stmtLstStart = firstEgyptianOpen + 1;
     size_t stmtLstEnd = block.find_last_of(Keywords::CLOSE_EGYPTIAN);
+    if (stmtLstEnd == string::npos) {
+        throw InvalidSyntaxException((char *) "Syntax Error, no '}' found");
+    }
     size_t stmtLstLength = stmtLstEnd - stmtLstStart;
     return Utils::trim(block.substr(stmtLstStart, stmtLstLength));
 }
@@ -418,7 +443,8 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
     shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, condExprNode);
     condExprNode->setParent(ifNode);
-    string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
+//    string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
+    string ifStmtBlock = Parser::removeProcedureWrapper(ifBlock);
 
     vector<string> stmts;
     stmts = Parser::extractStatements(ifStmtBlock, stmts);
@@ -450,7 +476,8 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNod
     shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, condExprNode);
     condExprNode->setParent(whileStatement);
 
-    string stmtsBlock = Parser::extractStatementBlock(whileBlock, firstEgyptianOpen);
+//    string stmtsBlock = Parser::extractStatementBlock(whileBlock, firstEgyptianOpen);
+    string stmtsBlock = Parser::removeProcedureWrapper(whileBlock);
     vector<string> stmts;
     stmts = Parser::extractStatements(stmtsBlock, stmts);
     for (auto s:stmts) {

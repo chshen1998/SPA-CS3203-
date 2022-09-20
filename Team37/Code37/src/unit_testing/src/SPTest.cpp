@@ -1,5 +1,6 @@
 #include "SP/Tokenizer.h"
 #include "SP/Parser.h"
+#include "SP/InvalidSyntaxException.h"
 
 #include <catch.hpp>
 #include <string>
@@ -790,4 +791,85 @@ TEST_CASE("Parse complex conditional expression - 3") {
     REQUIRE(constExpr1->getValue() == 1);
     constExpr2 = dynamic_pointer_cast<ConstantExpression>(relExpr2->getRelFactor2());
     REQUIRE(constExpr2->getValue() == 0);
+}
+
+TEST_CASE("Syntax Error for missing else block for if statement") {
+    string str = "if (!(x == y)) then {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for missing then keyword for if statement") {
+    string str = "if (!(x == y)) {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid conditional, missing condition") {
+    string str = "while (!(x == y) && ) {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid conditional, extra bracket") {
+    string str = "while (!(x == y))) {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid statement, missing semicolon") {
+    string str = "procedure ABC {\n"
+                 "\t\t\t\tread x\n"
+                 "\t\t}";
+    vector<string> stmtLst;
+    REQUIRE_THROWS_AS(Parser::extractStatements(str, stmtLst), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid nested statement, missing semicolon") {
+    string str = "while (x == 0) {\n"
+                 "\t\t\t\tread x\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseWhile(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid syntax, extra } bracket") {
+    string str = "while (!(x == y)) {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid syntax, extra { bracket") {
+    string str = "while (!(x == y)) {{\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid syntax, missing } bracket") {
+    string str = "while (x<1) {\n"
+                 "\t\t\t\tread x;\n";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid syntax, missing { bracket") {
+    string str = "while (x<1) \n"
+                 "\t\t\t\tread x;}\n";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid syntax, missing { bracket in if stmt") {
+    string str = "if (x>y) then \n"
+                 "\t\t\t\tread x;}\n";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid syntax, missing { bracket in while stmt") {
+    string str = "while (x>y) \n"
+                 "\t\t\t\tread x;}\n";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
 }

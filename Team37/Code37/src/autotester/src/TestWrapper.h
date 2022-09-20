@@ -14,6 +14,7 @@
 #include "QPS/QPS.h"
 #include "PKB/PKB.h"
 #include "SP/SP.h"
+#include "SP/InvalidSyntaxException.h"
 
 using namespace std;
 

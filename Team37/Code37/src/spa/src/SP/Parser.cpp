@@ -258,7 +258,26 @@ string Parser::extractConditionalExpr(string str) {
     size_t condExprStart = str.find_first_of(Keywords::OPEN_BRACKET) + 1;
     size_t condExprEnd = str.find_last_of(Keywords::CLOSE_BRACKET);
     size_t condExprLength = condExprEnd - condExprStart;
-    return Utils::trim(str.substr(condExprStart, condExprLength));
+    string condition = Utils::trim(str.substr(condExprStart, condExprLength));
+    char nextChar;
+    int bracketCount = 0;
+    string copy = condition;
+    while (copy.length() > 0) {
+        nextChar = copy[0];
+        if (nextChar == '(') {
+            bracketCount += 1;
+        } else if (nextChar == ')') {
+            bracketCount -= 1;
+        }
+        copy.erase(0, 1);
+    }
+    if (bracketCount > 0) {
+        throw InvalidSyntaxException((char *) "Invalid Syntax, missing '}'");
+    } else if (bracketCount < 0) {
+        throw InvalidSyntaxException((char *) "Invalid Syntax, missing '{'");
+    } else {
+        return condition;
+    }
 }
 
 string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {

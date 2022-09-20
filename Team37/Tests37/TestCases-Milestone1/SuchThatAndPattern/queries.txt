@@ -1,0 +1,20 @@
+1 - uses assign-variable, pattern assign-variable
+assign a; variable v;
+Select a such that Uses(a, v) pattern a(v,_)
+9, 15
+5000
+2 - parent assign-while, pattern assign-string
+assign a; while w;
+Select a pattern a ("flag", _) such that Parent (w, a) 
+12
+5000
+3 - parent if-assign, pattern assign-string
+assign a, a1; if ifs;
+Select a pattern a1 ("flag", _) such that Parent (ifs, a) 
+6, 9
+5000
+4 - parent if-assign, pattern assign-string
+assign a, a1; if ifs;
+Select a pattern a ("x", _) such that Parent (ifs, a1) 
+4, 15
+5000

@@ -100,15 +100,42 @@ void QueryEvaluator::evaluate() {
     else {
         int patternIndex = -1;
         int suchThatIndex = -1;
+        bool useSelectSynonym = false;
         bool inPattern = false;
 
+        vector<string> patternHeader = patternTable[0];
+        vector<string> suchThatHeader = suchThatTable[0];
+        sort(patternHeader.begin(), patternHeader.end());
+        sort(suchThatHeader.begin(), suchThatHeader.end());
+
+        // case where Uses(a, v) pattern a(v, "_")
+        // We find the select Synonym and use that as our common column
+        if (patternHeader == suchThatHeader) {
+            useSelectSynonym = true;
+        }
+
+        bool breakChecker = false;
+
+        // find a common synonym
         for (int i = 0; i < patternTable[0].size(); i++) {
             for (int j = 0; j < suchThatTable[0].size(); j++) {
                 if (patternTable[0][i] == suchThatTable[0][j]) {
                     patternIndex = i;
                     suchThatIndex = j;
+
+                    if (patternTable[0][i] == selectSynonym && useSelectSynonym) {
+                        breakChecker = true;
+                        break;
+                    }
                 }
             }
+
+            if (breakChecker) {
+                break;
+            }
+
+            // If pattern clause and such that clause do not have a common pattern,
+            // Example: Select v such that Uses(2, v) pattern a ("x", _ ) <-- we only check user
             if (!inPattern && patternTable[0][i] == selectSynonym) {
                 inPattern = true;
             }
@@ -130,42 +157,48 @@ void QueryEvaluator::evaluate() {
 }
 
 
-vector<vector<string>> QueryEvaluator::joinTwoTable(const vector<vector<string>>& a, size_t columna,
-    const vector<vector<string>>& b, size_t columnb)
+vector<vector<string>> QueryEvaluator::joinTwoTable(const vector<vector<string>>& v1, size_t columnIndex1,
+    const vector<vector<string>>& v2, size_t columnIndex2)
 {
-    unordered_multimap<string, size_t> hashmap;
+    vector<vector<string>> result;
+    vector<string> columns;
 
-    // Use of Hashmap
-    for (size_t i = 0;
-        i < a.size(); ++i) {
-        hashmap.insert({ a[i][columna], i });
+    string commonColumn = v1[0][columnIndex1];
+
+    for (string s : v1[0]) {
+        columns.push_back(s);
+    }
+    for (string s : v2[0]) {
+        if (s == commonColumn) continue;
+        columns.push_back(s);
     }
 
-    // Perform Mapping
-    vector<vector<string>> result;
-    for (size_t i = 0; i < b.size(); ++i) {
+    // push headers
+    result.push_back(columns);
 
-        auto range = hashmap.equal_range(
-            b[i][columnb]);
+    for (int i = 1; i != v1.size(); i++) {
 
-        // Create new joined table
-        for (auto it = range.first;
-            it != range.second; ++it) {
+        string joiner = v1[i][columnIndex1];
 
-            vector<vector<string>>::value_type row;
+        for (int j = 1; j != v2.size(); j++) {
+            if (v2[j][columnIndex2] == joiner) {
 
-            // Insert values to row
-            row.insert(row.end(),
-                a[it->second].begin(),
-                a[it->second].end());
-            row.insert(row.end(),
-                b[i].begin(),
-                b[i].end());
+                // push a new joined row
+                vector<string> temp;
 
-            // Push the row
-            result.push_back(move(row));
+                for (string s1 : v1[i]) {
+                    temp.push_back(s1);
+                }
+                for (auto k = 0; k != v2[j].size(); k++) {
+                    if (k == columnIndex2) continue;
+                    temp.push_back(v2[j][k]);
+                }
+
+                result.push_back(temp);
+            }
         }
     }
+
     return result;
 }
 
@@ -265,11 +298,17 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
 
         // If both not wildcards
         else {
-            vector<int> stmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESV);
+            string rightArgParsed = rightArg.type == TokenType::WILDCARD_STRING ?
+                                    rightArg.value.substr(2, rightArg.value.size() - 4) :
+                                    rightArg.value.substr(1, rightArg.value.size() - 2);
+
+            vector<int> stmtWithRightArg = servicer->reverseRetrieveRelation(rightArgParsed, StmtVarRelationType::USESV);
 
             // pattern a ("x", _"y"_) -> Get intersection with "x" on LHS, and _"y"_ on RHS and all assignment statements
-            if (pq.declarations[leftArg.value] != TokenType::VARIABLE) {
-                vector<int> stmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::MODIFIESV);
+            if (leftArg.type != TokenType::SYNONYM) {
+                string leftArgParsed = leftArg.value.substr(1, leftArg.value.size() - 2);
+
+                vector<int> stmtWithLeftArg = servicer->reverseRetrieveRelation(leftArgParsed, StmtVarRelationType::MODIFIESV);
                 vector<int> assignStmts;
                 vector<int> finalResult;
 

@@ -845,7 +845,7 @@ TEST_CASE("Syntax Error for invalid syntax, extra } bracket") {
 
 TEST_CASE("Syntax Error for invalid syntax, extra { bracket") {
     string str = "while (!(x == y)) {{\n"
-                 "\t\t\t\tread x;\n" //takes statement as {read x;
+                 "\t\t\t\tread x;\n"
                  "\t\t}";
     REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
 }
@@ -853,6 +853,12 @@ TEST_CASE("Syntax Error for invalid syntax, extra { bracket") {
 TEST_CASE("Syntax Error for invalid syntax, missing } bracket") {
     string str = "while (x<1) {\n"
                  "\t\t\t\tread x;\n";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid syntax, missing { bracket") {
+    string str = "while (x<1) \n"
+                 "\t\t\t\tread x;}\n";
     REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
 }
 
@@ -866,25 +872,4 @@ TEST_CASE("Syntax Error for invalid syntax, missing { bracket in while stmt") {
     string str = "while (x>y) \n"
                  "\t\t\t\tread x;}\n";
     REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
-}
-
-TEST_CASE("Parse if-else") {
-    string stmt3 = "if (!(x == y)) then {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t} else {\n"
-                   "\t\t\t\tprint x;\n"
-                   "\t\t}";
-
-    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(Parser::parseStatement(stmt3, nullptr));
-    shared_ptr<NotCondition> condExpr = dynamic_pointer_cast<NotCondition>(ifStatement->getConditionalExpression());
-    shared_ptr<RelationalExpression> relExpr = dynamic_pointer_cast<RelationalExpression>(condExpr->getConditionalExpression());
-    REQUIRE(relExpr->getOperator() == RelationalOperator::EQUALS);
-    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
-    REQUIRE(nameExpr->getVarName() == "x");
-    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor2());
-    REQUIRE(nameExpr->getVarName() == "y");
-    shared_ptr<ReadStatement> readStatement = dynamic_pointer_cast<ReadStatement>((ifStatement->getThenStatements())[0]);
-    REQUIRE(readStatement->getVariableName() == "x");
-    shared_ptr<PrintStatement> printStmt = dynamic_pointer_cast<PrintStatement>((ifStatement->getElseStatements())[0]);
-    REQUIRE(printStmt->getVariableName() == "x");
 }

@@ -208,7 +208,7 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
                 numBrackets -= 1;
             }
             if (procedure.length() == 0 && numBrackets >0) {
-                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found"); //TODO
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
             }
         }
 

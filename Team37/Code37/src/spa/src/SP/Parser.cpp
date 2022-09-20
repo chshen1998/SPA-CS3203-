@@ -322,121 +322,127 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_
 
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shared_ptr<TNode> parent) {
     condExprStr = Utils::trim(condExprStr);
+    string andOrOperators = "&&||";
+    string notOperator = "!";
 
-    // if not a relational expression, do bracket counting instead
-    int numBrackets;
-    char nextLetter = condExprStr[0];
+    char nextChar;
+    string expression;
+    int bracketCounter = 0;
+    bool bracketsDetected = false;
 
-    // Check for NOT conditional expression
-    if ((nextLetter == '!') && (condExprStr[0] != '=')) {
-        string condition;
-        condExprStr.erase(0, 1);
-        // parse until first open bracket, remove any whitespace between ! and (
-        while (true) {
-            nextLetter = condExprStr[0];
+    // check for andOrOperators first, creates AndCondition or OrCondition if found
+    while (condExprStr.length() > 0) {
+        nextChar = condExprStr[0];
+        // Bracket skipping begins
+        if (bracketCounter != 0) {
+            if (nextChar == '(') {
+                bracketCounter += 1;
+            } else if (nextChar == ')') {
+                bracketCounter -= 1;
+            }
+            expression.push_back(nextChar);
             condExprStr.erase(0, 1);
-            if (nextLetter == '(') {
-                numBrackets = 1;
-                break;
-            }
+            continue;
         }
-        while (numBrackets != 0) {
-            nextLetter = condExprStr[0];
-            condExprStr.erase(0, 1);
-            if (nextLetter == '(') {
-                numBrackets += 1;
-            } else if (nextLetter == ')') {
-                numBrackets -= 1;
-            }
-            if (numBrackets != 0) {
-                condition.push_back(nextLetter);
-            }
-        }
-        if (condExprStr.length() == 0) {
-            shared_ptr<ConditionalExpression> condExpr = Parser::parseCondExpr(condition, nullptr);
-            shared_ptr<NotCondition> NotCondExpr = make_shared<NotCondition>(parent, condExpr);
-            condExpr->setParent(NotCondExpr);
-            return NotCondExpr;
-        } else {
-            shared_ptr<ConditionalExpression> condExpr1 = Parser::parseCondExpr(condition, nullptr);
-            shared_ptr<NotCondition> NotCondExpr = make_shared<NotCondition>(parent, condExpr1);
-            condExpr1->setParent(NotCondExpr);
 
-            condExprStr = Utils::trim(condExprStr);
+        // currently not in a bracket, going to next bracket
+        if (nextChar == '(') {
+            bracketCounter += 1;
+            expression.push_back(nextChar);
+            condExprStr.erase(0, 1);
+            bracketsDetected = true;
+            continue;
+        }
+
+        if (andOrOperators.find(nextChar) == string::npos) {
+            expression.push_back(nextChar);
+            condExprStr.erase(0, 1);
+            continue;
+        } else { // not in bracket and hit && or || operator
+            shared_ptr<ConditionalExpression> leftSide = parseCondExpr(Utils::trim(expression), nullptr);
+            shared_ptr<ConditionalExpression> rightSide = parseCondExpr(Utils::trim(condExprStr.substr(2)), nullptr);
+            shared_ptr<ConditionalExpression> conditionalExpression;
+            // create conditional expression according to operator
             if (condExprStr.substr(0, 2) == "&&") {
-                string condition2 = Utils::trim(condExprStr.substr(2, string::npos));
-                shared_ptr<ConditionalExpression> condExpr2 = Parser::parseCondExpr(condition2, nullptr);
-                shared_ptr<AndCondition> andExpr = make_shared<AndCondition>(parent, NotCondExpr, condExpr2);
-                NotCondExpr->setParent(andExpr);
-                condExpr2->setParent(andExpr);
-                return andExpr;
+                conditionalExpression = make_shared<AndCondition>(parent, leftSide, rightSide);
             } else if (condExprStr.substr(0, 2) == "||") {
-                string condition2 = Utils::trim(condExprStr.substr(2, string::npos));
-                shared_ptr<ConditionalExpression> condExpr2 = Parser::parseCondExpr(condition2, nullptr);
-                shared_ptr<OrCondition> orExpr = make_shared<OrCondition>(parent, NotCondExpr, condExpr2);
-                NotCondExpr->setParent(orExpr);
-                condExpr2->setParent(orExpr);
-                return orExpr;
+                conditionalExpression = make_shared<OrCondition>(parent, leftSide, rightSide);
             } else {
-                throw InvalidSyntaxException((char *) "Invalid condition, condition must be wrapped in a pair of parentheses!");
+                // if & or | found but not &&, ||
+                throw InvalidSyntaxException((char *) "Invalid conditional operator");
             }
-        }
-    } else if (Utils::isAndOrExpr(condExprStr)) {
-        // otherwise do normal bracket counting
-        string condition;
-        while (true) {
-            nextLetter = condExprStr[0];
-            condExprStr.erase(0, 1);
-            if (nextLetter == '(') {
-                numBrackets = 1;
-                break;
-            }
-        }
-        while (numBrackets != 0) {
-            nextLetter = condExprStr[0];
-            condExprStr.erase(0, 1);
-            if (nextLetter == '(') {
-                numBrackets += 1;
-            } else if (nextLetter == ')') {
-                numBrackets -= 1;
-            }
-            if (numBrackets != 0) {
-                condition.push_back(nextLetter);
-            }
-        }
-        if (condExprStr.length() == 0) {
-            shared_ptr<ConditionalExpression> condExpr = Parser::parseCondExpr(condition, parent);
-            return condExpr;
-        } else {
-            shared_ptr<ConditionalExpression> condExpr1 = Parser::parseCondExpr(condition, nullptr);
+            leftSide->setParent(conditionalExpression);
+            rightSide->setParent(conditionalExpression);
 
-            condExprStr = Utils::trim(condExprStr);
-            if (condExprStr.substr(0, 2) == "&&") {
-                string condition2 = Utils::trim(condExprStr.substr(2, string::npos));
-                shared_ptr<ConditionalExpression> condExpr2 = Parser::parseCondExpr(condition2, nullptr);
-                shared_ptr<AndCondition> andExpr = make_shared<AndCondition>(parent, condExpr1, condExpr2);
-                condExpr1->setParent(andExpr);
-                condExpr2->setParent(andExpr);
-                return andExpr;
-            } else if (condExprStr.substr(0, 2) == "||") {
-                string condition2 = Utils::trim(condExprStr.substr(2, string::npos));
-                shared_ptr<ConditionalExpression> condExpr2 = Parser::parseCondExpr(condition2, nullptr);
-                shared_ptr<OrCondition> orExpr = make_shared<OrCondition>(parent, condExpr1, condExpr2);
-                condExpr1->setParent(orExpr);
-                condExpr2->setParent(orExpr);
-                return orExpr;
-            } else {
-                throw InvalidSyntaxException(
-                        (char *) "Invalid condition, condition must be wrapped in a pair of parentheses!");
-            }
-
+            return conditionalExpression;
         }
-    } else if (Utils::isRelExpr(condExprStr)) {
-        // if it is a relational expression
-        return Parser::parseRelExpr(condExprStr, parent);
-    } else {
-        throw InvalidSyntaxException((char *)"Syntax Error, not a valid conditional expression.");
     }
+
+    // Reset variables
+    condExprStr = expression;
+    expression.clear();
+    bracketCounter = 0;
+
+    // check for not operator
+    while (condExprStr.length() > 0) {
+        nextChar = condExprStr[0];
+        // skip brackets
+        if (bracketCounter != 0) {
+            if (nextChar == '(') {
+                bracketCounter += 1;
+            } else if (nextChar == ')') {
+                bracketCounter -= 1;
+            }
+            if (bracketCounter != 0) {
+                expression.push_back(nextChar);
+            }
+            condExprStr.erase(0, 1);
+            continue;
+        }
+
+        if (nextChar == '(') {
+            bracketCounter += 1;
+            condExprStr.erase(0, 1); // does not add to expression this time
+            bracketsDetected = true;
+            continue;
+        }
+
+        if (notOperator.find(nextChar) == string::npos ||
+            condExprStr.substr(0, 2) == "!=") {
+            expression.push_back(nextChar);
+            condExprStr.erase(0, 1); // erase not operator to get condition
+            continue;
+        } else {
+            shared_ptr<ConditionalExpression> conditionalExpression = parseCondExpr(Utils::trim(condExprStr.substr(1)), nullptr);
+            shared_ptr<NotCondition> notCondition = make_shared<NotCondition>(parent, conditionalExpression);
+            conditionalExpression->setParent(notCondition);
+
+            return notCondition;
+        }
+    }
+
+    if (bracketsDetected) {
+        return parseCondExpr(Utils::trim(expression), parent);
+    }
+
+    // if code reaches here, there should be no more brackets or &&,||operators
+
+    //reset variables
+    condExprStr = expression;
+    expression.clear();
+
+    // check if is a relational expr
+    nextChar = condExprStr[0];
+    if (condExprStr.find("<") != string::npos ||
+        condExprStr.find("<=") != string::npos ||
+        condExprStr.find(">") != string::npos ||
+        condExprStr.find("<") != string::npos ||
+        condExprStr.find("!=") != string::npos ||
+        condExprStr.find("==") != string::npos) {
+        return parseRelExpr(condExprStr, parent);
+    }
+    // else throw error
+    throw InvalidSyntaxException((char *) "Invalid conditional expression");
 }
 
 shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode> parent) {

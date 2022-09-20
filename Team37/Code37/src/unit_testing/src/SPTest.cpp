@@ -820,3 +820,12 @@ TEST_CASE("Syntax Error for invalid conditional, extra bracket") {
                  "\t\t}";
     REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
 }
+
+TEST_CASE("Syntax Error for invalid statement, missing semicolon") {
+    string str = "procedure ABC {\n"
+                 "\t\t\t\tread x\n"
+                 "\t\t}";
+    vector<string> stmtLst;
+//    shared_ptr<Statement> stmt = Parser::parseStatement(str, nullptr);
+    REQUIRE_THROWS_AS(Parser::extractStatements(str, stmtLst), InvalidSyntaxException);
+}

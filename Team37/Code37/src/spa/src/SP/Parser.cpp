@@ -189,6 +189,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
         bool flag = true;
         // Check character by character until semicolon reached
         while (flag) {
+            if (procedure.length() == 0) {
+                throw InvalidSyntaxException((char *) "Syntax Error, missing semicolon");
+            }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
             if (nextLetter == ';') {

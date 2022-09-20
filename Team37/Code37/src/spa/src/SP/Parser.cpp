@@ -106,6 +106,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Do bracket counting UNTIL end of if block
         while (numBrackets != 0) {
+            if (numBrackets < 0) {
+                throw InvalidSyntaxException((char *)"Invalid Syntax, extra '}' found");
+            }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
 
@@ -137,6 +140,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
         while (numBrackets != 0) {
             if (procedure.length() == 0) {
                 break;
+            }
+            if (numBrackets < 0) {
+                throw InvalidSyntaxException((char *)"Invalid Syntax, extra '}' found");
             }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
@@ -170,6 +176,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Do bracket counting
         while (numBrackets != 0) {
+            if (numBrackets < 0) {
+                throw InvalidSyntaxException((char *)"Invalid Syntax, extra '}' found");
+            }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
 

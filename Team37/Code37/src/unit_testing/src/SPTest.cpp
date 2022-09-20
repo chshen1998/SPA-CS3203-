@@ -834,7 +834,12 @@ TEST_CASE("Syntax Error for invalid nested statement, missing semicolon") {
     string str = "while (x == 0) {\n"
                  "\t\t\t\tread x\n"
                  "\t\t}";
-//    vector<string> stmtLst;
-//    shared_ptr<Statement> stmt = Parser::parseStatement(str, nullptr);
     REQUIRE_THROWS_AS(Parser::parseWhile(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for invalid syntax, extra } bracket") {
+    string str = "while (!(x == y)) {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
 }

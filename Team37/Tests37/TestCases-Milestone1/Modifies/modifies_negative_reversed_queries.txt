@@ -10,7 +10,7 @@ none
 5000
 3 - Modifies while
 while w;
-Select w such that Modifies(a,"random")
+Select w such that Modifies(w,"random")
 none
 5000
 4 - Modifies if
@@ -20,6 +20,6 @@ none
 5000
 5 - Modifies print
 print p;
-Select ifs such that Modifies(p,"flag"")
+Select p such that Modifies(p,"flag"")
 none
 5000

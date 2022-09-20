@@ -20,7 +20,7 @@ Select ifs such that Follows(ifs,10)
 5000
 5 - follows read
 read r;
-Select r such that Follows(read,4)
+Select r such that Follows(r,4)
 3
 5000
 6 - follows print
@@ -41,7 +41,7 @@ Select a such that Follows*(a,5)
 9 - follows star while
 while w;
 Select w such that Follows*(w,12)
-None
+none
 5000
 10 - follows star if
 if ifs;
@@ -50,7 +50,7 @@ Select ifs such that Follows*(ifs,10)
 5000
 11 - follows star read
 read r;
-Select r such that Follows*(read,15)
+Select r such that Follows*(r,15)
 14
 5000
 12 - follows star print

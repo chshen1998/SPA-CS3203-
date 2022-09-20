@@ -25,9 +25,14 @@ TestWrapper::~TestWrapper() {
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(string filename) {
-	shared_ptr<SourceCode> AST = SP::parse(filename);
-	knowledgeBase->buildFromAst(AST);
-	queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
+    try {
+        shared_ptr<SourceCode> AST = SP::parse(filename);
+        knowledgeBase->buildFromAst(AST);
+        queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
+    } catch (InvalidSyntaxException e){
+        printf("%s\n", e.what());
+        exit(0);
+    }
 }
 
 // method to evaluating a query

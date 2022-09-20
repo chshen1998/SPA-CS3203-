@@ -1,5 +1,6 @@
 #include "SP/Tokenizer.h"
 #include "SP/Parser.h"
+#include "SP/InvalidSyntaxException.h"
 
 #include <catch.hpp>
 #include <string>
@@ -790,4 +791,18 @@ TEST_CASE("Parse complex conditional expression - 3") {
     REQUIRE(constExpr1->getValue() == 1);
     constExpr2 = dynamic_pointer_cast<ConstantExpression>(relExpr2->getRelFactor2());
     REQUIRE(constExpr2->getValue() == 0);
+}
+
+TEST_CASE("Syntax Error for missing else block for if statement") {
+    string str = "if (!(x == y)) then {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+}
+
+TEST_CASE("Syntax Error for missing then keyword for if statement") {
+    string str = "if (!(x == y)) {\n"
+                 "\t\t\t\tread x;\n"
+                 "\t\t}";
+    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
 }

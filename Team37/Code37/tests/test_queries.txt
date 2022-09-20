@@ -1,0 +1,10 @@
+1 - test
+while w; stmt s;
+Select s such that Parent(w, s)
+2
+5000
+2 - selecting statements
+stmt s;
+Select s
+1, 2
+5000

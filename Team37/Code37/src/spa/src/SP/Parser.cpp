@@ -119,6 +119,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Process until first open bracket of else block
         while (true) {
+            if (procedure.length() == 0) {
+                break;
+            }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
 
@@ -132,6 +135,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Do bracket counting UNTIL end of else block
         while (numBrackets != 0) {
+            if (procedure.length() == 0) {
+                break;
+            }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
 

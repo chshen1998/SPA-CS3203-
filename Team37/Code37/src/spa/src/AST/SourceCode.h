@@ -8,8 +8,8 @@
 
 class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
-    vector<shared_ptr<Procedure> > procedureLst;
-    string filename;
+    vector<shared_ptr<Procedure> > procedureLst = {};
+    string filename = "";
     int numOfStatements = 1000;
 public:
     SourceCode(string filename);

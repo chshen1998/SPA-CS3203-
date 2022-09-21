@@ -11,7 +11,7 @@ using namespace std;
 
 class ExtractUsesASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
-    shared_ptr<Storage> storage;
+    shared_ptr<Storage> storage = nullptr;
 public:
     // Constructor
     ExtractUsesASTVisitor(shared_ptr<Storage> storage);

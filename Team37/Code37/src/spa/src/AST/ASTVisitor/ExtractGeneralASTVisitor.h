@@ -14,9 +14,7 @@ using namespace std;
  */
 class ExtractGeneralASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
-    vector<shared_ptr<NameExpression>> VisitedTNodeVariables;
-    vector<shared_ptr<ConstantExpression>> VisitedConstants;
-    shared_ptr<Storage> storage;
+    shared_ptr<Storage> storage = nullptr;
 public:
     // Constructor
     ExtractGeneralASTVisitor(shared_ptr<Storage> storage);

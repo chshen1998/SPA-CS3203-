@@ -6,6 +6,9 @@
 #include "RelationalFactor.h"
 #include "AST/Operators/Operator.h"
 
+#include <string>
+#include <memory>
+
 class OperatedExpression : public RelationalFactor, public enable_shared_from_this<OperatedExpression> {
 private:
     Operator opr = ADD;

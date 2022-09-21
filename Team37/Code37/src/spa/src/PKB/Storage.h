@@ -1,11 +1,15 @@
-#pragma once
+#pragma once 
 
-#include<stdio.h>
+#ifndef SPA_STORAGE_H
+#define SPA_STORAGE_H
+
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <set>
 #include <unordered_set>
+#include <memory>
 
 using namespace std;
 
@@ -29,17 +33,17 @@ using namespace std;
 class Storage : public enable_shared_from_this<Storage> {
 private:
     shared_ptr<SourceCode> AST;
-    set<NameExpression> variables;
-    set<ConstantExpression> constants;
-    set<shared_ptr<Statement>> statements;
+    set<NameExpression> variables = {};
+    set<ConstantExpression> constants = {};
+    set<shared_ptr<Statement>> statements = {};
 
     Array2D Follows = NULL;
     Array2D FollowsS = NULL;
     Array2D Parent = NULL;
     Array2D ParentS = NULL;
 
-    StatementVariableStorage UsesV;
-    StatementVariableStorage ModifiesV;
+    StatementVariableStorage UsesV = StatementVariableStorage();
+    StatementVariableStorage ModifiesV = StatementVariableStorage();
 public:
     // Constructor
     Storage();
@@ -84,3 +88,4 @@ public:
 
     vector<int> reverseRetrieveRelation(string, StmtVarRelationType);
 };
+#endif

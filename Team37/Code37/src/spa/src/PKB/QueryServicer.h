@@ -1,11 +1,15 @@
 #pragma once
 
+#ifndef SPA_QUERY_SERVICER_H
+#define SPA_QUERY_SERVICER_H
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
@@ -46,10 +50,9 @@ public:
 
     vector<int> reverseRetrieveRelation(int, StmtStmtRelationType);
 
-    // Stmt Var Accessors
-    bool retrieveRelation(int, string, StmtVarRelationType);
-
-    vector<string> forwardRetrieveRelation(int, StmtVarRelationType);
-
-    vector<int> reverseRetrieveRelation(string, StmtVarRelationType);
+	// Stmt Var Accessors
+	bool retrieveRelation(int, string, StmtVarRelationType);
+	vector<string> forwardRetrieveRelation(int, StmtVarRelationType);
+	vector<int> reverseRetrieveRelation(string, StmtVarRelationType);
 };
+#endif

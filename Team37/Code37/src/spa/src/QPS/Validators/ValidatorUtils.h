@@ -1,14 +1,14 @@
 #pragma once
 
+#ifndef TEAM37_VALIDATORUTILS_H
+#define TEAM37_VALIDATORUTILS_H
+
 #include <string>
 #include <set>
 #include <vector>
 #include <unordered_map>
 
 #include "../QPS.h"
-
-#ifndef TEAM37_VALIDATORUTILS_H
-#define TEAM37_VALIDATORUTILS_H
 
 class SyntaxError : public exception {
 public:

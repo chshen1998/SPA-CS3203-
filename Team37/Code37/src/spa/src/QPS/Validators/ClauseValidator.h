@@ -1,13 +1,17 @@
 #pragma once
 
+#ifndef TEAM37_CLAUSEVALIDATOR_H
+#define TEAM37_CLAUSEVALIDATOR_H
+
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <set>
+#include <memory>
 
 #include "../QPS.h"
+#include "ValidatorUtils.h"
 
-#ifndef TEAM37_CLAUSEVALIDATOR_H
-#define TEAM37_CLAUSEVALIDATOR_H
 
 class ClauseValidator
 {

@@ -3,7 +3,6 @@
 #ifndef TEAM37_ASTVISITOR_H
 #define TEAM37_ASTVISITOR_H
 
-
 using namespace std;
 
 #include <memory>

@@ -5,6 +5,9 @@
 
 #include "Statement.h"
 
+#include <string>
+#include <memory>
+
 class PrintStatement : public Statement, public enable_shared_from_this<PrintStatement> {
 private:
     string variableName;

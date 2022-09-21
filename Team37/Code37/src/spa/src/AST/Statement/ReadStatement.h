@@ -7,6 +7,9 @@ using namespace std;
 
 #include "Statement.h"
 
+#include <string>
+#include <memory>
+
 class ReadStatement : public Statement, public enable_shared_from_this<ReadStatement> {
 private:
     string variableName;

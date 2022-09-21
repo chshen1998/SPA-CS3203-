@@ -1,12 +1,6 @@
 using namespace std;
 
-#include <string>
-#include <vector>
-#include <unordered_map>
-
-#include "../QPS.h"
 #include "ClauseValidator.h"
-#include "ValidatorUtils.h"
 
 ClauseValidator::ClauseValidator(unordered_map<string, TokenType> declarationsMap)
 {

@@ -4,6 +4,8 @@
 #define TEAM37_WHILESTATEMENT_H
 
 #include <vector>
+#include <string>
+#include <memory>
 
 #include "Statement.h"
 #include "../Expression/ConditionalExpression/ConditionalExpression.h"

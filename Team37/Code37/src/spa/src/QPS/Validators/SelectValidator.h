@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TEAM37_SELECTVALIDATOR_H
+#define TEAM37_SELECTVALIDATOR_H
+
 #include <memory>
 #include <string>
 #include <set>
@@ -9,8 +12,6 @@
 #include "../QPS.h"
 #include "ClauseValidator.h"
 
-#ifndef TEAM37_SELECTVALIDATOR_H
-#define TEAM37_SELECTVALIDATOR_H
 
 
 class SelectValidator {

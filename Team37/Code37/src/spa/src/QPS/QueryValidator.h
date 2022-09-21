@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TEAM37_QUERYVALIDATOR_H
+#define TEAM37_QUERYVALIDATOR_H
+
 #include <memory>
 #include <string>
 #include <set>
@@ -8,9 +11,6 @@
 
 #include "QPS.h"
 #include "Validators/ClauseValidator.h"
-
-#ifndef TEAM37_QUERYVALIDATOR_H
-#define TEAM37_QUERYVALIDATOR_H
 
 
 class QueryValidator {

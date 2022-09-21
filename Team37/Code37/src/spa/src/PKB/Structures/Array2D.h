@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef SPA_ARRAY_2D_H
+#define SPA_ARRAY_2D_H
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -15,7 +18,7 @@ typedef vector<int> Row;
 class Array2D{
 private:
 	int size = 0;
-	Matrix matrix;
+	Matrix matrix = {};
 public:
 	// Constructor
 	Array2D(int);
@@ -35,3 +38,4 @@ public:
 	// Star Build
 	Array2D buildStar();
 };
+#endif

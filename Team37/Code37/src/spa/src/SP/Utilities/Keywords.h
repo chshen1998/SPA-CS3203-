@@ -1,7 +1,7 @@
-using namespace std;
-
 #ifndef SPA_KEYWORDS_H
 #define SPA_KEYWORDS_H
+
+using namespace std;
 
 #include <string>
 

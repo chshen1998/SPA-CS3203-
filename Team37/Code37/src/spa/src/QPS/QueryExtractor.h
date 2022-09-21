@@ -1,13 +1,13 @@
 #pragma once
 
+#ifndef TEAM37_QUERYEXTRACTOR_H
+#define TEAM37_QUERYEXTRACTOR_H
+
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "QPS.h"
-
-#ifndef TEAM37_QUERYEXTRACTOR_H
-#define TEAM37_QUERYEXTRACTOR_H
 
 class QueryExtractor {
 public:

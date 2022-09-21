@@ -5,6 +5,9 @@
 
 #include "RelationalFactor.h"
 
+#include <string>
+#include <memory>
+
 class ConstantExpression : public RelationalFactor, public enable_shared_from_this<ConstantExpression> {
 private:
     int value;

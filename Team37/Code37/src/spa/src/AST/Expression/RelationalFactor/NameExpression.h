@@ -7,6 +7,9 @@ using namespace std;
 
 #include "RelationalFactor.h"
 
+#include <string>
+#include <memory>
+
 class NameExpression : public RelationalFactor, public enable_shared_from_this<NameExpression> {
 private:
     string varName;

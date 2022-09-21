@@ -6,6 +6,9 @@
 #include "Statement.h"
 #include "../Expression/RelationalFactor/RelationalFactor.h"
 
+#include <memory>
+#include <string>
+
 class AssignStatement : public Statement, public enable_shared_from_this<AssignStatement> {
 private:
     string varName;

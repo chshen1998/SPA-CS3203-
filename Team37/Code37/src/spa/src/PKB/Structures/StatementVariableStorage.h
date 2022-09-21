@@ -1,4 +1,6 @@
 #pragma once
+#ifndef SPA_STMTVARIABLESTORE_H
+#define SPA_STMTVARIABLESTORE_H
 
 #include <stdio.h>
 #include <iostream>
@@ -16,8 +18,8 @@ typedef std::multimap<string, int>::iterator MMAPReverseIterator;
 
 class StatementVariableStorage {
 private:
-	multimap<int, string> forwardStore;
-	multimap<string, int> reverseStore;
+	multimap<int, string> forwardStore = {};
+	multimap<string, int> reverseStore = {};
 
 public:
 	void store(int, string);
@@ -28,3 +30,4 @@ public:
 
 	vector<int> reverseRetrieve(string var);
 };
+#endif

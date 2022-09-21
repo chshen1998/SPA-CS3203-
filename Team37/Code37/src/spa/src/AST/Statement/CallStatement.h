@@ -3,6 +3,10 @@
 #ifndef TEAM37_CALLSTATEMENT_H
 #define TEAM37_CALLSTATEMENT_H
 
+#include <stdio.h>
+#include <iostream>
+#include <memory>
+
 #include "Statement.h"
 
 class CallStatement : public Statement, public enable_shared_from_this<CallStatement> {

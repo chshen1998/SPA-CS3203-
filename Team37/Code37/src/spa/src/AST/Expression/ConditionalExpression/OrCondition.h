@@ -5,6 +5,9 @@
 
 #include "ConditionalExpression.h"
 
+#include <string>
+#include <memory>
+
 class OrCondition : public ConditionalExpression, public enable_shared_from_this<OrCondition> {
 private:
     shared_ptr<ConditionalExpression> condExpr1;

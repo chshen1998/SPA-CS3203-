@@ -9,6 +9,7 @@ using namespace std;
 #include <set>
 #include <list>
 #include <iostream>
+#include<memory>
 
 #include "PKB/QueryServicer.h"
 

@@ -1,15 +1,18 @@
+#pragma once
+
 #ifndef TEAM37_SOURCECODE_H
 #define TEAM37_SOURCECODE_H
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Procedure.h"
 
 class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
     vector<shared_ptr<Procedure> > procedureLst;
-    string filename;
+    string filename = "";
     int numOfStatements = 1000;
 public:
     SourceCode(string filename);

@@ -4,6 +4,8 @@
 #define TEAM37_IFSTATEMENT_H
 
 #include <vector>
+#include <string>
+#include <memory>
 
 using namespace std;
 

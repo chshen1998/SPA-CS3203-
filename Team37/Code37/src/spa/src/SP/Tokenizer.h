@@ -1,6 +1,9 @@
+#ifndef SPA_TOKENISER_H
+#define SPA_TOKENISER_H
+
 #include <string>
 #include <vector>
-
+#include <memory>
 using namespace std;
 
 #include "AST/SourceCode.h"
@@ -89,3 +92,5 @@ public:
 
 //    static void tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> parent);
 };
+
+#endif

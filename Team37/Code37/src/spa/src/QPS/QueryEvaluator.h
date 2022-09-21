@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TEAM37_QUERYEVALUATOR_H
+#define TEAM37_QUERYEVALUATOR_H
+
 #include <string>
 #include <set>
 #include <memory>
@@ -13,8 +16,6 @@
 #include "PKB/Types/StmtVarRelationType.h"
 #include "QPS.h"
 
-#ifndef TEAM37_QUERYEVALUATOR_H
-#define TEAM37_QUERYEVALUATOR_H
 
 extern unordered_map<TokenType, StatementType> tokenTypeToStatementType;
 extern unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType;

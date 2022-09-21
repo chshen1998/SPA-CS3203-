@@ -1,8 +1,4 @@
-#include <vector>
-#include <string>
-
 #include "SourceCode.h"
-#include "Procedure.h"
 
 SourceCode::SourceCode(string filename) : TNode(nullptr), filename(filename) {}
 

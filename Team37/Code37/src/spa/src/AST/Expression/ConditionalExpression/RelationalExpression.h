@@ -7,6 +7,9 @@
 #include "AST/Operators/RelationalOperator.h"
 #include "../RelationalFactor/RelationalFactor.h"
 
+#include <string>
+#include <memory>
+
 class RelationalExpression : public ConditionalExpression, public enable_shared_from_this<RelationalExpression> {
 private:
     RelationalOperator opr;

@@ -1,7 +1,7 @@
-using namespace std;
-
 #ifndef SP_UTILS_H
 #define SP_UTILS_H
+
+using namespace std;
 
 #include <string>
 #include <vector>

@@ -7,12 +7,15 @@ using namespace std;
 
 #include "AST/TNode.h"
 
-static int lineNumCount = 1;
+#include <string>
+#include <memory>
 
 class Statement : public TNode {
 private:
-    int lineNum;
+    int lineNum = 0;
+    static inline int lineNumCount = 1;
 public:
+
     Statement(shared_ptr<TNode> parent) : TNode(parent), lineNum(lineNumCount) {
         lineNumCount += 1;
     }
@@ -31,16 +34,15 @@ public:
       *
       * @return an int
       */
-     int getLineNumCount() {
+     static int getLineNumCount() {
          return lineNumCount - 1;
      }
 
      /**
       * Resets the global lineNumCount back to 1
       */
-     void resetLineNumCount() {
+     static void resetLineNumCount() {
          lineNumCount = 1;
      }
 };
-
 #endif //TEAM37_STATEMENT_H

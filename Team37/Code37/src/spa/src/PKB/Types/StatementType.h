@@ -1,4 +1,6 @@
 #pragma once
+#ifndef SPA_STATEMENT_TYPES_H
+#define SPA_STATEMENT_TYPES_H
 enum StatementType {
 	STATEMENT,
 	ASSIGN,
@@ -8,3 +10,4 @@ enum StatementType {
 	READ,
 	WHILE
 };
+#endif

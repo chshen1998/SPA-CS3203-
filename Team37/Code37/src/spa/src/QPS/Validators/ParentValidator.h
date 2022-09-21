@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TEAM37_PARENTVALIDATOR_H
+#define TEAM37_PARENTVALIDATOR_H
+
 #include <memory>
 #include <string>
 #include <set>
@@ -8,10 +11,6 @@
 
 #include "../QPS.h"
 #include "ClauseValidator.h"
-
-#ifndef TEAM37_PARENTVALIDATOR_H
-#define TEAM37_PARENTVALIDATOR_H
-
 
 class ParentValidator : public ClauseValidator {
 public:

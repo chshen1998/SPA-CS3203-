@@ -266,16 +266,6 @@ string Parser::extractConditionalExpr(string str) {
     }
 }
 
-string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {
-    size_t stmtLstStart = firstEgyptianOpen + 1;
-    size_t stmtLstEnd = block.find_last_of(Keywords::CLOSE_EGYPTIAN);
-    if (stmtLstEnd == string::npos) {
-        throw InvalidSyntaxException((char *) "Syntax Error, no '}' found");
-    }
-    size_t stmtLstLength = stmtLstEnd - stmtLstStart;
-    return Utils::trim(block.substr(stmtLstStart, stmtLstLength));
-}
-
 shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_ptr<TNode> parent) {
     int openIdx = relExprStr.find("(");
     int closeIdx = relExprStr.find_last_of(")");
@@ -451,42 +441,119 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
 }
 
 shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode> parent) {
-    size_t elseIndex = ifElseBlock.find(Keywords::ELSE);
-    size_t thenIndex = ifElseBlock.find(Keywords::THEN);
+    string ifStmt;
+    string ifBlock;
+    string elseBlock;
 
-    // Throw exceptions for missing else or then statements, will be caught in SP::Parser()
-    if ((int) elseIndex == -1) {
-        throw InvalidSyntaxException((char *)"Syntax error: if-else must have else block.");
+    // Process until first open bracket of if-else block, extracts the if statement
+    while (true) {
+        char nextLetter = ifElseBlock[0];
+        ifStmt.push_back(nextLetter);
+        ifElseBlock.erase(0, 1);
+        if (nextLetter == '{') {
+            break;
+        }
+        if (ifElseBlock.length() == 0) {
+            throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
+        }
     }
-    if ((int) thenIndex == -1) {
-        throw InvalidSyntaxException((char *)"Syntax error: if statement must have 'then'.");
-    }
-    string ifBlock = ifElseBlock.substr(0, elseIndex);
-    string elseBlock = ifElseBlock.substr(elseIndex, string::npos);
 
-    size_t firstEgyptianOpen = ifElseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
-    string ifStmtStr = ifElseBlock.substr(0, firstEgyptianOpen);
-    string condExpr = Parser::extractConditionalExpr(ifStmtStr);
+    int numBrackets = 1;
+
+    // Do bracket counting UNTIL end of if block
+    while (numBrackets != 0) {
+        if (ifElseBlock.length() == 0) {
+            throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
+        }
+        char nextLetter = ifElseBlock[0];
+        ifElseBlock.erase(0, 1);
+
+        if (nextLetter == '{') {
+            numBrackets += 1;
+        } else if (nextLetter == '}') {
+            numBrackets -= 1;
+        }
+
+        if (numBrackets != 0) {
+            ifBlock.push_back(nextLetter);
+        }
+    }
+
+    ifElseBlock = Utils::trim(ifElseBlock);
+
+    // throw error, missing else block
+    if (ifElseBlock.length() == 0) {
+        throw InvalidSyntaxException((char *) "Invalid syntax, missing else block");
+    }
+
+    if (ifElseBlock.length() != 0) {
+        // if else block is present, do bracket counting as well till end of else block
+        if (ifElseBlock.substr(0,4) == "else") {
+            // Process until first open bracket of else block
+            while (true) {
+                char nextLetter = ifElseBlock[0];
+                ifElseBlock.erase(0, 1);
+                if (nextLetter == '{') {
+                    break;
+                }
+                if (ifElseBlock.length() == 0) {
+                    throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
+                }
+            }
+
+            numBrackets = 1;
+
+            // Do bracket counting UNTIL end of else block
+            while (numBrackets != 0) {
+                if (ifElseBlock.length() == 0) {
+                    throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
+                }
+                char nextLetter = ifElseBlock[0];
+                ifElseBlock.erase(0, 1);
+
+                if (nextLetter == '{') {
+                    numBrackets += 1;
+                } else if (nextLetter == '}') {
+                    numBrackets -= 1;
+                }
+
+                if (numBrackets != 0) {
+                    elseBlock.push_back(nextLetter);
+                }
+            }
+        } else {
+            // Return an error, procedure not valid
+            throw InvalidSyntaxException((char *) "Invalid If Else Block");
+        }
+    }
+
+    ifStmt = Utils::trim(ifStmt);
+    ifBlock = Utils::trim(ifBlock);
+    elseBlock = Utils::trim(elseBlock);
+
+    size_t endOfCondition = ifStmt.find_last_of(')');
+    // Throw exceptions for missing then keyword, will be caught in SP::Parser()
+    if (ifStmt.substr(endOfCondition, string::npos).find(Keywords::THEN) == string::npos) {
+        throw InvalidSyntaxException((char *)"Syntax error: if-else must have then keyword.");
+    }
+
+    string condExpr = Parser::extractConditionalExpr(ifStmt);
     shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
     shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, condExprNode);
     condExprNode->setParent(ifNode);
-//    string ifStmtBlock = Parser::extractStatementBlock(ifBlock, firstEgyptianOpen);
-    string ifStmtBlock = Parser::removeProcedureWrapper(ifBlock);
 
-    vector<string> stmts;
-    stmts = Parser::extractStatements(ifStmtBlock, stmts);
+    vector<string> ifStmtLst;
+    vector<string> elseStmtLst;
+    ifStmtLst = Parser::extractStatements(ifBlock, ifStmtLst);
+    elseStmtLst = Parser::extractStatements(elseBlock, elseStmtLst);
 
-    for (auto s: stmts) {
+    for (auto s: ifStmtLst) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
         ifNode->addThenStatement(statement);
         statement->setParent(ifNode);
     }
 
-    firstEgyptianOpen = elseBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
-    string elseStmtBlock = Parser::extractStatementBlock(elseBlock, firstEgyptianOpen);
-    stmts.clear();
-    stmts = Parser::extractStatements(elseStmtBlock, stmts);
-    for (auto s: stmts) {
+    for (auto s: elseStmtLst) {
         shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
         ifNode->addElseStatement(statement);
         statement->setParent(ifNode);
@@ -503,7 +570,6 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNod
     shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, condExprNode);
     condExprNode->setParent(whileStatement);
 
-//    string stmtsBlock = Parser::extractStatementBlock(whileBlock, firstEgyptianOpen);
     string stmtsBlock = Parser::removeProcedureWrapper(whileBlock);
     vector<string> stmts;
     stmts = Parser::extractStatements(stmtsBlock, stmts);

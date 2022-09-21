@@ -10,7 +10,7 @@ shell_cmds = []
 
 OUTPUT_FOLDER = "./TestOutputs/"
 
-shutil.rmtree(OUTPUT_FOLDER)
+# shutil.rmtree(OUTPUT_FOLDER)
 os.mkdir(OUTPUT_FOLDER)
 
 for milestone in milestones:

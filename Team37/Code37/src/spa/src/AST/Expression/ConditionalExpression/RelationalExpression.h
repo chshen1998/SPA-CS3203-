@@ -9,9 +9,9 @@
 
 class RelationalExpression : public ConditionalExpression, public enable_shared_from_this<RelationalExpression> {
 private:
-    RelationalOperator opr;
-    shared_ptr<RelationalFactor> relFactor1;
-    shared_ptr<RelationalFactor> relFactor2;
+    RelationalOperator opr = EQUALS;
+    shared_ptr<RelationalFactor> relFactor1 = nullptr;
+    shared_ptr<RelationalFactor> relFactor2 = nullptr;
 public:
     RelationalExpression(
             shared_ptr<TNode> parent,

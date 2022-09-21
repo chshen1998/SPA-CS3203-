@@ -1,63 +1,91 @@
 <?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
 <test_results>
 <info>
-<name>autotester</name><parsing_time_taken>10.000000</parsing_time_taken>
+<name>Tests37</name><parsing_time_taken>68.035000</parsing_time_taken>
 </info>
 <queries>
 <query>
-<id ReturnTuple="1" CondNum="1" RelNum="0" comment="variable">1</id><querystr><![CDATA[variable v; Select v]]></querystr>
-<stuans>x,i,flag</stuans>
-<correct>flag,x,i</correct>
-<time_taken>3.000000</time_taken>
+<id ReturnTuple="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows stmt">1</id><querystr><![CDATA[stmt s; Select s such that Follows(1,s)]]></querystr>
+<stuans>2</stuans>
+<correct>2</correct>
+<time_taken>0.404000</time_taken>
 <passed/>
 </query>
 <query>
-<id ReturnTuple="1" CondNum="1" RelNum="0" comment="assign">2</id><querystr><![CDATA[assign a; Select a]]></querystr>
-<stuans>4,6,9,1,10,15,12</stuans>
-<correct>1,4,6,9,10,12,15</correct>
-<time_taken>4.000000</time_taken>
+<id ReturnTuple="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows assign">2</id><querystr><![CDATA[assign a; Select a such that Follows(3,a)]]></querystr>
+<stuans>4</stuans>
+<correct>4</correct>
+<time_taken>0.420000</time_taken>
 <passed/>
 </query>
 <query>
-<id ReturnTuple="1" CondNum="1" RelNum="0" comment="print">3</id><querystr><![CDATA[print p; Select p]]></querystr>
-<stuans>2,13,7</stuans>
-<correct>2,7,13</correct>
-<time_taken>5.000000</time_taken>
-<passed/>
-</query>
-<query>
-<id ReturnTuple="1" CondNum="1" RelNum="0" comment="if">4</id><querystr><![CDATA[if ifs; Select ifs]]></querystr>
-<stuans>5</stuans>
-<correct>5</correct>
-<time_taken>7.000000</time_taken>
-<passed/>
-</query>
-<query>
-<id ReturnTuple="1" CondNum="1" RelNum="0" comment="while">5</id><querystr><![CDATA[while w; Select w]]></querystr>
+<id ReturnTuple="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows while">3</id><querystr><![CDATA[while w; Select w such that Follows(10,w)]]></querystr>
 <stuans>11</stuans>
 <correct>11</correct>
-<time_taken>4.000000</time_taken>
+<time_taken>0.335000</time_taken>
 <passed/>
 </query>
 <query>
-<id ReturnTuple="1" CondNum="1" RelNum="0" comment="constant">6</id><querystr><![CDATA[constant c; Select c]]></querystr>
-<stuans>100,2,1,0</stuans>
-<correct>0,1,2,100</correct>
-<time_taken>3.000000</time_taken>
+<id ReturnTuple="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows if">4</id><querystr><![CDATA[if ifs; Select ifs such that Follows(4,ifs)]]></querystr>
+<stuans>5</stuans>
+<correct>5</correct>
+<time_taken>0.309000</time_taken>
 <passed/>
 </query>
 <query>
-<id ReturnTuple="1" CondNum="1" RelNum="0" comment="statement">7</id><querystr><![CDATA[stmt s; Select s]]></querystr>
-<stuans>2,3,4,5,6,9,1,13,14,7,8,11,10,15,12</stuans>
-<correct>1,2,3,4,5,6,7,8,9,10,11,12,13,14,15</correct>
-<time_taken>4.000000</time_taken>
+<id ReturnTuple="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows read">5</id><querystr><![CDATA[read r; Select r such that Follows(2,r)]]></querystr>
+<stuans>3</stuans>
+<correct>3</correct>
+<time_taken>0.300000</time_taken>
 <passed/>
 </query>
 <query>
-<id ReturnTuple="1" CondNum="1" RelNum="0" comment="read statement">8</id><querystr><![CDATA[read r; Select r]]></querystr>
-<stuans>3,14,8</stuans>
-<correct>3,8,14</correct>
-<time_taken>4.000000</time_taken>
+<id ReturnTuple="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows print">6</id><querystr><![CDATA[print p; Select p such that Follows(1,p)]]></querystr>
+<stuans>2</stuans>
+<correct>2</correct>
+<time_taken>0.274000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows star stmt">7</id><querystr><![CDATA[stmt s; Select s such that Follows*(1,s)]]></querystr>
+<stuans>2,3,4,5,10,11</stuans>
+<correct>2,3,4,5,10,11</correct>
+<time_taken>0.306000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows star assign">8</id><querystr><![CDATA[assign a; Select a such that Follows*(3,a)]]></querystr>
+<stuans>4,10</stuans>
+<correct>4,10</correct>
+<time_taken>0.282000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows star while">9</id><querystr><![CDATA[while w; Select w such that Follows*(10,w)]]></querystr>
+<stuans>11</stuans>
+<correct>11</correct>
+<time_taken>0.271000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows star if">10</id><querystr><![CDATA[if ifs; Select ifs such that Follows*(4,ifs)]]></querystr>
+<stuans>5</stuans>
+<correct>5</correct>
+<time_taken>0.272000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows star read">11</id><querystr><![CDATA[read r; Select r such that Follows*(2,r)]]></querystr>
+<stuans>3</stuans>
+<correct>3</correct>
+<time_taken>0.268000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="follows star print">12</id><querystr><![CDATA[print p; Select p such that Follows*(1,p)]]></querystr>
+<stuans>2</stuans>
+<correct>2</correct>
+<time_taken>0.290000</time_taken>
 <passed/>
 </query>
 </queries>

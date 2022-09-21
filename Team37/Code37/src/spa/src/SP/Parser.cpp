@@ -192,7 +192,7 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
                 break;
             }
             if (procedure.length() == 0) {
-                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
         }
 

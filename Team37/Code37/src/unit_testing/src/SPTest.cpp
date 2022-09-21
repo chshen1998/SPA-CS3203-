@@ -964,3 +964,114 @@ TEST_CASE("Syntax Error for invalid syntax, missing { bracket in while stmt") {
                  "\t\t\t\tread x;}\n";
     REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
 }
+
+TEST_CASE("Nested if block") {
+    string str = "if (x > 3) then {\n"
+                 "if (x > 3 )then {\n"
+                 "x=1;\n"
+                 "}\n"
+                 "else{\n"
+                 "x=1;\n"
+                 "}\n"
+                 "}\n"
+                 "else{\n"
+                 "x=1;\n"
+                 "}\n";
+    string stmt = Parser::extractStatementBlock(str);
+    shared_ptr<IfStatement> ifStatement = Parser::parseIfElse(str, nullptr);
+    REQUIRE_NOTHROW(Parser::parseIfElse(str, nullptr));
+    shared_ptr<RelationalExpression> relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN);
+    shared_ptr<NameExpression> nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "x");
+    shared_ptr<ConstantExpression> constantExpression = dynamic_pointer_cast<ConstantExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(constantExpression->getValue() == 3);
+
+    shared_ptr<IfStatement> innerIfStatement = dynamic_pointer_cast<IfStatement>(ifStatement->getThenStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(innerIfStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "x");
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(constantExpression->getValue() == 3);
+    shared_ptr<AssignStatement> thenStatement = dynamic_pointer_cast<AssignStatement>(innerIfStatement->getThenStatements()[0]);
+    REQUIRE(thenStatement->getVarName() == "x");
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(thenStatement->getRelFactor());
+    REQUIRE(constantExpression->getValue() == 1);
+    shared_ptr<AssignStatement> elseStatement = dynamic_pointer_cast<AssignStatement>(innerIfStatement->getElseStatements()[0]);
+    REQUIRE(elseStatement->getVarName() == "x");
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(elseStatement->getRelFactor());
+    REQUIRE(constantExpression->getValue() == 1);
+
+    elseStatement = dynamic_pointer_cast<AssignStatement>(ifStatement->getElseStatements()[0]);
+    REQUIRE(elseStatement->getVarName() == "x");
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(elseStatement->getRelFactor());
+    REQUIRE(constantExpression->getValue() == 1);
+}
+
+TEST_CASE("Parse if else statement") {
+    string stmt3 = "if (!(x == y)) then {\n"
+                   "\t\t\t\tread x;\n"
+                   "\t\t} else {\n"
+                   "\t\t\t\tprint x;\n"
+                   "\t\t}";
+
+    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(Parser::parseStatement(stmt3, nullptr));
+    shared_ptr<NotCondition> condExpr = dynamic_pointer_cast<NotCondition>(ifStatement->getConditionalExpression());
+    shared_ptr<RelationalExpression> relExpr = dynamic_pointer_cast<RelationalExpression>(condExpr->getConditionalExpression());
+    REQUIRE(relExpr->getOperator() == RelationalOperator::EQUALS);
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "x");
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor2());
+    REQUIRE(nameExpr->getVarName() == "y");
+    shared_ptr<ReadStatement> readStatement = dynamic_pointer_cast<ReadStatement>((ifStatement->getThenStatements())[0]);
+    REQUIRE(readStatement->getVariableName() == "x");
+    shared_ptr<PrintStatement> printStmt = dynamic_pointer_cast<PrintStatement>((ifStatement->getElseStatements())[0]);
+    REQUIRE(printStmt->getVariableName() == "x");
+}
+
+TEST_CASE("Parse procedure with nested if else") {
+    string str = "procedure Main {\n"
+                 "if (x > 3) then {\n"
+                 "if (x > 3 )then {\n"
+                 "x=1;\n"
+                 "}\n"
+                 "else{\n"
+                 "x=1;\n"
+                 "}\n"
+                 "}\n"
+                 "else{\n"
+                 "x=1;\n"
+                 "}\n"
+                 "}";
+    shared_ptr<Procedure> procedure = Parser::parseProcedure(str, nullptr);
+    REQUIRE(procedure->getProcedureName() == "Main");
+    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(procedure->getStatements()[0]);
+    shared_ptr<RelationalExpression> relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN);
+    shared_ptr<NameExpression> nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "x");
+    shared_ptr<ConstantExpression> constantExpression = dynamic_pointer_cast<ConstantExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(constantExpression->getValue() == 3);
+
+    shared_ptr<IfStatement> innerIfStatement = dynamic_pointer_cast<IfStatement>(ifStatement->getThenStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(innerIfStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "x");
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(constantExpression->getValue() == 3);
+    shared_ptr<AssignStatement> thenStatement = dynamic_pointer_cast<AssignStatement>(innerIfStatement->getThenStatements()[0]);
+    REQUIRE(thenStatement->getVarName() == "x");
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(thenStatement->getRelFactor());
+    REQUIRE(constantExpression->getValue() == 1);
+    shared_ptr<AssignStatement> elseStatement = dynamic_pointer_cast<AssignStatement>(innerIfStatement->getElseStatements()[0]);
+    REQUIRE(elseStatement->getVarName() == "x");
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(elseStatement->getRelFactor());
+    REQUIRE(constantExpression->getValue() == 1);
+
+    elseStatement = dynamic_pointer_cast<AssignStatement>(ifStatement->getElseStatements()[0]);
+    REQUIRE(elseStatement->getVarName() == "x");
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(elseStatement->getRelFactor());
+    REQUIRE(constantExpression->getValue() == 1);
+}

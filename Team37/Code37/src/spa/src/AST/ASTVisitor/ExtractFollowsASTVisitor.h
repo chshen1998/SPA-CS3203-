@@ -10,7 +10,7 @@ using namespace std;
 
 class ExtractFollowsASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
-    shared_ptr<Storage> storage;
+    shared_ptr<Storage> storage = nullptr;
 public:
     // Constructor
     ExtractFollowsASTVisitor(shared_ptr<Storage> storage);

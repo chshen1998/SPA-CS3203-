@@ -12,8 +12,8 @@ using namespace std;
 
 class Procedure : public TNode, public enable_shared_from_this<Procedure> {
 private:
-    string procedureName;
-    vector<shared_ptr<Statement> > stmtLst;
+    string procedureName = "";
+    vector<shared_ptr<Statement> > stmtLst = {};
 public:
     Procedure(shared_ptr<TNode> parent, string procedureName);
 

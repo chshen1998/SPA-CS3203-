@@ -693,6 +693,80 @@ TEST_CASE("Parse conditional with nested Not") {
     REQUIRE(constExpr->getValue() == 5);
 }
 
+TEST_CASE("Parse complex nested conditional") {
+    string str = "!((x > 5) && (x < (y + 3))) || ((x==3) && (y!=1))";
+    shared_ptr<OrCondition> orCondition = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<NotCondition> notCondition = dynamic_pointer_cast<NotCondition>(orCondition->getConditionalExpression1());
+    shared_ptr<AndCondition> andCondition = dynamic_pointer_cast<AndCondition>(notCondition->getConditionalExpression());
+    shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(andCondition->getConditionalExpression1());
+    REQUIRE(relExpr1->getOperator() == RelationalOperator::GREATER_THAN);
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "x");
+    shared_ptr<ConstantExpression> constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr1->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 5);
+    shared_ptr<RelationalExpression> relExpr2 = dynamic_pointer_cast<RelationalExpression>(andCondition->getConditionalExpression2());
+    REQUIRE(relExpr2->getOperator() == RelationalOperator::LESS_THAN);
+    shared_ptr<NameExpression> nameExpr2 = dynamic_pointer_cast<NameExpression>(relExpr2->getRelFactor1());
+    REQUIRE(nameExpr2->getVarName() == "x");
+    shared_ptr<OperatedExpression> operatedExpression = dynamic_pointer_cast<OperatedExpression>(relExpr2->getRelFactor2());
+    REQUIRE(operatedExpression->getOperator() == Operator::ADD);
+    shared_ptr<NameExpression> nameExpr3 = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpr3->getVarName() == "y");
+    shared_ptr<ConstantExpression> constExpr2 = dynamic_pointer_cast<ConstantExpression>(operatedExpression->getExpression2());
+    andCondition = dynamic_pointer_cast<AndCondition>(orCondition->getConditionalExpression2());
+    relExpr1 = dynamic_pointer_cast<RelationalExpression>(andCondition->getConditionalExpression1());
+    REQUIRE(relExpr1->getOperator() == RelationalOperator::EQUALS);
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "x");
+    constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr1->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 3);
+    relExpr2 = dynamic_pointer_cast<RelationalExpression>(andCondition->getConditionalExpression2());
+    REQUIRE(relExpr2->getOperator() == RelationalOperator::NOT_EQUALS);
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr2->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "y");
+    constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr2->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 1);
+}
+
+TEST_CASE("Nested not relational expression") {
+    string str = "((x==3) && (y!=1))";
+    shared_ptr<AndCondition> andCondition = dynamic_pointer_cast<AndCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(andCondition->getConditionalExpression1());
+    REQUIRE(relExpr1->getOperator() == RelationalOperator::EQUALS);
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "x");
+    shared_ptr<ConstantExpression> constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr1->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 3);
+    shared_ptr<RelationalExpression> relExpr2 = dynamic_pointer_cast<RelationalExpression>(andCondition->getConditionalExpression2());
+    REQUIRE(relExpr2->getOperator() == RelationalOperator::NOT_EQUALS);
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr2->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "y");
+    constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr2->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 1);
+}
+
+TEST_CASE("Not relational expr") {
+    string str = "!(y!=1)";
+    shared_ptr<NotCondition> notCondition = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(notCondition->getConditionalExpression());
+    REQUIRE(relExpr1->getOperator() == RelationalOperator::NOT_EQUALS);
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "y");
+    shared_ptr<ConstantExpression> constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr1->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 1);
+}
+
+TEST_CASE("Extra brackets") {
+    string str = "((!((x <= 5))))";
+    shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<RelationalExpression> condExpr = dynamic_pointer_cast<RelationalExpression>(result->getConditionalExpression());
+    REQUIRE(condExpr->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(condExpr->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "x");
+    shared_ptr<ConstantExpression> constExpr = dynamic_pointer_cast<ConstantExpression>(condExpr->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 5);
+}
+
 TEST_CASE("Parse statement") {
     string stmt1 = "print x";
     string stmt2 = "read x";

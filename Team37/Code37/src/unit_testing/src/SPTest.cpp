@@ -528,34 +528,6 @@ TEST_CASE("Extract Conditional Expression") {
     REQUIRE(result == expected);
 }
 
-TEST_CASE("Extract Statement Block") {
-    string stmt1 = "while () {\n"
-                   "\t\tcall x;\n"
-                   "\t\tread x;\n"
-                   "\t\twhile () {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "\t\tif () then {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t} else {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "}";
-    size_t firstEgyptianOpen = stmt1.find_first_of("{");
-    string result = Parser::extractStatementBlock(stmt1, firstEgyptianOpen);
-    string expected = "call x;\n"
-                      "\t\tread x;\n"
-                      "\t\twhile () {\n"
-                      "\t\t\t\tread x;\n"
-                      "\t\t}\n"
-                      "\t\tif () then {\n"
-                      "\t\t\t\tread x;\n"
-                      "\t\t} else {\n"
-                      "\t\t\t\tread x;\n"
-                      "\t\t}";
-    REQUIRE(expected == result);
-}
-
 TEST_CASE("Parse relational expression") {
     string expr1 = "x >= 5";
     shared_ptr<RelationalExpression> relExpr1 = Parser::parseRelExpr(expr1, nullptr);
@@ -977,7 +949,6 @@ TEST_CASE("Nested if block") {
                  "else{\n"
                  "x=1;\n"
                  "}\n";
-    string stmt = Parser::extractStatementBlock(str);
     shared_ptr<IfStatement> ifStatement = Parser::parseIfElse(str, nullptr);
     REQUIRE_NOTHROW(Parser::parseIfElse(str, nullptr));
     shared_ptr<RelationalExpression> relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());

@@ -266,98 +266,6 @@ string Parser::extractConditionalExpr(string str) {
     }
 }
 
-string Parser::extractStatementBlock(string block, size_t firstEgyptianOpen) {
-    size_t stmtLstStart = firstEgyptianOpen + 1;
-    size_t stmtLstEnd = block.find_last_of(Keywords::CLOSE_EGYPTIAN);
-    if (stmtLstEnd == string::npos) {
-        throw InvalidSyntaxException((char *) "Syntax Error, no '}' found");
-    }
-    size_t stmtLstLength = stmtLstEnd - stmtLstStart;
-    return Utils::trim(block.substr(stmtLstStart, stmtLstLength));
-}
-
-string Parser::extractStatementBlock(string ifElseBlock) {
-    string statements;
-
-    // Process until first open bracket of procedure
-    while (true) {
-        char nextLetter = ifElseBlock[0];
-        ifElseBlock.erase(0, 1);
-        if (nextLetter == '{') {
-            break;
-        }
-        if (ifElseBlock.length() == 0) {
-            throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
-        }
-    }
-
-    int numBrackets = 1;
-
-    // Do bracket counting UNTIL end of procedure
-    while (numBrackets != 0) {
-        if (ifElseBlock.length() == 0) {
-            throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
-        }
-        char nextLetter = ifElseBlock[0];
-        ifElseBlock.erase(0, 1);
-
-        if (nextLetter == '{') {
-            numBrackets += 1;
-        } else if (nextLetter == '}') {
-            numBrackets -= 1;
-        }
-
-        if (numBrackets != 0) {
-            statements.push_back(nextLetter);
-        }
-    }
-
-    ifElseBlock = Utils::trim(ifElseBlock);
-    if (ifElseBlock.length() != 0) {
-        // if else block is present, do bracket counting as well till end of else block
-        if (ifElseBlock.substr(0,4) == "else") {
-            // Process until first open bracket of else block
-            while (true) {
-                char nextLetter = ifElseBlock[0];
-                statements.push_back(nextLetter);
-                ifElseBlock.erase(0, 1);
-                if (nextLetter == '{') {
-                    break;
-                }
-                if (ifElseBlock.length() == 0) {
-                    throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
-                }
-            }
-
-            numBrackets = 1;
-
-            // Do bracket counting UNTIL end of else block
-            while (numBrackets != 0) {
-                if (ifElseBlock.length() == 0) {
-                    throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
-                }
-                char nextLetter = ifElseBlock[0];
-                ifElseBlock.erase(0, 1);
-
-                if (nextLetter == '{') {
-                    numBrackets += 1;
-                } else if (nextLetter == '}') {
-                    numBrackets -= 1;
-                }
-
-                if (numBrackets != 0) {
-                    statements.push_back(nextLetter);
-                }
-            }
-        } else {
-            // Return an error, procedure not valid
-            throw InvalidSyntaxException((char *) "Invalid Syntax");
-        }
-    }
-
-    return Utils::trim(statements);
-}
-
 shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_ptr<TNode> parent) {
     int openIdx = relExprStr.find("(");
     int closeIdx = relExprStr.find_last_of(")");
@@ -662,7 +570,6 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNod
     shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, condExprNode);
     condExprNode->setParent(whileStatement);
 
-//    string stmtsBlock = Parser::extractStatementBlock(whileBlock, firstEgyptianOpen);
     string stmtsBlock = Parser::removeProcedureWrapper(whileBlock);
     vector<string> stmts;
     stmts = Parser::extractStatements(stmtsBlock, stmts);

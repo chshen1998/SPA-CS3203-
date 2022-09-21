@@ -114,23 +114,6 @@ public:
     static string extractConditionalExpr(string str);
 
     /**
-     * Parses a block of code and extracts a statement block that sits between
-     * a pair of open and closed egyptian brackets
-     * @param block SIMPLE code block as a string
-     * @param firstEgyptianOpen index of the first open egyptian bracket
-     * @return a statement block of all statements as one string
-     */
-    static string extractStatementBlock(string block, size_t firstEgyptianOpen);
-
-    /**
-     * Parses am if-else block of code and extracts a statement block that sits between
-     * a pair of outermost open and closed egyptian brackets
-     * @param ifElseBlock SIMPLE if-else code block as a string
-     * @return a statement block of all statements as one string
-     */
-    static string extractStatementBlock(string ifElseBlock);
-
-    /**
      * Parses a relational expression string
      * @param relExprStr relational expression string that has not been processed
      * @param parent parent node of the relational expression

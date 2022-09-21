@@ -18,8 +18,8 @@ using namespace std;
 
 class PKB {
 private:
-    shared_ptr<Storage> storage;
-    shared_ptr<QueryServicer> queryServicer;
+    shared_ptr<Storage> storage = nullptr;
+    shared_ptr<QueryServicer> queryServicer = nullptr;
 public:
     // Constructor
     PKB();

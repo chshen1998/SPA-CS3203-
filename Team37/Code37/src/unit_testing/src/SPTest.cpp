@@ -867,6 +867,23 @@ TEST_CASE("Parse complex conditional expression - 3") {
     REQUIRE(constExpr2->getValue() == 0);
 }
 
+TEST_CASE("Parse complex conditional -4") {
+    string source6 = "(1 >= x ) || (!(procedure == 2147483647))";
+    shared_ptr<OrCondition> orCondition = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(source6, nullptr));
+    shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(orCondition->getConditionalExpression1());
+    REQUIRE(relExpr1->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
+    shared_ptr<ConstantExpression> constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr1->getRelFactor1());
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 1);
+    REQUIRE(nameExpr->getVarName() == "x");
+    shared_ptr<NotCondition> notCondition = dynamic_pointer_cast<NotCondition>(orCondition->getConditionalExpression2());
+    shared_ptr<RelationalExpression> relExpr2 = dynamic_pointer_cast<RelationalExpression>(notCondition->getConditionalExpression());
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr2->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "procedure");
+    constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr2->getRelFactor2());
+    REQUIRE(constExpr->getValue() == 2147483647);
+}
+
 TEST_CASE("Syntax Error for missing else block for if statement") {
     string str = "if (!(x == y)) then {\n"
                  "\t\t\t\tread x;\n"

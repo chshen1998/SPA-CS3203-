@@ -10,8 +10,8 @@
 
 class OrCondition : public ConditionalExpression, public enable_shared_from_this<OrCondition> {
 private:
-    shared_ptr<ConditionalExpression> condExpr1;
-    shared_ptr<ConditionalExpression> condExpr2;
+    shared_ptr<ConditionalExpression> condExpr1 = nullptr;
+    shared_ptr<ConditionalExpression> condExpr2 = nullptr;
 public:
     OrCondition(
             shared_ptr<TNode> parent,

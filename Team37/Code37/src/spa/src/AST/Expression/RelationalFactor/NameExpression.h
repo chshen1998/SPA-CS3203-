@@ -12,7 +12,7 @@ using namespace std;
 
 class NameExpression : public RelationalFactor, public enable_shared_from_this<NameExpression> {
 private:
-    string varName;
+    string varName = "";
 public:
     NameExpression(shared_ptr<TNode> parent, string varName);
 
@@ -25,11 +25,11 @@ public:
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
-    bool operator== (const NameExpression& other) const {
+    bool operator==(const NameExpression &other) const {
         return varName == other.varName;
     };
 
-    bool operator< (const NameExpression& other) const {
+    bool operator<(const NameExpression &other) const {
         return varName > other.varName;
     };
 };

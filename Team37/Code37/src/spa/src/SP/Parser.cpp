@@ -79,8 +79,8 @@ string Parser::removeProcedureWrapper(string procedure) {
 
     // Do bracket counting UNTIL end of procedure
     while (numBrackets != 0) {
-        if (numBrackets < 0) {
-            throw InvalidSyntaxException((char *)"Invalid Syntax, extra '}' found");
+        if (procedure.length() == 0) {
+            throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
         }
         char nextLetter = procedure[0];
         procedure.erase(0, 1);
@@ -93,9 +93,6 @@ string Parser::removeProcedureWrapper(string procedure) {
 
         if (numBrackets != 0) {
             statements.push_back(nextLetter);
-        }
-        if (procedure.length() == 0 && numBrackets > 0) {
-            throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
         }
     }
 
@@ -135,9 +132,6 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Do bracket counting UNTIL end of if block
         while (numBrackets != 0) {
-            if (numBrackets < 0) {
-                throw InvalidSyntaxException((char *)"Invalid Syntax, extra '}' found");
-            }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
 
@@ -152,7 +146,7 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
         // Process until first open bracket of else block
         while (true) {
             if (procedure.length() == 0) {
-                break;
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
@@ -161,9 +155,6 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
             if (nextLetter == '{') {
                 break;
             }
-            if (procedure.length() == 0) {
-                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
-            }
         }
 
         numBrackets = 1;
@@ -171,11 +162,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
         // Do bracket counting UNTIL end of else block
         while (numBrackets != 0) {
             if (procedure.length() == 0) {
-                break;
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
             }
-            if (numBrackets < 0) {
-                throw InvalidSyntaxException((char *)"Invalid Syntax, extra '}' found");
-            }
+
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
 
@@ -211,8 +200,8 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Do bracket counting
         while (numBrackets != 0) {
-            if (numBrackets < 0) {
-                throw InvalidSyntaxException((char *)"Invalid Syntax, extra '}' found");
+            if (procedure.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
             }
             char nextLetter = procedure[0];
             procedure.erase(0, 1);
@@ -222,9 +211,6 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
                 numBrackets += 1;
             } else if (nextLetter == '}') {
                 numBrackets -= 1;
-            }
-            if (procedure.length() == 0 && numBrackets >0) {
-                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
             }
         }
 
@@ -429,7 +415,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
         if (notOperator.find(nextChar) == string::npos ||
             condExprStr.substr(0, 2) == "!=") {
             expression.push_back(nextChar);
-            condExprStr.erase(0, 1); // erase not operator to get condition
+            condExprStr.erase(0, 1);
             continue;
         } else {
             shared_ptr<ConditionalExpression> conditionalExpression = parseCondExpr(Utils::trim(condExprStr.substr(1)), nullptr);

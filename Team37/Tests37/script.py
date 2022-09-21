@@ -47,7 +47,7 @@ for milestone in milestones:
             
             with open(output_path) as f:
                 if 'Missing' in f.read() or 'Additional' in f.read():
-                    print("Testcase Failing: ",testcase)
+                    print("Testcase Failing: ",f"{milestone}/{testcase_folder}/{testcase}")
                     
 print("Completed scanning all files")
 

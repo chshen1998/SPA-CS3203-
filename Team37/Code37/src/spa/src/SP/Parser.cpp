@@ -531,9 +531,9 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
     ifBlock = Utils::trim(ifBlock);
     elseBlock = Utils::trim(elseBlock);
 
-    size_t thenIndex = ifStmt.find(Keywords::THEN);
+    size_t endOfCondition = ifStmt.find_last_of(')');
     // Throw exceptions for missing then keyword, will be caught in SP::Parser()
-    if ((int) thenIndex == -1) {
+    if (ifStmt.substr(endOfCondition, string::npos).find(Keywords::THEN) == string::npos) {
         throw InvalidSyntaxException((char *)"Syntax error: if-else must have then keyword.");
     }
 

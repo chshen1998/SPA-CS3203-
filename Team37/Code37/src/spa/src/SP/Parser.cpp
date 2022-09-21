@@ -429,7 +429,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
         if (notOperator.find(nextChar) == string::npos ||
             condExprStr.substr(0, 2) == "!=") {
             expression.push_back(nextChar);
-            condExprStr.erase(0, 1); // erase not operator to get condition
+            condExprStr.erase(0, 1);
             continue;
         } else {
             shared_ptr<ConditionalExpression> conditionalExpression = parseCondExpr(Utils::trim(condExprStr.substr(1)), nullptr);

@@ -89,8 +89,6 @@ void QueryTokenizer::Split() {
     }
 
     if (delimited_query.empty()) {
-        throw "Invalid Query Syntax :: Query is blank.";
-    if (delimited_query.size() == 0) {
         throw SyntaxError("Query is blank");
     }
 
@@ -114,7 +112,7 @@ void QueryTokenizer::Split() {
 void QueryTokenizer::ConvertIntoTokens() {
     // For Optimization
     tokens = vector<PqlToken>();
-    tokens.reserve(delimited_query.size() + 1); // Additional 2 for `declaration end`
+    tokens.reserve(delimited_query.size() + 1); // Additional 1 for `declaration end`
     
     int index = 0; // index of delimited_query that we are looping through
 

@@ -1,37 +1,45 @@
 import os
+import sys
 import shutil
+from pathlib import Path
 
-AUTOTESTER_PATH = "../Code37/cmake-build-debug/src/autotester/autotester"
-OUTPUT_XML_PATH = "./out.xml"
+AUTOTESTER_PATH = Path("../Code37/cmake-build-debug/src/autotester/autotester")
 
-milestones = [milestone for milestone in os.listdir('.') if os.path.isdir(milestone)]
+if sys.platform == "win32":
+    AUTOTESTER_PATH = Path("../Code37/out/build/x64-Release/src/autotester/autotester")
+
+
+OUTPUT_XML_PATH = Path("./out.xml")
+
+milestones = [milestone.name for milestone in Path(".").iterdir() if milestone.is_dir()]
 
 shell_cmds = []
 
-OUTPUT_FOLDER = "./TestOutputs/"
+OUTPUT_FOLDER = Path("./TestOutputs/")
 
 if "TestOutputs" in milestones:
     shutil.rmtree(OUTPUT_FOLDER)
 
-os.mkdir(OUTPUT_FOLDER)
+OUTPUT_FOLDER.mkdir()
 
 for milestone in milestones:
     if milestone == "TestOutputs":
         continue
-    os.mkdir(f"./TestOutputs/{milestone}")
+
+    Path(f"./TestOutputs/{milestone}").mkdir()
 
     print(f"Scanning {milestone}")
-    milestone_folders = os.listdir('./' + milestone)
-    testcase_folders = [folder for folder in milestone_folders]
- 
-    for testcase_folder in testcase_folders:
-        os.mkdir(f"./TestOutputs/{milestone}/{testcase_folder}")
+    testcase_folders = [folder.name for folder in Path('./').joinpath(milestone).iterdir()]
 
-        directory_path = "./{}/{}".format(milestone, testcase_folder)
-        test_files = os.listdir(directory_path)
+    for testcase_folder in testcase_folders:
+        Path(f"./TestOutputs/{milestone}/{testcase_folder}").mkdir()
+
+        directory_path = Path("./{}/{}".format(milestone, testcase_folder))
+        test_files = [f.name for f in directory_path.iterdir()]
 
         testcases = []
         source_file = ""
+
         for test_file in test_files:
 
             if "source" in test_file:
@@ -39,11 +47,12 @@ for milestone in milestones:
             elif "queries" in test_file:
                 testcases.append(test_file)
 
-        for testcase in testcases:
-            testcase_source_path = f"./{milestone}/{testcase_folder}/{source_file}"
-            testcase_path = f"./{milestone}/{testcase_folder}/{testcase}"
 
-            output_path = f"./TestOutputs/{milestone}/{testcase_folder}/{testcase}"
+        for testcase in testcases:
+            testcase_source_path = Path(f"./{milestone}/{testcase_folder}/{source_file}")
+            testcase_path = Path(f"./{milestone}/{testcase_folder}/{testcase}")
+
+            output_path = Path(f"./TestOutputs/{milestone}/{testcase_folder}/{testcase}")
             shell_cmd = f"{AUTOTESTER_PATH} {testcase_source_path} {testcase_path} {OUTPUT_XML_PATH} > {output_path} "
             os.system(shell_cmd)
 

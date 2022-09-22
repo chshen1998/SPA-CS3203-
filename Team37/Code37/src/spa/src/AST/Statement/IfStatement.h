@@ -4,6 +4,8 @@
 #define TEAM37_IFSTATEMENT_H
 
 #include <vector>
+#include <string>
+#include <memory>
 
 using namespace std;
 
@@ -16,7 +18,7 @@ private:
     vector<shared_ptr<Statement> > thenStmtLst;
     vector<shared_ptr<Statement> > elseStmtLst;
 public:
-    IfStatement(shared_ptr<TNode> parent, int lineNum, shared_ptr<ConditionalExpression> condExpr);
+    IfStatement(shared_ptr<TNode> parent, shared_ptr<ConditionalExpression> condExpr);
 
     /**
      * Adds a statement to the if-then statement list

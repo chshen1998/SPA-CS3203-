@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TEAM37_QUERYVALIDATOR_H
+#define TEAM37_QUERYVALIDATOR_H
+
 #include <memory>
 #include <string>
 #include <set>
@@ -9,9 +12,6 @@
 #include "QPS.h"
 #include "Validators/ClauseValidator.h"
 
-#ifndef TEAM37_QUERYVALIDATOR_H
-#define TEAM37_QUERYVALIDATOR_H
-
 
 class QueryValidator {
 public:
@@ -19,21 +19,19 @@ public:
     int size;
     int next;
     unordered_map<string, TokenType> declarations;
-    PqlError pe;
 
     QueryValidator(vector<PqlToken> tokens);
 
-    PqlError ValidateQuery();
+    PqlError validateQuery();
 
 private:
-    void validateDeclarations();
+    unordered_map<string, TokenType> validateDeclarations();
     void validateSelect();
     void validateClauses();
     void validatePattern();
     void validateSuchThat(PqlToken such);
-    bool errorFound();
 
-    unique_ptr<ClauseValidator> createClauseValidator(TokenType type);
+    shared_ptr<ClauseValidator> createClauseValidator(TokenType type);
     PqlToken getNextToken();
 
 };

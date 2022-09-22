@@ -6,11 +6,14 @@
 #include "RelationalFactor.h"
 #include "AST/Operators/Operator.h"
 
+#include <string>
+#include <memory>
+
 class OperatedExpression : public RelationalFactor, public enable_shared_from_this<OperatedExpression> {
 private:
-    Operator opr;
-    shared_ptr<RelationalFactor> relFactor1;
-    shared_ptr<RelationalFactor> relFactor2;
+    Operator opr = ADD;
+    shared_ptr<RelationalFactor> relFactor1 = nullptr;
+    shared_ptr<RelationalFactor> relFactor2 = nullptr;
 public:
     OperatedExpression(
             shared_ptr<TNode> parent,

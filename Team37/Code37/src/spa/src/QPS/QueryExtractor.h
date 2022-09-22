@@ -1,13 +1,13 @@
 #pragma once
 
+#ifndef TEAM37_QUERYEXTRACTOR_H
+#define TEAM37_QUERYEXTRACTOR_H
+
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "QPS.h"
-
-#ifndef TEAM37_QUERYEXTRACTOR_H
-#define TEAM37_QUERYEXTRACTOR_H
 
 class QueryExtractor {
 public:
@@ -16,7 +16,7 @@ public:
     int next;
     PqlQuery pq;
 
-    QueryExtractor(vector<PqlToken> tokens);
+    QueryExtractor(vector<PqlToken> tokenVector);
 
     PqlQuery extractSemantics();
 

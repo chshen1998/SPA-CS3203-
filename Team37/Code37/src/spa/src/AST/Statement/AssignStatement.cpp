@@ -4,9 +4,8 @@ using namespace std;
 
 AssignStatement::AssignStatement(
         shared_ptr<TNode> parent,
-        int lineNum,
         string varName,
-        shared_ptr<RelationalFactor> relFactor) : Statement(parent, lineNum), relFactor(relFactor) {}
+        shared_ptr<RelationalFactor> relFactor) : Statement(parent), relFactor(relFactor), varName(varName) {}
 
 string AssignStatement::getVarName() {
     return this->varName;

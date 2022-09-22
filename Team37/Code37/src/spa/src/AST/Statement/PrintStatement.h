@@ -5,11 +5,14 @@
 
 #include "Statement.h"
 
+#include <string>
+#include <memory>
+
 class PrintStatement : public Statement, public enable_shared_from_this<PrintStatement> {
 private:
     string variableName;
 public:
-    PrintStatement(shared_ptr<TNode> parent, int lineNum, string variableName);
+    PrintStatement(shared_ptr<TNode> parent, string variableName);
 
     /**
      * Gets the name of the variable in the print statement

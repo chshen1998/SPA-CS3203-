@@ -5,9 +5,12 @@
 
 #include "RelationalFactor.h"
 
+#include <string>
+#include <memory>
+
 class ConstantExpression : public RelationalFactor, public enable_shared_from_this<ConstantExpression> {
 private:
-    int value;
+    int value = 0;
 public:
     ConstantExpression(shared_ptr<TNode> parent, int value);
 
@@ -20,11 +23,11 @@ public:
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
-    bool operator== (const ConstantExpression& other) const{
+    bool operator==(const ConstantExpression &other) const {
         return value == other.value;
     };
 
-    bool operator< (const ConstantExpression& other) const{
+    bool operator<(const ConstantExpression &other) const {
         return value > other.value;
     };
 };

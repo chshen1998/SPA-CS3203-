@@ -3,13 +3,17 @@
 #ifndef TEAM37_CALLSTATEMENT_H
 #define TEAM37_CALLSTATEMENT_H
 
+#include <stdio.h>
+#include <iostream>
+#include <memory>
+
 #include "Statement.h"
 
 class CallStatement : public Statement, public enable_shared_from_this<CallStatement> {
 private:
     string procedureName;
 public:
-    CallStatement(shared_ptr<TNode> parent, int lineNum, string procedureName);
+    CallStatement(shared_ptr<TNode> parent, string procedureName);
 
     /**
      * Gets the name of the procedure in the call statement

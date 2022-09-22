@@ -9,6 +9,9 @@ using namespace std;
 #include <set>
 #include <list>
 #include <iostream>
+#include<memory>
+
+#include "PKB/QueryServicer.h"
 
 
 /*
@@ -27,6 +30,7 @@ enum class TokenType {
     WHILE,
     IF,
     ELSE,
+    READ,
     PRINT,
     CALL,
 
@@ -41,7 +45,9 @@ enum class TokenType {
     SELECT,
     PATTERN,
     USES,
+    USES_P,
     MODIFIES,
+    MODIFIES_P,
     PARENT,
     PARENT_A,
     FOLLOWS,
@@ -95,12 +101,14 @@ enum class ErrorType
 
 struct PqlError
 {
-    ErrorType type;
+    ErrorType errorType;
     string message;
+
+    PqlError(ErrorType type, string msg) : errorType(type), message(msg) {}
 };
 
 // Created for debugging purposes
-ostream& operator<<(ostream& os, PqlToken& token);
+//ostream& operator<<(ostream& os, PqlToken& token);
 
 
 
@@ -112,8 +120,15 @@ ostream& operator<<(ostream& os, PqlToken& token);
  */
 struct Clause
 {
-    string left;
-    string right;
+    PqlToken clauseType;
+    PqlToken left;
+    PqlToken right;
+
+    Clause(PqlToken type, PqlToken l, PqlToken r) : clauseType(type), left(l), right(r) {}
+
+    bool operator==(const Clause& other) const {
+        return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
+    }
 };
 
 /*
@@ -122,18 +137,17 @@ struct Clause
 struct PqlQuery {
     unordered_map<string, TokenType> declarations = {};
     string select;
-    Clause patternClause;
-    Clause suchThatClause;
+    vector<Clause> patternClauses;
+    vector<Clause> suchThatClauses;
 };
 
-
 extern unordered_map<string, TokenType> stringToTokenMap;
-extern set<TokenType> validDeclarations;
-extern set<TokenType> validSuchThatClauses;
-extern set<TokenType> validPatternParameters;
 
 class QPS {
+    shared_ptr<QueryServicer> servicer;
+
 public:
+    void setQueryServicer(shared_ptr<QueryServicer> s);
     void evaluate(string query, list<string> &results);
 };
 

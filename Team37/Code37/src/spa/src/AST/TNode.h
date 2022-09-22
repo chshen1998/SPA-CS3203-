@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <memory>
 
 using namespace std;
 
@@ -12,11 +13,12 @@ using namespace std;
 
 class TNode {
 private:
-    shared_ptr<TNode> parent;
+    shared_ptr<TNode> parent = nullptr;
 protected:
     // Protected since you should not be able to create a TNode object
     // Should only be accessible to SourceCode, Procedure and Statement + their children
-    TNode(shared_ptr<TNode> parent) : parent(parent) { }
+    TNode(shared_ptr<TNode> parent) : parent(parent) {}
+
 public:
     /**
      * Returns the parent of a TNode

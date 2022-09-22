@@ -5,6 +5,9 @@
 
 #include "../Expression.h"
 
+#include <string>
+#include <memory>
+
 class RelationalFactor : public Expression {
 public:
     RelationalFactor(shared_ptr<TNode> parent) : Expression(parent) { }

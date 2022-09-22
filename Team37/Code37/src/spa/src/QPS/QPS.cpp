@@ -11,6 +11,8 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
+#include "QueryValidator.h"
+#include "./Validators/ValidatorUtils.h"
 #include "AST/TNode.h"
 #include "PKB/PKB.h"
 #include <unordered_map>
@@ -29,6 +31,7 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {"else", TokenType::ELSE},
         {"print", TokenType::PRINT},
         {"call", TokenType::CALL},
+		{"read", TokenType::READ},
 
         {"Select", TokenType::SELECT},
         {"pattern", TokenType::PATTERN},
@@ -51,38 +54,11 @@ unordered_map<string, TokenType> stringToTokenMap = {
 
 };
 
-/*
- * Set of valid declaration types
- */
-set<TokenType> validDeclarations = {
-        TokenType::VARIABLE,
-        TokenType::PROCEDURE,
-        TokenType::WHILE,
-        TokenType::ASSIGN,
-        TokenType::STATEMENT
+unordered_map<ErrorType, string> errorTypeToStringMap = {
+    {ErrorType::SEMANTIC_ERROR, "Semantic Error"},
+    {ErrorType::SYNTAX_ERROR, "Syntax Error"}
 };
 
-/*
- * Set of valid such that clauses
- */
-set<TokenType> validSuchThatClauses = {
-        TokenType::USES,
-        TokenType::MODIFIES,
-        TokenType::PARENT,
-        TokenType::PARENT_A,
-        TokenType::FOLLOWS,
-        TokenType::FOLLOWS_A
-};
-
-/*
- * Set of valid such that clauses
- */
-set<TokenType> validPatternParameters = {
-        TokenType::SYNONYM,
-        TokenType::CONSTANT,
-        TokenType::STRING,
-        TokenType::NUMBER
-};
 
 std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     string typeString = "Unknown";
@@ -128,22 +104,43 @@ std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
 }
 
 
-
+void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
+    QPS::servicer = s;
+}
 
 /*
- * Takes in query string input from user, parses the query string then return result from PKB
- */
+* Takes in query string input from user, parses the query string then return result from PKB
+*/
 void QPS::evaluate(string query, list<string>& results) {
     
     QueryTokenizer tokenizer = QueryTokenizer(query);
-    vector<PqlToken> tokens = tokenizer.Tokenize();
+    vector<PqlToken> tokens;
+    try
+    {
+	    tokens = tokenizer.Tokenize();
+    } catch (SyntaxError e)
+    {
+        results.push_back("Syntax Error");
+        results.push_back(e.message);
+        return;
+    } 
+    
+
+    QueryValidator validator = QueryValidator(tokens);
+    PqlError pe = validator.validateQuery();
+
+    if (pe.errorType != ErrorType::NONE)
+    {
+        results.push_back(errorTypeToStringMap[pe.errorType]);
+        results.push_back(pe.message);
+        return;
+    }
 
     QueryExtractor extractor(tokens);
     PqlQuery pq = extractor.extractSemantics();
 
-    QueryEvaluator evaluator = QueryEvaluator(pq);
-    set<string> result = evaluator.CallPKB();
- 
-    // string output = evaluator.convertToString(result);
-}
 
+    QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+    evaluator.evaluate();
+
+}

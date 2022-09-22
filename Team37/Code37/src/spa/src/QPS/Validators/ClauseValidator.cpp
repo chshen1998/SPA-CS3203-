@@ -1,34 +1,33 @@
 using namespace std;
 
-#include <string>
-#include <vector>
-#include <unordered_map>
-
-#include "../QPS.h"
 #include "ClauseValidator.h"
 
 ClauseValidator::ClauseValidator(unordered_map<string, TokenType> declarationsMap)
 {
 	declarations = declarationsMap;
-	pe.type = ErrorType::NONE;
 }
 
-PqlError ClauseValidator::validateSuchThat(PqlToken such, PqlToken that)
+void ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken close)
 {
-	if (such.type == TokenType::SUCH && that.type == TokenType::THAT)
+	if (!(open.type == TokenType::OPEN_BRACKET) || !(comma.type == TokenType::COMMA) || !(close.type == TokenType::CLOSED_BRACKET))
 	{
-		updatePqlError(ErrorType::SYNTAX_ERROR, "Keywords such that must be used prior to a SuchThatClause");
+		throw SyntaxError("The parameters passed to a clause must be enclosed within brackets and separated by a comma");
 	}
-	return pe;
 }
 
-PqlError ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken close)
+void ClauseValidator::validateParameters(PqlToken left, PqlToken right, set<TokenType> validLeftTypes, set<TokenType> validRightTypes, string clauseType)
 {
-	if (open.type == TokenType::OPEN_BRACKET && comma.type == TokenType::COMMA && close.type == TokenType::CLOSED_BRACKET)
+	if (!(validLeftTypes.find(left.type) != validLeftTypes.end()) || !(validRightTypes.find(right.type) != validRightTypes.end()))
 	{
-		updatePqlError(ErrorType::SYNTAX_ERROR, "The parameters passed to a clause must be enclosed within brackets and separated by a comma");
+		throw SemanticError("Invalid parameters for " + clauseType + " clause");
+	} else if (left.type == TokenType::SYNONYM && !isDeclared(left))
+	{
+		throw SemanticError(left.value + " is undeclared parameter for " + clauseType + " clause");
 	}
-	return pe;
+	else if (right.type == TokenType::SYNONYM && !isDeclared(right))
+	{
+		throw SemanticError(right.value + " is undeclared parameter for " + clauseType + " clause");
+	}
 }
 
 bool ClauseValidator::isDeclared(PqlToken synonym)
@@ -37,13 +36,3 @@ bool ClauseValidator::isDeclared(PqlToken synonym)
 	return (findit != declarations.end());
 }
 
-bool ClauseValidator::isTokenType(PqlToken synonym, TokenType type)
-{
-	return (declarations[synonym.value] == type);
-}
-
-void ClauseValidator::updatePqlError(ErrorType type, string msg)
-{
-	pe.type = type;
-	pe.message = msg;
-}

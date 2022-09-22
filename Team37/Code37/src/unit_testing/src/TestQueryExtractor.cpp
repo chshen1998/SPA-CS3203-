@@ -20,22 +20,30 @@ bool isSameMap(unordered_map<string, TokenType> ans, unordered_map<string, Token
 	return true;
 }
 
-bool isSameClause(Clause ans, Clause result)
+bool isSameClauses(vector<Clause> ans, vector<Clause> result)
 {
-	if (ans.left != result.left)
+	if (ans.size() != result.size())
 	{
 		return false;
-	} else if (ans.right != result.right)
-	{
-		return false;
-	} else
-	{
-		return true;
 	}
+
+	for (int i = 0; i != ans.size(); i++)
+	{
+		if (ans[i] == result[i]) {
+			continue;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 
-TEST_CASE("Test declartions") {
+TEST_CASE("Test declartions")
+{
 	unordered_map<string, TokenType> ans = {
 		{"v", TokenType::VARIABLE},
 		{"a", TokenType::ASSIGN}
@@ -47,120 +55,128 @@ TEST_CASE("Test declartions") {
 	REQUIRE(isSameMap(ans, results.declarations));
 }
 
-TEST_CASE("Test Select clauses") {
+TEST_CASE("Test Select clause")
+{
 	QueryExtractor sut(basic_tokens);
 	PqlQuery results = sut.extractSemantics();
 
 	REQUIRE(results.select == "v");
 }
 
-/*
 TEST_CASE("Test Pattern clause")
 {
-	Clause ans;
-	ans.left = "x";
-	ans.right = "y";
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::WILDCARD, "_"))};
 
-	vector<PqlToken> tokens = addPatternClause(basic_tokens);
+	QueryExtractor sut(valid_pattern);
+	PqlQuery results = sut.extractSemantics();
 
-	QueryExtractor sut = QueryExtractor(tokens);
-	PqlQuery results = sut.ExtractSemantics();
-
-	REQUIRE(isSameClause(ans, results.patternClause));
+	REQUIRE(isSameClauses(ans, results.patternClauses));
 }
 
 TEST_CASE("Test Uses clause")
 {
-	Clause ans;
-	ans.left = "s";
-	ans.right = "v";
+	vector<Clause> ans = { Clause(PqlToken(TokenType::USES, "uses"), 
+								  PqlToken(TokenType::STATEMENT_NUM, "1"),
+								  PqlToken(TokenType::SYNONYM, "v")) };
 
-	vector<PqlToken> tokens = addUsesClause(basic_tokens);
+	QueryExtractor sut(valid_uses);
+	PqlQuery results = sut.extractSemantics();
 
-	QueryExtractor sut = QueryExtractor(tokens);
-	PqlQuery results = sut.ExtractSemantics();
-
-	REQUIRE(isSameClause(ans, results.suchThatClause));
+	REQUIRE(isSameClauses(ans, results.suchThatClauses));
 }
 
-TEST_CASE("Test Modifies Clause")
+TEST_CASE("Test Modifies clause")
 {
-	Clause ans;
-	ans.left = "s";
-	ans.right = "v";
+	vector<Clause> ans = { Clause(PqlToken(TokenType::MODIFIES, "modifies"),
+								  PqlToken(TokenType::STATEMENT_NUM, "1"),
+								  PqlToken(TokenType::SYNONYM, "v")) };
 
-	vector<PqlToken> tokens = addModifiesClause(basic_tokens);
+	QueryExtractor sut(valid_modifies);
+	PqlQuery results = sut.extractSemantics();
 
-	QueryExtractor sut = QueryExtractor(tokens);
-	PqlQuery results = sut.ExtractSemantics();
-
-	REQUIRE(isSameClause(ans, results.suchThatClause));
+	REQUIRE(isSameClauses(ans, results.suchThatClauses));
 }
 
-TEST_CASE("Test Parent Clause")
+TEST_CASE("Test Follows clause")
 {
-	Clause ans;
-	ans.left = "s1";
-	ans.right = "s2";
+	vector<Clause> ans = { Clause(PqlToken(TokenType::FOLLOWS, "follows"),
+								  PqlToken(TokenType::SYNONYM, "s"),
+								  PqlToken(TokenType::STATEMENT_NUM, "1")) };
 
-	vector<PqlToken> tokens = addParentClause(basic_tokens);
+	QueryExtractor sut(valid_follows);
+	PqlQuery results = sut.extractSemantics();
 
-	QueryExtractor sut = QueryExtractor(tokens);
-	PqlQuery results = sut.ExtractSemantics();
-
-	REQUIRE(isSameClause(ans, results.suchThatClause));
+	REQUIRE(isSameClauses(ans, results.suchThatClauses));
 }
 
-TEST_CASE("Test Follows Clause")
+TEST_CASE("Test Follows* clause")
 {
-	Clause ans;
-	ans.left = "s1";
-	ans.right = "s2";
+	vector<Clause> ans = { Clause(PqlToken(TokenType::FOLLOWS_A, "follows*"),
+								  PqlToken(TokenType::SYNONYM, "s"),
+								  PqlToken(TokenType::STATEMENT_NUM, "1")) };
 
-	vector<PqlToken> tokens = addFollowsClause(basic_tokens);
+	QueryExtractor sut(valid_follows_a);
+	PqlQuery results = sut.extractSemantics();
 
-	QueryExtractor sut = QueryExtractor(tokens);
-	PqlQuery results = sut.ExtractSemantics();
-
-	REQUIRE(isSameClause(ans, results.suchThatClause));
+	REQUIRE(isSameClauses(ans, results.suchThatClauses));
 }
 
-TEST_CASE("Test Pattern then Such That Clause")
+TEST_CASE("Test Parent clause")
 {
-	Clause pattern;
-	pattern.left = "x";
-	pattern.right = "y";
-	Clause follows;
-	follows.left = "s1";
-	follows.right = "s2";
+	vector<Clause> ans = { Clause(PqlToken(TokenType::PARENT, "parent"),
+								  PqlToken(TokenType::SYNONYM, "s"),
+								  PqlToken(TokenType::STATEMENT_NUM, "1")) };
 
-	vector<PqlToken> tokens = addPatternClause(basic_tokens);
-	tokens = addFollowsClause(tokens);
+	QueryExtractor sut(valid_parent);
+	PqlQuery results = sut.extractSemantics();
 
-	QueryExtractor sut = QueryExtractor(tokens);
-	PqlQuery results = sut.ExtractSemantics();
-
-	REQUIRE(isSameClause(pattern, results.patternClause));
-	REQUIRE(isSameClause(follows, results.suchThatClause));
+	REQUIRE(isSameClauses(ans, results.suchThatClauses));
 }
 
-TEST_CASE("Test Such That then Pattern Clause")
+TEST_CASE("Test Parent* clause")
 {
-	Clause pattern;
-	pattern.left = "x";
-	pattern.right = "y";
-	Clause follows;
-	follows.left = "s1";
-	follows.right = "s2";
+	vector<Clause> ans = { Clause(PqlToken(TokenType::PARENT_A, "parent*"),
+								  PqlToken(TokenType::SYNONYM, "s"),
+								  PqlToken(TokenType::STATEMENT_NUM, "1")) };
 
-	vector<PqlToken> tokens = addFollowsClause(basic_tokens);
-	tokens = addPatternClause(tokens);
+	QueryExtractor sut(valid_parent_a);
+	PqlQuery results = sut.extractSemantics();
 
-	QueryExtractor sut = QueryExtractor(tokens);
-	PqlQuery results = sut.ExtractSemantics();
-
-	REQUIRE(isSameClause(pattern, results.patternClause));
-	REQUIRE(isSameClause(follows, results.suchThatClause));
+	REQUIRE(isSameClauses(ans, results.suchThatClauses));
 }
 
-*/
+TEST_CASE("Test Pattern then Such That clause")
+{
+	vector<Clause> p_ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
+									PqlToken(TokenType::SYNONYM, "v"),
+									PqlToken(TokenType::WILDCARD, "_")) };
+
+	vector<Clause> s_ans = { Clause(PqlToken(TokenType::USES, "uses"),
+									PqlToken(TokenType::STATEMENT_NUM, "1"),
+									PqlToken(TokenType::SYNONYM, "v")) };
+
+	QueryExtractor sut(valid_pattern_then_such_that);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(p_ans, results.patternClauses));
+	REQUIRE(isSameClauses(s_ans, results.suchThatClauses));
+}
+
+TEST_CASE("Test Such That then Pattern clause")
+{
+	vector<Clause> p_ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
+									PqlToken(TokenType::SYNONYM, "v"),
+									PqlToken(TokenType::WILDCARD, "_")) };
+
+	vector<Clause> s_ans = { Clause(PqlToken(TokenType::USES, "uses"),
+									PqlToken(TokenType::STATEMENT_NUM, "1"),
+									PqlToken(TokenType::SYNONYM, "v")) };
+
+	QueryExtractor sut(valid_such_that_then_pattern);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(p_ans, results.patternClauses));
+	REQUIRE(isSameClauses(s_ans, results.suchThatClauses));
+}

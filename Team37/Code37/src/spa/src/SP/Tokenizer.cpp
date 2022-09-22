@@ -1,103 +1,225 @@
 #include <vector>
-#include <set>
 #include <algorithm>
 
 using namespace std;
 
 #include "Tokenizer.h"
-#include "Utils.h"
-#include "Keywords.h"
+#include "SP/Utilities/Utils.h"
+#include "SP/Utilities/Keywords.h"
+#include "InvalidSyntaxException.h"
 
-// ================================== Utility functions ============================================
-
-bool isNegative (int i) {
-    return (i < 0) ;
+shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line, shared_ptr<TNode> parent) {
+    string keyword = Keywords::READ;
+    int startIdx = line.find(keyword);
+    int end = startIdx + keyword.length();
+    string varName = line.substr(end, string::npos);
+    return make_shared<ReadStatement>(parent, Utils::trim(varName));
 }
 
-bool isPositive (int i) {
-    return (i >= 0);
+shared_ptr<PrintStatement> Tokenizer::tokenizePrint(string line, shared_ptr<TNode> parent) {
+    string keyword = Keywords::PRINT;
+    int startIdx = line.find(keyword);
+    int end = startIdx + keyword.length();
+    string varName = line.substr(end, string::npos);
+    return make_shared<PrintStatement>(parent, Utils::trim(varName));
 }
 
-vector<int> getOpIndexes(string line) {
-    string operators[] = {"+", "-", "*", "/", "%"};
-    vector<int> indexes;
-    for (auto o : operators) {
-        int i = line.find(o);
-        indexes.push_back(i);
-    }
-    return indexes;
+shared_ptr<AssignStatement> Tokenizer::tokenizeAssign(string line, shared_ptr<TNode> parent) {
+    string keyword = "=";
+    int equalsSignIndex = line.find(keyword);
+
+    // Pull out varName
+    string varName = line.substr(0, equalsSignIndex);
+    varName = Utils::trim(varName);
+
+    // Pull out relFactor
+    string rawRelationalFactor = line.substr(equalsSignIndex + 1);
+    rawRelationalFactor = Utils::trim(rawRelationalFactor);
+
+    shared_ptr<RelationalFactor> relFactor = tokenizeRelFactor(rawRelationalFactor);
+    shared_ptr<AssignStatement> assignStatement = make_shared<AssignStatement>(parent, varName, relFactor);
+    relFactor->setParent(assignStatement);
+    return assignStatement;
 }
 
-bool isOperatedExpression(string line) {
-    vector<int> indexes = getOpIndexes(line);
-    bool isOpExpr = any_of(indexes.begin(), indexes.end(), isPositive);
-    return isOpExpr;
-}
+shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
+    string highPriorityOperators = "*/%";
+    string lowPriorityOperators = "+-";
 
-bool isConstant(string line) {
-    if (!isOperatedExpression(line)) {
-        for (char c : line) {
-            if (std::isdigit(c) == 0) {
-                return false;
+    // Variable used for iteration in while loop
+    char nextChar;
+    // push_back "left" side expression to this variable
+    string expression;
+    // Counter in case brackets are encountered. Essentially if this value is not 0 then just keep parsing
+    int bracketCounter = 0;
+    // Checking if some kind of outer layer of bracket was removed
+    bool bracketsDetected = false;
+
+    // Only checks low priority operators, creates operated expression if found
+    while(line.length() > 0) {
+        nextChar = line[0];
+        // Logic to handle "skipping" when bracket counting has started
+        if (bracketCounter != 0) {
+            if (nextChar == '(') {
+                bracketCounter += 1;
+            } else if (nextChar == ')') {
+                bracketCounter -= 1;
             }
+
+            expression.push_back(nextChar);
+            line.erase(0, 1);
+            continue;
         }
-        return true;
+
+        if (nextChar == '(') {
+            bracketCounter += 1;
+            expression.push_back(nextChar);
+            line.erase(0, 1);
+            bracketsDetected = true;
+            continue;
+        }
+
+        if (lowPriorityOperators.find(nextChar) == string::npos) {
+            expression.push_back(nextChar);
+            line.erase(0, 1);
+            continue;
+        } else {
+            // Recursive calls
+            shared_ptr<RelationalFactor> leftSide =
+                    tokenizeRelFactor(Utils::trim(expression));
+            shared_ptr<RelationalFactor> rightSide =
+                    tokenizeRelFactor(Utils::trim(line.substr(1)));
+            shared_ptr<OperatedExpression> operatedExpression;
+            // Create operated expressions
+            if (nextChar == '+') {
+                operatedExpression = make_shared<OperatedExpression>(
+                        nullptr,
+                        Operator::ADD,
+                        leftSide,
+                        rightSide);
+            } else if (nextChar == '-') {
+                operatedExpression = make_shared<OperatedExpression>(
+                        nullptr,
+                        Operator::SUBTRACT,
+                        leftSide,
+                        rightSide);
+            }
+            leftSide->setParent(operatedExpression);
+            rightSide->setParent(operatedExpression);
+
+            return operatedExpression;
+        }
     }
-    return false;
-}
 
-bool isVariable(string line) {
-    return !isConstant(line) && !isOperatedExpression(line);
-}
+    // Reset variables
+    line = expression;
+    expression.clear();
+    bracketCounter = 0;
+    // Another while loop that checks high priority stuff
+    while(line.length() > 0) {
+        nextChar = line[0];
+        // Logic to handle "skipping" when bracket counting has started
+        if (bracketCounter != 0) {
+            if (nextChar == '(') {
+                bracketCounter += 1;
+            } else if (nextChar == ')') {
+                bracketCounter -= 1;
+            }
+            if (bracketCounter != 0) { // Don't add the final close bracket
+                expression.push_back(nextChar);
+            }
+            line.erase(0, 1);
+            continue;
+        }
 
-string removeParentheses(string line) {
-    string parentheses = "(){}";
-    for (auto p : parentheses) {
-        line.erase(std::remove(line.begin(), line.end(), p), line.end());
+        if (nextChar == '(') {
+            bracketCounter += 1;
+            line.erase(0, 1);
+            bracketsDetected = true;
+            continue;
+        }
+
+        if (highPriorityOperators.find(nextChar) == string::npos) {
+            expression.push_back(nextChar);
+            line.erase(0, 1);
+            continue;
+        } else {
+            // Recursive calls
+            shared_ptr<RelationalFactor> leftSide =
+                    tokenizeRelFactor(Utils::trim(expression));
+            shared_ptr<RelationalFactor> rightSide =
+                    tokenizeRelFactor(Utils::trim(line.substr(1)));
+            shared_ptr<OperatedExpression> operatedExpression;
+            // Create operated expressions
+            if (nextChar == '*') {
+                operatedExpression = make_shared<OperatedExpression>(
+                        nullptr,
+                        Operator::MULTIPLY,
+                        leftSide,
+                        rightSide);
+            } else if (nextChar == '/') {
+                operatedExpression = make_shared<OperatedExpression>(
+                        nullptr,
+                        Operator::DIVIDE,
+                        leftSide,
+                        rightSide);
+            } else if (nextChar == '%') {
+                operatedExpression = make_shared<OperatedExpression>(
+                        nullptr,
+                        Operator::MODULO,
+                        leftSide,
+                        rightSide);
+            }
+            leftSide->setParent(operatedExpression);
+            rightSide->setParent(operatedExpression);
+
+            return operatedExpression;
+        }
     }
-    return line;
+
+    if (bracketsDetected) {
+        return tokenizeRelFactor(Utils::trim(expression));
+    }
+
+    // If code reaches this point there should be no more brackets or operators
+    // If still no return by this point, then the relFactor is either a variable or a const
+
+    // Reset variables
+    line = expression;
+    expression.clear();
+
+    string digits = "0123456789";
+
+    // Check if it is a variable
+    nextChar = line[0];
+    // Must be variable since first letter is not a DIGIT
+    if (digits.find(nextChar) == string::npos) {
+        return make_shared<NameExpression>(nullptr, line);
+    }
+
+    // Make sure everything inside is a digit
+    for (char& c: line)  {
+        if (digits.find(c) == string::npos) {
+            // Either return an error here, or catch the stoi error
+            throw InvalidSyntaxException((char *) "Invalid constant for assign statement.");
+        }
+    }
+    // stoi converts std::string to int
+    return make_shared<ConstantExpression>(nullptr, stoi(line));
+
 }
 
-bool isRead(string line) {
-    string keyword = Keywords::READ;
-    int startIdx = line.find(keyword);
-    return (startIdx != -1);
-}
-
-bool isPrint(string line) {
-    string keyword = Keywords::PRINT;
-    int startIdx = line.find(keyword);
-    return (startIdx != -1);
-}
-
-// ================================== Tokenizing functions ============================================
-shared_ptr<ReadStatement> Tokenizer:: tokenizeRead(string line, int stmtNo, shared_ptr<TNode> parent) {
-    string keyword = Keywords::READ;
-    int startIdx = line.find(keyword);
-    int end = startIdx + keyword.length();
-    string varName = line.substr(end, string::npos);
-    return make_shared<ReadStatement>(parent, stmtNo, Utils::trim(varName));
-}
-
-shared_ptr<PrintStatement> Tokenizer:: tokenizePrint(string line, int stmtNo, shared_ptr<TNode> parent) {
-    string keyword = Keywords::PRINT;
-    int startIdx = line.find(keyword);
-    int end = startIdx + keyword.length();
-    string varName = line.substr(end, string::npos);
-    return make_shared<PrintStatement>(parent, stmtNo, Utils::trim(varName));
-}
-
-vector<shared_ptr<Procedure> > Tokenizer:: tokenizeStatements(vector<shared_ptr<Procedure> > procedures, vector<vector<string> > statements) {
+vector<shared_ptr<Procedure> > Tokenizer::tokenizeStatements(vector<shared_ptr<Procedure> > procedures, vector<vector<string> > statements) {
     for (int i = 0; i < procedures.size(); i++) {
         shared_ptr<Procedure> procedure = procedures[i];
         for (int j = 0; j < statements[i].size(); j++) {
             shared_ptr<Statement> stmt;
             string s = statements[i][j];
-            if (isRead(s)) {
-                stmt = Tokenizer::tokenizeRead(s, j + 1, procedure);
+            if (Utils::isRead(s)) {
+                stmt = Tokenizer::tokenizeRead(s, procedure);
             }
-            if (isPrint(s)) {
-                stmt = Tokenizer::tokenizePrint(s, j + 1, procedure);
+            if (Utils::isPrint(s)) {
+                stmt = Tokenizer::tokenizePrint(s, procedure);
             }
             procedure->addStatement(stmt);
         }
@@ -105,7 +227,7 @@ vector<shared_ptr<Procedure> > Tokenizer:: tokenizeStatements(vector<shared_ptr<
     return procedures;
 }
 
-vector<shared_ptr<Procedure> > Tokenizer:: tokenizeProcedure(vector<string> names, vector<vector<string> > statements) {
+vector<shared_ptr<Procedure> > Tokenizer::tokenizeProcedure(vector<string> names, vector<vector<string> > statements) {
     vector<shared_ptr<Procedure> > procedures;
     for (int i = 0; i < names.size(); i++) {
         shared_ptr<Procedure> procedure = make_shared<Procedure>(nullptr, names[i]);
@@ -115,7 +237,7 @@ vector<shared_ptr<Procedure> > Tokenizer:: tokenizeProcedure(vector<string> name
     return Tokenizer::tokenizeStatements(procedures, statements);
 }
 
-shared_ptr<SourceCode> Tokenizer:: tokenize(shared_ptr<SourceCode> srcCode, vector<string> names, vector<vector<string> > statements) {
+shared_ptr<SourceCode> Tokenizer::tokenize(shared_ptr<SourceCode> srcCode, vector<string> names, vector<vector<string> > statements) {
     vector<shared_ptr<Procedure> > procedures = Tokenizer::tokenizeProcedure(names, statements);
     for (auto p: procedures) {
         srcCode->addProcedure(p);

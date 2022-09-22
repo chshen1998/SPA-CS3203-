@@ -1,17 +1,22 @@
 #pragma once
 
+#ifndef SPA_QUERY_SERVICER_H
+#define SPA_QUERY_SERVICER_H
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
-#include "QueryServicer.h"
 #include "Storage.h"
-#include "StatementType.h"
+#include "Types/StatementType.h"
+#include "Types/StmtStmtRelationType.h"
+#include "Types/StmtVarRelationType.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Statement/Statement.h"
@@ -24,15 +29,30 @@ using namespace std;
 
 class QueryServicer {
 private:
-	shared_ptr<Storage> storage;
+    shared_ptr<Storage> storage;
 public:
-	// Constructor
-	QueryServicer(shared_ptr<Storage>);
+    // Constructor
+    QueryServicer(shared_ptr<Storage>);
 
-	// Query methods
+    // Query methods
 
-	// Retrieve all
-	set<NameExpression> getAllVar();
+    // Retrieve all
+    set<NameExpression> getAllVar();
+
     set<ConstantExpression> getAllConst();
-	set<shared_ptr<Statement>> getAllStmt(StatementType);
+
+    set<shared_ptr<Statement>> getAllStmt(StatementType);
+
+    // Stmt Stmt Accessors
+    bool retrieveRelation(int, int, StmtStmtRelationType);
+
+    vector<int> forwardRetrieveRelation(int, StmtStmtRelationType);
+
+    vector<int> reverseRetrieveRelation(int, StmtStmtRelationType);
+
+	// Stmt Var Accessors
+	bool retrieveRelation(int, string, StmtVarRelationType);
+	vector<string> forwardRetrieveRelation(int, StmtVarRelationType);
+	vector<int> reverseRetrieveRelation(string, StmtVarRelationType);
 };
+#endif

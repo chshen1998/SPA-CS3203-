@@ -7,11 +7,14 @@ using namespace std;
 
 #include "Statement.h"
 
+#include <string>
+#include <memory>
+
 class ReadStatement : public Statement, public enable_shared_from_this<ReadStatement> {
 private:
     string variableName;
 public:
-    ReadStatement(shared_ptr<TNode> parent, int lineNum, string variableName);
+    ReadStatement(shared_ptr<TNode> parent, string variableName);
 
     /**
      * Gets the name of the variable in the read statement

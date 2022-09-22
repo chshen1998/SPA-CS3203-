@@ -5,10 +5,13 @@
 
 #include "ConditionalExpression.h"
 
+#include <string>
+#include <memory>
+
 class AndCondition : public ConditionalExpression, public enable_shared_from_this<AndCondition> {
 private:
-    shared_ptr<ConditionalExpression> condExpr1;
-    shared_ptr<ConditionalExpression> condExpr2;
+    shared_ptr<ConditionalExpression> condExpr1 = nullptr;
+    shared_ptr<ConditionalExpression> condExpr2 = nullptr;
 public:
     AndCondition(
             shared_ptr<TNode> parent,

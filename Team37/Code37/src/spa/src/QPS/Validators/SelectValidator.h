@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TEAM37_SELECTVALIDATOR_H
+#define TEAM37_SELECTVALIDATOR_H
+
 #include <memory>
 #include <string>
 #include <set>
@@ -9,14 +12,15 @@
 #include "../QPS.h"
 #include "ClauseValidator.h"
 
-#ifndef TEAM37_SELECTVALIDATOR_H
-#define TEAM37_SELECTVALIDATOR_H
 
 
-class SelectValidator : public ClauseValidator {
+class SelectValidator {
 public:
 	SelectValidator(unordered_map<string, TokenType> declarations);
-	PqlError validateParameters(PqlToken declarationType, PqlToken synonym);
+	void validate(PqlToken declarationType, PqlToken synonym);
+
+private:
+	unordered_map<string, TokenType> declarations;
 };
 
 

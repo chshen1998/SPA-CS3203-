@@ -5,6 +5,9 @@
 
 #include "../TNode.h"
 
+#include <string>
+#include <memory>
+
 class Expression : public TNode {
 public:
     Expression(shared_ptr<TNode> parent) : TNode(parent) { }

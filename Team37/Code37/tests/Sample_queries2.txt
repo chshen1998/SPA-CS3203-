@@ -1,0 +1,45 @@
+1 - follows constant-constant
+variable v;
+Select v such that Follows(1,2)
+flag, x, i
+5000
+2 - follows constant-constant error
+variable v;
+Select v such that Follows(2,1)
+None
+5000
+3 - follows star constant-constant
+variable v;
+Select v such that Follows*(1,3)
+flag, x, i
+5000
+4 - follows star constant-constant error
+variable v;
+Select v such that Follows*(4,6)
+None
+5000
+5 - parent constant-constant
+variable v;
+Select v such that Parent(5,7)
+flag, x, i
+5000
+6 - parent constant-constant error
+variable v;
+Select v such that Parent(4,5)
+None
+5000
+7 - parent constant-constant 2
+variable v;
+Select v such that Parent(5,9)
+flag, x, i
+5000
+8 - parent star constant-constant
+variable v;
+Select v such that Parent*(5,10)
+flag, x, i
+5000
+9 - parent star constant-constant error
+variable v;
+Select v such that Parent*(10,5)
+None
+5000

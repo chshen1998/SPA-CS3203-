@@ -8,7 +8,11 @@ using namespace std;
 
 #include "./Validators/ValidatorUtils.h"
 #include "QueryTokenizer.h"
-#include "QPS.h"
+#include "./Structures/PqlError.h"
+#include "./Structures/PqlToken.h"
+#include "./Structures/PqlQuery.h"
+#include "./Types/ErrorType.h"
+#include "./Types/TokenType.h"
 #include <algorithm>
 
 

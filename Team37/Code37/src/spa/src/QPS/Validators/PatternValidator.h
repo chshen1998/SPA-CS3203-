@@ -9,7 +9,11 @@
 #include <vector>
 #include <unordered_map>
 
-#include "../QPS.h"
+#include "../Structures/PqlError.h"
+#include "../Structures/PqlToken.h"
+#include "../Structures/PqlQuery.h"
+#include "../Types/ErrorType.h"
+#include "../Types/TokenType.h"
 #include "ClauseValidator.h"
 
 class PatternValidator : public ClauseValidator {

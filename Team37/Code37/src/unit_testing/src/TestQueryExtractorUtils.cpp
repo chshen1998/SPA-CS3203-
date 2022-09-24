@@ -1,5 +1,9 @@
 #include "QPS/QueryExtractor.h"
-#include "QPS/QPS.h"
+#include "QPS/Structures/PqlError.h"
+#include "QPS/Structures/PqlToken.h"
+#include "QPS/Structures/PqlQuery.h"
+#include "QPS/Types/ErrorType.h"
+#include "QPS/Types/TokenType.h"
 #include "TestQueryExtractorUtils.h"
 
 #include <vector>

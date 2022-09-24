@@ -4,7 +4,11 @@ using namespace std;
 #include <set>
 #include <vector>
 
-#include "QPS.h"
+#include "./Structures/PqlError.h"
+#include "./Structures/PqlToken.h"
+#include "./Structures/PqlQuery.h"
+#include "./Types/ErrorType.h"
+#include "./Types/TokenType.h"
 #include "QueryValidator.h"
 #include "Validators/ClauseValidator.h"
 #include "Validators/DeclarationValidator.h"

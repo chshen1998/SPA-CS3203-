@@ -1,4 +1,9 @@
 #include "QPS/QueryTokenizer.h"
+#include "QPS/Structures/PqlError.h"
+#include "QPS/Structures/PqlToken.h"
+#include "QPS/Structures/PqlQuery.h"
+#include "QPS/Types/ErrorType.h"
+#include "QPS/Types/TokenType.h"
 
 #include "catch.hpp"
 #include <iostream>

@@ -240,11 +240,11 @@ Store Relation of a Statement-Variable Relationship. For Relation(stmt, var)
 */
 void Storage::storeRelation(int stmt, string var, StmtVarRelationType type) {
     switch (type) {
-        case (USESV):
-            UsesV.store(stmt, var);
+        case (USESSV):
+            UsesSV.store(stmt, var);
             break;
-        case (MODIFIESV):
-            ModifiesV.store(stmt, var);
+        case (MODIFIESSV):
+            ModifiesSV.store(stmt, var);
             break;
         default:
             throw invalid_argument("Not a Statement-Variable Relation");
@@ -260,11 +260,11 @@ Retrieve Statement-Statement Relation Stored. For Relation(stmt, var)
 */
 bool Storage::retrieveRelation(int stmt, string var, StmtVarRelationType type) {
     switch (type) {
-        case (USESV):
-            return UsesV.retrieve(stmt, var);
+        case (USESSV):
+            return UsesSV.retrieve(stmt, var);
             break;
-        case (MODIFIESV):
-            return ModifiesV.retrieve(stmt, var);
+        case (MODIFIESSV):
+            return ModifiesSV.retrieve(stmt, var);
             break;
         default:
             throw invalid_argument("Not a Statement-Variable Realtion");
@@ -279,11 +279,11 @@ Retrieve Forward Relation Stored.For Relation(stmt, var)
 */
 vector<string> Storage::forwardRetrieveRelation(int stmt, StmtVarRelationType type) {
     switch (type) {
-        case (USESV):
-            return UsesV.forwardRetrieve(stmt);
+        case (USESSV):
+            return UsesSV.forwardRetrieve(stmt);
             break;
-        case (MODIFIESV):
-            return ModifiesV.forwardRetrieve(stmt);
+        case (MODIFIESSV):
+            return ModifiesSV.forwardRetrieve(stmt);
             break;
         default:
             throw invalid_argument("Not a Statement-Variable Relation");
@@ -298,13 +298,90 @@ Retrieve Reverse Relation Stored.For Relation(stmt, var)
 */
 vector<int> Storage::reverseRetrieveRelation(string var, StmtVarRelationType type) {
     switch (type) {
-        case (USESV):
-            return UsesV.reverseRetrieve(var);
+        case (USESSV):
+            return UsesSV.reverseRetrieve(var);
             break;
-        case (MODIFIESV):
-            return ModifiesV.reverseRetrieve(var);
+        case (MODIFIESSV):
+            return ModifiesSV.reverseRetrieve(var);
             break;
         default:
             throw invalid_argument("Not a Statement-Variable Relation");
+    }
+}
+
+/*
+Store Relation of a Procedure-Variable Relationship. For Relation(proc, var)
+@param proc Procedure Name
+@param var Variable Name
+@param type Type of relation
+*/
+void Storage::storeRelation(string proc, string var, ProcVarRelationType type) {
+    switch (type) {
+    case (USESPV):
+        UsesPV.store(proc, var);
+        break;
+    case (MODIFIESPV):
+        ModifiesPV.store(proc, var);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Variable Relation");
+    }
+}
+
+/*
+Retrieve Procedure-Variable Relationship. For Relation(proc, var)
+@param proc Procedure Name
+@param var Variable Name
+@param type Type of relation
+@returns Value of relation stored
+*/
+bool Storage::retrieveRelation(string proc, string var, ProcVarRelationType type) {
+    switch (type) {
+    case (USESPV):
+        return UsesPV.retrieve(proc, var);
+        break;
+    case (MODIFIESPV):
+        return ModifiesPV.retrieve(proc, var);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Variable Realtion");
+    }
+}
+
+/*
+Retrieve Forward Relation Stored. For Relation(proc, var)
+@param proc Procedure Name
+@param type Type of relation
+@returns All var such that Relation(stmt, var) is True
+*/
+vector<string> Storage::forwardRetrieveRelation(string proc, ProcVarRelationType type) {
+    switch (type) {
+    case (USESSV):
+        return UsesPV.forwardRetrieve(proc);
+        break;
+    case (MODIFIESSV):
+        return ModifiesPV.forwardRetrieve(proc);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Variable Relation");
+    }
+}
+
+/*
+Retrieve Reverse Relation Stored. For Relation(proc, var)
+@param var Variable Name
+@param type Type of relation
+@returns All stmt such that Relation(stmt, var) is True
+*/
+vector<string> Storage::reverseRetrieveRelation(string var, ProcVarRelationType type) {
+    switch (type) {
+    case (USESSV):
+        return UsesPV.reverseRetrieve(var);
+        break;
+    case (MODIFIESSV):
+        return ModifiesPV.reverseRetrieve(var);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Variable Relation");
     }
 }

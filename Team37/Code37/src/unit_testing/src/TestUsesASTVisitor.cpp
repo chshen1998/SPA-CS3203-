@@ -36,7 +36,7 @@ TEST_CASE("Uses assign statements") {
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    vector<string> usesVariables = storage->forwardRetrieveRelation(1, USESV);
+    vector<string> usesVariables = storage->forwardRetrieveRelation(1, USESSV);
 
     REQUIRE(usesVariables.size() == 0);
 }
@@ -56,7 +56,7 @@ TEST_CASE("Uses print statements") {
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    vector<string> usesVariables = storage->forwardRetrieveRelation(printStmt->getLineNum(), USESV);
+    vector<string> usesVariables = storage->forwardRetrieveRelation(printStmt->getLineNum(), USESSV);
 
     REQUIRE(usesVariables.size() == 1);
 }
@@ -91,7 +91,7 @@ TEST_CASE("Uses while statements") {
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    vector<string> usesVariables = storage->forwardRetrieveRelation(whileStmt->getLineNum(), USESV);
+    vector<string> usesVariables = storage->forwardRetrieveRelation(whileStmt->getLineNum(), USESSV);
 
     REQUIRE(usesVariables.size() == 1);
 }

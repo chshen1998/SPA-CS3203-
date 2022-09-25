@@ -59,6 +59,7 @@ enum class TokenType {
 
     SEMICOLON,
     COMMA,
+    DOT,
     OPEN_BRACKET,
     CLOSED_BRACKET,
     OPEN_ARROW,
@@ -106,10 +107,6 @@ struct PqlError
 
     PqlError(ErrorType type, string msg) : errorType(type), message(msg) {}
 };
-
-// Created for debugging purposes
-//ostream& operator<<(ostream& os, PqlToken& token);
-
 
 
 /*

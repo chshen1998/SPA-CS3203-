@@ -23,12 +23,8 @@ enum class TokenizeState {
 enum class SpecificClause {
     NONE, 
     USE,
-    FOLLOWS,
     MODIFIES,
-    PARENT,
     CALL,
-    NEXT,
-    AFFECT,
     ASSIGN,
     WHILE,
     IF
@@ -65,8 +61,8 @@ public:
 private:
     void Split();
     void ConvertIntoTokens();
-    void TokenizeBeforeSelect(int& i);
-    void TokenizeAfterSelect(int& i);
+    void TokenizeDeclarations(int& i);
+    void TokenizeSelectAndClauses(int& i);
 };
 
 

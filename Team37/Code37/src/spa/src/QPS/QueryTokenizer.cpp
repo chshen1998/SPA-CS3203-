@@ -14,10 +14,6 @@ using namespace std;
 
 unordered_map<TokenType, SpecificClause> tokenToClauseMap = {
     {TokenType::USES, SpecificClause::USE},
-    {TokenType::FOLLOWS, SpecificClause::FOLLOWS},
-    {TokenType::FOLLOWS_A, SpecificClause::FOLLOWS},
-    {TokenType::PARENT, SpecificClause::PARENT},
-    {TokenType::PARENT_A, SpecificClause::PARENT},
     {TokenType::MODIFIES, SpecificClause::MODIFIES},
     {TokenType::CALL, SpecificClause::CALL},
     {TokenType::WHILE, SpecificClause::WHILE},
@@ -116,13 +112,13 @@ void QueryTokenizer::ConvertIntoTokens() {
     
     int index = 0; // index of delimited_query that we are looping through
 
-    TokenizeBeforeSelect(index);
-    TokenizeAfterSelect(index);
+    TokenizeDeclarations(index);
+    TokenizeSelectAndClauses(index);
 }
 
 
 // Tokenization of Declarations
-void QueryTokenizer::TokenizeBeforeSelect(int& i) {
+void QueryTokenizer::TokenizeDeclarations(int& i) {
     bool isCurrentStringSynonym = false; // If not, it must be a keyword TokenType such as a design entity / select etc.
     
     while (i < delimited_query.size()) {
@@ -159,7 +155,7 @@ void QueryTokenizer::TokenizeBeforeSelect(int& i) {
 
 // Add 'AND' logic for Such That and Pattern Clause
 
-void QueryTokenizer::TokenizeAfterSelect(int& i) {
+void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
     TokenizeState currentState = TokenizeState::FINDING_KEYWORDS;
     SpecificClause clauseType = SpecificClause::NONE;
     int clauseCounter = 1;

@@ -12,7 +12,12 @@ using namespace std;
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
 #include "QueryValidator.h"
+#include "./Structures/PqlError.h"
+#include "./Structures/PqlToken.h"
+#include "./Structures/PqlQuery.h"
 #include "./Validators/ValidatorUtils.h"
+#include "./Types/ErrorType.h"
+#include "./Types/TokenType.h"
 #include "AST/TNode.h"
 #include "PKB/PKB.h"
 #include <unordered_map>
@@ -49,9 +54,6 @@ unordered_map<string, TokenType> stringToTokenMap = {
         {",", TokenType::COMMA},
         {"(", TokenType::OPEN_BRACKET},
         {")", TokenType::CLOSED_BRACKET},
-        {"<", TokenType::OPEN_ARROW},
-        {">", TokenType::CLOSED_ARROW},
-
 };
 
 unordered_map<ErrorType, string> errorTypeToStringMap = {

@@ -9,7 +9,11 @@
 #include <set>
 #include <memory>
 
-#include "../QPS.h"
+#include "../Structures/PqlError.h"
+#include "../Structures/PqlToken.h"
+#include "../Structures/PqlQuery.h"
+#include "../Types/ErrorType.h"
+#include "../Types/TokenType.h"
 #include "ValidatorUtils.h"
 
 

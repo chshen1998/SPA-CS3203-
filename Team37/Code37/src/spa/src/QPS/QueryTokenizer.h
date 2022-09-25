@@ -3,6 +3,12 @@ using namespace std;
 #ifndef TEAM37_QUERYTOKENIZER_H
 #define TEAM37_QUERYTOKENIZER_H
 
+#include "./Structures/PqlError.h"
+#include "./Structures/PqlToken.h"
+#include "./Structures/PqlQuery.h"
+#include "./Types/ErrorType.h"
+#include "./Types/TokenType.h"
+
 #include <string>
 #include <vector>
 #include <unordered_map>

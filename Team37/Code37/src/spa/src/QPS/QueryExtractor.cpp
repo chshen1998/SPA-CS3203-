@@ -4,7 +4,11 @@ using namespace std;
 #include <vector>
 
 #include "QueryExtractor.h"
-#include "QPS.h"
+#include "./Structures/PqlError.h"
+#include "./Structures/PqlToken.h"
+#include "./Structures/PqlQuery.h"
+#include "./Types/ErrorType.h"
+#include "./Types/TokenType.h"
 
 QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector) {
     tokens = tokenVector;

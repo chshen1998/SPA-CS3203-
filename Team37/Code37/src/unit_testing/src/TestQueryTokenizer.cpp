@@ -14,7 +14,136 @@ using namespace std;
 string inputQuery = "";
 QueryTokenizer q = QueryTokenizer("");
 
-TEST_CASE("Syntatically Valid and Correct Cases") {
+TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
+
+    SECTION("tuples in Select statement") {
+        inputQuery = R"(variable x, y, z; 
+                        Select <x,y, z>)";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "variable", "x", ",", "y", ",", "z", ";","Select", "<", "x", ",", "y", ",", "z", ">"};
+        vector<PqlToken> expectedTokens = {
+                PqlToken(TokenType::VARIABLE, "variable"),
+                PqlToken(TokenType::SYNONYM, "x"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "y"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "z"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::DECLARATION_END, ""),
+                PqlToken(TokenType::SELECT, "Select"),
+                PqlToken(TokenType::OPEN_ARROW, "<"),
+                PqlToken(TokenType::SYNONYM, "x"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "y"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "z"),
+                PqlToken(TokenType::CLOSED_ARROW, ">"),
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
+
+    SECTION("BOOLEAN in Select statement") {
+        inputQuery = R"(Select BOOLEAN such that Next* (2, 9))";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "Select", "BOOLEAN", "such", "that", "Next*", "(", "2", ",", "9", ")" };
+        vector<PqlToken> expectedTokens = {
+                PqlToken(TokenType::DECLARATION_END, ""),
+                PqlToken(TokenType::SELECT, "Select"),
+                PqlToken(TokenType::BOOLEAN, "BOOLEAN"),
+                PqlToken(TokenType::SUCH, "such"),
+                PqlToken(TokenType::THAT, "that"),
+                PqlToken(TokenType::NEXT_A, "Next*"),
+                PqlToken(TokenType::OPEN_BRACKET, "("),
+                PqlToken(TokenType::STATEMENT_NUM, "2"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::STATEMENT_NUM, "9"),
+                PqlToken(TokenType::CLOSED_BRACKET, ")"),
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
+
+    SECTION("attrRef in Select statement") {
+        inputQuery = R"(procedure p, q;
+                        Select p.procName such that Calls(p, q))";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "procedure", "p", ",", "q", ";", "Select", "p", ".", "procName", "such", "that", "Calls", "(", "p", ",", "q", ")" };
+        vector<PqlToken> expectedTokens = {
+                PqlToken(TokenType::PROCEDURE, "procedure"),
+                PqlToken(TokenType::SYNONYM, "p"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "q"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::DECLARATION_END, ""),
+                PqlToken(TokenType::SELECT, "Select"),
+                PqlToken(TokenType::SYNONYM, "p"),
+                PqlToken(TokenType::DOT, "."),
+                PqlToken(TokenType::PROCNAME, "procName"),
+                PqlToken(TokenType::SUCH, "such"),
+                PqlToken(TokenType::THAT, "that"),
+                PqlToken(TokenType::CALLS, "Calls"),
+                PqlToken(TokenType::OPEN_BRACKET, "("),
+                PqlToken(TokenType::SYNONYM, "p"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "q"),
+                PqlToken(TokenType::CLOSED_BRACKET, ")"),
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
+
+    SECTION("tuples in Select statement and if pattern") {
+        inputQuery = R"(if ifs; variable v; 
+                        Select <ifs, v> pattern ifs(v, _, _))";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "if", "ifs", ";", "variable", "v", ";","Select", "<", "ifs", ",", "v", ">", "pattern", "ifs", "(", "v", ",", "_", ",",
+                                                "_", ")" };
+  
+        vector<PqlToken> expectedTokens = {
+                PqlToken(TokenType::IF, "if"),
+                PqlToken(TokenType::SYNONYM, "ifs"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::VARIABLE, "variable"),
+                PqlToken(TokenType::SYNONYM, "v"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::DECLARATION_END, ""),
+                PqlToken(TokenType::SELECT, "Select"),
+                PqlToken(TokenType::OPEN_ARROW, "<"),
+                PqlToken(TokenType::SYNONYM, "ifs"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "v"),
+                PqlToken(TokenType::CLOSED_ARROW, ">"),
+                PqlToken(TokenType::PATTERN, "pattern"),
+                PqlToken(TokenType::SYNONYM, "ifs"),
+                PqlToken(TokenType::OPEN_BRACKET, "("),
+                PqlToken(TokenType::SYNONYM, "v"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::WILDCARD, "_"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::WILDCARD, "_"),
+                PqlToken(TokenType::CLOSED_BRACKET, ")"),
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
+
+}
+
+
+TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
 
     SECTION("Basic variable and Select statement") {
         inputQuery = R"(variable v; 
@@ -279,7 +408,7 @@ TEST_CASE("Syntatically Invalid Queries") {
         inputQuery = "variable a,b,  Select. Assign assign; Select b";
         q.resetQueryString(inputQuery);
 
-        vector<string> expectedDelimited = {"variable", "a", ",", "b", ",", "Select.", "Assign", "assign", ";",
+        vector<string> expectedDelimited = {"variable", "a", ",", "b", ",", "Select", ".", "Assign", "assign", ";",
                                             "Select", "b"};
         vector<PqlToken> expectedTokens = {
                 PqlToken(TokenType::VARIABLE, "variable"),
@@ -287,7 +416,8 @@ TEST_CASE("Syntatically Invalid Queries") {
                 PqlToken(TokenType::COMMA, ","),
                 PqlToken(TokenType::SYNONYM, "b"),
                 PqlToken(TokenType::COMMA, ","),
-                PqlToken(TokenType::UNKNOWN, "Select."), // We will account for this in milestone 2 as a AttrRef
+                PqlToken(TokenType::SYNONYM, "Select"), 
+                PqlToken(TokenType::UNKNOWN, "."),
                 PqlToken(TokenType::SYNONYM, "Assign"),
                 PqlToken(TokenType::SYNONYM, "assign"),
                 PqlToken(TokenType::SEMICOLON, ";"),
@@ -323,7 +453,7 @@ TEST_CASE("Syntatically Invalid Queries") {
                 PqlToken(TokenType::OPEN_BRACKET, "("),
                 PqlToken(TokenType::SYNONYM, "x"),
                 PqlToken(TokenType::COMMA, ","),
-                PqlToken(TokenType::SYNONYM, "y"),
+                PqlToken(TokenType::UNKNOWN, "y"),
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
                 PqlToken(TokenType::SUCH, "such"),
                 PqlToken(TokenType::THAT, "that"),

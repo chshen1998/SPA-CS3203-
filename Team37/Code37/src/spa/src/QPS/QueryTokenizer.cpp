@@ -3,6 +3,7 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
 
 #include <ctype.h>
 
@@ -13,7 +14,6 @@ using namespace std;
 #include "./Structures/PqlQuery.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
-#include <algorithm>
 
 
 unordered_map<TokenType, SpecificClause> tokenToClauseMap = {
@@ -45,10 +45,10 @@ void QueryTokenizer::Split() {
     string currentString;
     bool selectExists = false;
     bool insideInvertedCommas = false;
-
-    // Optimization of vector
     delimited_query = vector<string>();
-    delimited_query.reserve(query.size()); // Length of query shouldn't be THAT big
+
+    // Maximum length of delimited query is the number of characters in query string by Pigeonhole Principle
+    delimited_query.reserve(query.size()); 
 
     for (int i = 0; i < query.size(); i++) {
         // If the character is a blank (whitespace or tab etc)
@@ -67,7 +67,7 @@ void QueryTokenizer::Split() {
            
         // If the character is a single character symbol, for eg brackets or comma
         else if (stringToTokenMap.find(string{ query[i] }) != stringToTokenMap.end()) {
-            if (currentString != "") {
+            if (!currentString.empty()) {
                 delimited_query.push_back(currentString);
             }
             delimited_query.push_back(string{ query[i] });
@@ -165,8 +165,8 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
     int clauseCounter = 1;
 
     while (i < delimited_query.size()) {
-        TokenType currentToken = TokenType::SYNONYM;
-
+        TokenType currentToken = TokenType::UNKNOWN;
+     
         if (currentState == TokenizeState::FINDING_KEYWORDS) {
             if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end()) {
                 currentToken = stringToTokenMap[delimited_query[i]];
@@ -180,6 +180,9 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
                 if (currentToken == TokenType::PATTERN) {
                     currentState = TokenizeState::PATTERN;
                 }
+                if (currentToken == TokenType::WITH) {
+                    currentState = TokenizeState::WITH;
+                }
             }
             else {
                 // If this token is not where it is supposed to be, it will throw an error anyway
@@ -187,18 +190,38 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
             }
         }
 
-        // TODO: add tuple of elements logic
         else if (currentState == TokenizeState::SELECT) {
-            // If it is a symbol like semicolon, or comma
-            // Validator will throw an error here
+            // Validator will throw an error here if symbol is anything other than tuple or comma
             if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end() && !checkIfSynonym(delimited_query[i])) {
                 currentToken = stringToTokenMap[delimited_query[i]];
+
+                // Check if tuple
+                if (clauseCounter == 1 && currentToken == TokenType::OPEN_ARROW) {
+                    clauseType = SpecificClause::TUPLE;
+                    clauseCounter += 1;
+                }
             }
             else {
                 // If it is not a synonym, checkTokenType will assign whatever token the string is, and validator will catch this error
-                currentToken = checkSelectTokenType(delimited_query[i]);
+                currentToken = checkSelectTokenType(delimited_query[i], clauseType);
+
+                if (clauseCounter == 1 && currentToken == TokenType::SYNONYM) {
+                    // Check if its one synonym or an attrRef
+                    if (i != delimited_query.size() - 1 && delimited_query[i + 1] == ".") {
+                        clauseType = SpecificClause::ATTR_REF;
+                        clauseCounter += 1;
+                    }
+                }
             }
-            currentState = TokenizeState::FINDING_KEYWORDS; 
+
+            // If one elem / BOOLEAN or tuple finishes 
+            if (clauseType == SpecificClause::NONE || currentToken == TokenType::CLOSED_ARROW ||
+                (clauseType == SpecificClause::ATTR_REF && checkIfAttrName(delimited_query[i]))
+                ) {
+                currentState = TokenizeState::FINDING_KEYWORDS;
+                clauseType = SpecificClause::NONE;
+                clauseCounter = 1;
+            }
         }
 
         // TODO: "Add AND logic for advanced SPA"
@@ -218,8 +241,8 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
                     }
                 }
             }
-            // CurrentState == PATTERN
-            else {
+
+            else if (currentState == TokenizeState::PATTERN) {
                 if (clauseCounter % 2 != 0) {
                     currentToken = checkPatternTokenType(delimited_query[i], clauseCounter);
                 }
@@ -230,13 +253,42 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
                 }
             }
 
+            // TODO: WHILE
+            else {
+
+            }
+
             clauseCounter += 1;
             
             // If we finish a clause, we reset our clause counter and state
             if (currentToken == TokenType::CLOSED_BRACKET) {
-                currentState = TokenizeState::FINDING_KEYWORDS;
-                clauseType = SpecificClause::NONE;
-                clauseCounter = 1;
+
+                // If there is an "AND" keyword
+                if (i != delimited_query.size() - 1 && delimited_query[i + 1] == "and") {
+                    tokens.push_back(PqlToken(currentToken, delimited_query[i]));
+                    tokens.push_back(PqlToken(TokenType::AND, delimited_query[i+1]));
+                    i += 2;
+
+                    if (currentState == TokenizeState::SUCH_THAT) {
+                        clauseCounter = suchThatClauseTypeIndex;
+                    }
+
+                    else if (currentState == TokenizeState::PATTERN) {
+                        clauseCounter = patternClauseFirstArgIndex;
+                    }
+
+                    // WHILE
+                    else {
+
+                    }
+
+                    continue;
+                }
+                else {
+                    currentState = TokenizeState::FINDING_KEYWORDS;
+                    clauseType = SpecificClause::NONE;
+                    clauseCounter = 1;
+                }
             }
         }
 
@@ -252,10 +304,17 @@ inline TokenType checkDeclarationTokenType(const string& s) {
     return checkIfSynonym(s) ? TokenType::SYNONYM : TokenType::UNKNOWN;
 }
 
-inline TokenType checkSelectTokenType(const string& s) {
-    return s == "BOOLEAN" ? TokenType::BOOLEAN
-         : checkIfSynonym(s) ? TokenType::SYNONYM
-         : TokenType::UNKNOWN;
+TokenType checkSelectTokenType(const string& s, const SpecificClause& clauseType) {
+    if (clauseType == SpecificClause::ATTR_REF
+        && stringToTokenMap.find(s) != stringToTokenMap.end()) {
+        return stringToTokenMap[s];
+    }
+    else if (clauseType == SpecificClause::NONE && s == "BOOLEAN") {
+        return TokenType::BOOLEAN;
+    }
+    else {
+        return checkIfSynonym(s) ? TokenType::SYNONYM : TokenType::UNKNOWN;
+    }
 }
 
 TokenType checkSuchThatTokenType(const string& s, const SpecificClause& clauseType, const int& argNum) {
@@ -278,6 +337,8 @@ TokenType checkPatternTokenType(const string& s, const int& argNum) {
             return getEntRefToken(s);
         case patternClauseThirdArgIndex:
             return getExpressionSpec(s);
+        case patternClauseFourthArgIndex:
+            return s == "_" ? TokenType::WILDCARD : TokenType::UNKNOWN;
         default:
             return TokenType::UNKNOWN;
     }
@@ -349,4 +410,8 @@ inline bool checkIfString(const string& s) {
 
 inline bool checkIfDesignEntity(const string& s) {
     return s == "stmt" || s == "read" || s == "print" || s == "call" || s == "while" || s == "if" || s == "assign" || s == "variable" || s == "constant" || s == "procedure";
+}
+
+inline bool checkIfAttrName(const string& s) {
+    return s == "procName" || s == "varName" || s == "value" || s == "stmt#";
 }

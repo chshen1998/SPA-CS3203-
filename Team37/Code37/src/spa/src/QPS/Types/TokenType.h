@@ -11,14 +11,15 @@ using namespace std;
  * existing token types
  */
 enum class TokenType {
+    // The default type if our tokenizer is unable to identify the string
     UNKNOWN,
 
+    // Design Entities
     VARIABLE,
     CONSTANT,
     ASSIGN,
     PROCEDURE,
     STATEMENT,
-
     WHILE,
     IF,
     ELSE,
@@ -26,6 +27,7 @@ enum class TokenType {
     PRINT,
     CALL,
 
+    // Arguments / return types 
     BOOLEAN,
     SYNONYM,
     NUMBER,
@@ -34,6 +36,7 @@ enum class TokenType {
     WILDCARD,
     WILDCARD_STRING,
 
+    // Keywords
     SELECT,
     PATTERN,
     USES,
@@ -44,15 +47,33 @@ enum class TokenType {
     PARENT_A,
     FOLLOWS,
     FOLLOWS_A,
+    CALLS,
+    CALLS_A,
+    NEXT,
+    NEXT_A,
+    AFFECTS,
+    AFFECTS_A,
 
+    // Filter words
     SUCH,
     THAT,
     AND,
+    WITH,
 
+    // Attribute Names
+    PROCNAME,
+    VARNAME,
+    VALUE,
+    STMTLINE,
+
+    // Symbols
     SEMICOLON,
     COMMA,
+    DOT,
     OPEN_BRACKET,
     CLOSED_BRACKET,
+    OPEN_ARROW,
+    CLOSED_ARROW,
 
     EMPTY,
     DECLARATION_END,

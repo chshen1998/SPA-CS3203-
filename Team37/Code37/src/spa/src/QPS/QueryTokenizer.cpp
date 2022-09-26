@@ -253,15 +253,17 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
                 }
             }
 
-            // TODO: WHILE
+            // TODO: WITH
             else {
-
+              
             }
 
             clauseCounter += 1;
             
             // If we finish a clause, we reset our clause counter and state
-            if (currentToken == TokenType::CLOSED_BRACKET) {
+            if (currentToken == TokenType::CLOSED_BRACKET ||
+                (checkIfAttrName(delimited_query[i]) && currentState == TokenizeState::WITH)
+                ) {
 
                 // If there is an "AND" keyword
                 if (i != delimited_query.size() - 1 && delimited_query[i + 1] == "and") {
@@ -277,10 +279,8 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
                         clauseCounter = patternClauseFirstArgIndex;
                     }
 
-                    // WHILE
-                    else {
-
-                    }
+                    // WITH
+                    else { }
 
                     continue;
                 }

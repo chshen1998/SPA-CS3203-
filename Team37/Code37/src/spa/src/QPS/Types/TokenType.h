@@ -70,6 +70,7 @@ enum class TokenType {
     SEMICOLON,
     COMMA,
     DOT,
+    EQUAL,
     OPEN_BRACKET,
     CLOSED_BRACKET,
     OPEN_ARROW,

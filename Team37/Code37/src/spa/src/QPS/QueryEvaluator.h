@@ -14,8 +14,11 @@
 #include "PKB/Types/StatementType.h"
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/Types/StmtVarRelationType.h"
-#include "QPS.h"
-
+#include "./Structures/PqlError.h"
+#include "./Structures/PqlToken.h"
+#include "./Structures/PqlQuery.h"
+#include "./Types/ErrorType.h"
+#include "./Types/TokenType.h"
 
 extern unordered_map<TokenType, StatementType> tokenTypeToStatementType;
 extern unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType;

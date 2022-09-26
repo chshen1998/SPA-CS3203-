@@ -4,6 +4,7 @@ Select v
 Syntax Error 
 5000
 2 - Variable not declared
+
 Select v
 Semantic Error 
 5000

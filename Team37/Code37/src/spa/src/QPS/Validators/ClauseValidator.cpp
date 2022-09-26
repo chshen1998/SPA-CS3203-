@@ -1,6 +1,11 @@
 using namespace std;
 
 #include "ClauseValidator.h"
+#include "../Structures/PqlError.h"
+#include "../Structures/PqlToken.h"
+#include "../Structures/PqlQuery.h"
+#include "../Types/ErrorType.h"
+#include "../Types/TokenType.h"
 
 ClauseValidator::ClauseValidator(unordered_map<string, TokenType> declarationsMap)
 {

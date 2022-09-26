@@ -48,7 +48,7 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
 
     // Variable used for iteration in while loop
     char nextChar;
-    // push_back "left" side expression to this variable
+    // string::insert "right" side expression to this variable
     string expression;
     // Counter in case brackets are encountered. Essentially if this value is not 0 then just keep parsing
     int bracketCounter = 0;
@@ -57,38 +57,38 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
 
     // Only checks low priority operators, creates operated expression if found
     while(line.length() > 0) {
-        nextChar = line[0];
+        nextChar = line.back();
         // Logic to handle "skipping" when bracket counting has started
         if (bracketCounter != 0) {
-            if (nextChar == '(') {
+            if (nextChar == ')') {
                 bracketCounter += 1;
-            } else if (nextChar == ')') {
+            } else if (nextChar == '(') {
                 bracketCounter -= 1;
             }
-
-            expression.push_back(nextChar);
-            line.erase(0, 1);
+            expression.insert(0, 1, nextChar);
+            line.pop_back();
             continue;
         }
 
-        if (nextChar == '(') {
+        if (nextChar == ')') {
             bracketCounter += 1;
-            expression.push_back(nextChar);
-            line.erase(0, 1);
+            expression.insert(0, 1, nextChar);
+            line.pop_back();
             bracketsDetected = true;
             continue;
         }
 
         if (lowPriorityOperators.find(nextChar) == string::npos) {
-            expression.push_back(nextChar);
-            line.erase(0, 1);
+            expression.insert(0, 1, nextChar);
+            line.pop_back();
             continue;
         } else {
+            line.pop_back();
             // Recursive calls
             shared_ptr<RelationalFactor> leftSide =
-                    tokenizeRelFactor(Utils::trim(expression));
+                    tokenizeRelFactor(Utils::trim(line));
             shared_ptr<RelationalFactor> rightSide =
-                    tokenizeRelFactor(Utils::trim(line.substr(1)));
+                    tokenizeRelFactor(Utils::trim(expression));
             shared_ptr<OperatedExpression> operatedExpression;
             // Create operated expressions
             if (nextChar == '+') {
@@ -117,38 +117,40 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
     bracketCounter = 0;
     // Another while loop that checks high priority stuff
     while(line.length() > 0) {
-        nextChar = line[0];
+        nextChar = line.back();
         // Logic to handle "skipping" when bracket counting has started
         if (bracketCounter != 0) {
-            if (nextChar == '(') {
+            if (nextChar == ')') {
                 bracketCounter += 1;
-            } else if (nextChar == ')') {
+            } else if (nextChar == '(') {
                 bracketCounter -= 1;
             }
-            if (bracketCounter != 0) { // Don't add the final close bracket
-                expression.push_back(nextChar);
+            if (bracketCounter != 0) { // Don't add the final bracket
+                expression.insert(0, 1, nextChar);
             }
-            line.erase(0, 1);
+            line.pop_back();
             continue;
         }
 
-        if (nextChar == '(') {
+        if (nextChar == ')') {
             bracketCounter += 1;
-            line.erase(0, 1);
+            // Don't add the first bracket
+            line.pop_back();
             bracketsDetected = true;
             continue;
         }
 
         if (highPriorityOperators.find(nextChar) == string::npos) {
-            expression.push_back(nextChar);
-            line.erase(0, 1);
+            expression.insert(0, 1, nextChar);
+            line.pop_back();
             continue;
         } else {
+            line.pop_back();
             // Recursive calls
             shared_ptr<RelationalFactor> leftSide =
-                    tokenizeRelFactor(Utils::trim(expression));
+                    tokenizeRelFactor(Utils::trim(line));
             shared_ptr<RelationalFactor> rightSide =
-                    tokenizeRelFactor(Utils::trim(line.substr(1)));
+                    tokenizeRelFactor(Utils::trim(expression));
             shared_ptr<OperatedExpression> operatedExpression;
             // Create operated expressions
             if (nextChar == '*') {

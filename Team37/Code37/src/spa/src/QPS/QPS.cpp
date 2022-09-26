@@ -23,6 +23,9 @@ using namespace std;
 #include <unordered_map>
 
 
+/*
+* Sets the queryServicer from PKB so that we can make API calls to the PKB when evaluating a query
+*/
 void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
     QPS::servicer = s;
 }

@@ -38,7 +38,7 @@
 //    storage->storeAST(sc);
 //
 //
-//    vector<string> modifiedVariables = storage->forwardRetrieveRelation(1, MODIFIESV);
+//    vector<string> modifiedVariables = storage->forwardRetrieveRelation(1, MODIFIESSV);
 //
 //    REQUIRE(modifiedVariables.size() == 1);
 //}
@@ -59,7 +59,7 @@
 //    // We start by traversing the AST
 //    storage->storeAST(sc);
 //
-//    vector<string> modifiedVariables = storage->forwardRetrieveRelation(1, MODIFIESV);
+//    vector<string> modifiedVariables = storage->forwardRetrieveRelation(1, MODIFIESSV);
 //
 //    REQUIRE(modifiedVariables.size() == 1);
 //}
@@ -87,7 +87,7 @@
 ////    // We start by traversing the AST
 ////    storage->storeAST(sc);
 ////
-////    vector<string> modifiedVariables = storage->forwardRetrieveRelation(1, MODIFIESV);
+////    vector<string> modifiedVariables = storage->forwardRetrieveRelation(1, MODIFIESSV);
 ////
 ////    REQUIRE(modifiedVariables.size() == 1);
 ////}

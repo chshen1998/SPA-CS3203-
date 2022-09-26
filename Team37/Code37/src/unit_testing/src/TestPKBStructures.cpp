@@ -4,6 +4,7 @@ using namespace std;
 
 #include "PKB/Structures/Array2D.h"
 #include "PKB/Structures/StatementVariableStorage.h"
+#include "PKB/Structures/ProcedureVariableStorage.h"
 
 TEST_CASE("Structure - Matrix") {
     Array2D matrix = Array2D(2);
@@ -95,6 +96,41 @@ TEST_CASE("Structure - StatementVariableStorage") {
     vector<int> cmp_x = { 1, 2 };
     vector<int> cmp_y = { 2, 3 };
     vector<int> cmp_z = { 3 };
+
+    REQUIRE(store.reverseRetrieve("x") == cmp_x);
+    REQUIRE(store.reverseRetrieve("y") == cmp_y);
+    REQUIRE(store.reverseRetrieve("z") == cmp_z);
+}
+
+TEST_CASE("Structure - ProcedureVariableStorage") {
+    ProcedureVariableStorage store = ProcedureVariableStorage();
+
+    // Initally Empty
+    REQUIRE(!store.retrieve("main", "x"));
+    REQUIRE(store.forwardRetrieve("main").size() == 0);
+    REQUIRE(store.reverseRetrieve("x").size() == 0);
+
+    store.store("main", "x");
+    store.store("test", "x");
+    store.store("test", "y");
+    store.store("sum", "y");
+    store.store("sum", "z");
+
+    REQUIRE(store.retrieve("main", "x"));
+    REQUIRE(store.retrieve("test", "y"));
+    REQUIRE(!store.retrieve("main", "z"));
+
+    vector<string> cmp_1 = { "x" };
+    vector<string> cmp_2 = { "x", "y" };
+    vector<string> cmp_3 = { "y", "z" };
+
+    REQUIRE(store.forwardRetrieve("main") == cmp_1);
+    REQUIRE(store.forwardRetrieve("test") == cmp_2);
+    REQUIRE(store.forwardRetrieve("sum") == cmp_3);
+
+    vector<string> cmp_x = { "main", "test"};
+    vector<string> cmp_y = { "test", "sum"};
+    vector<string> cmp_z = { "sum" };
 
     REQUIRE(store.reverseRetrieve("x") == cmp_x);
     REQUIRE(store.reverseRetrieve("y") == cmp_y);

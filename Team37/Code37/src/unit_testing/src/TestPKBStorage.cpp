@@ -199,13 +199,13 @@ TEST_CASE("Storage - Stmt-Var Relation") {
     shared_ptr<Storage> store = make_shared<Storage>();
 
     // Initally Empty
-    REQUIRE(!store->retrieveRelation(1, "x", USESV));
-    REQUIRE(store->forwardRetrieveRelation(1, USESV).size() == 0);
-    REQUIRE(store->reverseRetrieveRelation("x", USESV).size() == 0);
+    REQUIRE(!store->retrieveRelation(1, "x", USESSV));
+    REQUIRE(store->forwardRetrieveRelation(1, USESSV).size() == 0);
+    REQUIRE(store->reverseRetrieveRelation("x", USESSV).size() == 0);
 
-    REQUIRE(!store->retrieveRelation(1, "x", MODIFIESV));
-    REQUIRE(store->forwardRetrieveRelation(1, MODIFIESV).size() == 0);
-    REQUIRE(store->reverseRetrieveRelation("x", MODIFIESV).size() == 0);
+    REQUIRE(!store->retrieveRelation(1, "x", MODIFIESSV));
+    REQUIRE(store->forwardRetrieveRelation(1, MODIFIESSV).size() == 0);
+    REQUIRE(store->reverseRetrieveRelation("x", MODIFIESSV).size() == 0);
 
 
     vector<string> cmp_1 = {"x"};
@@ -217,41 +217,102 @@ TEST_CASE("Storage - Stmt-Var Relation") {
     vector<int> cmp_z = {3};
 
     // UsesV
-    store->storeRelation(1, "x", USESV);
-    store->storeRelation(2, "x", USESV);
-    store->storeRelation(2, "y", USESV);
-    store->storeRelation(3, "y", USESV);
-    store->storeRelation(3, "z", USESV);
+    store->storeRelation(1, "x", USESSV);
+    store->storeRelation(2, "x", USESSV);
+    store->storeRelation(2, "y", USESSV);
+    store->storeRelation(3, "y", USESSV);
+    store->storeRelation(3, "z", USESSV);
 
-    REQUIRE(store->retrieveRelation(1, "x", USESV));
-    REQUIRE(store->retrieveRelation(2, "y", USESV));
-    REQUIRE(!store->retrieveRelation(1, "z", USESV));
+    REQUIRE(store->retrieveRelation(1, "x", USESSV));
+    REQUIRE(store->retrieveRelation(2, "y", USESSV));
+    REQUIRE(!store->retrieveRelation(1, "z", USESSV));
 
-    REQUIRE(store->forwardRetrieveRelation(1, USESV) == cmp_1);
-    REQUIRE(store->forwardRetrieveRelation(2, USESV) == cmp_2);
-    REQUIRE(store->forwardRetrieveRelation(3, USESV) == cmp_3);
+    REQUIRE(store->forwardRetrieveRelation(1, USESSV) == cmp_1);
+    REQUIRE(store->forwardRetrieveRelation(2, USESSV) == cmp_2);
+    REQUIRE(store->forwardRetrieveRelation(3, USESSV) == cmp_3);
 
-    REQUIRE(store->reverseRetrieveRelation("x", USESV) == cmp_x);
-    REQUIRE(store->reverseRetrieveRelation("y", USESV) == cmp_y);
-    REQUIRE(store->reverseRetrieveRelation("z", USESV) == cmp_z);
+    REQUIRE(store->reverseRetrieveRelation("x", USESSV) == cmp_x);
+    REQUIRE(store->reverseRetrieveRelation("y", USESSV) == cmp_y);
+    REQUIRE(store->reverseRetrieveRelation("z", USESSV) == cmp_z);
 
     // ModifiesV
-    store->storeRelation(1, "x", MODIFIESV);
-    store->storeRelation(2, "x", MODIFIESV);
-    store->storeRelation(2, "y", MODIFIESV);
-    store->storeRelation(3, "y", MODIFIESV);
-    store->storeRelation(3, "z", MODIFIESV);
+    store->storeRelation(1, "x", MODIFIESSV);
+    store->storeRelation(2, "x", MODIFIESSV);
+    store->storeRelation(2, "y", MODIFIESSV);
+    store->storeRelation(3, "y", MODIFIESSV);
+    store->storeRelation(3, "z", MODIFIESSV);
 
-    REQUIRE(store->retrieveRelation(1, "x", MODIFIESV));
-    REQUIRE(store->retrieveRelation(2, "y", MODIFIESV));
-    REQUIRE(!store->retrieveRelation(1, "z", MODIFIESV));
+    REQUIRE(store->retrieveRelation(1, "x", MODIFIESSV));
+    REQUIRE(store->retrieveRelation(2, "y", MODIFIESSV));
+    REQUIRE(!store->retrieveRelation(1, "z", MODIFIESSV));
 
-    REQUIRE(store->forwardRetrieveRelation(1, MODIFIESV) == cmp_1);
-    REQUIRE(store->forwardRetrieveRelation(2, MODIFIESV) == cmp_2);
-    REQUIRE(store->forwardRetrieveRelation(3, MODIFIESV) == cmp_3);
+    REQUIRE(store->forwardRetrieveRelation(1, MODIFIESSV) == cmp_1);
+    REQUIRE(store->forwardRetrieveRelation(2, MODIFIESSV) == cmp_2);
+    REQUIRE(store->forwardRetrieveRelation(3, MODIFIESSV) == cmp_3);
 
-    REQUIRE(store->reverseRetrieveRelation("x", MODIFIESV) == cmp_x);
-    REQUIRE(store->reverseRetrieveRelation("y", MODIFIESV) == cmp_y);
-    REQUIRE(store->reverseRetrieveRelation("z", MODIFIESV) == cmp_z);
+    REQUIRE(store->reverseRetrieveRelation("x", MODIFIESSV) == cmp_x);
+    REQUIRE(store->reverseRetrieveRelation("y", MODIFIESSV) == cmp_y);
+    REQUIRE(store->reverseRetrieveRelation("z", MODIFIESSV) == cmp_z);
+
+}
+
+TEST_CASE("Storage - Proc-Var Relation") {
+    shared_ptr<Storage> store = make_shared<Storage>();
+
+    // Initally Empty
+    REQUIRE(!store->retrieveRelation("main", "x", USESPV));
+    REQUIRE(store->forwardRetrieveRelation("main", USESPV).size() == 0);
+    REQUIRE(store->reverseRetrieveRelation("x", USESPV).size() == 0);
+
+    REQUIRE(!store->retrieveRelation("main", "x", MODIFIESPV));
+    REQUIRE(store->forwardRetrieveRelation("main", MODIFIESPV).size() == 0);
+    REQUIRE(store->reverseRetrieveRelation("x", MODIFIESPV).size() == 0);
+
+
+    vector<string> cmp_1 = { "x" };
+    vector<string> cmp_2 = { "x", "y" };
+    vector<string> cmp_3 = { "y", "z" };
+
+    vector<string> cmp_x = { "main", "test"};
+    vector<string> cmp_y = { "test", "sum"};
+    vector<string> cmp_z = { "sum"};
+
+    // UsesV
+    store->storeRelation("main", "x", USESPV);
+    store->storeRelation("test", "x", USESPV);
+    store->storeRelation("test", "y", USESPV);
+    store->storeRelation("sum", "y", USESPV);
+    store->storeRelation("sum", "z", USESPV);
+
+    REQUIRE(store->retrieveRelation("main", "x", USESPV));
+    REQUIRE(store->retrieveRelation("test", "y", USESPV));
+    REQUIRE(!store->retrieveRelation("main", "z", USESPV));
+
+    REQUIRE(store->forwardRetrieveRelation("main", USESPV) == cmp_1);
+    REQUIRE(store->forwardRetrieveRelation("test", USESPV) == cmp_2);
+    REQUIRE(store->forwardRetrieveRelation("sum", USESPV) == cmp_3);
+
+    REQUIRE(store->reverseRetrieveRelation("x", USESPV) == cmp_x);
+    REQUIRE(store->reverseRetrieveRelation("y", USESPV) == cmp_y);
+    REQUIRE(store->reverseRetrieveRelation("z", USESPV) == cmp_z);
+
+    // ModifiesV
+    store->storeRelation("main", "x", MODIFIESPV);
+    store->storeRelation("test", "x", MODIFIESPV);
+    store->storeRelation("test", "y", MODIFIESPV);
+    store->storeRelation("sum", "y", MODIFIESPV);
+    store->storeRelation("sum", "z", MODIFIESPV);
+
+    REQUIRE(store->retrieveRelation("main", "x", MODIFIESPV));
+    REQUIRE(store->retrieveRelation("test", "y", MODIFIESPV));
+    REQUIRE(!store->retrieveRelation("main", "z", MODIFIESPV));
+
+    REQUIRE(store->forwardRetrieveRelation("main", MODIFIESPV) == cmp_1);
+    REQUIRE(store->forwardRetrieveRelation("test", MODIFIESPV) == cmp_2);
+    REQUIRE(store->forwardRetrieveRelation("sum", MODIFIESPV) == cmp_3);
+
+    REQUIRE(store->reverseRetrieveRelation("x", MODIFIESPV) == cmp_x);
+    REQUIRE(store->reverseRetrieveRelation("y", MODIFIESPV) == cmp_y);
+    REQUIRE(store->reverseRetrieveRelation("z", MODIFIESPV) == cmp_z);
 
 }

@@ -33,10 +33,10 @@ unordered_map<TokenType, StatementType> tokenTypeToStatementType = {
 };
 
 unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType = {
-    { TokenType::USES, StmtVarRelationType::USESV},
-    { TokenType::USES_P, StmtVarRelationType::USESV },
-    { TokenType::MODIFIES, StmtVarRelationType::MODIFIESV },
-    { TokenType::MODIFIES_P, StmtVarRelationType::MODIFIESV },
+    { TokenType::USES, StmtVarRelationType::USESSV},
+    { TokenType::USES_P, StmtVarRelationType::USESSV },
+    { TokenType::MODIFIES, StmtVarRelationType::MODIFIESSV },
+    { TokenType::MODIFIES_P, StmtVarRelationType::MODIFIESSV },
 };
 
 unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType = {
@@ -263,7 +263,7 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
                             rightArg.value.substr(1, rightArg.value.size() - 2);
             
             vector<int> finalResult;
-            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(parsed, StmtVarRelationType::USESV);
+            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(parsed, StmtVarRelationType::USESSV);
             
             getListOfStmtNumbersIntersection(finalResult, allStmtWithRightArg, allAssignStmtLines);
            
@@ -279,7 +279,7 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
                 string value = leftArg.value.substr(1, leftArg.value.size() - 2);
 
                 vector<int> finalResult;
-                vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(value, StmtVarRelationType::MODIFIESV);
+                vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(value, StmtVarRelationType::MODIFIESSV);
 
                 getListOfStmtNumbersIntersection(finalResult, allStmtWithLeftArg, allAssignStmtLines);
 
@@ -294,7 +294,7 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
                 intermediate[0].push_back(leftArg.value);
 
                 for (shared_ptr<Statement> s : allAssignStmts) {
-                    string v = servicer->forwardRetrieveRelation(s->getLineNum(), StmtVarRelationType::MODIFIESV)[0];
+                    string v = servicer->forwardRetrieveRelation(s->getLineNum(), StmtVarRelationType::MODIFIESSV)[0];
                     intermediate.push_back(vector<string> {to_string(s->getLineNum()), v });
                 }
             }   
@@ -306,13 +306,13 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
                                     rightArg.value.substr(2, rightArg.value.size() - 4) :
                                     rightArg.value.substr(1, rightArg.value.size() - 2);
 
-            vector<int> stmtWithRightArg = servicer->reverseRetrieveRelation(rightArgParsed, StmtVarRelationType::USESV);
+            vector<int> stmtWithRightArg = servicer->reverseRetrieveRelation(rightArgParsed, StmtVarRelationType::USESSV);
 
             // pattern a ("x", _"y"_) -> Get intersection with "x" on LHS, and _"y"_ on RHS and all assignment statements
             if (leftArg.type != TokenType::SYNONYM) {
                 string leftArgParsed = leftArg.value.substr(1, leftArg.value.size() - 2);
 
-                vector<int> stmtWithLeftArg = servicer->reverseRetrieveRelation(leftArgParsed, StmtVarRelationType::MODIFIESV);
+                vector<int> stmtWithLeftArg = servicer->reverseRetrieveRelation(leftArgParsed, StmtVarRelationType::MODIFIESSV);
                 vector<int> assignStmts;
                 vector<int> finalResult;
 
@@ -331,7 +331,7 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
                 getListOfStmtNumbersIntersection(finalResult, stmtWithRightArg, allAssignStmtLines);
 
                 for (int i : finalResult) {
-                    vector<string> variables = servicer->forwardRetrieveRelation(i, StmtVarRelationType::MODIFIESV);
+                    vector<string> variables = servicer->forwardRetrieveRelation(i, StmtVarRelationType::MODIFIESSV);
 
                     for (string v : variables) {
                         intermediate.push_back(vector<string> {to_string(i), v});

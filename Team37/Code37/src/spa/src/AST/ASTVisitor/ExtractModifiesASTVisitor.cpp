@@ -57,7 +57,7 @@ void ExtractModifiesASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) 
  */
 void ExtractModifiesASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
     string variable = readStmt->getVariableName();
-    this->storage->storeRelation(readStmt->getLineNum(), variable, MODIFIESV);
+    this->storage->storeRelation(readStmt->getLineNum(), variable, MODIFIESSV);
     this->visitParentAndStore(readStmt->getParent(), variable);
 }
 
@@ -123,7 +123,7 @@ void ExtractModifiesASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt)
 void ExtractModifiesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
     string variable = assignStmt->getVarName();
 
-    this->storage->storeRelation(assignStmt->getLineNum(), variable, MODIFIESV);
+    this->storage->storeRelation(assignStmt->getLineNum(), variable, MODIFIESSV);
     this->visitParentAndStore(assignStmt->getParent(), variable);
 }
 
@@ -205,26 +205,26 @@ void ExtractModifiesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, stri
         // Assign Statement: Modifies(a, v)
         if (dynamic_pointer_cast<AssignStatement>(node) != nullptr) {
             shared_ptr<AssignStatement> assignStmt = dynamic_pointer_cast<AssignStatement>(node);
-            this->storage->storeRelation(assignStmt->getLineNum(), variable, MODIFIESV);
+            this->storage->storeRelation(assignStmt->getLineNum(), variable, MODIFIESSV);
         }
 
         // Read Statement: Modifies(re, v)
         // JUST A SAFETY NET: shouldn't be called as Read Stmts have no children
         if (dynamic_pointer_cast<ReadStatement>(node) != nullptr) {
             shared_ptr<ReadStatement> readStmt = dynamic_pointer_cast<ReadStatement>(node);
-            this->storage->storeRelation(readStmt->getLineNum(), variable, MODIFIESV);
+            this->storage->storeRelation(readStmt->getLineNum(), variable, MODIFIESSV);
         }
 
         // If Statement: Modifies(s, v)
         if (dynamic_pointer_cast<IfStatement>(node) != nullptr) {
             shared_ptr<IfStatement> ifStmt = dynamic_pointer_cast<IfStatement>(node);
-            this->storage->storeRelation(ifStmt->getLineNum(), variable, MODIFIESV);
+            this->storage->storeRelation(ifStmt->getLineNum(), variable, MODIFIESSV);
         }
 
         // While Statement: Modifies(s, v)
         if (dynamic_pointer_cast<WhileStatement>(node) != nullptr) {
             shared_ptr<WhileStatement> whileStmt = dynamic_pointer_cast<WhileStatement>(node);
-            this->storage->storeRelation(whileStmt->getLineNum(), variable, MODIFIESV);
+            this->storage->storeRelation(whileStmt->getLineNum(), variable, MODIFIESSV);
         }
 
         // TODO: Procedure Statement: Modifies(p, v)

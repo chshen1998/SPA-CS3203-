@@ -100,6 +100,8 @@ add_library(spa ${srcs} ${headers}
         src/PKB/Structures/Array2D.cpp
         src/PKB/Structures/StatementVariableStorage.h
         src/PKB/Structures/StatementVariableStorage.cpp
+        src/PKB/Structures/ProcedureVariableStorage.h
+        src/PKB/Structures/ProcedureVariableStorage.cpp
         src/PKB/Structures/Array2D.cpp
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.cpp
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.h
@@ -111,7 +113,17 @@ add_library(spa ${srcs} ${headers}
         src/AST/ASTVisitor/ExtractModifiesASTVisitor.cpp
         src/AST/ASTVisitor/ExtractModifiesASTVisitor.h
         src/AST/ASTVisitor/ExtractUsesASTVisitor.cpp
-        src/AST/ASTVisitor/ExtractUsesASTVisitor.h  "src/QPS/Structures/PqlError.h" "src/QPS/Types/ErrorType.h" "src/QPS/Structures/PqlQuery.h" "src/QPS/Types/TokenType.h" "src/QPS/Structures/PqlToken.h" "src/QPS/Types/TokenType.cpp" "src/QPS/Types/ErrorType.cpp" "src/QPS/Structures/PqlToken.cpp")
+        src/AST/ASTVisitor/ExtractUsesASTVisitor.h
+        src/QPS/Structures/PqlError.h
+        src/QPS/Types/ErrorType.h
+        src/QPS/Structures/PqlQuery.h
+        src/QPS/Types/TokenType.h
+        src/QPS/Structures/PqlToken.h
+        src/QPS/Types/TokenType.cpp
+        src/QPS/Types/ErrorType.cpp
+        src/QPS/Structures/PqlToken.cpp
+        src/PKB/Types/ProcVarRelationType.h)
+
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

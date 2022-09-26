@@ -65,7 +65,7 @@ void ExtractUsesASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStm
  */
 void ExtractUsesASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt) {
     string variable = printStmt->getVariableName();
-    this->storage->storeRelation(printStmt->getLineNum(), variable, USESV);
+    this->storage->storeRelation(printStmt->getLineNum(), variable, USESSV);
     this->visitParentAndStore(printStmt->getParent(), variable);
 }
 
@@ -201,26 +201,26 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
         // Assign Statement: Uses(a, v)
         if (dynamic_pointer_cast<AssignStatement>(node) != nullptr) {
             shared_ptr<AssignStatement> assignStmt = dynamic_pointer_cast<AssignStatement>(node);
-            this->storage->storeRelation(assignStmt->getLineNum(), variable, USESV);
+            this->storage->storeRelation(assignStmt->getLineNum(), variable, USESSV);
         }
 
         // Read Statement: Uses(re, v)
         // JUST A SAFETY NET: shouldn't be called as Read Stmts have no children
         if (dynamic_pointer_cast<ReadStatement>(node) != nullptr) {
             shared_ptr<ReadStatement> readStmt = dynamic_pointer_cast<ReadStatement>(node);
-            this->storage->storeRelation(readStmt->getLineNum(), variable, USESV);
+            this->storage->storeRelation(readStmt->getLineNum(), variable, USESSV);
         }
 
         // If Statement: Uses(s, v)
         if (dynamic_pointer_cast<IfStatement>(node) != nullptr) {
             shared_ptr<IfStatement> ifStmt = dynamic_pointer_cast<IfStatement>(node);
-            this->storage->storeRelation(ifStmt->getLineNum(), variable, USESV);
+            this->storage->storeRelation(ifStmt->getLineNum(), variable, USESSV);
         }
 
         // While Statement: Uses(s, v)
         if (dynamic_pointer_cast<WhileStatement>(node) != nullptr) {
             shared_ptr<WhileStatement> whileStmt = dynamic_pointer_cast<WhileStatement>(node);
-            this->storage->storeRelation(whileStmt->getLineNum(), variable, USESV);
+            this->storage->storeRelation(whileStmt->getLineNum(), variable, USESSV);
         }
 
         // TODO: Procedure Statement: Uses(p, v)

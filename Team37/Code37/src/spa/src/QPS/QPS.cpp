@@ -40,10 +40,10 @@ void QPS::evaluate(string query, list<string>& results) {
     try
     {
 	    tokens = tokenizer.Tokenize();
-    } catch (SyntaxError e)
+    } catch (SyntaxError pe)
     {
         results.push_back("Syntax Error");
-        results.push_back(e.message);
+        cout << pe.message;
         return;
     } 
     
@@ -54,7 +54,7 @@ void QPS::evaluate(string query, list<string>& results) {
     if (pe.errorType != ErrorType::NONE)
     {
         results.push_back(errorTypeToStringMap[pe.errorType]);
-        results.push_back(pe.message);
+        cout << pe.message;
         return;
     }
 

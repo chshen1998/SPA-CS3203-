@@ -122,7 +122,7 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Types/TokenType.cpp
         src/QPS/Types/ErrorType.cpp
         src/QPS/Structures/PqlToken.cpp
-        src/PKB/Types/ProcVarRelationType.h)
+        src/PKB/Types/ProcVarRelationType.h "src/QPS/Validators/CallsValidator.h")
 
 
 # this makes the headers accessible for other projects which uses spa lib

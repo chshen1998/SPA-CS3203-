@@ -78,6 +78,7 @@ TEST_CASE("Valid Pattern clause")
 	QueryValidator sut = QueryValidator(valid_pattern);
 	PqlError results = sut.validateQuery();
 
+	REQUIRE(results.message == "");
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 

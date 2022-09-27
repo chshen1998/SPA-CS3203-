@@ -10,6 +10,7 @@ using namespace std;
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 #include "QueryValidator.h"
+#include "Validators/CallsValidator.h"
 #include "Validators/ClauseValidator.h"
 #include "Validators/DeclarationValidator.h"
 #include "Validators/FollowsValidator.h"
@@ -71,6 +72,7 @@ void QueryValidator::validateSelect()
 void QueryValidator::validateClauses()
 {
     PqlToken curr = getNextToken();
+
     if (curr.type == TokenType::END)
     {
         return;
@@ -111,7 +113,7 @@ void QueryValidator::validateClauses()
 void QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(declarations);
-    validator.validateAssign(getNextToken());
+    validator.validatePattern(getNextToken());
 
     PqlToken open = getNextToken();
     PqlToken left = getNextToken();

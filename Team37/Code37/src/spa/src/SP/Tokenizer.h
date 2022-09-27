@@ -12,6 +12,7 @@ using namespace std;
 #include "AST/Statement/PrintStatement.h"
 #include "AST/Statement/AssignStatement.h"
 #include "AST/Statement/IfStatement.h"
+#include "AST/Statement/CallStatement.h"
 #include "AST/Expression/RelationalFactor/OperatedExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "AST/Expression/RelationalFactor/NameExpression.h"
@@ -43,6 +44,13 @@ public:
      * @return AssignStatement object
      */
     static shared_ptr<AssignStatement> tokenizeAssign(string line, shared_ptr<TNode> parent);
+
+    /**
+     * Creates a CallStatement object with specified parent.
+     * @param line raw call statement string, no semicolons, trimmed
+     * @param parent parent node of call statement
+     */
+    static shared_ptr<CallStatement> tokenizeCall(string line, shared_ptr<TNode> parent);
 
     /**
      * Creates a RelationalFactor object with the specified parent.
@@ -82,7 +90,6 @@ public:
 
 //    static void tokenizeOperatedExprByVar(string line, vector<int> indexes, string lhs, shared_ptr<TNode> parent, int lineNo);
 
-//    static void tokenizeCall(string line);
 
 //    static void tokenizeCondition(string condition);
 

@@ -1040,3 +1040,9 @@ TEST_CASE("Parse procedure with nested if else") {
     constantExpression = dynamic_pointer_cast<ConstantExpression>(elseStatement->getRelFactor());
     REQUIRE(constantExpression->getValue() == 1);
 }
+
+TEST_CASE("Tokenize Call - 1") {
+    string rawCallStatement = "call monster";
+    shared_ptr<CallStatement> callStatement = Tokenizer::tokenizeCall(rawCallStatement, nullptr);
+    REQUIRE(callStatement->getProcedureName() == "monster");
+}

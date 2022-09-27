@@ -585,15 +585,15 @@ shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode>
     // TODO: split into cases for (print, read, call, if-else, while, assign)
     statement = Utils::trim(statement);
     shared_ptr<Statement> statementNode;
-    if (statement.substr(0, 5) == "print") {
+    if (statement.substr(0, 6) == "print ") {
         statementNode = Tokenizer::tokenizePrint(statement, parentNode);
-    } else if (statement.substr(0, 4) == "read") {
+    } else if (statement.substr(0, 5) == "read ") {
         statementNode = Tokenizer::tokenizeRead(statement, parentNode);
-    } else if (statement.substr(0, 4) == "call") {
-//      statementNode = Tokenizer::tokenizeCall(statement, parentNode);// TODO tokenizeCall not implemented yet
-    } else if (statement.substr(0, 2) == "if") {
+    } else if (statement.substr(0, 5) == "call ") {
+        statementNode = Tokenizer::tokenizeCall(statement, parentNode);
+    } else if (statement.substr(0, 3) == "if ") {
         statementNode = Parser::parseIfElse(statement, parentNode);
-    } else if (statement.substr(0, 5) == "while") {
+    } else if (statement.substr(0, 6) == "while ") {
         statementNode = Parser::parseWhile(statement, parentNode);
     } else {
         // otherwise is an assign statement

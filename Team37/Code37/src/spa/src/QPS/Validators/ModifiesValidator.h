@@ -19,7 +19,7 @@
 
 class ModifiesValidator : public ClauseValidator {
 public:
-	ModifiesValidator(unordered_map<string, TokenType> declarations);
+	ModifiesValidator(unordered_map<string, TokenType> declarations, TokenType token);
 	void validate(PqlToken left, PqlToken right);
 };
 

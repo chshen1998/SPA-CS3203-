@@ -57,6 +57,8 @@ extern vector<PqlToken> invalid_wildcard_uses;
 
 extern vector<PqlToken> invalid_wildcard_modifies;
 
+extern vector<PqlToken> valid_multi_pattern_then_multi_such_that;
+
 extern vector<PqlToken> addPatternClause(vector<PqlToken> tokens);
 
 extern vector<PqlToken> addUsesClause(vector<PqlToken> tokens);

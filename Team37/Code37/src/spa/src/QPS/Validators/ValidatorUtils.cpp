@@ -90,18 +90,18 @@ set<TokenType> validPatternType = {
 };
 
 unordered_map<TokenType, string> relationshipToStringMap = {
-    {TokenType::USES, "uses"},
-    {TokenType::USES_P, "uses"},
-    {TokenType::MODIFIES, "modifies"},
-    {TokenType::MODIFIES_P, "modifies"},
-    {TokenType::PARENT, "parent"},
-    {TokenType::PARENT_A, "parent*"},
-    {TokenType::FOLLOWS, "follows"},
-    {TokenType::FOLLOWS_A, "follows*"},
-    {TokenType::CALLS, "calls"},
-    {TokenType::CALLS_A, "calls*"},
-    {TokenType::NEXT, "next"},
-    {TokenType::NEXT_A, "next*"},
-    {TokenType::AFFECTS, "affects"},
-    {TokenType::AFFECTS_A, "affects*"}
+    {TokenType::USES, "Uses"},
+    {TokenType::USES_P, "Uses"},
+    {TokenType::MODIFIES, "Modifies"},
+    {TokenType::MODIFIES_P, "Modifies"},
+    {TokenType::PARENT, "Parent"},
+    {TokenType::PARENT_A, "Parent*"},
+    {TokenType::FOLLOWS, "Follows"},
+    {TokenType::FOLLOWS_A, "Follows*"},
+    {TokenType::CALLS, "Calls"},
+    {TokenType::CALLS_A, "Calls*"},
+    {TokenType::NEXT, "Next"},
+    {TokenType::NEXT_A, "Next*"},
+    {TokenType::AFFECTS, "Affects"},
+    {TokenType::AFFECTS_A, "Affects*"}
 };

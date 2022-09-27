@@ -11,7 +11,7 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-PatternValidator::PatternValidator(unordered_map<string, TokenType> declarations) : ClauseValidator(declarations) {}
+PatternValidator::PatternValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void PatternValidator::validatePattern(PqlToken pattern)
 {

@@ -32,8 +32,8 @@ private:
     unordered_map<string, TokenType> validateDeclarations();
     void validateSelect();
     void validateClauses();
-    void validatePattern();
-    void validateSuchThat(PqlToken such);
+    PqlToken validatePattern();
+    PqlToken validateSuchThat(PqlToken such);
 
     shared_ptr<ClauseValidator> createClauseValidator(TokenType type);
     PqlToken getNextToken();

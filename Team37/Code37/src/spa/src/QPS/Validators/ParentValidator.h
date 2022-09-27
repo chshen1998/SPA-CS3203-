@@ -18,7 +18,7 @@
 
 class ParentValidator : public ClauseValidator {
 public:
-	ParentValidator(unordered_map<string, TokenType> declarations);
+	ParentValidator(unordered_map<string, TokenType> declarations, TokenType token);
 	void validate(PqlToken left, PqlToken right);
 };
 

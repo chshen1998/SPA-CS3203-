@@ -25,6 +25,12 @@ public:
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
+    /**
+     * Generates a string representing the NameExpression
+     * @return a string representation of the NameExpression
+     */
+    string generateString() override;
+
     bool operator==(const NameExpression &other) const {
         return varName == other.varName;
     };

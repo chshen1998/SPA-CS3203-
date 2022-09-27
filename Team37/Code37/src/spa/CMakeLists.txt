@@ -58,6 +58,10 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
+        src/QPS/Tokenizers/GeneralTokenizer.h
+        src/QPS/Tokenizers/SelectTokenizer.h
+        src/QPS/Tokenizers/TokenizerUtils.h
+
 
         src/SP/Utilities/Utils.h
         src/SP/SP.h
@@ -81,6 +85,9 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryEvaluator.cpp
         src/QPS/QueryTokenizer.cpp
         src/QPS/QueryValidator.cpp
+
+        src/QPS/Tokenizers/SelectTokenizer.cpp
+        src/QPS/Tokenizers/TokenizerUtils.cpp
 
         src/PKB/PKB.h
         src/PKB/PKB.cpp

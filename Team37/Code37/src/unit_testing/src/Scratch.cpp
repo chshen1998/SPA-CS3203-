@@ -13,5 +13,6 @@ TEST_CASE("System") {
 	test.parse("..\\..\\..\\..\\..\\..\\Tests37\\TestCases-Milestone1\\NoRelationships\\no_relationships_source.txt");
 	list<string> lst = {};
 
+	cout << "Here" << endl;
 	test.evaluate(query, lst);
 }

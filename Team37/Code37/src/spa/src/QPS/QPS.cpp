@@ -43,7 +43,7 @@ void QPS::evaluate(string query, list<string>& results) {
     } catch (SyntaxError e)
     {
         results.push_back("Syntax Error");
-        results.push_back(e.message);
+        //results.push_back(e.message);
         return;
     } 
     
@@ -54,7 +54,7 @@ void QPS::evaluate(string query, list<string>& results) {
     if (pe.errorType != ErrorType::NONE)
     {
         results.push_back(errorTypeToStringMap[pe.errorType]);
-        results.push_back(pe.message);
+        //results.push_back(pe.message);
         return;
     }
 

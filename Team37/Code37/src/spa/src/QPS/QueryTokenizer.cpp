@@ -14,6 +14,8 @@ using namespace std;
 #include "./Structures/PqlQuery.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
+#include "./Tokenizers/SelectTokenizer.h"
+
 
 
 unordered_map<TokenType, SpecificClause> tokenToClauseMap = {
@@ -163,7 +165,8 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
     TokenizeState currentState = TokenizeState::FINDING_KEYWORDS;
     SpecificClause clauseType = SpecificClause::NONE;
     int clauseCounter = 1;
-
+    SelectTokenizer selectTokenizer = SelectTokenizer(i, delimited_query, tokens);
+    
     while (i < delimited_query.size()) {
         TokenType currentToken = TokenType::UNKNOWN;
      
@@ -191,7 +194,11 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
         }
 
         else if (currentState == TokenizeState::SELECT) {
+            selectTokenizer.tokenize();
+            currentState = TokenizeState::FINDING_KEYWORDS;
+            continue;
             // Validator will throw an error here if symbol is anything other than tuple or comma
+            /*
             if (stringToTokenMap.find(delimited_query[i]) != stringToTokenMap.end() && !checkIfSynonym(delimited_query[i])) {
                 currentToken = stringToTokenMap[delimited_query[i]];
 
@@ -222,6 +229,7 @@ void QueryTokenizer::TokenizeSelectAndClauses(int& i) {
                 clauseType = SpecificClause::NONE;
                 clauseCounter = 1;
             }
+            */
         }
 
         // TODO: "Add AND logic for advanced SPA"

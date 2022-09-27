@@ -158,6 +158,32 @@ TEST_CASE("Test Parent* clause")
 	REQUIRE(isSameClauses(ans, results.clauses));
 }
 
+TEST_CASE("Test Calls clause")
+{
+	vector<Clause> ans = { Clause(PqlToken(TokenType::CALLS, "calls"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::WILDCARD, "_"),
+								  TokenType::SUCH_THAT) };
+
+	QueryExtractor sut(valid_calls);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
+TEST_CASE("Test Calls* clause")
+{
+	vector<Clause> ans = { Clause(PqlToken(TokenType::CALLS_A, "calls*"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::WILDCARD, "_"),
+								  TokenType::SUCH_THAT) };
+
+	QueryExtractor sut(valid_calls_a);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
 TEST_CASE("Test Pattern then Such That clause")
 {
 	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),

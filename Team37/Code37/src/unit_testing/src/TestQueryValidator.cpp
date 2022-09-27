@@ -154,6 +154,14 @@ TEST_CASE("Valid Parent clause")
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+TEST_CASE("Valid Calls clause")
+{
+	QueryValidator sut = QueryValidator(valid_calls);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
 TEST_CASE("Valid Follows* clause")
 {
 	QueryValidator sut = QueryValidator(valid_follows_a);
@@ -165,6 +173,14 @@ TEST_CASE("Valid Follows* clause")
 TEST_CASE("Valid Parent* clause")
 {
 	QueryValidator sut = QueryValidator(valid_parent_a);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Calls* clause")
+{
+	QueryValidator sut = QueryValidator(valid_calls_a);
 	PqlError results = sut.validateQuery();
 
 	REQUIRE(results.errorType == ErrorType::NONE);

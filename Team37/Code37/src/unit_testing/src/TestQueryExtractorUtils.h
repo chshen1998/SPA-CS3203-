@@ -31,6 +31,10 @@ extern vector<PqlToken> valid_follows_a;
 
 extern vector<PqlToken> valid_parent_a;
 
+extern vector<PqlToken> valid_calls;
+
+extern vector<PqlToken> valid_calls_a;
+
 extern vector<PqlToken> valid_such_that_then_pattern;
 
 extern vector<PqlToken> valid_pattern_then_such_that;

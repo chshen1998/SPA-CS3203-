@@ -45,36 +45,11 @@ string operatorToString(Operator opr) {
     }
 }
 
-/**
- * Helper method to split relFactor into its child classes
- * @param relFactor
- * @return a string representation of the relFactor
- */
-string generateString(shared_ptr<RelationalFactor> relFactor) {
-    shared_ptr<NameExpression> nameExpression;
-    shared_ptr<ConstantExpression> constantExpression;
-    shared_ptr<OperatedExpression> operatedExpression;
-
-    nameExpression = dynamic_pointer_cast<NameExpression>(relFactor);
-    if (nameExpression != nullptr) {
-        return nameExpression->generateString();
-    }
-    constantExpression = dynamic_pointer_cast<ConstantExpression>(relFactor);
-    if (constantExpression != nullptr) {
-        return constantExpression->generateString();
-    }
-    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relFactor);
-    if (operatedExpression != nullptr) {
-        return operatedExpression->generateString();
-    }
-    return "ERROR ERROR";
-}
-
 string OperatedExpression::generateString() {
     // Process relFactor1
-    string leftSide = ::generateString(this->relFactor1);
+    string leftSide = this->relFactor1->generateString();
     // Process relFactor2
-    string rightSide = ::generateString(this->relFactor2);
+    string rightSide = this->relFactor2->generateString();
 
     string oprString = ::operatorToString(this->opr);
 

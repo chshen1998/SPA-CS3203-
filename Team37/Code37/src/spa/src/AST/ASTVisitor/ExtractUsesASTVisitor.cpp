@@ -78,12 +78,16 @@ void ExtractUsesASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStm
     int lineNum = callStmt->getLineNum();
     vector<string> storedVariablesInProcedure = this->storage->forwardRetrieveRelation(calledProcedureName,
                                                                                        USESPV);
-
+    /**
+     * if procedure called has been traversed before,
+     * we add relationships from the storage with Uses(calledProcedureName,v)
+     */
     if (!storedVariablesInProcedure.empty()) {
         for (const auto &variable: storedVariablesInProcedure) {
             // store Uses(c,v)
             this->storage->storeRelation(lineNum, variable, USESSV);
         }
+        // if procedure called has not been traversed yet, we add them to a queue
     } else {
         string parentProcedureName = dynamic_pointer_cast<Procedure>(callStmt->getParent())->getProcedureName();
         tuple<int, string, string> lineNumProcedureTuple(lineNum, parentProcedureName, calledProcedureName);

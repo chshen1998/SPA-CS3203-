@@ -134,8 +134,9 @@ void Storage::storeCallStmtProcedure(ProcVarRelationType relationProcType, StmtV
                                                                                   relationProcType);
         for (const auto &variable: storedVariablesInProcedure) {
 
-            // store Uses(c,v)
+            // store Relation(c,v)
             this->storeRelation(lineNum, variable, relationStmtType);
+            // store Relation(p,v)
             this->storeRelation(parentProcedureName, variable, relationProcType);
         }
     }

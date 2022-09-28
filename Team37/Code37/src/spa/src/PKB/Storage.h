@@ -60,6 +60,7 @@ public:
     Storage();
 
     // Queue helper for AST traversal
+    // tuple triplet of (line number,container procedure name,called procedure name)
     vector<tuple<int, string, string>> callStmtProcedureQueue = {};
 
     // AST

@@ -42,6 +42,13 @@ shared_ptr<AssignStatement> Tokenizer::tokenizeAssign(string line, shared_ptr<TN
     return assignStatement;
 }
 
+shared_ptr<CallStatement> Tokenizer::tokenizeCall(std::string line, shared_ptr<TNode> parent) {
+    line = line.substr(5);
+    string procedureName = Utils::trim(line);
+    shared_ptr<CallStatement> callStatement = make_shared<CallStatement>(parent, procedureName);
+    return callStatement;
+}
+
 shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
     string highPriorityOperators = "*/%";
     string lowPriorityOperators = "+-";

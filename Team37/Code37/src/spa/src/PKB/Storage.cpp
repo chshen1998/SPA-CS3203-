@@ -84,6 +84,23 @@ set<ConstantExpression> Storage::getAllConst() {
     return this->constants;
 }
 
+// Procedure
+/*
+Store a procedure
+@param constNode a Procedure Node
+*/
+void Storage::storeProc(Procedure procNode) {
+    (this->procedures).insert(procNode);
+}
+
+/*
+Retrieve all stored procedure
+@return Set of procedure stored
+*/
+set<Procedure> Storage::getAllProc() {
+    return this->procedures;
+}
+
 // Statement
 /*
 Store a shared pointer to a statement

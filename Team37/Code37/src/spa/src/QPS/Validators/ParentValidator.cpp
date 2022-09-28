@@ -11,7 +11,7 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-ParentValidator::ParentValidator(unordered_map<string, TokenType> declarations) : ClauseValidator(declarations) {}
+ParentValidator::ParentValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void ParentValidator::validate(PqlToken left, PqlToken right)
 {

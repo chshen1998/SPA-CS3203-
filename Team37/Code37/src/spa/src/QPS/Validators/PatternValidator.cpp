@@ -11,13 +11,13 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-PatternValidator::PatternValidator(unordered_map<string, TokenType> declarations) : ClauseValidator(declarations) {}
+PatternValidator::PatternValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
-void PatternValidator::validateAssign(PqlToken assign)
+void PatternValidator::validatePattern(PqlToken pattern)
 {
-	if (assign.type != TokenType::SYNONYM || !isDeclared(assign) || declarations[assign.value] != TokenType::ASSIGN)
+	if (pattern.type != TokenType::SYNONYM || !isDeclared(pattern) || validPatternType.find(declarations[pattern.value]) == validPatternType.end())
 	{
-		throw SemanticError("Pattern clause must be followed by a declared assign synonym");
+		throw SemanticError(pattern.value + " is not a valid pattern");
 	}
 }
 

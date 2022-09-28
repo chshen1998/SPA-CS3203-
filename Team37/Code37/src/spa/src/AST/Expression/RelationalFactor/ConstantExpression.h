@@ -23,6 +23,12 @@ public:
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
+    /**
+     * Generates a string representing the ConstantExpression
+     * @return a string representation of the ConstantExpression
+     */
+    string generateString() override;
+
     bool operator==(const ConstantExpression &other) const {
         return value == other.value;
     };

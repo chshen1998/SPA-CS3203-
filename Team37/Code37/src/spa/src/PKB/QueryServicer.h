@@ -26,6 +26,7 @@ using namespace std;
 #include "../AST/Statement/PrintStatement.h"
 #include "../AST/Statement/ReadStatement.h"
 #include "../AST/Statement/WhileStatement.h"
+#include "../AST/Procedure.h"
 
 class QueryServicer {
 private:
@@ -40,6 +41,8 @@ public:
     set<NameExpression> getAllVar();
 
     set<ConstantExpression> getAllConst();
+
+    set<Procedure> getAllProc();
 
     set<shared_ptr<Statement>> getAllStmt(StatementType);
 

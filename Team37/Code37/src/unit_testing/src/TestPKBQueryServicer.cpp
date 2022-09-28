@@ -44,6 +44,24 @@ TEST_CASE("QueryServicer - Constant") {
     REQUIRE(queryService->getAllConst() == cmp_set);
 }
 
+TEST_CASE("QueryServicer - Procedure") {
+    // Storage Stub
+    shared_ptr<Storage> store = make_shared<Storage>();
+    Procedure procMain = Procedure(nullptr, "main");
+    Procedure procTest = Procedure(nullptr, "test");
+    store->storeProc(procMain);
+    store->storeProc(procTest);
+
+    // Comparison Set
+    set<Procedure> cmp_set;
+    cmp_set.insert(procMain);
+    cmp_set.insert(procTest);
+
+    shared_ptr<QueryServicer> queryService = make_shared<QueryServicer>(store);
+    REQUIRE(queryService->getAllProc() == cmp_set);
+}
+
+
 TEST_CASE("QueryServicer - Statements") {
     // Storage Stub
     shared_ptr<Storage> store = make_shared<Storage>();

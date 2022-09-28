@@ -78,6 +78,7 @@ TEST_CASE("Valid Pattern clause")
 	QueryValidator sut = QueryValidator(valid_pattern);
 	PqlError results = sut.validateQuery();
 
+	REQUIRE(results.message == "");
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
@@ -153,6 +154,14 @@ TEST_CASE("Valid Parent clause")
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+TEST_CASE("Valid Calls clause")
+{
+	QueryValidator sut = QueryValidator(valid_calls);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
 TEST_CASE("Valid Follows* clause")
 {
 	QueryValidator sut = QueryValidator(valid_follows_a);
@@ -164,6 +173,14 @@ TEST_CASE("Valid Follows* clause")
 TEST_CASE("Valid Parent* clause")
 {
 	QueryValidator sut = QueryValidator(valid_parent_a);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Calls* clause")
+{
+	QueryValidator sut = QueryValidator(valid_calls_a);
 	PqlError results = sut.validateQuery();
 
 	REQUIRE(results.errorType == ErrorType::NONE);
@@ -183,4 +200,13 @@ TEST_CASE("Invalid Modifies arg1 wildcard")
 	PqlError results = sut.validateQuery();
 
 	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Valid multi-pattern and multi-such that")
+{
+	QueryValidator sut = QueryValidator(valid_multi_pattern_then_multi_such_that);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
 }

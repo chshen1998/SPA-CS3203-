@@ -1,22 +1,26 @@
 using namespace std;
 
+#include <string>
+
 #include "ClauseValidator.h"
+#include "ValidatorUtils.h"
 #include "../Structures/PqlError.h"
 #include "../Structures/PqlToken.h"
 #include "../Structures/PqlQuery.h"
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
 
-ClauseValidator::ClauseValidator(unordered_map<string, TokenType> declarationsMap)
+ClauseValidator::ClauseValidator(unordered_map<string, TokenType> declarationsMap, TokenType token)
 {
 	declarations = declarationsMap;
+	validatorType = token;
 }
 
 void ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken close)
 {
 	if (!(open.type == TokenType::OPEN_BRACKET) || !(comma.type == TokenType::COMMA) || !(close.type == TokenType::CLOSED_BRACKET))
 	{
-		throw SyntaxError("The parameters passed to a clause must be enclosed within brackets and separated by a comma");
+		throw SyntaxError( relationshipToStringMap[validatorType] + " clause parameters must be enclosed within brackets and separated by a comma");
 	}
 }
 

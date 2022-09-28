@@ -31,13 +31,14 @@ void PatternTokenizer::tokenize() {
         clauseCounter += 1;
 
         if (currentToken == TokenType::CLOSED_BRACKET) {
-            if (delimited_query[currentIndex] != "and") {
+            if (currentIndex < delimited_query.size() && delimited_query[currentIndex] == "and") {
+                tokens.push_back(PqlToken(TokenType::AND, delimited_query[currentIndex]));
+                currentIndex += 1;
+                clauseCounter = patternClauseFirstArgIndex;
+            }
+            else {
                 return;
             }
-
-            tokens.push_back(PqlToken(TokenType::AND, delimited_query[currentIndex]));
-            currentIndex += 1;
-            clauseCounter = patternClauseFirstArgIndex;
         }
     }
 }

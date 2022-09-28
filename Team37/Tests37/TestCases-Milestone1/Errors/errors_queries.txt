@@ -41,5 +41,5 @@ Semantic Error
 9 - Missing Select
 variable v; assign a;
 pattern a (v, "x")
-Semantic Error
+Syntax Error
 5000

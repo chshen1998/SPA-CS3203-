@@ -53,6 +53,7 @@ std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     case(TokenType::SEMICOLON): typeString = "semicolon"; break;
     case(TokenType::COMMA): typeString = "comma"; break;
     case(TokenType::DOT): typeString = "dot"; break;
+    case(TokenType::EQUAL): typeString = "equal"; break;
     case(TokenType::OPEN_BRACKET): typeString = "open_bracket"; break;
     case(TokenType::CLOSED_BRACKET): typeString = "closed_bracket"; break;
     case(TokenType::OPEN_ARROW): typeString = "open_arrow"; break;

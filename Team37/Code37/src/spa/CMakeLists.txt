@@ -62,7 +62,8 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Tokenizers/DeclarationTokenizer.h
         src/QPS/Tokenizers/SelectTokenizer.h
         src/QPS/Tokenizers/SuchThatTokenizer.h
-        src/QPS/Tokenizers/PatternTokenizer.cpp
+        src/QPS/Tokenizers/PatternTokenizer.h
+        src/QPS/Tokenizers/WithTokenizer.h
         src/QPS/Tokenizers/TokenizerUtils.h
 
 
@@ -93,6 +94,7 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Tokenizers/SelectTokenizer.cpp
         src/QPS/Tokenizers/SuchThatTokenizer.cpp
         src/QPS/Tokenizers/PatternTokenizer.cpp
+        src/QPS/Tokenizers/WithTokenizer.cpp
         src/QPS/Tokenizers/TokenizerUtils.cpp
        
 

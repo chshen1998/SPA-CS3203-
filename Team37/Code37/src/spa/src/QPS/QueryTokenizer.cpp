@@ -19,6 +19,7 @@ using namespace std;
 #include "./Tokenizers/SelectTokenizer.h"
 #include "./Tokenizers/SuchThatTokenizer.h"
 #include "./Tokenizers/PatternTokenizer.h"
+#include "./Tokenizers/WithTokenizer.h"
 
 using namespace TokenizerUtils;
 
@@ -120,6 +121,7 @@ void QueryTokenizer::ConvertIntoTokens() {
     SelectTokenizer selectTokenizer = SelectTokenizer(index, delimited_query, tokens);
     SuchThatTokenizer suchThatTokenizer = SuchThatTokenizer(index, delimited_query, tokens);
     PatternTokenizer patternTokenizer = PatternTokenizer(index, delimited_query, tokens);
+    WithTokenizer withTokenizer = WithTokenizer(index, delimited_query, tokens);
 
     declarationTokenizer.tokenize();
 
@@ -164,7 +166,9 @@ void QueryTokenizer::ConvertIntoTokens() {
         }
 
         // WITH CLAUSE
-        else {}
+        else {
+            withTokenizer.tokenize();
+        }
 
         currentState = TokenizeState::FINDING_KEYWORDS;
     }

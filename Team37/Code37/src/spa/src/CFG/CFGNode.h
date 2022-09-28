@@ -9,8 +9,9 @@
 using namespace std;
 
 #include "AST/TNode.h"
+#include "CFGVisitor.h"
 
-class CFGNode {
+class CFGNode : public enable_shared_from_this<CFGNode> {
 private:
     shared_ptr<CFGNode> parent = nullptr;
     vector<shared_ptr<CFGNode>> children = {};
@@ -67,6 +68,8 @@ public:
      * Flags the CFGNode as visited
      */
     void setAsVisited();
+
+    void accept(shared_ptr<CFGVisitor> visitor);
 };
 
 

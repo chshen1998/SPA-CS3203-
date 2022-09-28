@@ -225,6 +225,9 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
 
         // TODO: Procedure Statement: Uses(p, v)
         if (dynamic_pointer_cast<Procedure>(node) != nullptr) {
+            shared_ptr<Procedure> procedure = dynamic_pointer_cast<Procedure>(node);
+            this->storage->storeRelation(procedure->getProcedureName(), variable, USESPV);
+
         }
 
         // Call Statement: Uses(c, v)

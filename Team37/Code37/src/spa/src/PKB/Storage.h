@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #ifndef SPA_STORAGE_H
 #define SPA_STORAGE_H
@@ -57,6 +57,9 @@ public:
     // Constructor
     Storage();
 
+    // Queue helper for AST traversal
+    vector<pair<int, string>> callStmtProcedureQueue = {};
+
     // AST
     void storeAST(shared_ptr<SourceCode>);
 
@@ -81,6 +84,9 @@ public:
     void storeStmt(shared_ptr<Statement>);
 
     set<shared_ptr<Statement>> getAllStmt();
+
+    // Post-traversal
+    void storeCallStmtProcedure();
 
     // Statement-Statemenet Relations
     void storeRelation(int, int, bool, StmtStmtRelationType);
@@ -111,4 +117,5 @@ public:
 
     vector<string> reverseRetrieveRelation(string, ProcVarRelationType);
 };
+
 #endif

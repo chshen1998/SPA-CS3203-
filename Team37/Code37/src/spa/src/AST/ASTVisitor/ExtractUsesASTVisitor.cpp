@@ -74,7 +74,20 @@ void ExtractUsesASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> print
  * @param callStmt
  */
 void ExtractUsesASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt) {
-    //TODO
+    string calledProcedureName = callStmt->getProcedureName();
+    int lineNum = callStmt->getLineNum();
+    vector<string> storedVariablesInProcedure = this->storage->forwardRetrieveRelation(calledProcedureName,
+                                                                                       USESPV);
+
+    if (!storedVariablesInProcedure.empty()) {
+        for (const auto &variable: storedVariablesInProcedure) {
+            // store Uses(c,v)
+            this->storage->storeRelation(lineNum, variable, USESSV);
+        }
+    } else {
+        pair<int, string> lineNumProcedurePair(lineNum, calledProcedureName);
+        this->storage->callStmtProcedureQueue.push_back(lineNumProcedurePair);
+    }
 }
 
 /**
@@ -227,7 +240,6 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
         if (dynamic_pointer_cast<Procedure>(node) != nullptr) {
             shared_ptr<Procedure> procedure = dynamic_pointer_cast<Procedure>(node);
             this->storage->storeRelation(procedure->getProcedureName(), variable, USESPV);
-
         }
 
         // Call Statement: Uses(c, v)

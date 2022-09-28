@@ -14,6 +14,7 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     Follows = Array2D(AST->getNumOfStatements());
     Parent = Array2D(AST->getNumOfStatements());
 
+    // initialising AST visitors
     shared_ptr<ExtractGeneralASTVisitor> generalAstVisitor = make_shared<ExtractGeneralASTVisitor>(shared_from_this());
     shared_ptr<ExtractParentsASTVisitor> parentsAstVisitor = make_shared<ExtractParentsASTVisitor>(shared_from_this());
     shared_ptr<ExtractFollowsASTVisitor> followsAstVisitor = make_shared<ExtractFollowsASTVisitor>(shared_from_this());
@@ -36,8 +37,9 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     // traverse the AST using a modifies AST Visitor
     AST->accept(modifiesAstVisitor);
 
-    // traverse the AST using a modifies AST Visitor
+    // traverse the AST using a uses AST Visitor
     AST->accept(usesAstVisitor);
+    storeCallStmtProcedure();
 
 }
 
@@ -118,7 +120,27 @@ set<shared_ptr<Statement>> Storage::getAllStmt() {
     return this->statements;
 }
 
-/* 
+/**
+ * after traversing the AST we have to store the Uses(c,v) relations that was not handled in the queue
+ */
+void Storage::storeCallStmtProcedure() {
+    for (const auto &pair: this->callStmtProcedureQueue) {
+        int lineNum = pair.first;
+        string procedureName = pair.second;
+
+        vector<string> storedVariablesInProcedure = this->forwardRetrieveRelation(procedureName,
+                                                                                  USESPV);
+        for (const auto &variable: storedVariablesInProcedure) {
+            // store Uses(c,v)
+            this->storeRelation(lineNum, variable, USESSV);
+        }
+    }
+
+// empty the queue after storing the relations
+    this->callStmtProcedureQueue = {};
+}
+
+/*
 Store Relation of a Statement-Statement Relationship (Non-star). For Relation(stmt1, stmt2)
 @param stmt1 First statement
 @param stmt2 Second statement
@@ -334,14 +356,14 @@ Store Relation of a Procedure-Variable Relationship. For Relation(proc, var)
 */
 void Storage::storeRelation(string proc, string var, ProcVarRelationType type) {
     switch (type) {
-    case (USESPV):
-        UsesPV.store(proc, var);
-        break;
-    case (MODIFIESPV):
-        ModifiesPV.store(proc, var);
-        break;
-    default:
-        throw invalid_argument("Not a Procedure-Variable Relation");
+        case (USESPV):
+            UsesPV.store(proc, var);
+            break;
+        case (MODIFIESPV):
+            ModifiesPV.store(proc, var);
+            break;
+        default:
+            throw invalid_argument("Not a Procedure-Variable Relation");
     }
 }
 
@@ -354,14 +376,14 @@ Retrieve Procedure-Variable Relationship. For Relation(proc, var)
 */
 bool Storage::retrieveRelation(string proc, string var, ProcVarRelationType type) {
     switch (type) {
-    case (USESPV):
-        return UsesPV.retrieve(proc, var);
-        break;
-    case (MODIFIESPV):
-        return ModifiesPV.retrieve(proc, var);
-        break;
-    default:
-        throw invalid_argument("Not a Procedure-Variable Realtion");
+        case (USESPV):
+            return UsesPV.retrieve(proc, var);
+            break;
+        case (MODIFIESPV):
+            return ModifiesPV.retrieve(proc, var);
+            break;
+        default:
+            throw invalid_argument("Not a Procedure-Variable Realtion");
     }
 }
 
@@ -373,14 +395,14 @@ Retrieve Forward Relation Stored. For Relation(proc, var)
 */
 vector<string> Storage::forwardRetrieveRelation(string proc, ProcVarRelationType type) {
     switch (type) {
-    case (USESSV):
-        return UsesPV.forwardRetrieve(proc);
-        break;
-    case (MODIFIESSV):
-        return ModifiesPV.forwardRetrieve(proc);
-        break;
-    default:
-        throw invalid_argument("Not a Procedure-Variable Relation");
+        case (USESSV):
+            return UsesPV.forwardRetrieve(proc);
+            break;
+        case (MODIFIESSV):
+            return ModifiesPV.forwardRetrieve(proc);
+            break;
+        default:
+            throw invalid_argument("Not a Procedure-Variable Relation");
     }
 }
 
@@ -392,13 +414,13 @@ Retrieve Reverse Relation Stored. For Relation(proc, var)
 */
 vector<string> Storage::reverseRetrieveRelation(string var, ProcVarRelationType type) {
     switch (type) {
-    case (USESSV):
-        return UsesPV.reverseRetrieve(var);
-        break;
-    case (MODIFIESSV):
-        return ModifiesPV.reverseRetrieve(var);
-        break;
-    default:
-        throw invalid_argument("Not a Procedure-Variable Relation");
+        case (USESSV):
+            return UsesPV.reverseRetrieve(var);
+            break;
+        case (MODIFIESSV):
+            return ModifiesPV.reverseRetrieve(var);
+            break;
+        default:
+            throw invalid_argument("Not a Procedure-Variable Relation");
     }
 }

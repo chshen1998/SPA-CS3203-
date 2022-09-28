@@ -96,3 +96,36 @@ TEST_CASE("Uses while statements") {
     REQUIRE(usesVariables.size() == 1);
 }
 
+TEST_CASE("Uses call statements") {
+    /**
+     * In this testcase, procedure 1 only contains a call stmt on procedure 2, we are testing if we are able to store
+     * the variables from procedure 2 into Uses(c,v) even though procedure 2 is traverse later on in the evaluation
+     */
+    shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
+    shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sc, "first procedure");
+    shared_ptr<Procedure> procedure2 = make_shared<Procedure>(sc, "second procedure");
+
+    // second procedure calls on first procedure
+    shared_ptr<CallStatement> callStmt = make_shared<CallStatement>(procedure1, "second procedure");
+    shared_ptr<Storage> storage = make_shared<Storage>();
+
+    shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure2, "a");
+    shared_ptr<PrintStatement> printStmt2 = make_shared<PrintStatement>(procedure2, "b");
+    shared_ptr<PrintStatement> printStmt3 = make_shared<PrintStatement>(procedure2, "c");
+
+    procedure1->addStatement(printStmt1);
+    procedure1->addStatement(printStmt2);
+    procedure1->addStatement(printStmt3);
+
+    procedure2->addStatement(callStmt);
+
+    sc->addProcedure(procedure1);
+    sc->addProcedure(procedure2);
+
+    // We start by traversing the AST
+    storage->storeAST(sc);
+
+    vector<string> usesVariables = storage->forwardRetrieveRelation("second procedure", USESPV);
+
+    REQUIRE(usesVariables.size() == 3);
+}

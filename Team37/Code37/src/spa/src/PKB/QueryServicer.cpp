@@ -24,6 +24,14 @@ set<ConstantExpression> QueryServicer::getAllConst() {
 }
 
 /*
+* Getter for all constatns
+* @return Set of all ConstantExpression Nodes
+*/
+set<Procedure> QueryServicer::getAllProc() {
+	return storage->getAllProc();
+}
+
+/*
 * Get all statement or statement subtypes
 * @param type Statement type
 * @return Set of pointers to statements

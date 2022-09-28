@@ -6,10 +6,15 @@ shared_ptr<CFGNode> CFG::getStartNode() {
     return startNode;
 }
 
-shared_ptr<CFGNode> CFG::getEndNode() {
-    return endNode;
+vector<shared_ptr<CFGNode>> CFG::getEndNodes() {
+    return endNodes;
+}
+
+shared_ptr<CFGNode> CFG::getEndNode(int i) {
+    assert(i >= 0 && i < endNodes.size());
+    return endNodes[i];
 }
 
 void CFG::setEndNode(shared_ptr<CFGNode> newEndNode) {
-    endNode = newEndNode;
+    endNodes.push_back(newEndNode);
 }

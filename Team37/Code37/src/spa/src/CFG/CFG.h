@@ -1,6 +1,9 @@
 #ifndef SPA_CFG_H
 #define SPA_CFG_H
 
+#include <vector>
+#include <cassert>
+
 using namespace std;
 
 #include "CFGNode.h"
@@ -8,7 +11,7 @@ using namespace std;
 class CFG {
 private:
     shared_ptr<CFGNode> startNode = nullptr;
-    shared_ptr<CFGNode> endNode = nullptr;
+    vector<shared_ptr<CFGNode>> endNodes = {};
 public:
     CFG(shared_ptr<CFGNode> startNode);
 
@@ -20,11 +23,18 @@ public:
     shared_ptr<CFGNode> getStartNode();
 
     /**
-     * Gets the end CFGNode that is associated with the last TNOde
-     * in the procedure
+     * Gets all the end CFGNodes in the CFG,
+     * as there could be more than 1 end node e.g. in if-else
      * @return the end CFGNode of the CFG
      */
-    shared_ptr<CFGNode> getEndNode();
+    vector<shared_ptr<CFGNode>> getEndNodes();
+
+    /**
+     * Gets a specific end node by the index
+     * @param i index of the end node
+     * @return the end CFGNode
+     */
+    shared_ptr<CFGNode> getEndNode(int i);
 
     /**
      * Sets the end node of the CFG

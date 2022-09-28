@@ -5,10 +5,29 @@ using namespace std;
 
 #include <string>
 #include <algorithm>
+#include <unordered_map>
 
 #include "../Types/TokenType.h"
 
+enum class ClauseType {
+    NONE,
+
+    ATTR_REF,
+    TUPLE,
+    SINGLE,
+
+    USE,
+    MODIFIES,
+    CALL,
+
+    ASSIGN,
+    WHILE,
+    IF
+};
+
 namespace TokenizerUtils {
+    extern unordered_map<TokenType, ClauseType> tokenTypeToClauseTypeMap;
+    
     inline bool checkIfSynonym(const string& s) {
         return isalpha(s[0]) && all_of(s.begin(), s.end(), [](char c) { return isdigit(c) || isalpha(c); });
     }

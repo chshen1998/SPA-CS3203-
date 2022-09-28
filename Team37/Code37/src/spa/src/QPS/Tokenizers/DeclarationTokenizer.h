@@ -1,7 +1,7 @@
 using namespace std;
 
-#ifndef TEAM37_SELECT_TOKENIZER_H
-#define TEAM37_SELECT_TOKENIZER_H
+#ifndef TEAM37_DECLARATION_TOKENIZER_H
+#define TEAM37_DECLARATION_TOKENIZER_H
 
 #include "GeneralTokenizer.h"
 #include "TokenizerUtils.h"
@@ -12,14 +12,13 @@ using namespace std;
 #include "../Types/TokenType.h"
 
 
-class SelectTokenizer : public GeneralTokenizer {
+class DeclarationTokenizer : public GeneralTokenizer {
 
 public:
-	SelectTokenizer(int& index, vector<string>& delimited, vector<PqlToken>& result) :
+	DeclarationTokenizer(int& index, vector<string>& delimited, vector<PqlToken>& result) :
 		GeneralTokenizer(index, delimited, result) {};
 
 	void tokenize() override;
-	TokenType checkSelectTokenType(const string&, const ClauseType&);
 };
 
 #endif

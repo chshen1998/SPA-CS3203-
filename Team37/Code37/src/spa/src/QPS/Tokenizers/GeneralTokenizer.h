@@ -19,7 +19,7 @@ public:
 	GeneralTokenizer(int& index, const vector<string>& delimited, vector<PqlToken>& result) :
 		currentIndex(index), delimited_query(delimited), tokens(result) {};
 	virtual ~GeneralTokenizer() {}; // destructor for polymorphism
-	virtual void tokenize() = 0;
+	virtual void tokenize() {};
 };
 
 #endif

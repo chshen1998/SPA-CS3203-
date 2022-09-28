@@ -12,7 +12,7 @@ using namespace TokenizerUtils;
 
 void SelectTokenizer::tokenize() {
     TokenType currentToken;
-    SelectType type = SelectType::UNKNOWN;
+    ClauseType type = ClauseType::NONE;
     int firstElement = true;
 
     while (currentIndex < delimited_query.size()) {
@@ -25,17 +25,17 @@ void SelectTokenizer::tokenize() {
                        ? stringToTokenMap[delimited_query[currentIndex]]
                        : checkSelectTokenType(delimited_query[currentIndex], type);
 
-        // Determining the Select Type
+        // Determining the return type for Select
         if (firstElement) {
             switch (currentToken) {
             case TokenType::OPEN_ARROW:
-                type = SelectType::TUPLE;
+                type = ClauseType::TUPLE;
                 break;
             case TokenType::BOOLEAN:
             case TokenType::SYNONYM:
                 type = (currentIndex < delimited_query.size() - 1 && delimited_query[currentIndex + 1] == ".") 
-                        ? SelectType::ATTR_REF
-                        : SelectType::SINGLE;
+                        ? ClauseType::ATTR_REF
+                        : ClauseType::SINGLE;
                 break;
             }
             firstElement = false;
@@ -45,8 +45,8 @@ void SelectTokenizer::tokenize() {
         currentIndex += 1;
 
         // For multi element Select return types
-        if ((type == SelectType::TUPLE && currentToken != TokenType::CLOSED_ARROW) ||
-            (type == SelectType::ATTR_REF && !checkIfAttrName(delimited_query[currentIndex - 1]))) {
+        if ((type == ClauseType::TUPLE && currentToken != TokenType::CLOSED_ARROW) ||
+            (type == ClauseType::ATTR_REF && !checkIfAttrName(delimited_query[currentIndex - 1]))) {
             continue;
         }
 
@@ -55,12 +55,12 @@ void SelectTokenizer::tokenize() {
 }
 
 
-TokenType SelectTokenizer::checkSelectTokenType(const string& s, const SelectType& clauseType) {
-    if (clauseType == SelectType::ATTR_REF
+TokenType SelectTokenizer::checkSelectTokenType(const string& s, const ClauseType& clauseType) {
+    if (clauseType == ClauseType::ATTR_REF
         && stringToTokenMap.find(s) != stringToTokenMap.end()) {
         return stringToTokenMap[s];
     }
-    else if (clauseType == SelectType::UNKNOWN && s == "BOOLEAN") {
+    else if (clauseType == ClauseType::NONE && s == "BOOLEAN") {
         return TokenType::BOOLEAN;
     }
     else {

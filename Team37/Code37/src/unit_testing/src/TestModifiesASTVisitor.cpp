@@ -103,7 +103,7 @@ TEST_CASE("Modified while statements") {
 TEST_CASE("Modifies call statements") {
     /**
      * In this testcase, procedure 1 only contains a call stmt on procedure 2, we are testing if we are able to store
-     * the variables from procedure 2 into Uses(c,v) even though procedure 2 is traverse later on in the evaluation
+     * the variables from procedure 2 into Modifies(c,v) even though procedure 2 is traversed later on in the evaluation
      */
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sc, "first procedure");

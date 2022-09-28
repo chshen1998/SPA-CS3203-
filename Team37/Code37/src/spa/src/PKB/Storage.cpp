@@ -36,10 +36,11 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
 
     // traverse the AST using a modifies AST Visitor
     AST->accept(modifiesAstVisitor);
+    this->storeCallStmtProcedure(MODIFIESPV, MODIFIESSV);
 
     // traverse the AST using a uses AST Visitor
     AST->accept(usesAstVisitor);
-    storeCallStmtProcedure();
+    this->storeCallStmtProcedure(USESPV, USESSV);
 
 }
 
@@ -123,16 +124,19 @@ set<shared_ptr<Statement>> Storage::getAllStmt() {
 /**
  * after traversing the AST we have to store the Uses(c,v) relations that was not handled in the queue
  */
-void Storage::storeCallStmtProcedure() {
-    for (const auto &pair: this->callStmtProcedureQueue) {
-        int lineNum = pair.first;
-        string procedureName = pair.second;
+void Storage::storeCallStmtProcedure(ProcVarRelationType relationProcType, StmtVarRelationType relationStmtType) {
+    for (const auto &tuple: this->callStmtProcedureQueue) {
+        int lineNum = get<0>(tuple);
+        string parentProcedureName = get<1>(tuple);
+        string calledProcedureName = get<2>(tuple);
 
-        vector<string> storedVariablesInProcedure = this->forwardRetrieveRelation(procedureName,
-                                                                                  USESPV);
+        vector<string> storedVariablesInProcedure = this->forwardRetrieveRelation(calledProcedureName,
+                                                                                  relationProcType);
         for (const auto &variable: storedVariablesInProcedure) {
+
             // store Uses(c,v)
-            this->storeRelation(lineNum, variable, USESSV);
+            this->storeRelation(lineNum, variable, relationStmtType);
+            this->storeRelation(parentProcedureName, variable, relationProcType);
         }
     }
 

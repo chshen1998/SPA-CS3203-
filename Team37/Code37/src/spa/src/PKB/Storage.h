@@ -10,6 +10,7 @@
 #include <set>
 #include <unordered_set>
 #include <memory>
+#include <tuple>
 
 using namespace std;
 
@@ -23,6 +24,7 @@ using namespace std;
 #include "../AST/ASTVisitor/ExtractParentsASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractModifiesASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractUsesASTVisitor.h"
+
 
 #include "../AST/Statement/Statement.h"
 #include "Structures/Array2D.h"
@@ -58,7 +60,7 @@ public:
     Storage();
 
     // Queue helper for AST traversal
-    vector<pair<int, string>> callStmtProcedureQueue = {};
+    vector<tuple<int, string, string>> callStmtProcedureQueue = {};
 
     // AST
     void storeAST(shared_ptr<SourceCode>);
@@ -86,7 +88,7 @@ public:
     set<shared_ptr<Statement>> getAllStmt();
 
     // Post-traversal
-    void storeCallStmtProcedure();
+    void storeCallStmtProcedure(ProcVarRelationType, StmtVarRelationType);
 
     // Statement-Statemenet Relations
     void storeRelation(int, int, bool, StmtStmtRelationType);

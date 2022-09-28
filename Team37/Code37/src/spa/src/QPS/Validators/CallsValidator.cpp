@@ -7,15 +7,15 @@ using namespace std;
 #include "../Structures/PqlQuery.h"
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
-#include "UsesValidator.h"
+#include "CallsValidator.h"
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-UsesValidator::UsesValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
+CallsValidator::CallsValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
-void UsesValidator::validate(PqlToken left, PqlToken right)
+void CallsValidator::validate(PqlToken left, PqlToken right)
 {
-	validateParameters(left, right, validStatementRef, validEntityRef, "uses");
+	validateParameters(left, right, validStatementRef, validEntityRef, "calls");
 	if (left.type == TokenType::WILDCARD) {
 		throw SemanticError("Uses clause arg1 cannot be wildcard");
 	}

@@ -31,9 +31,9 @@ private:
 
     void extractClauses();
 
-    void extractPatternClause();
+    PqlToken extractPatternClause();
 
-    void extractSuchThatClause();
+    PqlToken extractSuchThatClause();
 
     PqlToken getNextToken();
 };

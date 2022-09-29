@@ -21,12 +21,11 @@ using namespace std;
 
 class Parser {
 public:
-    // TODO: Update method description after fixing the method
     /**
-     * Extracts each procedure as a string. Ultimately produces ProcedureList.
-     * @param srcCode source code as a string
+     * Extracts raw procedure strings from a raw sourceCode string
+     * @param srcCode raw sourceCode string
      * @param procedures vector to store procedures as strings.
-     * @return ProcedureList which is a vector containing procedures as strings
+     * @return a list containing raw procedure strings, with keyword, with name, with brackets
      */
     static vector<string> extractProcedures(string srcCode, vector<string> procedures);
 
@@ -38,13 +37,14 @@ public:
     static string extractProcName(string procedure);
 
     /**
-     * Extracts statements of a procedure as strings.
-     * @param procedure a raw list of statements
+     * Extracts statements from a raw string of statements
+     * @param statements a raw string of statements (with semicolons)
      * @param statementList a predeclared vector of statements so that we can do recursion with it
-     * @return StatementList which is a vector containing statements (without semicolon) as strings.
+     * @return a list of statements (without semicolons)
      */
-    static vector<string> extractStatements(string procedure, vector<string> statementList);
+    static vector<string> extractStatements(string statements, vector<string> statementList);
 
+    // TODO: check description
     /**
      * Parses an if or while statement string and extracts the conditional
      * expression as a string that sits between the first set of parentheses ( )

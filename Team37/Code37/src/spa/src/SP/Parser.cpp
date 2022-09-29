@@ -80,26 +80,26 @@ string Parser::extractProcName(string procedure) {
     return Utils::trim(procedureName);
 }
 
-vector<string> Parser::extractStatements(string procedure, vector<string> statementList) {
+vector<string> Parser::extractStatements(string statements, vector<string> statementList) {
     // Assume that the raw procedure string is already trimmed
-    if (procedure.length() == 0) {
+    if (statements.length() == 0) {
         return statementList;
     }
     // If it is a while or if statement, do bracket matching
     // Else process until semicolon
-    if (procedure.substr(0, 2) == "if") {
+    if (statements.substr(0, 2) == "if") {
         string statement;
 
         // Process until first open bracket of if block
         while (true) {
-            char nextLetter = procedure[0];
-            procedure.erase(0, 1);
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
 
             statement.push_back(nextLetter);
             if (nextLetter == '{') {
                 break;
             }
-            if (procedure.length() == 0) {
+            if (statements.length() == 0) {
                 throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
         }
@@ -108,8 +108,8 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Do bracket counting UNTIL end of if block
         while (numBrackets != 0) {
-            char nextLetter = procedure[0];
-            procedure.erase(0, 1);
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
 
             statement.push_back(nextLetter);
             if (nextLetter == '{') {
@@ -121,11 +121,11 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Process until first open bracket of else block
         while (true) {
-            if (procedure.length() == 0) {
+            if (statements.length() == 0) {
                 throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
-            char nextLetter = procedure[0];
-            procedure.erase(0, 1);
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
 
             statement.push_back(nextLetter);
             if (nextLetter == '{') {
@@ -137,12 +137,12 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Do bracket counting UNTIL end of else block
         while (numBrackets != 0) {
-            if (procedure.length() == 0) {
+            if (statements.length() == 0) {
                 throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
             }
 
-            char nextLetter = procedure[0];
-            procedure.erase(0, 1);
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
 
             statement.push_back(nextLetter);
             if (nextLetter == '{') {
@@ -153,21 +153,21 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
         }
 
         statementList.push_back(statement);
-        procedure = Utils::trim(procedure);
+        statements = Utils::trim(statements);
 
-    } else if (procedure.substr(0, 5) == "while") {
+    } else if (statements.substr(0, 5) == "while") {
         string statement;
 
         // Process until first open bracket
         while (true) {
-            char nextLetter = procedure[0];
-            procedure.erase(0, 1);
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
 
             statement.push_back(nextLetter);
             if (nextLetter == '{') {
                 break;
             }
-            if (procedure.length() == 0) {
+            if (statements.length() == 0) {
                 throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
         }
@@ -176,11 +176,11 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
 
         // Do bracket counting
         while (numBrackets != 0) {
-            if (procedure.length() == 0) {
+            if (statements.length() == 0) {
                 throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
             }
-            char nextLetter = procedure[0];
-            procedure.erase(0, 1);
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
 
             statement.push_back(nextLetter);
             if (nextLetter == '{') {
@@ -191,18 +191,18 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
         }
 
         statementList.push_back(statement);
-        procedure = Utils::trim(procedure);
+        statements = Utils::trim(statements);
 
     } else {
         string statement;
         bool flag = true;
         // Check character by character until semicolon reached
         while (flag) {
-            if (procedure.length() == 0) {
+            if (statements.length() == 0) {
                 throw InvalidSyntaxException((char *) "Syntax Error, missing semicolon");
             }
-            char nextLetter = procedure[0];
-            procedure.erase(0, 1);
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
             if (nextLetter == ';') {
                 flag = false;
             } else {
@@ -210,9 +210,9 @@ vector<string> Parser::extractStatements(string procedure, vector<string> statem
             }
         }
         statementList.push_back(statement);
-        procedure = Utils::trim(procedure);
+        statements = Utils::trim(statements);
     }
-    return extractStatements(procedure, statementList);
+    return extractStatements(statements, statementList);
 }
 
 // TODO: check fully

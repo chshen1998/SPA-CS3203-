@@ -15,18 +15,40 @@ using namespace std;
  *
  * These synonyms must be variable type.
  */
-struct Clause
+class Clause
 {
-    PqlToken clauseType;
-    PqlToken left;
-    PqlToken right;
-    TokenType category;
-
-    Clause(PqlToken type, PqlToken l, PqlToken r, TokenType c) : clauseType(type), left(l), right(r), category(c) {}
+public:
+    Clause(PqlToken clauseType, PqlToken left, PqlToken right, TokenType category);
 
     bool operator==(const Clause& other) const {
         return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
     }
+
+    PqlToken clauseType;
+    PqlToken left;
+    PqlToken right;
+    TokenType category;
+};
+
+class PatternClause : public Clause
+{
+public:
+    PatternClause(PqlToken clauseType, PqlToken left, PqlToken right);
+};
+
+class WithClause : public Clause
+{
+public:
+    WithClause(PqlToken clauseType, PqlToken left, PqlToken right, PqlToken leftAttr, PqlToken rightAttr);
+
+    PqlToken leftAttr;
+    PqlToken rightAttr;
+};
+
+class SuchThatClause : public Clause
+{
+public:
+    SuchThatClause(PqlToken clauseType, PqlToken left, PqlToken right);
 };
 
 /*

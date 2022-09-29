@@ -33,6 +33,8 @@ private:
 
     PqlToken extractPatternClause();
 
+    PqlToken extractWithClause();
+
     PqlToken extractSuchThatClause();
 
     PqlToken getNextToken();

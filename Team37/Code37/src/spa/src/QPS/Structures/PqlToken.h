@@ -17,6 +17,8 @@ struct PqlToken {
     TokenType type;
     string value;
 
+    PqlToken() {}
+
     PqlToken(TokenType tokenType, string tokenValue) {
         type = tokenType;
         value = tokenValue;

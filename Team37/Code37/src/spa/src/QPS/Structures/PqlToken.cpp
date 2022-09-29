@@ -8,6 +8,7 @@ using namespace std;
 #include "../Types/TokenType.h"
 #include "PqlToken.h"
 
+
 std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     string typeString = "unknown";
     switch (token.type) {

@@ -56,7 +56,7 @@ void QueryExtractor::extractClauses() {
 	    }
         else if (nextToken.type == TokenType::WITH)
         {
-	        // Handle With
+            nextToken = extractWithClause();
         }
         else
         {
@@ -75,11 +75,23 @@ PqlToken QueryExtractor::extractPatternClause() {
         getNextToken(); // COMMA
         PqlToken right = getNextToken();
         getNextToken(); // CLOSE BRACKET
-        pq.clauses.push_back(Clause(synonym, left, right, TokenType::PATTERN));
+        pq.clauses.push_back(PatternClause(synonym, left, right));
         next = getNextToken();
     }
     return next;
 }
+
+PqlToken QueryExtractor::extractWithClause()
+{
+    PqlToken next = PqlToken(TokenType::AND, "and");
+    while (next.type == TokenType::AND)
+    {
+	    
+    }
+
+    return next;
+}
+
 
 PqlToken QueryExtractor::extractSuchThatClause() {
     getNextToken(); // THAT
@@ -93,7 +105,7 @@ PqlToken QueryExtractor::extractSuchThatClause() {
 	    getNextToken(); // COMMA
 	    PqlToken right = getNextToken();
 	    getNextToken(); // CLOSE BRACKET
-	    pq.clauses.push_back(Clause(suchThatClause, left, right, TokenType::SUCH_THAT));
+	    pq.clauses.push_back(SuchThatClause(suchThatClause, left, right));
         next = getNextToken();
     }
 

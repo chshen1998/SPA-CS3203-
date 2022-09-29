@@ -23,7 +23,7 @@ public:
 
     /**
      * Creates ReadStatement object with specified parent.
-     * @param line raw read statement, trimmed. First 5 characters are: "read "
+     * @param line raw read statement, no semicolon, trimmed. First 5 characters are: "read "
      * @param parent parent node of read statement
      * @return ReadStatement object
      */
@@ -31,7 +31,7 @@ public:
 
     /**
      * Creates PrintStatement object with specified parent.
-     * @param line print statement in string
+     * @param line raw print statement, no semicolon, trimmed. First 6 characters are: "print "
      * @param parent parent node of read statement
      * @return PrintStatement object
      */
@@ -39,7 +39,7 @@ public:
 
     /**
      * Creates a AssignStatement object with specified parent.
-     * @param line raw assign statement string, no semicolons, trimmed
+     * @param line raw assign statement string, no semicolon, trimmed
      * @param parent parent node of assign statement
      * @return AssignStatement object
      */
@@ -47,7 +47,7 @@ public:
 
     /**
      * Creates a CallStatement object with specified parent.
-     * @param line raw call statement string, no semicolons, trimmed
+     * @param line raw call statement string, no semicolon, trimmed
      * @param parent parent node of call statement
      */
     static shared_ptr<CallStatement> tokenizeCall(string line, shared_ptr<TNode> parent);

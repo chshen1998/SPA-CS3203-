@@ -52,15 +52,35 @@ vector<string> Parser::extractProcedures(string srcCode, vector<string> procedur
 }
 
 string Parser::extractProcName(string procedure) {
-    string keyword = Keywords::PROCEDURE;
+    string keyword = "procedure ";
 
-    // TODO: Usage of find(), overall method can be fixed to be more resilient
-    int procId = procedure.find(keyword);
-    procId = procId + keyword.length();
-    string bracket = "{";
-    int bracketId = procedure.find(bracket);
-    string name = procedure.substr(procId, bracketId - procId);
-    return Utils::trim(name);
+    // Defensive line, can remove if we are sure procedure string is already trimmed
+    procedure = Utils::trim(procedure);
+
+    if (procedure.substr(0, 10) != keyword) {
+        throw InvalidSyntaxException((char *) "Invalid procedure declaration");
+    }
+
+    procedure = procedure.substr(10);
+
+    string procedureName;
+    bool bracketHit = false;
+    // Process until first open bracket
+    for (char& c: procedure) {
+        if (c != '{') {
+            procedureName.push_back(c);
+        } else {
+            bracketHit = true;
+            break;
+        }
+    }
+
+    if (!bracketHit) {
+        throw InvalidSyntaxException((char *) "Did you forget brackets in your procedure?");
+    }
+
+    Utils::validateName(procedureName);
+    return Utils::trim(procedureName);
 }
 
 vector<string> Parser::extractStatements(string procedure, vector<string> statementList) {

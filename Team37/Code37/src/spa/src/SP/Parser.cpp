@@ -14,10 +14,7 @@ vector<string> Parser::extractProcedures(string srcCode, vector<string> procedur
         return procedures;
     }
 
-    // TODO: Logic here is slightly flawed / inefficient
-    // TODO: Decide whether to do keyword checking here
-    // TODO: Currently only works for 1 procedure
-    if (srcCode.substr(0, 9) == Keywords::PROCEDURE) {
+    if (srcCode.substr(0, 10) == "procedure ") {
         string procedure;
 
         // Process until first open bracket
@@ -45,7 +42,7 @@ vector<string> Parser::extractProcedures(string srcCode, vector<string> procedur
             }
         }
         procedures.push_back(procedure);
-        return (Utils::trim(srcCode), procedures);
+        return extractProcedures(Utils::trim(srcCode), procedures);
     } else {
         throw InvalidSyntaxException((char *) "Incorrect procedure syntax");
     }
@@ -300,6 +297,7 @@ shared_ptr<SourceCode> Parser::parseSourceCode(string srcCode, string filename) 
         sourceCodeNode->addProcedure(procedureNode);
         procedureNode->setParent(sourceCodeNode);
     }
+    sourceCodeNode->setNumOfStatements(Statement::getLineNumCount());
     return sourceCodeNode;
 }
 

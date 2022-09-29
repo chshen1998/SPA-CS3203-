@@ -10,11 +10,13 @@ using namespace std;
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 #include "QueryValidator.h"
+#include "Validators/AffectsValidator.h"
 #include "Validators/CallsValidator.h"
 #include "Validators/ClauseValidator.h"
 #include "Validators/DeclarationValidator.h"
 #include "Validators/FollowsValidator.h"
 #include "Validators/ModifiesValidator.h"
+#include "Validators/NextValidator.h"
 #include "Validators/PatternValidator.h"
 #include "Validators/ParentValidator.h"
 #include "Validators/SelectValidator.h"
@@ -158,6 +160,14 @@ shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type
     else if (type == TokenType::CALLS || type == TokenType::CALLS_A)
     {
         return shared_ptr<CallsValidator>(new CallsValidator(declarations, type));
+    }
+    else if (type == TokenType::NEXT || type == TokenType::NEXT_A)
+    {
+        return shared_ptr<NextValidator>(new NextValidator(declarations, type));
+    }
+    else if (type == TokenType::AFFECTS || type == TokenType::AFFECTS_A)
+    {
+        return shared_ptr<AffectsValidator>(new AffectsValidator(declarations, type));
     }
     else
     {

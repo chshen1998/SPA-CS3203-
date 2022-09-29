@@ -82,7 +82,7 @@ void QueryValidator::validateClauses()
 	    }
     	else if (curr.type == TokenType::WITH)
 	    {
-            // Handle With 
+            curr = validateWith();
 	    }
         else if (curr.type == TokenType::SUCH)
         {
@@ -99,8 +99,8 @@ PqlToken QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(declarations, TokenType::PATTERN);
 
-    PqlToken next = PqlToken(TokenType::AND, "and");
-    while (next.type == TokenType::AND)
+    PqlToken and = PqlToken(TokenType::AND, "and");
+    while (and .type == TokenType::AND)
     {
     	validator.validatePattern(getNextToken());
 	    PqlToken open = getNextToken();
@@ -110,8 +110,22 @@ PqlToken QueryValidator::validatePattern()
 	    PqlToken close = getNextToken();
 	    validator.validateBrackets(open, comma, close);
 	    validator.validate(left, right);
+        and = getNextToken();
+    }
+    return and;
+}
+
+PqlToken QueryValidator::validateWith()
+{
+    vector<PqlToken> withTokens;
+
+    PqlToken next = getNextToken();
+    while (next.type != TokenType::END && next.type != TokenType::PATTERN && next.type != TokenType::SUCH)
+    {
+        withTokens.push_back(next);
         next = getNextToken();
     }
+
     return next;
 }
 
@@ -123,8 +137,8 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
         throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
     }
 
-	PqlToken next = PqlToken(TokenType::AND, "and");
-    while (next.type == TokenType::AND)
+	PqlToken and = PqlToken(TokenType::AND, "and");
+    while (and.type == TokenType::AND)
     {
         shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
 	    PqlToken open = getNextToken();
@@ -134,9 +148,9 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
 	    PqlToken close = getNextToken();
 	    validator->validateBrackets(open, comma, close);
 	    validator->validate(left, right);
-        next = getNextToken();
+        and = getNextToken();
     }
-    return next;
+    return and;
 }
 
 

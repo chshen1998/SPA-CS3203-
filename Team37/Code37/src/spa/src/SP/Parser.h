@@ -81,7 +81,7 @@ public:
      * @param parentNode parent node of the statement
      * @return a Statement node
      */
-    static shared_ptr<Statement> parseStatement(string statement, shared_ptr<TNode> parentNode);
+    static shared_ptr<Statement> parseStatement(string statement);
 
     /**
      * Parses raw if-else block string
@@ -89,7 +89,7 @@ public:
      * @param parent parent node of the if statement
      * @return an IfStatement node
      */
-    static shared_ptr<IfStatement> parseIfElse(string ifElseBlock, shared_ptr<TNode> parent);
+    static shared_ptr<IfStatement> parseIfElse(string ifElseBlock);
 
     /**
      * Parses raw while block string
@@ -97,7 +97,7 @@ public:
      * @param parent parent node of the while statement
      * @return a WhileStatement node
      */
-    static shared_ptr<WhileStatement> parseWhile(string whileBlock, shared_ptr<TNode> parent);
+    static shared_ptr<WhileStatement> parseWhile(string whileBlock);
 
     /**
      * Parses raw conditional expression string
@@ -105,7 +105,7 @@ public:
      * @param parent parent node of the conditional expression
      * @return a ConditionalExpression node
      */
-    static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr, shared_ptr<TNode> parent);
+    static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr);
 
     /**
      * Parses a raw relational expression string
@@ -113,7 +113,7 @@ public:
      * @param parent parent node of the relational expression
      * @return a RelationalExpression node
      */
-    static shared_ptr<RelationalExpression> parseRelExpr(string relExprStr, shared_ptr<TNode> parent);
+    static shared_ptr<RelationalExpression> parseRelExpr(string relExprStr);
 };
 
 #endif //SPA_PARSER_H

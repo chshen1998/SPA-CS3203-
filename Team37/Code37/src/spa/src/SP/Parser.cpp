@@ -290,39 +290,37 @@ shared_ptr<Procedure> Parser::parseProcedure(string procedure) {
     vector<string> statementList;
     statementList = Parser::extractStatements(removeProcedureWrapper(procedure), statementList);
     for (string statement : statementList) {
-        shared_ptr<Statement> statementNode = Parser::parseStatement(statement, procedureNode);
+        shared_ptr<Statement> statementNode = Parser::parseStatement(statement);
         procedureNode->addStatement(statementNode);
         statementNode->setParent(procedureNode);
     }
     return procedureNode;
 }
 
-// TODO: remove parentNode from function, parent is always set in the function that calls parseStatement
-shared_ptr<Statement> Parser::parseStatement(string statement, shared_ptr<TNode> parentNode) {
+shared_ptr<Statement> Parser::parseStatement(string statement) {
     statement = Utils::trim(statement);
     shared_ptr<Statement> statementNode;
 
     if (statement.substr(0, 6) == "print ") {
-        statementNode = Tokenizer::tokenizePrint(statement, parentNode);
+        statementNode = Tokenizer::tokenizePrint(statement);
     } else if (statement.substr(0, 5) == "read ") {
-        statementNode = Tokenizer::tokenizeRead(statement, parentNode);
+        statementNode = Tokenizer::tokenizeRead(statement);
     } else if (statement.substr(0, 5) == "call ") {
-        statementNode = Tokenizer::tokenizeCall(statement, parentNode);
+        statementNode = Tokenizer::tokenizeCall(statement);
     } else if (statement.substr(0, 3) == "if ") {
-        statementNode = Parser::parseIfElse(statement, parentNode);
+        statementNode = Parser::parseIfElse(statement);
     } else if (statement.substr(0, 6) == "while ") {
-        statementNode = Parser::parseWhile(statement, parentNode);
+        statementNode = Parser::parseWhile(statement);
     } else {
         // otherwise is an assign statement
         // TODO: improve how assign statements are detected, currently not resilient to keywords bring used as variable name
-        statementNode = Tokenizer::tokenizeAssign(statement, parentNode);
+        statementNode = Tokenizer::tokenizeAssign(statement);
     }
     return statementNode;
 }
 
-// TODO: remove parent from function
 // TODO: check logic
-shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode> parent) {
+shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     string ifStmt;
     string ifBlock;
     string elseBlock;
@@ -420,8 +418,8 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
     }
 
     string condExpr = Parser::extractConditionalExpr(ifStmt);
-    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
-    shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(parent, condExprNode);
+    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr);
+    shared_ptr<IfStatement> ifNode = make_shared<IfStatement>(nullptr, condExprNode);
     condExprNode->setParent(ifNode);
 
     vector<string> ifStmtLst;
@@ -430,35 +428,34 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock, shared_ptr<TNode
     elseStmtLst = Parser::extractStatements(elseBlock, elseStmtLst);
 
     for (string s: ifStmtLst) {
-        shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
+        shared_ptr<Statement> statement = Parser::parseStatement(s);
         ifNode->addThenStatement(statement);
         statement->setParent(ifNode);
     }
 
     for (string s: elseStmtLst) {
-        shared_ptr<Statement> statement = Parser::parseStatement(s, ifNode);
+        shared_ptr<Statement> statement = Parser::parseStatement(s);
         ifNode->addElseStatement(statement);
         statement->setParent(ifNode);
     }
     return ifNode;
 }
 
-// TODO: remove parent form function
 // TODO: check logic
-shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNode> parent) {
+shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string whileStmtStr = whileBlock.substr(0, firstEgyptianOpen);
     string condExpr = Parser::extractConditionalExpr(whileStmtStr);
 
-    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr, nullptr);
-    shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(parent, condExprNode);
+    shared_ptr<ConditionalExpression> condExprNode = Parser::parseCondExpr(condExpr);
+    shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>(nullptr, condExprNode);
     condExprNode->setParent(whileStatement);
 
     string stmtsBlock = Parser::removeProcedureWrapper(whileBlock);
     vector<string> stmts;
     stmts = Parser::extractStatements(stmtsBlock, stmts);
     for (auto s:stmts) {
-        shared_ptr<Statement> statement = Parser::parseStatement(s, whileStatement);
+        shared_ptr<Statement> statement = Parser::parseStatement(s);
         whileStatement->addStatement(statement);
         statement->setParent(whileStatement);
     }
@@ -466,7 +463,7 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock, shared_ptr<TNod
 }
 
 // TODO: check fully
-shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_ptr<TNode> parent) {
+shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
     int openIdx = relExprStr.find("(");
     int closeIdx = relExprStr.find_last_of(")");
     if (openIdx == 0 && closeIdx != -1) {
@@ -512,11 +509,11 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr, shared_
     }
     relFactor1 = Tokenizer::tokenizeRelFactor(relFactorStr1);
     relFactor2 = Tokenizer::tokenizeRelFactor(relFactorStr2);
-    return make_shared<RelationalExpression>(parent, opr, relFactor1, relFactor2);
+    return make_shared<RelationalExpression>(nullptr, opr, relFactor1, relFactor2);
 }
 
 // TODO: check fully
-shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shared_ptr<TNode> parent) {
+shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
     condExprStr = Utils::trim(condExprStr);
     string andOrOperators = "&&||";
     string notOperator = "!";
@@ -555,14 +552,14 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
             condExprStr.erase(0, 1);
             continue;
         } else { // not in bracket and hit && or || operator
-            shared_ptr<ConditionalExpression> leftSide = parseCondExpr(Utils::trim(expression), nullptr);
-            shared_ptr<ConditionalExpression> rightSide = parseCondExpr(Utils::trim(condExprStr.substr(2)), nullptr);
+            shared_ptr<ConditionalExpression> leftSide = parseCondExpr(Utils::trim(expression));
+            shared_ptr<ConditionalExpression> rightSide = parseCondExpr(Utils::trim(condExprStr.substr(2)));
             shared_ptr<ConditionalExpression> conditionalExpression;
             // create conditional expression according to operator
             if (condExprStr.substr(0, 2) == "&&") {
-                conditionalExpression = make_shared<AndCondition>(parent, leftSide, rightSide);
+                conditionalExpression = make_shared<AndCondition>(nullptr, leftSide, rightSide);
             } else if (condExprStr.substr(0, 2) == "||") {
-                conditionalExpression = make_shared<OrCondition>(parent, leftSide, rightSide);
+                conditionalExpression = make_shared<OrCondition>(nullptr, leftSide, rightSide);
             } else {
                 // if & or | found but not &&, ||
                 throw InvalidSyntaxException((char *) "Invalid conditional operator");
@@ -609,8 +606,8 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
             condExprStr.erase(0, 1);
             continue;
         } else {
-            shared_ptr<ConditionalExpression> conditionalExpression = parseCondExpr(Utils::trim(condExprStr.substr(1)), nullptr);
-            shared_ptr<NotCondition> notCondition = make_shared<NotCondition>(parent, conditionalExpression);
+            shared_ptr<ConditionalExpression> conditionalExpression = parseCondExpr(Utils::trim(condExprStr.substr(1)));
+            shared_ptr<NotCondition> notCondition = make_shared<NotCondition>(nullptr, conditionalExpression);
             conditionalExpression->setParent(notCondition);
 
             return notCondition;
@@ -618,7 +615,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
     }
 
     if (bracketsDetected) {
-        return parseCondExpr(Utils::trim(expression), parent);
+        return parseCondExpr(Utils::trim(expression));
     }
 
     // if code reaches here, there should be no more brackets or &&,||operators
@@ -629,13 +626,13 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr, shar
 
     // check if is a relational expr
     nextChar = condExprStr[0];
-    if (condExprStr.find("<") != string::npos ||
+    if (condExprStr.find('<') != string::npos ||
         condExprStr.find("<=") != string::npos ||
-        condExprStr.find(">") != string::npos ||
-        condExprStr.find("<") != string::npos ||
+        condExprStr.find('>') != string::npos ||
+        condExprStr.find('<') != string::npos ||
         condExprStr.find("!=") != string::npos ||
         condExprStr.find("==") != string::npos) {
-        return parseRelExpr(condExprStr, parent);
+        return parseRelExpr(condExprStr);
     }
     // else throw error
     throw InvalidSyntaxException((char *) "Invalid conditional expression");

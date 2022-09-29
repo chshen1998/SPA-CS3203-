@@ -8,23 +8,23 @@ using namespace std;
 #include "SP/Utilities/Keywords.h"
 #include "InvalidSyntaxException.h"
 
-shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line, shared_ptr<TNode> parent) {
+shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line) {
     // "read " is 5 chars
     int charsToSkip = 5;
     string varName = Utils::trim(line.substr(charsToSkip));
     Utils::validateName(varName);
-    return make_shared<ReadStatement>(parent, varName);
+    return make_shared<ReadStatement>(nullptr, varName);
 }
 
-shared_ptr<PrintStatement> Tokenizer::tokenizePrint(string line, shared_ptr<TNode> parent) {
+shared_ptr<PrintStatement> Tokenizer::tokenizePrint(string line) {
     // "print " is 6 chars
     int charsToSkip = 6;
     string varName = Utils::trim(line.substr(charsToSkip));
     Utils::validateName(varName);
-    return make_shared<PrintStatement>(parent, varName);
+    return make_shared<PrintStatement>(nullptr, varName);
 }
 
-shared_ptr<AssignStatement> Tokenizer::tokenizeAssign(string line, shared_ptr<TNode> parent) {
+shared_ptr<AssignStatement> Tokenizer::tokenizeAssign(string line) {
     string keyword = "=";
     // find() here is ok since we are looking for first instance
     int equalsSignIndex = line.find(keyword);
@@ -39,17 +39,17 @@ shared_ptr<AssignStatement> Tokenizer::tokenizeAssign(string line, shared_ptr<TN
     rawRelationalFactor = Utils::trim(rawRelationalFactor);
 
     shared_ptr<RelationalFactor> relFactor = tokenizeRelFactor(rawRelationalFactor);
-    shared_ptr<AssignStatement> assignStatement = make_shared<AssignStatement>(parent, varName, relFactor);
+    shared_ptr<AssignStatement> assignStatement = make_shared<AssignStatement>(nullptr, varName, relFactor);
     relFactor->setParent(assignStatement);
     return assignStatement;
 }
 
-shared_ptr<CallStatement> Tokenizer::tokenizeCall(string line, shared_ptr<TNode> parent) {
+shared_ptr<CallStatement> Tokenizer::tokenizeCall(string line) {
     // "call " is 5 chars
     int charsToSkip = 5;
     string procedureName = Utils::trim(line.substr(charsToSkip));
     Utils::validateName(procedureName);
-    return make_shared<CallStatement>(parent, procedureName);
+    return make_shared<CallStatement>(nullptr, procedureName);
 }
 
 shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {

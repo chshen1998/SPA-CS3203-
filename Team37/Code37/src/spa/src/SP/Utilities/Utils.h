@@ -15,11 +15,11 @@ public:
     static const string WHITESPACE;
 
     /**
-     * Converts a text file to a string for easier parsing.
-     * @param filepath filepath of sourcecode.
+     * Returns a string of the contents of a text file
+     * @param filepath filepath of text file.
      * @return text file as a string.
      */
-    static string fileToString(string filename);
+    static string fileToString(string filepath);
 
     /**
      * Trims whitespace on left of string
@@ -41,6 +41,20 @@ public:
      * @return trimmed string
      */
     static string trim(string s);
+
+    /**
+     * Validates that a given string is a valid name
+     * @param varName
+     * @return true if string is a valid name, throws an error otherwise
+     */
+    static bool validateName(string varName);
+
+    /**
+     * Validates that a given string is an integer
+     * @param integer
+     * @return true if string is a valid integer, throws an error otherwise
+     */
+    static bool validateInteger(string integer);
 };
 
 #endif //SP_UTILS_H

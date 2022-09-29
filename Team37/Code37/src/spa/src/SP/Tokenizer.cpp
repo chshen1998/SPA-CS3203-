@@ -12,7 +12,7 @@ shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line, shared_ptr<TNode>
     // "read " is 5 chars
     int charsToSkip = 5;
     string varName = Utils::trim(line.substr(charsToSkip));
-    // TODO: varName validation
+    Utils::validateName(varName);
     return make_shared<ReadStatement>(parent, varName);
 }
 
@@ -20,18 +20,19 @@ shared_ptr<PrintStatement> Tokenizer::tokenizePrint(string line, shared_ptr<TNod
     // "print " is 6 chars
     int charsToSkip = 6;
     string varName = Utils::trim(line.substr(charsToSkip));
-    // TODO: varName validation
+    Utils::validateName(varName);
     return make_shared<PrintStatement>(parent, varName);
 }
 
 shared_ptr<AssignStatement> Tokenizer::tokenizeAssign(string line, shared_ptr<TNode> parent) {
-    // TODO: make parsing more resilient. 1. remove usage of find(), 2. validate variable name
     string keyword = "=";
+    // find() here is ok since we are looking for first instance
     int equalsSignIndex = line.find(keyword);
 
     // Pull out varName
     string varName = line.substr(0, equalsSignIndex);
     varName = Utils::trim(varName);
+    Utils::validateName(varName);
 
     // Pull out relFactor
     string rawRelationalFactor = line.substr(equalsSignIndex + 1);
@@ -43,11 +44,11 @@ shared_ptr<AssignStatement> Tokenizer::tokenizeAssign(string line, shared_ptr<TN
     return assignStatement;
 }
 
-shared_ptr<CallStatement> Tokenizer::tokenizeCall(std::string line, shared_ptr<TNode> parent) {
+shared_ptr<CallStatement> Tokenizer::tokenizeCall(string line, shared_ptr<TNode> parent) {
     // "call " is 5 chars
     int charsToSkip = 5;
-    // TODO: procedureName validation
     string procedureName = Utils::trim(line.substr(charsToSkip));
+    Utils::validateName(procedureName);
     return make_shared<CallStatement>(parent, procedureName);
 }
 
@@ -205,16 +206,11 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
     nextChar = line[0];
     // Must be variable since first letter is not a DIGIT
     if (digits.find(nextChar) == string::npos) {
+        Utils::validateName(line);
         return make_shared<NameExpression>(nullptr, line);
     }
 
-    // Make sure everything inside is a digit
-    for (char& c: line)  {
-        if (digits.find(c) == string::npos) {
-            // Either return an error here, or catch the stoi error
-            throw InvalidSyntaxException((char *) "Invalid constant for assign statement.");
-        }
-    }
+    Utils::validateInteger(line);
     // stoi converts std::string to int
     return make_shared<ConstantExpression>(nullptr, stoi(line));
 

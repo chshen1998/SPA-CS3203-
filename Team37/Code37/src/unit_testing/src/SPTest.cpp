@@ -939,7 +939,7 @@ TEST_CASE("Parse procedure with nested if else") {
                  "x=1;\n"
                  "}\n"
                  "}";
-    shared_ptr<Procedure> procedure = Parser::parseProcedure(str, nullptr);
+    shared_ptr<Procedure> procedure = Parser::parseProcedure(str);
     REQUIRE(procedure->getProcedureName() == "Main");
     shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(procedure->getStatements()[0]);
     shared_ptr<RelationalExpression> relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());

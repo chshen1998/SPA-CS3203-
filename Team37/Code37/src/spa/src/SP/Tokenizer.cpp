@@ -12,7 +12,11 @@ shared_ptr<ReadStatement> Tokenizer::tokenizeRead(string line) {
     // "read " is 5 chars
     int charsToSkip = 5;
     string varName = Utils::trim(line.substr(charsToSkip));
-    Utils::validateName(varName);
+
+    if (!Utils::validateName(varName)) {
+        throw InvalidSyntaxException((char *) "Variable name is invalid");
+    }
+
     return make_shared<ReadStatement>(nullptr, varName);
 }
 
@@ -20,7 +24,11 @@ shared_ptr<PrintStatement> Tokenizer::tokenizePrint(string line) {
     // "print " is 6 chars
     int charsToSkip = 6;
     string varName = Utils::trim(line.substr(charsToSkip));
-    Utils::validateName(varName);
+
+    if (!Utils::validateName(varName)) {
+        throw InvalidSyntaxException((char *) "Variable name is invalid");
+    }
+
     return make_shared<PrintStatement>(nullptr, varName);
 }
 
@@ -32,7 +40,10 @@ shared_ptr<AssignStatement> Tokenizer::tokenizeAssign(string line) {
     // Pull out varName
     string varName = line.substr(0, equalsSignIndex);
     varName = Utils::trim(varName);
-    Utils::validateName(varName);
+
+    if (!Utils::validateName(varName)) {
+        throw InvalidSyntaxException((char *) "Variable name is invalid");
+    }
 
     // Pull out relFactor
     string rawRelationalFactor = line.substr(equalsSignIndex + 1);
@@ -48,7 +59,11 @@ shared_ptr<CallStatement> Tokenizer::tokenizeCall(string line) {
     // "call " is 5 chars
     int charsToSkip = 5;
     string procedureName = Utils::trim(line.substr(charsToSkip));
-    Utils::validateName(procedureName);
+
+    if (!Utils::validateName(procedureName)) {
+        throw InvalidSyntaxException((char *) "Procedure name is invalid");
+    }
+
     return make_shared<CallStatement>(nullptr, procedureName);
 }
 
@@ -206,11 +221,18 @@ shared_ptr<RelationalFactor> Tokenizer::tokenizeRelFactor(string line) {
     nextChar = line[0];
     // Must be variable since first letter is not a DIGIT
     if (digits.find(nextChar) == string::npos) {
-        Utils::validateName(line);
+
+        if (!Utils::validateName(line)) {
+            throw InvalidSyntaxException((char *) "Variable name is invalid");
+        }
+
         return make_shared<NameExpression>(nullptr, line);
     }
 
-    Utils::validateInteger(line);
+    if (!Utils::validateInteger(line)) {
+        throw InvalidSyntaxException((char *) "Constant value is invalid");
+    }
+
     // stoi converts std::string to int
     return make_shared<ConstantExpression>(nullptr, stoi(line));
 

@@ -45,14 +45,14 @@ public:
     /**
      * Validates that a given string is a valid name
      * @param varName
-     * @return true if string is a valid name, throws an error otherwise
+     * @return true if string is a valid name, false otherwise
      */
     static bool validateName(string varName);
 
     /**
      * Validates that a given string is an integer
      * @param integer
-     * @return true if string is a valid integer, throws an error otherwise
+     * @return true if string is a valid integer, false otherwise
      */
     static bool validateInteger(string integer);
 };

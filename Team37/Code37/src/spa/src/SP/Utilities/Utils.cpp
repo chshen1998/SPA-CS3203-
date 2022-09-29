@@ -43,7 +43,7 @@ string Utils::trim(string s) {
 bool Utils::validateName(string varName) {
     // Variable name cannot be empty string
     if (varName.length() == 0) {
-        throw InvalidSyntaxException((char *) "Some variable name is empty");
+        return false;
     }
 
     char currChar;
@@ -51,14 +51,14 @@ bool Utils::validateName(string varName) {
     // First character must be a letter "A-Z" || "a-z"
     currChar = varName[0];
     if (!isalpha(currChar)) {
-        throw InvalidSyntaxException((char *) "First character of variable name must be an alphabet");
+        return false;
     }
 
     varName.erase(0);
 
     for (char& c: varName)  {
         if (!(isalpha(c) || isdigit(c))) {
-            throw InvalidSyntaxException((char *) "Variable can only contain alphanumerical values");
+            return false;
         }
     }
     return true;
@@ -67,12 +67,12 @@ bool Utils::validateName(string varName) {
 bool Utils::validateInteger(string integer) {
     // Variable name cannot be empty string
     if (integer.length() == 0) {
-        throw InvalidSyntaxException((char *) "Some variable name is empty");
+        return false;
     }
 
     for (char& c: integer)  {
         if (!isdigit(c)) {
-            throw InvalidSyntaxException((char *) "First character of variable name must be an alphabet");
+            return false;
         }
     }
 

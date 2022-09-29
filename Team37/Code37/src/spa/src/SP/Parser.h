@@ -77,7 +77,7 @@ public:
 
     /**
      * Parses an unprocessed statement string
-     * @param statement unprocessed statement string
+     * @param statement unprocessed statement string (without semicolon)
      * @param parentNode parent node of the statement
      * @return a Statement node
      */
@@ -114,6 +114,14 @@ public:
      * @return a RelationalExpression node
      */
     static shared_ptr<RelationalExpression> parseRelExpr(string relExprStr);
+
+    /**
+     * Checks if a statement is an assign statement
+     * Serves as a helper function for parseStatement
+     * @param statement raw statement to be checked (without semicolon)
+     * @return true if statement is an assign statement, false otherwise
+     */
+    static bool isAssignStatement(string statement);
 };
 
 #endif //SPA_PARSER_H

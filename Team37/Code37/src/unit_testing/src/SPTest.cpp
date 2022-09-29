@@ -976,12 +976,3 @@ TEST_CASE("RelationalFactor Generate String") {
     relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
     REQUIRE(relFactor->generateString() == "((a + b) * ((3 + (((x * 3) * 2) % ((1 - 2) / q))) + 9))");
 }
-
-
-
-
-
-
-
-
-

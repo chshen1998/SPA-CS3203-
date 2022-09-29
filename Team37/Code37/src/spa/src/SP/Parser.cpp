@@ -76,7 +76,9 @@ string Parser::extractProcName(string procedure) {
         throw InvalidSyntaxException((char *) "Did you forget brackets in your procedure?");
     }
 
-    Utils::validateName(procedureName);
+    if (!Utils::validateName(procedureName)) {
+        throw InvalidSyntaxException((char *) "Procedure name is invalid");
+    }
     return Utils::trim(procedureName);
 }
 
@@ -319,7 +321,9 @@ shared_ptr<Statement> Parser::parseStatement(string statement) {
     statement = Utils::trim(statement);
     shared_ptr<Statement> statementNode;
 
-    if (statement.substr(0, 6) == "print ") {
+    if (isAssignStatement(statement)) {
+        statementNode = Tokenizer::tokenizeAssign(statement);
+    } else if (statement.substr(0, 6) == "print ") {
         statementNode = Tokenizer::tokenizePrint(statement);
     } else if (statement.substr(0, 5) == "read ") {
         statementNode = Tokenizer::tokenizeRead(statement);
@@ -329,11 +333,7 @@ shared_ptr<Statement> Parser::parseStatement(string statement) {
         statementNode = Parser::parseIfElse(statement);
     } else if (statement.substr(0, 6) == "while ") {
         statementNode = Parser::parseWhile(statement);
-    } else {
-        // otherwise is an assign statement
-        // TODO: improve how assign statements are detected, currently not resilient to keywords bring used as variable name
-        statementNode = Tokenizer::tokenizeAssign(statement);
-    }
+    } else { }
     return statementNode;
 }
 
@@ -654,4 +654,17 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
     }
     // else throw error
     throw InvalidSyntaxException((char *) "Invalid conditional expression");
+}
+
+bool Parser::isAssignStatement(string statement) {
+    int pos = statement.find("=");
+    if (pos == string::npos) {
+        return false;
+    }
+
+    string varName = statement.substr(0, pos);
+    if ((varName.find_first_of("{}()!<>&|") != string::npos)) {
+        return false;
+    }
+    return true;
 }

@@ -459,7 +459,6 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     return ifNode;
 }
 
-// TODO: check logic
 shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string whileStmtStr = whileBlock.substr(0, firstEgyptianOpen);
@@ -472,7 +471,7 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     string stmtsBlock = Parser::removeProcedureWrapper(whileBlock);
     vector<string> stmts;
     stmts = Parser::extractStatements(stmtsBlock, stmts);
-    for (auto s:stmts) {
+    for (string s:stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s);
         whileStatement->addStatement(statement);
         statement->setParent(whileStatement);

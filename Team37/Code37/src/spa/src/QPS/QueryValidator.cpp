@@ -22,6 +22,7 @@ using namespace std;
 #include "Validators/SelectValidator.h"
 #include "Validators/UsesValidator.h"
 #include "Validators/ValidatorUtils.h"
+#include "Validators/WithValidator.h"
 
 QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
     tokens = tokenVector;
@@ -125,6 +126,9 @@ PqlToken QueryValidator::validateWith()
         withTokens.push_back(next);
         next = getNextToken();
     }
+
+    WithValidator validator = WithValidator(declarations, withTokens);
+    validator.validate();
 
     return next;
 }

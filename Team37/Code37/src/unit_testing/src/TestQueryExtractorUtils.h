@@ -31,6 +31,10 @@ extern vector<PqlToken> valid_follows_a;
 
 extern vector<PqlToken> valid_parent_a;
 
+extern vector<PqlToken> valid_calls;
+
+extern vector<PqlToken> valid_calls_a;
+
 extern vector<PqlToken> valid_such_that_then_pattern;
 
 extern vector<PqlToken> valid_pattern_then_such_that;
@@ -56,6 +60,8 @@ extern vector<PqlToken> missing_such_that;
 extern vector<PqlToken> invalid_wildcard_uses;
 
 extern vector<PqlToken> invalid_wildcard_modifies;
+
+extern vector<PqlToken> valid_multi_pattern_then_multi_such_that;
 
 extern vector<PqlToken> addPatternClause(vector<PqlToken> tokens);
 

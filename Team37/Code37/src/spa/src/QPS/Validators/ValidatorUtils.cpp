@@ -25,16 +25,16 @@ SemanticError::SemanticError(string msg) : exception()
  * Set of valid declaration types
  */
 set<TokenType> validDesignEntities = {
-	TokenType::VARIABLE,
-	TokenType::PROCEDURE,
-	TokenType::WHILE,
-	TokenType::ASSIGN,
-	TokenType::STATEMENT,
+    TokenType::STATEMENT,
     TokenType::READ,
     TokenType::PRINT,
     TokenType::CALL,
+    TokenType::WHILE,
     TokenType::IF,
-    TokenType::CONSTANT
+    TokenType::ASSIGN,
+	TokenType::VARIABLE,
+    TokenType::CONSTANT,
+    TokenType::PROCEDURE
 };
 
 /*
@@ -49,6 +49,12 @@ set<TokenType> validRelationshipsRef = {
     TokenType::PARENT_A,
     TokenType::FOLLOWS,
     TokenType::FOLLOWS_A,
+    TokenType::CALLS,
+    TokenType::CALLS_A,
+    TokenType::NEXT,
+    TokenType::NEXT_A,
+    TokenType::AFFECTS,
+    TokenType::AFFECTS_A
 };
 
 set<TokenType> validStatementRef = {
@@ -68,4 +74,34 @@ set<TokenType> validExpressionSpec = {
     TokenType::WILDCARD_STRING,
 	TokenType::WILDCARD,
     TokenType::STRING,
+};
+
+set<TokenType> validAttrName = {
+    TokenType::PROCNAME,
+    TokenType::VARNAME,
+    TokenType::VALUE,
+    TokenType::STATEMENT_NUM
+};
+
+set<TokenType> validPatternType = {
+    TokenType::ASSIGN,
+    TokenType::WHILE,
+    TokenType::IF
+};
+
+unordered_map<TokenType, string> relationshipToStringMap = {
+    {TokenType::USES, "Uses"},
+    {TokenType::USES_P, "Uses"},
+    {TokenType::MODIFIES, "Modifies"},
+    {TokenType::MODIFIES_P, "Modifies"},
+    {TokenType::PARENT, "Parent"},
+    {TokenType::PARENT_A, "Parent*"},
+    {TokenType::FOLLOWS, "Follows"},
+    {TokenType::FOLLOWS_A, "Follows*"},
+    {TokenType::CALLS, "Calls"},
+    {TokenType::CALLS_A, "Calls*"},
+    {TokenType::NEXT, "Next"},
+    {TokenType::NEXT_A, "Next*"},
+    {TokenType::AFFECTS, "Affects"},
+    {TokenType::AFFECTS_A, "Affects*"}
 };

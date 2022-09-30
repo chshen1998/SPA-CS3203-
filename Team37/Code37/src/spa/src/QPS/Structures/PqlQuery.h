@@ -20,8 +20,9 @@ struct Clause
     PqlToken clauseType;
     PqlToken left;
     PqlToken right;
+    TokenType category;
 
-    Clause(PqlToken type, PqlToken l, PqlToken r) : clauseType(type), left(l), right(r) {}
+    Clause(PqlToken type, PqlToken l, PqlToken r, TokenType c) : clauseType(type), left(l), right(r), category(c) {}
 
     bool operator==(const Clause& other) const {
         return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
@@ -34,6 +35,7 @@ struct Clause
 struct PqlQuery {
     unordered_map<string, TokenType> declarations = {};
     string select;
+    vector<Clause> clauses;
     vector<Clause> patternClauses;
     vector<Clause> suchThatClauses;
 };

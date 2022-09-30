@@ -19,7 +19,7 @@
 
 class FollowsValidator : public ClauseValidator {
 public:
-	FollowsValidator(unordered_map<string, TokenType> declarations);
+	FollowsValidator(unordered_map<string, TokenType> declarations, TokenType token);
 	void validate(PqlToken left, PqlToken right);
 };
 

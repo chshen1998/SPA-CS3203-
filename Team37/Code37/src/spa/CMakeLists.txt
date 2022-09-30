@@ -44,7 +44,7 @@ add_library(spa ${srcs} ${headers}
         src/AST/Operators/RelationalOperator.h
 
         src/AST/ASTVisitor/ASTVisitor.h
-
+        "src/QPS/Validators/CallsValidator.h"
         "src/QPS/Validators/ClauseValidator.h"
         "src/QPS/Validators/DeclarationValidator.h"
         "src/QPS/Validators/FollowsValidator.h"
@@ -65,7 +65,7 @@ add_library(spa ${srcs} ${headers}
         src/SP/Utilities/Utils.cpp
         src/SP/SP.cpp
         src/SP/Tokenizer.cpp
-
+        "src/QPS/Validators/CallsValidator.cpp"
         "src/QPS/Validators/ClauseValidator.cpp"
         "src/QPS/Validators/DeclarationValidator.cpp"
         "src/QPS/Validators/FollowsValidator.cpp"

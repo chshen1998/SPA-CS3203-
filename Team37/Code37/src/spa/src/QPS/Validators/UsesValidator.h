@@ -18,7 +18,7 @@
 
 class UsesValidator : public ClauseValidator {
 public:
-	UsesValidator(unordered_map<string, TokenType> declarations);
+	UsesValidator(unordered_map<string, TokenType> declarations, TokenType token);
 	void validate(PqlToken left, PqlToken right);
 };
 

@@ -10,16 +10,19 @@ using namespace std;
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 #include "QueryValidator.h"
+#include "Validators/AffectsValidator.h"
 #include "Validators/CallsValidator.h"
 #include "Validators/ClauseValidator.h"
 #include "Validators/DeclarationValidator.h"
 #include "Validators/FollowsValidator.h"
 #include "Validators/ModifiesValidator.h"
+#include "Validators/NextValidator.h"
 #include "Validators/PatternValidator.h"
 #include "Validators/ParentValidator.h"
 #include "Validators/SelectValidator.h"
 #include "Validators/UsesValidator.h"
 #include "Validators/ValidatorUtils.h"
+#include "Validators/WithValidator.h"
 
 QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
     tokens = tokenVector;
@@ -80,7 +83,7 @@ void QueryValidator::validateClauses()
 	    }
     	else if (curr.type == TokenType::WITH)
 	    {
-            // Handle With 
+            curr = validateWith();
 	    }
         else if (curr.type == TokenType::SUCH)
         {
@@ -97,8 +100,8 @@ PqlToken QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(declarations, TokenType::PATTERN);
 
-    PqlToken next = PqlToken(TokenType::AND, "and");
-    while (next.type == TokenType::AND)
+    PqlToken and = PqlToken(TokenType::AND, "and");
+    while (and .type == TokenType::AND)
     {
     	validator.validatePattern(getNextToken());
 	    PqlToken open = getNextToken();
@@ -108,8 +111,25 @@ PqlToken QueryValidator::validatePattern()
 	    PqlToken close = getNextToken();
 	    validator.validateBrackets(open, comma, close);
 	    validator.validate(left, right);
+        and = getNextToken();
+    }
+    return and;
+}
+
+PqlToken QueryValidator::validateWith()
+{
+    vector<PqlToken> withTokens;
+
+    PqlToken next = getNextToken();
+    while (next.type != TokenType::END && next.type != TokenType::PATTERN && next.type != TokenType::SUCH)
+    {
+        withTokens.push_back(next);
         next = getNextToken();
     }
+
+    WithValidator validator = WithValidator(declarations, withTokens);
+    validator.validate();
+
     return next;
 }
 
@@ -121,8 +141,8 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
         throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
     }
 
-	PqlToken next = PqlToken(TokenType::AND, "and");
-    while (next.type == TokenType::AND)
+	PqlToken and = PqlToken(TokenType::AND, "and");
+    while (and.type == TokenType::AND)
     {
         shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
 	    PqlToken open = getNextToken();
@@ -132,9 +152,9 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
 	    PqlToken close = getNextToken();
 	    validator->validateBrackets(open, comma, close);
 	    validator->validate(left, right);
-        next = getNextToken();
+        and = getNextToken();
     }
-    return next;
+    return and;
 }
 
 
@@ -158,6 +178,14 @@ shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type
     else if (type == TokenType::CALLS || type == TokenType::CALLS_A)
     {
         return shared_ptr<CallsValidator>(new CallsValidator(declarations, type));
+    }
+    else if (type == TokenType::NEXT || type == TokenType::NEXT_A)
+    {
+        return shared_ptr<NextValidator>(new NextValidator(declarations, type));
+    }
+    else if (type == TokenType::AFFECTS || type == TokenType::AFFECTS_A)
+    {
+        return shared_ptr<AffectsValidator>(new AffectsValidator(declarations, type));
     }
     else
     {

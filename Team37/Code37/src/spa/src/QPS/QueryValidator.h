@@ -33,6 +33,7 @@ private:
     void validateSelect();
     void validateClauses();
     PqlToken validatePattern();
+    PqlToken validateWith();
     PqlToken validateSuchThat(PqlToken such);
 
     shared_ptr<ClauseValidator> createClauseValidator(TokenType type);

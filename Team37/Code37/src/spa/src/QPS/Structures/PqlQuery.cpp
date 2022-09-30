@@ -17,12 +17,12 @@ Clause::Clause(PqlToken type, PqlToken l, PqlToken r, TokenType categoryType)
     category = categoryType;
 }
 
-PatternClause::PatternClause(PqlToken type, PqlToken l, PqlToken r) : Clause(type, l, r, TokenType::PATTERN) {}
-
-WithClause::WithClause(PqlToken type, PqlToken l, PqlToken r, PqlToken la, PqlToken ra) : Clause(type, l, r, TokenType::WITH)
+Clause::Clause(PqlToken type, PqlToken l, PqlToken r, TokenType categoryType, PqlToken la, PqlToken ra)
 {
+    clauseType = type;
+    left = l;
     leftAttr = la;
+    right = r;
     rightAttr = ra;
+    category = categoryType;
 }
-
-SuchThatClause::SuchThatClause(PqlToken type, PqlToken l, PqlToken r) : Clause(type, l, r, TokenType::SUCH_THAT) {}

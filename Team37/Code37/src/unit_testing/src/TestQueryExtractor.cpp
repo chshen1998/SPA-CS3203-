@@ -80,6 +80,45 @@ TEST_CASE("Test Pattern clause")
 	REQUIRE(isSameClauses(ans, results.clauses));
 }
 
+TEST_CASE("Test With clause")
+{
+	vector<Clause> ans = { Clause(PqlToken(),
+								  PqlToken(TokenType::SYNONYM, "p"),
+								  PqlToken(TokenType::STRING, "answer"),
+								  TokenType::WITH, 								
+								  PqlToken(TokenType::VARNAME, "var"), 								  
+								  PqlToken()
+		)};
+
+	QueryExtractor sut(valid_with);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
+TEST_CASE("Test Mulitple With clause")
+{
+	vector<Clause> ans = { Clause(PqlToken(),
+								  PqlToken(TokenType::SYNONYM, "p"),
+								  PqlToken(TokenType::STRING, "answer"),
+								  TokenType::WITH,
+								  PqlToken(TokenType::VARNAME, "var"),
+								  PqlToken()
+		),
+							Clause(PqlToken(),
+									PqlToken(TokenType::STRING, "answer2"),
+									PqlToken(TokenType::SYNONYM, "p"),
+								  TokenType::WITH,
+								  PqlToken(),
+								  PqlToken(TokenType::VARNAME, "var2")
+		) };
+
+	QueryExtractor sut(valid_multi_with);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
 TEST_CASE("Test Uses clause")
 {
 	vector<Clause> ans = { Clause(PqlToken(TokenType::USES, "uses"), 
@@ -239,6 +278,44 @@ TEST_CASE("Test Mulitple Pattern and Such That clauses")
 								TokenType::SUCH_THAT) };
 
 	QueryExtractor sut(valid_multi_pattern_then_multi_such_that);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
+TEST_CASE("Test Mulitple Pattern, With and Such That clauses")
+{
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
+								PqlToken(TokenType::SYNONYM, "v"),
+								PqlToken(TokenType::WILDCARD, "_"),
+							  TokenType::PATTERN),
+						Clause(PqlToken(TokenType::SYNONYM, "a"),
+								PqlToken(TokenType::SYNONYM, "v"),
+								PqlToken(TokenType::WILDCARD, "_"),
+							  TokenType::PATTERN),
+						Clause(PqlToken(),
+								  PqlToken(TokenType::SYNONYM, "p"),
+								  PqlToken(TokenType::NUMBER, "1"),
+								  TokenType::WITH,
+								  PqlToken(TokenType::VARNAME, "var"),
+								  PqlToken()
+							),
+							Clause(PqlToken(),
+									PqlToken(TokenType::NUMBER, "2"),
+									PqlToken(TokenType::SYNONYM, "p"),
+								  TokenType::WITH,
+								  PqlToken(),
+								  PqlToken(TokenType::VARNAME, "var2")),
+						Clause(PqlToken(TokenType::USES, "uses"),
+								PqlToken(TokenType::STATEMENT_NUM, "1"),
+								PqlToken(TokenType::SYNONYM, "v"),
+								TokenType::SUCH_THAT),
+						Clause(PqlToken(TokenType::MODIFIES, "modifies"),
+								PqlToken(TokenType::STATEMENT_NUM, "1"),
+								PqlToken(TokenType::SYNONYM, "v"),
+								TokenType::SUCH_THAT) };
+
+	QueryExtractor sut(valid_multi_pattern_with_such_that);
 	PqlQuery results = sut.extractSemantics();
 
 	REQUIRE(isSameClauses(ans, results.clauses));

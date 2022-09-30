@@ -85,7 +85,7 @@ PqlToken QueryExtractor::extractPatternClause()
         getNextToken(); // COMMA
         right = getNextToken();
         getNextToken(); // CLOSE BRACKET
-        pq.clauses.push_back(PatternClause(pattern, left, right));
+        pq.clauses.push_back(Clause(pattern, left, right, TokenType::PATTERN));
         next = getNextToken();
     }
     return next;
@@ -114,15 +114,14 @@ PqlToken QueryExtractor::extractWithClause()
         right = getNextToken();
         rightAttr = PqlToken();
 
-        next = getNextToken(); // Either "." or "="
+        next = getNextToken(); // Either "." or "and"
         if (next.type == TokenType::DOT)
         {
             rightAttr = getNextToken();
+            next = getNextToken(); // Either "and" or next clause type
         }
 
-        pq.clauses.push_back(WithClause(PqlToken(), left, right, leftAttr, rightAttr));
-
-        next = getNextToken(); // Either "and" or next clause type
+        pq.clauses.push_back(Clause(PqlToken(), left, right, TokenType::WITH, leftAttr, rightAttr));
     }
 
     return next;
@@ -146,7 +145,7 @@ PqlToken QueryExtractor::extractSuchThatClause()
 	    getNextToken(); // COMMA
 	    right = getNextToken();
 	    getNextToken(); // CLOSE BRACKET
-	    pq.clauses.push_back(SuchThatClause(suchThatClause, left, right));
+	    pq.clauses.push_back(Clause(suchThatClause, left, right, TokenType::SUCH_THAT));
         next = getNextToken();
     }
 

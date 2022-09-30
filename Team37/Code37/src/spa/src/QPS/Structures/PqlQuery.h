@@ -20,35 +20,22 @@ class Clause
 public:
     Clause(PqlToken clauseType, PqlToken left, PqlToken right, TokenType category);
 
+    Clause(PqlToken clauseType, PqlToken left, PqlToken right, TokenType category, PqlToken leftAttr, PqlToken rightAttr);
+
     bool operator==(const Clause& other) const {
+        if (category == TokenType::WITH)
+        {
+	        return (other.clauseType == clauseType) && (other.left == left) && (other.right == right) && (other.leftAttr == leftAttr) && (other.rightAttr == rightAttr);
+        }
         return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
     }
 
     PqlToken clauseType;
     PqlToken left;
-    PqlToken right;
-    TokenType category;
-};
-
-class PatternClause : public Clause
-{
-public:
-    PatternClause(PqlToken clauseType, PqlToken left, PqlToken right);
-};
-
-class WithClause : public Clause
-{
-public:
-    WithClause(PqlToken clauseType, PqlToken left, PqlToken right, PqlToken leftAttr, PqlToken rightAttr);
-
     PqlToken leftAttr;
+    PqlToken right;
     PqlToken rightAttr;
-};
-
-class SuchThatClause : public Clause
-{
-public:
-    SuchThatClause(PqlToken clauseType, PqlToken left, PqlToken right);
+    TokenType category;
 };
 
 /*

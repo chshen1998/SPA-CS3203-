@@ -24,12 +24,13 @@ public:
 	virtual void validate(PqlToken left, PqlToken right) = 0;
 
 protected:
-	ClauseValidator(unordered_map<string, TokenType> declarationsMap);
+	ClauseValidator(unordered_map<string, TokenType> declarationsMap, TokenType token);
 
 	void validateParameters(PqlToken left, PqlToken right, set<TokenType> validLeftTypes, set<TokenType> validRightTypes, string clauseType);
 	bool isDeclared(PqlToken synonym);
 
 	unordered_map<string, TokenType> declarations;
+	TokenType validatorType;
 };
 
 #endif //TEAM37_CLAUSEVALIDATOR_H

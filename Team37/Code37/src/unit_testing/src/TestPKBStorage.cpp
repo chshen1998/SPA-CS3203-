@@ -4,6 +4,7 @@ using namespace std;
 
 #include "PKB/Storage.h"
 #include "AST/SourceCode.h"
+#include "AST/Procedure.h"
 #include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -59,6 +60,38 @@ TEST_CASE("Storage - Variable") {
     NameExpression other_var_x = NameExpression(nullptr, "x");
     cmp_set.insert(other_var_x);
     REQUIRE(store->getAllVar().size() == 2);
+}
+
+TEST_CASE("Storage - Procedure") {
+    shared_ptr<Storage> store = make_shared<Storage>();
+
+    // Const set should be empty
+    REQUIRE(store->getAllProc().empty());
+
+    Procedure procMain = Procedure(nullptr, "main");
+    Procedure procTest = Procedure(nullptr, "test");
+
+    store->storeProc(procMain);
+    store->storeProc(procTest);
+
+    REQUIRE(store->getAllProc().size() == 2);
+
+    set<Procedure> cmp_set;
+    cmp_set.insert(procMain);
+    cmp_set.insert(procTest);
+
+    //Check for correct inner items
+    REQUIRE(store->getAllProc() == cmp_set);
+
+    // Check for repeated insertion of same item
+    store->storeProc(procMain);
+    REQUIRE(store->getAllProc().size() == 2);
+
+    // Check for repeated insertion of different item
+    Procedure otherProcMain = Procedure(nullptr, "main");
+    store->storeProc(otherProcMain);
+    cmp_set.insert(otherProcMain);
+    REQUIRE(store->getAllProc().size() == 2);
 }
 
 TEST_CASE("Storage - Constant") {

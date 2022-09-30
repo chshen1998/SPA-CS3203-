@@ -43,6 +43,12 @@ public:
     shared_ptr<RelationalFactor> getExpression2();
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
+
+    /**
+     * Generates a string representing the OperatedExpression
+     * @return a string representation of the OperatedExpression
+     */
+    string generateString() override;
 };
 
 #endif

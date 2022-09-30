@@ -41,6 +41,14 @@ public:
     vector<shared_ptr<Statement> > getStatements();
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
+
+    bool operator==(const Procedure& other) const {
+        return procedureName == other.procedureName && stmtLst == other.stmtLst;
+    };
+
+    bool operator<(const Procedure& other) const {
+        return procedureName > other.procedureName;
+    };
 };
 
 #endif //TEAM37_PROCEDURE_H

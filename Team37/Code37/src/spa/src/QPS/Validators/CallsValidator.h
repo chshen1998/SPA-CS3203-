@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef TEAM37_PARENTVALIDATOR_H
-#define TEAM37_PARENTVALIDATOR_H
+#ifndef TEAM37_CALLSVALIDATOR_H
+#define TEAM37_CALLSVALIDATOR_H
 
 #include <memory>
 #include <string>
@@ -16,11 +16,11 @@
 #include "../Types/TokenType.h"
 #include "ClauseValidator.h"
 
-class ParentValidator : public ClauseValidator {
+class CallsValidator : public ClauseValidator {
 public:
-	ParentValidator(unordered_map<string, TokenType> declarations, TokenType token);
+	CallsValidator(unordered_map<string, TokenType> declarations, TokenType token);
 	void validate(PqlToken left, PqlToken right);
 };
 
 
-#endif //TEAM37_PARENTVALIDATOR_H
+#endif //TEAM37_CALLSVALIDATOR_H

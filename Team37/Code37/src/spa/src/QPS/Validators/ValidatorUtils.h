@@ -37,4 +37,10 @@ extern set<TokenType> validEntityRef;
 
 extern set<TokenType> validExpressionSpec;
 
+extern set<TokenType> validAttrName;
+
+extern set<TokenType> validPatternType;
+
+extern unordered_map<TokenType, string> relationshipToStringMap;
+
 #endif //TEAM37_VALIDATORUTILS_H

@@ -53,6 +53,7 @@ enum class TokenType {
     NEXT_A,
     AFFECTS,
     AFFECTS_A,
+    SUCH_THAT,
 
     // Filter words
     SUCH,

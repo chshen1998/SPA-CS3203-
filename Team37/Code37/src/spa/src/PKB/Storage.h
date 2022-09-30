@@ -14,6 +14,7 @@
 using namespace std;
 
 #include "../AST/TNode.h"
+#include "../AST/Procedure.h"
 #include "../AST/SourceCode.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -38,6 +39,7 @@ private:
     shared_ptr<SourceCode> AST;
     set<NameExpression> variables = {};
     set<ConstantExpression> constants = {};
+    set<Procedure> procedures = {};
     set<shared_ptr<Statement>> statements = {};
 
     Array2D Follows = NULL;
@@ -69,6 +71,11 @@ public:
     void storeConst(ConstantExpression);
 
     set<ConstantExpression> getAllConst();
+
+    // Procedure
+    void storeProc(Procedure);
+
+    set<Procedure> getAllProc();
 
     // Statements
     void storeStmt(shared_ptr<Statement>);

@@ -1,3 +1,4 @@
+#include <iso646.h>
 using namespace std;
 
 #include <string>
@@ -51,37 +52,52 @@ void QueryExtractor::extractClauses() {
     {
 	    if (nextToken.type == TokenType::PATTERN)
 	    {
-            extractPatternClause();
+            nextToken = extractPatternClause();
 	    }
+        else if (nextToken.type == TokenType::WITH)
+        {
+	        // Handle With
+        }
         else
         {
-            extractSuchThatClause();
+            nextToken = extractSuchThatClause();
         }
-        nextToken = getNextToken();
     }
 }
 
-void QueryExtractor::extractPatternClause() {
-    PqlToken synonym = getNextToken();
-    getNextToken(); // OPEN BRACKET
-    //while (getNextToken().type != TokenType::OPEN_BRACKET) {}
-    PqlToken left = getNextToken();
-    getNextToken();
-    PqlToken right = getNextToken();
-    getNextToken();
-    pq.patternClauses.push_back(Clause(synonym, left, right));
+PqlToken QueryExtractor::extractPatternClause() {
+    PqlToken next = PqlToken(TokenType::AND, "and");
+    while (next.type == TokenType::AND)
+    {
+        PqlToken synonym = getNextToken();
+        getNextToken(); // OPEN BRACKET
+        PqlToken left = getNextToken();
+        getNextToken(); // COMMA
+        PqlToken right = getNextToken();
+        getNextToken(); // CLOSE BRACKET
+        pq.clauses.push_back(Clause(synonym, left, right, TokenType::PATTERN));
+        next = getNextToken();
+    }
+    return next;
 }
 
-void QueryExtractor::extractSuchThatClause() {
+PqlToken QueryExtractor::extractSuchThatClause() {
     getNextToken(); // THAT
-    PqlToken suchThatClause = getNextToken();
-    getNextToken(); // OPEN BRACKET
-    //while (getNextToken().type != TokenType::OPEN_BRACKET) {}
-    PqlToken left = getNextToken();
-    getNextToken();
-    PqlToken right = getNextToken();
-    getNextToken();
-    pq.suchThatClauses.push_back(Clause(suchThatClause, left, right));
+
+    PqlToken next = PqlToken(TokenType::AND, "and");
+    while (next.type == TokenType::AND) 
+    {
+	    PqlToken suchThatClause = getNextToken();
+	    getNextToken(); // OPEN BRACKET
+	    PqlToken left = getNextToken();
+	    getNextToken(); // COMMA
+	    PqlToken right = getNextToken();
+	    getNextToken(); // CLOSE BRACKET
+	    pq.clauses.push_back(Clause(suchThatClause, left, right, TokenType::SUCH_THAT));
+        next = getNextToken();
+    }
+
+    return next;
 }
 
 PqlToken QueryExtractor::getNextToken() {

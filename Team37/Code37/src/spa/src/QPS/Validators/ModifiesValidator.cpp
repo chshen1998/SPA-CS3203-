@@ -11,7 +11,7 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-ModifiesValidator::ModifiesValidator(unordered_map<string, TokenType> declarations) : ClauseValidator(declarations) {}
+ModifiesValidator::ModifiesValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void ModifiesValidator::validate(PqlToken left, PqlToken right)
 {

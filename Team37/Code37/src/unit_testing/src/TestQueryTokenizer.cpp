@@ -186,6 +186,63 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
         REQUIRE(q.tokens == expectedTokens);
     }
 
+    
+    SECTION("Multi-Clause statements") {
+        inputQuery = R"(assign a; while w; stmt s;
+                        Select a such that Parent* (w, a) and Next* (60, s) pattern a("x", _) with a.stmt#  = s.stmt#)";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "assign", "a", ";", "while", "w", ";", "stmt", "s", ";", "Select", "a", "such", "that", "Parent*", "(", "w", ",", "a", ")", "and", "Next*", "(", "60", ",", "s", ")", "pattern", "a", "(", "\"x\"", ",", "_", ")", "with", "a", ".", "stmt#", "=", "s", ".", "stmt#"};
+
+        vector<PqlToken> expectedTokens = {
+                PqlToken(TokenType::ASSIGN, "assign"),
+                PqlToken(TokenType::SYNONYM, "a"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::WHILE, "while"),
+                PqlToken(TokenType::SYNONYM, "w"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::STATEMENT, "stmt"),
+                PqlToken(TokenType::SYNONYM, "s"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::DECLARATION_END, ""),
+                PqlToken(TokenType::SELECT, "Select"),
+                PqlToken(TokenType::SYNONYM, "a"),
+                PqlToken(TokenType::SUCH, "such"),
+                PqlToken(TokenType::THAT, "that"),
+                PqlToken(TokenType::PARENT_A, "Parent*"),
+                PqlToken(TokenType::OPEN_BRACKET, "("),
+                PqlToken(TokenType::SYNONYM, "w"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "a"),
+                PqlToken(TokenType::CLOSED_BRACKET, ")"),
+                PqlToken(TokenType::AND, "and"),
+                PqlToken(TokenType::NEXT_A, "Next*"),
+                PqlToken(TokenType::OPEN_BRACKET, "("),
+                PqlToken(TokenType::STATEMENT_NUM, "60"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "s"),
+                PqlToken(TokenType::CLOSED_BRACKET, ")"),
+                PqlToken(TokenType::PATTERN, "pattern"),
+                PqlToken(TokenType::SYNONYM, "a"),
+                PqlToken(TokenType::OPEN_BRACKET, "("),
+                PqlToken(TokenType::STRING, "\"x\""),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::WILDCARD, "_"),
+                PqlToken(TokenType::CLOSED_BRACKET, ")"),
+                PqlToken(TokenType::WITH, "with"),
+                PqlToken(TokenType::SYNONYM, "a"),
+                PqlToken(TokenType::DOT, "."),
+                PqlToken(TokenType::STMTLINE, "stmt#"),
+                PqlToken(TokenType::EQUAL, "="),
+                PqlToken(TokenType::SYNONYM, "s"),
+                PqlToken(TokenType::DOT, "."),
+                PqlToken(TokenType::STMTLINE, "stmt#"),
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
 
 }
 

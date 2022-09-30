@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #ifndef SPA_STORAGE_H
 #define SPA_STORAGE_H
@@ -10,6 +10,7 @@
 #include <set>
 #include <unordered_set>
 #include <memory>
+#include <tuple>
 
 using namespace std;
 
@@ -23,6 +24,7 @@ using namespace std;
 #include "../AST/ASTVisitor/ExtractParentsASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractModifiesASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractUsesASTVisitor.h"
+
 
 #include "../AST/Statement/Statement.h"
 #include "Structures/Array2D.h"
@@ -57,6 +59,10 @@ public:
     // Constructor
     Storage();
 
+    // Queue helper for AST traversal
+    // tuple triplet of (line number,container procedure name,called procedure name)
+    vector<tuple<int, string, string>> callStmtProcedureQueue = {};
+
     // AST
     void storeAST(shared_ptr<SourceCode>);
 
@@ -81,6 +87,9 @@ public:
     void storeStmt(shared_ptr<Statement>);
 
     set<shared_ptr<Statement>> getAllStmt();
+
+    // Post-traversal
+    void storeCallStmtProcedure(ProcVarRelationType, StmtVarRelationType);
 
     // Statement-Statemenet Relations
     void storeRelation(int, int, bool, StmtStmtRelationType);
@@ -111,4 +120,5 @@ public:
 
     vector<string> reverseRetrieveRelation(string, ProcVarRelationType);
 };
+
 #endif

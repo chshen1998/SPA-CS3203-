@@ -35,7 +35,3 @@ shared_ptr<TNode> CFGNode::getTNode() {
 void CFGNode::setAsVisited() {
     visited = 1;
 }
-
-void CFGNode::accept(shared_ptr<CFGVisitor> visitor) {
-    visitor->visitCFGNode(shared_from_this());
-}

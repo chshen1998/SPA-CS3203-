@@ -102,7 +102,7 @@ PqlToken QueryExtractor::extractWithClause()
     while (next.type == TokenType::AND)
     {
         left = getNextToken();
-        leftAttr = PqlToken();
+        leftAttr = PqlToken(TokenType::NONE, "");
 
         next = getNextToken(); // Either "." or "="
         if (next.type == TokenType::DOT)
@@ -112,7 +112,7 @@ PqlToken QueryExtractor::extractWithClause()
         }
 
         right = getNextToken();
-        rightAttr = PqlToken();
+        rightAttr = PqlToken(TokenType::NONE, "");
 
         next = getNextToken(); // Either "." or "and"
         if (next.type == TokenType::DOT)
@@ -121,7 +121,7 @@ PqlToken QueryExtractor::extractWithClause()
             next = getNextToken(); // Either "and" or next clause type
         }
 
-        pq.clauses.push_back(Clause(PqlToken(), left, right, TokenType::WITH, leftAttr, rightAttr));
+        pq.clauses.push_back(Clause(PqlToken(TokenType::NONE, ""), left, right, TokenType::WITH, leftAttr, rightAttr));
     }
 
     return next;

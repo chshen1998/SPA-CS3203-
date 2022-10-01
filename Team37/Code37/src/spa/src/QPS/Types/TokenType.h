@@ -79,7 +79,8 @@ enum class TokenType {
 
     EMPTY,
     DECLARATION_END,
-    END
+    END,
+    NONE
 };
 
 /*

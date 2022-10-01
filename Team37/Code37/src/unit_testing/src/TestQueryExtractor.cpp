@@ -82,12 +82,12 @@ TEST_CASE("Test Pattern clause")
 
 TEST_CASE("Test With clause")
 {
-	vector<Clause> ans = { Clause(PqlToken(),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::STRING, "answer"),
 								  TokenType::WITH, 								
 								  PqlToken(TokenType::VARNAME, "var"), 								  
-								  PqlToken()
+								  PqlToken(TokenType::NONE, "")
 		)};
 
 	QueryExtractor sut(valid_with);
@@ -98,18 +98,18 @@ TEST_CASE("Test With clause")
 
 TEST_CASE("Test Mulitple With clause")
 {
-	vector<Clause> ans = { Clause(PqlToken(),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::STRING, "answer"),
 								  TokenType::WITH,
 								  PqlToken(TokenType::VARNAME, "var"),
-								  PqlToken()
+								  PqlToken(TokenType::NONE, "")
 		),
-							Clause(PqlToken(),
+							Clause(PqlToken(TokenType::NONE, ""),
 									PqlToken(TokenType::STRING, "answer2"),
 									PqlToken(TokenType::SYNONYM, "p"),
 								  TokenType::WITH,
-								  PqlToken(),
+								  PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::VARNAME, "var2")
 		) };
 
@@ -293,18 +293,18 @@ TEST_CASE("Test Mulitple Pattern, With and Such That clauses")
 								PqlToken(TokenType::SYNONYM, "v"),
 								PqlToken(TokenType::WILDCARD, "_"),
 							  TokenType::PATTERN),
-						Clause(PqlToken(),
+						Clause(PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::NUMBER, "1"),
 								  TokenType::WITH,
 								  PqlToken(TokenType::VARNAME, "var"),
-								  PqlToken()
+								  PqlToken(TokenType::NONE, "")
 							),
-							Clause(PqlToken(),
+							Clause(PqlToken(TokenType::NONE, ""),
 									PqlToken(TokenType::NUMBER, "2"),
 									PqlToken(TokenType::SYNONYM, "p"),
 								  TokenType::WITH,
-								  PqlToken(),
+								  PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::VARNAME, "var2")),
 						Clause(PqlToken(TokenType::USES, "uses"),
 								PqlToken(TokenType::STATEMENT_NUM, "1"),

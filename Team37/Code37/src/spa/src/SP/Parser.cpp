@@ -31,6 +31,9 @@ vector<string> Parser::extractProcedures(string srcCode, vector<string> procedur
 
         // Process until close bracket
         while (bracketCounter != 0) {
+            if (srcCode.empty()) {
+                throw InvalidSyntaxException((char *) "Missing \"}\"");
+            }
             char nextChar = srcCode[0];
             procedure.push_back(nextChar);
             srcCode.erase(0, 1);

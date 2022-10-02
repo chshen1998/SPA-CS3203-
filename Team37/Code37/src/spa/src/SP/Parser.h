@@ -23,7 +23,7 @@ class Parser {
 public:
     /**
      * Extracts raw procedure strings from a raw sourceCode string
-     * @param srcCode raw sourceCode string
+     * @param srcCode raw sourceCode string, trimmed
      * @param procedures vector to store procedures as strings.
      * @return a list containing raw procedure strings, with keyword, with name, with brackets
      */
@@ -31,7 +31,7 @@ public:
 
     /**
      * Extracts the name of a procedure.
-     * @param procedure raw procedure string, inclusive of "procedure" keyword and brackets "{...}"
+     * @param procedure raw procedure string, inclusive of "procedure" keyword and brackets "{...}", trimmed
      * @return name of the procedure
      */
     static string extractProcName(string procedure);

@@ -8,43 +8,7 @@
 
 using namespace std;
 
-void require(bool b);
-
-TEST_CASE("Extract Procedures") {
-    vector<string> procedures;
-    string p = "procedure main {\n"
-                      "    flag = 0;\n"
-                      "    print flag;\n"
-                      "    read flag;\n"
-                      "\n"
-                      "    x = 1;\n"
-                      "    y = 2;\n"
-                      "    print x;\n"
-                      "}";
-    procedures.push_back(p);
-
-    vector<string> result;
-    result = Parser::extractProcedures(p, result);
-
-    REQUIRE(result == procedures);
-}
-
-TEST_CASE("Extract procedure names") {
-    string procedure = "procedure main {\n"
-                       "    flag = 0;\n"
-                       "    print flag;\n"
-                       "    read flag;\n"
-                       "\n"
-                       "    x = 1;\n"
-                       "    y = 2;\n"
-                       "    print x;\n"
-                       "}";
-
-    string result = Parser::extractProcName(procedure);
-
-    string expectedName = "main";
-    REQUIRE(expectedName == result);
-}
+// TODO: Continue organizing test files
 
 TEST_CASE("Remove procedure wrapper - Good input") {
     string procedure = "procedure main {\n"
@@ -99,136 +63,6 @@ TEST_CASE("Remove procedure wrapper - Good input") {
                "    } else {\n"
                "        read flag;\n"
                "    }";
-
-    REQUIRE(result == expected);
-}
-
-
-TEST_CASE("Extract Statements - No while and if-else") {
-    string rawStatementList = "flag = 0;\n"
-                       "    print flag;\n"
-                       "    read flag;\n"
-                       "\n"
-                       "    x = 1;\n"
-                       "    y = 2;\n"
-                       "print x;";
-
-    vector<string> statementList;
-
-    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
-    vector<string> expected;
-    string stmt1 = "flag = 0";
-    string stmt2 = "print flag";
-    string stmt3 = "read flag";
-    string stmt4 = "x = 1";
-    string stmt5 = "y = 2";
-    string stmt6 = "print x";
-
-    expected.push_back(stmt1);
-    expected.push_back(stmt2);
-    expected.push_back(stmt3);
-    expected.push_back(stmt4);
-    expected.push_back(stmt5);
-    expected.push_back(stmt6);
-
-    REQUIRE(result == expected);
-}
-
-TEST_CASE("Extract Statements - While and if-else included") {
-    string rawStatementList = "while () {\n"
-                       "    print flag;\n"
-                       "    read flag;\n"
-                       "\n"
-                       "    x = 1;\n"
-                       "    y = 2;\n"
-                       "    }\n"
-                       "    print x;\n"
-                       "    if () then {\n"
-                       "        print flag;\n"
-                       "    } else {\n"
-                       "        read flag;\n"
-                       "    }";
-
-    vector<string> statementList;
-
-    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
-    vector<string> expected;
-    string stmt1 = "while () {\n"
-                   "    print flag;\n"
-                   "    read flag;\n"
-                   "\n"
-                   "    x = 1;\n"
-                   "    y = 2;\n"
-                   "    }";
-    string stmt2 = "print x";
-    string stmt3 = "if () then {\n"
-                    "        print flag;\n"
-                    "    } else {\n"
-                    "        read flag;\n"
-                    "    }";
-
-    expected.push_back(stmt1);
-    expected.push_back(stmt2);
-    expected.push_back(stmt3);
-
-    REQUIRE(result == expected);
-}
-
-TEST_CASE("Extract Statements - Nested While and if-else") {
-    string rawStatementList = "while () {\n"
-                              "\t\tcall x;\n"
-                              "\t\tread x;\n"
-                              "\t\twhile () {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t}\n"
-                              "\t\tif () then {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t} else {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t}\n"
-                              "}\n"
-                              "\n"
-                              "if () then {\n"
-                              "\t\twhile () {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t}\n"
-                              "} else {\n"
-                              "\t\tif () then {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t} else {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t}\n"
-                              "}";
-    vector<string> statementList;
-    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
-
-    vector<string> expected;
-    string stmt1 = "while () {\n"
-                   "\t\tcall x;\n"
-                   "\t\tread x;\n"
-                   "\t\twhile () {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "\t\tif () then {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t} else {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "}";
-    string stmt2 = "if () then {\n"
-                   "\t\twhile () {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "} else {\n"
-                   "\t\tif () then {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t} else {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "}";
-
-    expected.push_back(stmt1);
-    expected.push_back(stmt2);
 
     REQUIRE(result == expected);
 }
@@ -432,14 +266,6 @@ TEST_CASE("Tokenize RelFactor - Brackets changing priority") {
     REQUIRE(nameExpression->getVarName() == "b");
     nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
     REQUIRE(nameExpression->getVarName() == "c");
-}
-
-
-TEST_CASE("Extract Conditional Expression") {
-    string ifStatementStr = "if ((x != 9) && (x <= y))";
-    string expected = "(x != 9) && (x <= y)";
-    string result = Parser::extractConditionalExpr(ifStatementStr);
-    REQUIRE(result == expected);
 }
 
 TEST_CASE("Parse relational expression") {

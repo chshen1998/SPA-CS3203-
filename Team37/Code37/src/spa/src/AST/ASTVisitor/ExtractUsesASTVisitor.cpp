@@ -285,7 +285,7 @@ deque<string> ExtractUsesASTVisitor::parseRelationalFactorString(const std::stri
 }
 
 /**
- * Return brackets from  string
+ * Remove brackets from  string
  * @param word
  * @return sanitized word
  */

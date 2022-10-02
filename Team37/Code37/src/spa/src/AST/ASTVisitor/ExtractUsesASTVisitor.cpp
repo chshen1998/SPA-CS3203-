@@ -143,9 +143,9 @@ void ExtractUsesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> ass
     // Storing relations for assign statement pattern matching
     int lineNum = assignStmt->getLineNum();
     string bracketedRelationalFactors = assignStmt->getRelFactor()->generateString();
-    deque<string> parsedRelationalFactors = this->parseRelationalFactorString(bracketedRelationalFactors);
+    deque<string> parsedRelationalFactors = parseRelationalFactorString(bracketedRelationalFactors);
     for (string factor: parsedRelationalFactors) {
-        string sanitizedString = this->sanitizeString(factor);
+        string sanitizedString = sanitizeString(factor);
         this->storage->storeRelation(lineNum, sanitizedString, USESSV);
     }
 
@@ -262,6 +262,11 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
 
 }
 
+/**
+ * Parses relational factor string into its bracketed substrings
+ * @param str
+ * @return deque of bracketed substrings
+ */
 deque<string> ExtractUsesASTVisitor::parseRelationalFactorString(const std::string &str) {
     deque<std::string> result;
     stack<std::string::const_iterator> stack;
@@ -279,6 +284,11 @@ deque<string> ExtractUsesASTVisitor::parseRelationalFactorString(const std::stri
     return result;
 }
 
+/**
+ * Return brackets from  string
+ * @param word
+ * @return sanitized word
+ */
 string ExtractUsesASTVisitor::sanitizeString(string word) {
     int i = 0;
 

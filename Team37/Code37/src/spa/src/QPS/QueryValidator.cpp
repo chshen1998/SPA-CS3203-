@@ -100,8 +100,8 @@ PqlToken QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(declarations, TokenType::PATTERN);
 
-    PqlToken and = PqlToken(TokenType::AND, "and");
-    while (and .type == TokenType::AND)
+    PqlToken andToken = PqlToken(TokenType::AND, "and");
+    while (andToken.type == TokenType::AND)
     {
     	validator.validatePattern(getNextToken());
 	    PqlToken open = getNextToken();
@@ -111,9 +111,9 @@ PqlToken QueryValidator::validatePattern()
 	    PqlToken close = getNextToken();
 	    validator.validateBrackets(open, comma, close);
 	    validator.validate(left, right);
-        and = getNextToken();
+        andToken = getNextToken();
     }
-    return and;
+    return andToken;
 }
 
 PqlToken QueryValidator::validateWith()
@@ -141,8 +141,8 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
         throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
     }
 
-	PqlToken and = PqlToken(TokenType::AND, "and");
-    while (and.type == TokenType::AND)
+	PqlToken andToken = PqlToken(TokenType::AND, "and");
+    while (andToken.type == TokenType::AND)
     {
         shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
 	    PqlToken open = getNextToken();
@@ -152,9 +152,9 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
 	    PqlToken close = getNextToken();
 	    validator->validateBrackets(open, comma, close);
 	    validator->validate(left, right);
-        and = getNextToken();
+        andToken = getNextToken();
     }
-    return and;
+    return andToken;
 }
 
 

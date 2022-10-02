@@ -139,6 +139,16 @@ void ExtractUsesASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
  */
 void ExtractUsesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
     assignStmt->getRelFactor()->accept(shared_from_this());
+
+    // Storing relations for assign statement pattern matching
+    int lineNum = assignStmt->getLineNum();
+    string bracketedRelationalFactors = assignStmt->getRelFactor()->generateString();
+    deque<string> parsedRelationalFactors = parseRelationalFactorString(bracketedRelationalFactors);
+    for (string factor: parsedRelationalFactors) {
+        string sanitizedString = sanitizeString(factor);
+        this->storage->storeRelation(lineNum, sanitizedString, USESSV);
+    }
+
 }
 
 // RelationalFactor
@@ -250,4 +260,44 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
         node = node->getParent();
     }
 
+}
+
+/**
+ * Parses relational factor string into its bracketed substrings
+ * @param str
+ * @return deque of bracketed substrings
+ */
+deque<string> ExtractUsesASTVisitor::parseRelationalFactorString(const std::string &str) {
+    deque<std::string> result;
+    stack<std::string::const_iterator> stack;
+    for (auto it = str.begin(); it != str.end();) {
+        if (*it == '(') {
+            stack.push(it++);
+        } else if (*it == ')') {
+            auto start = stack.top();
+            stack.pop();
+            result.emplace_back(start, ++it);
+        } else {
+            it++;
+        }
+    }
+    return result;
+}
+
+/**
+ * Remove brackets from  string
+ * @param word
+ * @return sanitized word
+ */
+string ExtractUsesASTVisitor::sanitizeString(string word) {
+    int i = 0;
+
+    while (i < word.size()) {
+        if (word[i] == '(' || word[i] == ')') {
+            word.erase(i, 1);
+        } else {
+            i++;
+        }
+    }
+    return word;
 }

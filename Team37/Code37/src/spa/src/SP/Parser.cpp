@@ -85,6 +85,7 @@ string Parser::extractProcName(string procedure) {
     return Utils::trim(procedureName);
 }
 
+// TODO: cannot parse variables that contain "if" or "while" as the first 5 characters
 vector<string> Parser::extractStatements(string statements, vector<string> statementList) {
     // Assume that the raw procedure string is already trimmed
     if (statements.length() == 0) {
@@ -332,9 +333,9 @@ shared_ptr<Statement> Parser::parseStatement(string statement) {
         statementNode = Tokenizer::tokenizeRead(statement);
     } else if (statement.substr(0, 5) == "call ") {
         statementNode = Tokenizer::tokenizeCall(statement);
-    } else if (statement.substr(0, 3) == "if ") {
+    } else if (statement.substr(0, 2) == "if") {
         statementNode = Parser::parseIfElse(statement);
-    } else if (statement.substr(0, 6) == "while ") {
+    } else if (statement.substr(0, 5) == "while") {
         statementNode = Parser::parseWhile(statement);
     } else { }
     return statementNode;

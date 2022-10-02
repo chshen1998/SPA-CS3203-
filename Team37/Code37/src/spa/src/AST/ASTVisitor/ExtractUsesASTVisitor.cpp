@@ -139,6 +139,16 @@ void ExtractUsesASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
  */
 void ExtractUsesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
     assignStmt->getRelFactor()->accept(shared_from_this());
+
+    // Storing relations for assign statement pattern matching
+    int lineNum = assignStmt->getLineNum();
+    string bracketedRelationalFactors = assignStmt->getRelFactor()->generateString();
+    deque<string> parsedRelationalFactors = this->parseRelationalFactorString(bracketedRelationalFactors);
+    for (string factor: parsedRelationalFactors) {
+        string sanitizedString = this->sanitizeString(factor);
+        this->storage->storeRelation(lineNum, sanitizedString, USESSV);
+    }
+
 }
 
 // RelationalFactor
@@ -250,4 +260,34 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
         node = node->getParent();
     }
 
+}
+
+deque<string> ExtractUsesASTVisitor::parseRelationalFactorString(const std::string &str) {
+    deque<std::string> result;
+    stack<std::string::const_iterator> stack;
+    for (auto it = str.begin(); it != str.end();) {
+        if (*it == '(') {
+            stack.push(it++);
+        } else if (*it == ')') {
+            auto start = stack.top();
+            stack.pop();
+            result.emplace_back(start, ++it);
+        } else {
+            it++;
+        }
+    }
+    return result;
+}
+
+string ExtractUsesASTVisitor::sanitizeString(string word) {
+    int i = 0;
+
+    while (i < word.size()) {
+        if (word[i] == '(' || word[i] == ')') {
+            word.erase(i, 1);
+        } else {
+            i++;
+        }
+    }
+    return word;
 }

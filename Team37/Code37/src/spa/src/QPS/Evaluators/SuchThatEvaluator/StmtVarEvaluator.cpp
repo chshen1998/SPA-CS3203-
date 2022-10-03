@@ -20,7 +20,7 @@ bool StmtVarEvaluator::evaluateBooleanClause(const Clause& clause) {
     StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
 
     // StmtNum-StmtNum --> Eg. Uses(5, "x") 
-    if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STATEMENT_NUM) {
+    if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STRING) {
         return servicer->retrieveRelation(stoi(leftArg.value), rightArg.value, sv);
     }
 

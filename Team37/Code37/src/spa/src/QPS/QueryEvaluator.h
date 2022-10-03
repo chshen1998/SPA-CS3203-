@@ -33,26 +33,8 @@ public:
     void evaluate();
 
 private:
-    void QuerySelect();
-
-    //int evaluateSuchThatClause(vector<vector<string>> &);
-
-    //void evaluatePatternClause(vector<vector<string>> &);
-
-    //bool evaluateBooleanClauses();
-
     void getResultFromFinalTable(const vector<vector<string>> &);
-
-    vector<vector<string>>
-    joinTwoTable(const vector<vector<string>> &a, size_t columna, const vector<vector<string>> &b, size_t columnb);
-
     void selectAll(TokenType type);
-
-    inline bool checkIfClauseNoExists();
-
-    bool checkIfSelectSynonymExistsInClause();
-
-    void getListOfStmtNumbersIntersection(vector<int> &, vector<int> &, vector<int> &);
 };
 
 

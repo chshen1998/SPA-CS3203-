@@ -15,7 +15,7 @@ public:
     PatternEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
         GeneralEvaluator(s, d) {};
 
-    virtual void evaluateClause(const Clause&, vector<vector<string>>& intermediate) {};
+    virtual vector<vector<string>> evaluateClause(const Clause&, vector<vector<string>>) = 0;
 };
 
 #endif

@@ -8,6 +8,12 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
+unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType = {
+    { TokenType::FOLLOWS, StmtStmtRelationType::FOLLOWS},
+    { TokenType::FOLLOWS_A, StmtStmtRelationType::FOLLOWSS },
+    { TokenType::PARENT, StmtStmtRelationType::PARENT },
+    { TokenType::PARENT_A, StmtStmtRelationType::PARENTS },
+};
 
 bool StmtStmtEvaluator::evaluateBooleanClause(const Clause& clause) {
     PqlToken leftArg = clause.left;
@@ -42,16 +48,19 @@ bool StmtStmtEvaluator::evaluateBooleanClause(const Clause& clause) {
 }
 
 
-void StmtStmtEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>>& intermediate) 
+vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
 {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
     StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause.clauseType.type];
+
+    vector<vector<string>> finalTable;
     vector<int> finalResult;
     vector<int> intermediateStmtLines;
     
     // Synonym-Synonym --> Eg. Follows(s1, s2) 
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
+        finalTable.push_back(vector<string> { leftArg.value, rightArg.value});
         StatementType st1 = tokenTypeToStatementType[declarations[leftArg.value]];
         StatementType st2 = tokenTypeToStatementType[declarations[rightArg.value]];
 
@@ -74,13 +83,14 @@ void StmtStmtEvaluator::evaluateSynonymClause(const Clause& clause, vector<vecto
             getLineNumInteresection(finalResult, intermediateStmtLines, allLineNumOfRightSynonym);
 
             for (int rightSynonym : finalResult) {
-                intermediate.push_back(vector<string>
+                finalTable.push_back(vector<string>
                 { to_string(leftSynonym), to_string(rightSynonym) });
             }
         }
     }
     else {
         string synonymValue = leftArg.type == TokenType::SYNONYM ? leftArg.value : rightArg.value;
+        finalTable.push_back(vector<string> { synonymValue });
         StatementType st = tokenTypeToStatementType[declarations[synonymValue]];
         vector<int> allLineNumOfSynonym;
         
@@ -93,7 +103,7 @@ void StmtStmtEvaluator::evaluateSynonymClause(const Clause& clause, vector<vecto
         if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::WILDCARD) {
             for (int lines : allLineNumOfSynonym) {
                 if (!servicer->forwardRetrieveRelation(lines, ss).empty()) {
-                    intermediate.push_back(vector<string>{ to_string(lines) });
+                    finalTable.push_back(vector<string>{ to_string(lines) });
                 }
             }
         }
@@ -102,26 +112,34 @@ void StmtStmtEvaluator::evaluateSynonymClause(const Clause& clause, vector<vecto
         else if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::SYNONYM) {
             for (int lines : allLineNumOfSynonym) {
                 if (!servicer->reverseRetrieveRelation(lines, ss).empty()) {
-                    intermediate.push_back(vector<string>{ to_string(lines) });
+                    finalTable.push_back(vector<string>{ to_string(lines) });
                 }
             }
         }
-        
-        // Synonym-StmtNum --> Eg. Follows(s, 6) 
-        else if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STATEMENT_NUM) {
-            intermediateStmtLines = servicer->reverseRetrieveRelation(stoi(rightArg.value), ss);
-        }
 
-        // StmtNum-Synonym --> Eg. Follows(6, s) 
         else {
-            intermediateStmtLines = servicer->forwardRetrieveRelation(stoi(leftArg.value), ss);
+
+            // Synonym-StmtNum --> Eg. Follows(s, 6) 
+            if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STATEMENT_NUM) {
+                intermediateStmtLines = servicer->reverseRetrieveRelation(stoi(rightArg.value), ss);
+            }
+
+            // StmtNum-Synonym --> Eg. Follows(6, s) 
+            else {
+                intermediateStmtLines = servicer->forwardRetrieveRelation(stoi(leftArg.value), ss);
+            }
+
+            getLineNumInteresection(finalResult, allLineNumOfSynonym, intermediateStmtLines);
+
+            for (int line : finalResult) {
+                finalTable.push_back(vector<string> { to_string(line) } );
+            }
         }
 
-
-        getLineNumInteresection(finalResult, allLineNumOfSynonym, intermediateStmtLines);
             
         // Join With Intermediate table
+        return JoinTable(intermediate, finalTable);
+
     }
-    
 
 }

@@ -5,6 +5,26 @@ using namespace std;
 #include <iterator>
 
 
+vector<vector<string>> EvaluatorUtils::JoinTable(const vector<vector<string>>& v1,
+    const vector<vector<string>>& v2) {
+
+    int columnIndex = -1;
+    int columnIndex2 = -1;
+
+    for (int i = 0; i < v1[0].size(); i++) {
+        for (int j = 0; j < v2[0].size(); j++) {
+            if (v1[0][i] == v2[0][j]) {
+                columnIndex = i;
+                columnIndex2 = j;
+                break;
+            }
+        }
+    }
+
+    return EvaluatorUtils::JoinToIntermediateTable(v1, columnIndex, v2, columnIndex2);
+}
+
+
 vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vector<string>>& v1, size_t columnIndex1,
     const vector<vector<string>>& v2, size_t columnIndex2) {
 

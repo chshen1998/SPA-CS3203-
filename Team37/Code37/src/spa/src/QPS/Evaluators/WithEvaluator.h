@@ -15,7 +15,7 @@ public:
     WithEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
         GeneralEvaluator(s, d) {};
 
-    void evaluateClause(const Clause&, vector<vector<string>>&);
+    vector<vector<string>> evaluateClause(const Clause&, vector<vector<string>>);
     bool evaluateBooleanClause(const Clause&);
 
 };

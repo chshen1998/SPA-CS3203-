@@ -8,19 +8,15 @@ using namespace std;
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"
 
-extern unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType = {
-    { TokenType::USES, StmtVarRelationType::USESSV},
-    { TokenType::MODIFIES, StmtVarRelationType::MODIFIESSV },
-};
-
+extern unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType;
 
 class StmtVarEvaluator : public SuchThatEvaluator {
 public:
     StmtVarEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType >& d) :
         SuchThatEvaluator(s, d) {};
 
-    bool evaluateBooleanClause(const Clause&);
-    void evaluateSynonymClause(const Clause&, vector<vector<string>>& intermediate);
+    bool evaluateBooleanClause(const Clause&) override;
+    vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) override;
 };
 
 

@@ -15,10 +15,8 @@ public:
     AssignEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
         PatternEvaluator(s, d) {};
 
-    void evaluateClause(const Clause&, vector<vector<string>>&);
+    vector<vector<string>> evaluateClause(const Clause&, vector<vector<string>>);
 
-private:
-    inline bool checkWildCardStringOrString(TokenType type);
 };
 
 #endif

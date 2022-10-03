@@ -5,6 +5,7 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include "QPS/Types/TokenType.h"
 
 namespace EvaluatorUtils {
     template<typename T>
@@ -17,7 +18,15 @@ namespace EvaluatorUtils {
             back_inserter(intersection));
     }
 
+    vector<vector<string>> JoinTable(const vector<vector<string>>& v1,
+        const vector<vector<string>>& v2);
+
     vector<vector<string>> JoinToIntermediateTable(const vector<vector<string>>& v1, size_t columnIndex1, const vector<vector<string>>& v2, size_t columnIndex2);
+
+    inline bool checkWildCardStringOrString(TokenType type) {
+        return type == TokenType::STRING || type == TokenType::WILDCARD_STRING;
+    }
+
 };
 
 #endif // !TEAM37_EVALUATOR_UTILS_H

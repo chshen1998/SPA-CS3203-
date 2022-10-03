@@ -20,9 +20,6 @@
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 
-extern unordered_map<TokenType, StatementType> tokenTypeToStatementType;
-extern unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType;
-extern unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType;
 extern set<TokenType> suchThatStmtRefStmtRef;
 
 class QueryEvaluator {
@@ -38,11 +35,11 @@ public:
 private:
     void QuerySelect();
 
-    int evaluateSuchThatClause(vector<vector<string>> &);
+    //int evaluateSuchThatClause(vector<vector<string>> &);
 
-    void evaluatePatternClause(vector<vector<string>> &);
+    //void evaluatePatternClause(vector<vector<string>> &);
 
-    bool evaluateBooleanClauses();
+    //bool evaluateBooleanClauses();
 
     void getResultFromFinalTable(const vector<vector<string>> &);
 

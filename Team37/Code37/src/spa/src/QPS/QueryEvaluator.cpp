@@ -15,6 +15,8 @@ using namespace std;
 #include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
+#include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
+#include "QPS/Evaluators/WithEvaluator.h"
 
 #include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -36,40 +38,91 @@ void QueryEvaluator::evaluate() {
     const TokenType type = pq.declarations[selectSynonym];
  
     // If there are no clauses / select synonym not in any clauses
-    if (checkIfClauseNoExists() || !checkIfSelectSynonymExistsInClause()) {
-        selectAll(type);
-        return;
-    }
+    //if (checkIfClauseNoExists() || !checkIfSelectSynonymExistsInClause()) {
+    //    selectAll(type);
+    //    return;
+    //}
+
+    //result.push_back(pq.clauses[0].left.value);
+    //result.push_back(pq.clauses[0].right.value);
+    
+    //return;
 
     StmtStmtEvaluator stmtStmtEvaluator = StmtStmtEvaluator(servicer, pq.declarations);
     StmtVarEvaluator stmtVarEvaluator = StmtVarEvaluator(servicer, pq.declarations);
     ProcVarEvaluator procVarEvaluator = ProcVarEvaluator(servicer, pq.declarations);
-
+    AssignEvaluator assignEvaluator = AssignEvaluator(servicer, pq.declarations);
+    WithEvaluator withEvaluator = WithEvaluator(servicer, pq.declarations);
 
     vector<vector<string>> finalResult;
-
+    
     for (Clause clause : pq.clauses) {
-
         if (clause.category == TokenType::WITH) {
-
-
+            if (clause.leftAttr.type == TokenType::NONE && clause.rightAttr.type == TokenType::NONE) {
+                if (!withEvaluator.evaluateBooleanClause(clause)) {
+                    return;
+                }
+            }
+            else {
+                finalResult = withEvaluator.evaluateClause(clause, finalResult);
+            }
         }
 
         else if (clause.category == TokenType::PATTERN) {
-
+            finalResult = assignEvaluator.evaluateClause(clause, finalResult);
         }
 
         else {
-            if (clause.left.type != TokenType::SYNONYM && clause.left.type != TokenType::SYNONYM) {
+            TokenType suchThatType = clause.clauseType.type;
 
+            // Follows, Parents, Next, Affects
+            if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
+
+                if (clause.checkIfBooleanClause()) {
+                    if (!stmtStmtEvaluator.evaluateBooleanClause(clause)) {
+                        return;
+                    }
+                }
+                else {
+                    finalResult = stmtStmtEvaluator.evaluateSynonymClause(clause, finalResult);
+                }
             }
 
+            // Uses_S, Modifies_S
+            else if (suchThatStmtRefVarRef.find(suchThatType) != suchThatStmtRefVarRef.end()) {
+                if (clause.checkIfBooleanClause()) {
+                    if (!stmtVarEvaluator.evaluateBooleanClause(clause)) {
+                        return;
+                    }
+                }
+                else {
+                    finalResult = stmtVarEvaluator.evaluateSynonymClause(clause, finalResult);
+                }
+            }
+
+            // Uses_P, Modifies_P, Calls
+            else {
+                if (clause.checkIfBooleanClause()) {
+                    if (!procVarEvaluator.evaluateBooleanClause(clause)) {
+                        return;
+                    }
+                }
+                else {
+                    finalResult = procVarEvaluator.evaluateSynonymClause(clause, finalResult);
+                }
+            }
         }
     }
 
+    if (finalResult.size() == 0) {
+        selectAll(type);
+        return;
+    }
 
+    getResultFromFinalTable(finalResult);
 
-
+    
+    /*
     // Using multimap in order to join our tables
     vector<vector<string>> patternTable;
     vector<vector<string>> suchThatTable;
@@ -164,6 +217,7 @@ void QueryEvaluator::evaluate() {
             getResultFromFinalTable(suchThatTable);
         }
     }
+    */
 }
 
 
@@ -240,7 +294,7 @@ Returns me a vector of:
  [ stmt1 , var1],
  [ stmt1 , var2],
  and so on
-*/
+
 void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate) {
     // Initalize our first row of headers
     intermediate.push_back(vector<string>());
@@ -607,7 +661,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
 
     return 0;
 }
-
+*/
 
 void QueryEvaluator::selectAll(TokenType type) {
     if (type == TokenType::VARIABLE) {
@@ -664,6 +718,7 @@ bool QueryEvaluator::checkIfSelectSynonymExistsInClause() {
     return false;
 }
 
+/*
 void QueryEvaluator::getListOfStmtNumbersIntersection(vector<int>& result, vector<int>& table1, vector<int>& table2) {
     sort(table1.begin(), table1.end());
     sort(table2.begin(), table2.end());
@@ -672,3 +727,4 @@ void QueryEvaluator::getListOfStmtNumbersIntersection(vector<int>& result, vecto
         table2.begin(), table2.end(),
         back_inserter(result));
 }
+*/

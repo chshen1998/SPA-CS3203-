@@ -38,7 +38,9 @@ public:
     PqlToken rightAttr;
     TokenType category;
 
-    inline bool checkIfBooleanClause();
+    inline bool checkIfBooleanClause() {
+        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM;
+    };
 };
 
 /*

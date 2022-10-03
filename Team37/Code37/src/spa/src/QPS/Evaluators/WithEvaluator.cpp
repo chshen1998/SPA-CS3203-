@@ -8,7 +8,7 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-void WithEvaluator::evaluateClause(const Clause& clause, vector<vector<string>>& intermediate)
+vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vector<vector<string>> intermediate)
 {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
@@ -56,7 +56,7 @@ void WithEvaluator::evaluateClause(const Clause& clause, vector<vector<string>>&
         }
     }
 
-    intermediate = finalResult;
+    return finalResult;
 }
 
 /*

@@ -8,6 +8,11 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
+unordered_map<TokenType, ProcVarRelationType> tokenTypeToProcVarRelationType = {
+    { TokenType::USES_P, ProcVarRelationType::USESPV },
+    { TokenType::MODIFIES_P, ProcVarRelationType::MODIFIESPV },
+};
+
 
 bool ProcVarEvaluator::evaluateBooleanClause(const Clause& clause) {
     PqlToken leftArg = clause.left;
@@ -28,15 +33,15 @@ bool ProcVarEvaluator::evaluateBooleanClause(const Clause& clause) {
 }
 
 
-void ProcVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>>& intermediate)
+vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
 {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
     ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
+    vector<vector<string>> final;
     vector<string> finalResult;
     vector<string> intermediateStmtLines;
     vector<string> allProcedures;
-    StatementType st;
 
     for (Procedure p : servicer->getAllProc()) {
         allProcedures.push_back(p.getProcedureName());
@@ -46,7 +51,7 @@ void ProcVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
         for (string procedure : allProcedures) {
             for (string v : servicer->forwardRetrieveRelation(procedure, pv)) {
-                intermediate.push_back(vector<string> { procedure , v });
+                final.push_back(vector<string> { procedure , v });
             }
         }
     }
@@ -55,7 +60,7 @@ void ProcVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector
     else if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::WILDCARD) {
         for (string procedure : allProcedures) {
             if (!servicer->forwardRetrieveRelation(procedure, pv).empty()) {
-                intermediate.push_back(vector<string>{ procedure });
+                final.push_back(vector<string>{ procedure });
             }
         }
     }
@@ -66,7 +71,7 @@ void ProcVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector
         getLineNumInteresection(finalResult, allProcedures, intermediateStmtLines);
 
         for (string procedure : finalResult) {
-            intermediate.push_back(vector<string> { procedure });
+            final.push_back(vector<string> { procedure });
         }
     }
 
@@ -75,11 +80,12 @@ void ProcVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector
         vector<string> intermediateVariables = servicer->forwardRetrieveRelation(leftArg.value, pv);
 
         for (string v : intermediateVariables) {
-            intermediate.push_back(vector<string> { v });
+            final.push_back(vector<string> { v });
         }
     }
 
-  
+    
+    return JoinTable(intermediate, final);
         // Join With Intermediate table
     
 

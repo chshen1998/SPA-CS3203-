@@ -8,6 +8,11 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
+unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType = {
+    { TokenType::USES, StmtVarRelationType::USESSV},
+    { TokenType::MODIFIES, StmtVarRelationType::MODIFIESSV },
+};
+
 
 bool StmtVarEvaluator::evaluateBooleanClause(const Clause& clause) {
     PqlToken leftArg = clause.left;
@@ -28,13 +33,14 @@ bool StmtVarEvaluator::evaluateBooleanClause(const Clause& clause) {
 }
 
 
-void StmtVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>>& intermediate) 
+vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
 {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
     StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
     vector<int> allLineNumOfSynonym;
     StatementType st;
+    vector<vector<string>> finalTable;
 
     
     // Synonym-Synonym --> Eg. Uses(s, v) 
@@ -47,7 +53,7 @@ void StmtVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector
 
         for (int line : allLineNumOfSynonym) {
             for (string v : servicer->forwardRetrieveRelation(line, sv)) {
-                intermediate.push_back(vector<string> { to_string(line), v });
+                finalTable.push_back(vector<string> { to_string(line), v });
             }
         }
     }
@@ -59,50 +65,38 @@ void StmtVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector
             allLineNumOfSynonym.push_back(s->getLineNum());
         }
 
-        // For wildcards
-        if (leftArg.type == TokenType::WILDCARD || rightArg.type == TokenType::WILDCARD) {
-            
-            // Synonym-WildCard --> Eg. Uses(s, _) 
-            if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::WILDCARD) {
-                for (int lines : allLineNumOfSynonym) {
-                    if (!servicer->forwardRetrieveRelation(lines, sv).empty()) {
-                        intermediate.push_back(vector<string>{ to_string(lines) });
-                    }
+        // Synonym-WildCard --> Eg. Uses(s, _) 
+        if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::WILDCARD) {
+            for (int lines : allLineNumOfSynonym) {
+                if (!servicer->forwardRetrieveRelation(lines, sv).empty()) {
+                    finalTable.push_back(vector<string>{ to_string(lines) });
                 }
-            }
-            // Throw error due to ambiguity for wildcard-wildcard or wildcard-string
-            else {
-
             }
         }
         
-        else {
-            // Synonym-string --> Eg. Uses(s, "x") 
-            if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STRING) {
+        // Synonym-string --> Eg. Uses(s, "x") 
+        else if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STRING) {
                 vector<int> finalResult;
                 vector<int> intermediateStmtLines = servicer->reverseRetrieveRelation(rightArg.value, sv);
                 getLineNumInteresection(finalResult, allLineNumOfSynonym, intermediateStmtLines);
 
                 for (int i : finalResult) {
-                    intermediate.push_back(vector<string> { to_string(i) });
+                    finalTable.push_back(vector<string> { to_string(i) });
                 }
-            }
-
-            // StmtNum-Synonym --> Eg. Modifies(6, v) 
-            else if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::SYNONYM) {
-                vector<string> intermediateVariables = servicer->forwardRetrieveRelation(stoi(leftArg.value), sv);
-
-                for (string v : intermediateVariables) {
-                    intermediate.push_back(vector<string> { v });
-                }
-            }
-
-            // This occurs if clauses are placed wrongly
-            else {}
-
-            
-            // Join With Intermediate table
         }
+
+        // StmtNum-Synonym --> Eg. Modifies(6, v) 
+        else if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::SYNONYM) {
+            vector<string> intermediateVariables = servicer->forwardRetrieveRelation(stoi(leftArg.value), sv);
+
+            for (string v : intermediateVariables) {
+                finalTable.push_back(vector<string> { v });
+            }
+        }
+
+        else {}
+
+        return JoinTable(finalTable, intermediate);
     }
 
 }

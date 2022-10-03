@@ -37,6 +37,8 @@ private:
 
     PqlToken extractSuchThatClause();
 
+    PqlToken extractString(PqlToken token);
+
     PqlToken getNextToken();
 };
 

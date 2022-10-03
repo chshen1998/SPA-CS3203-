@@ -15,5 +15,6 @@ NextValidator::NextValidator(unordered_map<string, TokenType> declarations, Toke
 
 void NextValidator::validate(PqlToken left, PqlToken right)
 {
-	validateParameters(left, right, validStatementRef, validStatementRef, "follows");
+	validateStatementRef(left, "next");
+	validateStatementRef(right, "next");
 }

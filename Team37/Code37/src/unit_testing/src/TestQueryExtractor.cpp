@@ -80,6 +80,33 @@ TEST_CASE("Test Pattern clause")
 	REQUIRE(isSameClauses(ans, results.clauses));
 }
 
+TEST_CASE("Test Pattern clause with String")
+{
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::STRING, "x+y"),
+								  TokenType::PATTERN) };
+
+	QueryExtractor sut(valid_pattern_with_string);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
+TEST_CASE("Test Pattern clause with Wildcard String")
+{
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::WILDCARD_STRING, "x+y"),
+								  TokenType::PATTERN) };
+
+	QueryExtractor sut(valid_pattern_with_wildcard_string);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
+
 TEST_CASE("Test With clause")
 {
 	vector<Clause> ans = { Clause(PqlToken(TokenType::NONE, ""),

@@ -1,0 +1,5 @@
+1 - TEST 1
+variable v;
+Select v such that Uses("readPoint", v)
+x, y
+5000

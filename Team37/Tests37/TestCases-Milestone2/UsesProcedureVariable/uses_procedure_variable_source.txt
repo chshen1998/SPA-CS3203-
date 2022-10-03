@@ -1,0 +1,4 @@
+procedure readPoint {
+        x = x;
+        y = y;
+}

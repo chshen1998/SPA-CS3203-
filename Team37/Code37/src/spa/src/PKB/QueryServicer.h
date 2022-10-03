@@ -57,5 +57,10 @@ public:
 	bool retrieveRelation(int, string, StmtVarRelationType);
 	vector<string> forwardRetrieveRelation(int, StmtVarRelationType);
 	vector<int> reverseRetrieveRelation(string, StmtVarRelationType);
+
+    // Procedure-Variable Relations
+    bool retrieveRelation(string, string, ProcVarRelationType);
+    vector<string> forwardRetrieveRelation(string, ProcVarRelationType);
+    vector<string> reverseRetrieveRelation(string, ProcVarRelationType);
 };
 #endif

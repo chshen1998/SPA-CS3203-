@@ -8,6 +8,14 @@ using namespace std;
 vector<vector<string>> EvaluatorUtils::JoinTable(const vector<vector<string>>& v1,
     const vector<vector<string>>& v2) {
 
+    if (v2.empty()) {
+        return v1;
+    }
+
+    if (v1.empty()) {
+        return v2;
+    }
+
     int columnIndex = -1;
     int columnIndex2 = -1;
 

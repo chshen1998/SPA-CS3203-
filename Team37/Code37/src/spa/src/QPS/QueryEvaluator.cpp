@@ -56,6 +56,12 @@ void QueryEvaluator::evaluate() {
 
         else if (clause.category == TokenType::PATTERN) {
             finalResult = assignEvaluator.evaluateClause(clause, finalResult);
+
+            for (vector<string> s : finalResult) {
+                for (string s1 : s) {
+                    cout << s1 << endl;
+                }
+            }
         }
 
         else {
@@ -106,6 +112,7 @@ void QueryEvaluator::evaluate() {
         return;
     }
 
+
     getResultFromFinalTable(finalResult);
 }
 
@@ -123,6 +130,8 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
     // Add the result values of that column into result
     for (int j = 1; j < table.size(); j++) {
         if (find(result.begin(), result.end(), table[j][index]) == result.end()) {
+            cout << "Final table combination" << endl;
+            cout << table[j][index] << endl;
             result.push_back(table[j][index]);
         }
     }

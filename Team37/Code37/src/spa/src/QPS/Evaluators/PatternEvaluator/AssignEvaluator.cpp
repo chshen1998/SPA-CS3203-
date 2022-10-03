@@ -15,15 +15,17 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
     TokenType patternType = declarations[clause.clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
     vector<int> finalResult;
-    vector<vector<string>> final;
+    vector<vector<string>> finalTable;
 
     vector<int> allAssignStmtLines = AssignEvaluator::getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
-    final.push_back(vector<string> {clause.clauseType.value});
+    finalTable.push_back(vector<string> {clause.clauseType.value});
 
 
     if (leftArg.type == TokenType::SYNONYM) {
+        finalTable[0].push_back(leftArg.value);
+
         // Synonym - WildCardString/String
         if (rightArg.type == TokenType::WILDCARD) {
             vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESSV);
@@ -31,7 +33,7 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
 
             for (int lines : finalResult) {
                 for (string v : servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
-                    final.push_back(vector<string> {to_string(lines), v});
+                    finalTable.push_back(vector<string> {to_string(lines), v});
                 }
             }
         }
@@ -39,7 +41,7 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
         else {
             for (int lines : allAssignStmtLines) {
                 for (string v : servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
-                    final.push_back(vector<string> {to_string(lines), v});
+                    finalTable.push_back(vector<string> {to_string(lines), v});
                 }
             }
         }
@@ -72,10 +74,9 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
 
 
         for (int line : finalResult) {
-            final.push_back(vector<string> { to_string(line) });
+            finalTable.push_back(vector<string> { to_string(line) });
         }
     }
 
-    return JoinTable(final, intermediate);
-    
+    return JoinTable(finalTable, intermediate);
 }

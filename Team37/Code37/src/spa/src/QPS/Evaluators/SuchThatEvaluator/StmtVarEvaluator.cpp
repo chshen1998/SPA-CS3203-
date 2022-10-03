@@ -45,7 +45,8 @@ vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(const Clause& cla
     
     // Synonym-Synonym --> Eg. Uses(s, v) 
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
-       st = tokenTypeToStatementType[declarations[leftArg.value]];
+        finalTable.push_back(vector<string>{ leftArg.value, rightArg.value });
+        st = tokenTypeToStatementType[declarations[leftArg.value]];
 
         for (shared_ptr<Statement> s : servicer->getAllStmt(st)) {
             allLineNumOfSynonym.push_back(s->getLineNum());
@@ -59,6 +60,7 @@ vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(const Clause& cla
     }
     else {
         string synonymValue = leftArg.type == TokenType::SYNONYM ? leftArg.value : rightArg.value;
+        finalTable.push_back(vector<string>{ synonymValue });
         st = tokenTypeToStatementType[declarations[synonymValue]];
         
         for (shared_ptr<Statement> s : servicer->getAllStmt(st)) {

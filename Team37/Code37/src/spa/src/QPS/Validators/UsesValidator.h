@@ -22,5 +22,4 @@ public:
 	void validate(PqlToken left, PqlToken right);
 };
 
-
 #endif //TEAM37_USESVALIDATOR_H

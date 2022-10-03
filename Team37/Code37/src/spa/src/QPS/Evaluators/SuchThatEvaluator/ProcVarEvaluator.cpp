@@ -84,9 +84,6 @@ vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& cla
         }
     }
 
-    
     return JoinTable(intermediate, final);
         // Join With Intermediate table
-    
-
 }

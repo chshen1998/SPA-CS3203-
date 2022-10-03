@@ -19,6 +19,7 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     // Insert Column headers
     finalResult.push_back(intermediate[0]);
 
+    // Two Synonyms - s.procName() = v.procName()
     if (clause.leftAttr.type != TokenType::NONE && clause.rightAttr.type != TokenType::NONE) {
         int leftArgIndex = -1;
         int rightArgIndex = -1;
@@ -40,6 +41,8 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
         }
     }
 
+    // intermediate: c, v (stmtnums, var)
+    // One Synonyms - c.procName() = "main"
     else {
         int leftArgIndex = -1;
 

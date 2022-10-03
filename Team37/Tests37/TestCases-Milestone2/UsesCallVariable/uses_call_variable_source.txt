@@ -4,6 +4,6 @@ procedure a {
     call b;
 }
 procedure b {
-    t = t;
-    u = u;
+    t = x;
+    u = y;
 }

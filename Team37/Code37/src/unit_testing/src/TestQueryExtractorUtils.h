@@ -17,6 +17,10 @@ extern vector<PqlToken> valid_pattern;
 
 extern vector<PqlToken> valid_pattern_with_string;
 
+extern vector<PqlToken> valid_pattern_with_invalid_string;
+
+extern vector<PqlToken> valid_pattern_with_string_and_whitespace;
+
 extern vector<PqlToken> valid_pattern_with_wildcard_string;
 
 extern vector<PqlToken> valid_uses;
@@ -26,6 +30,8 @@ extern vector<PqlToken> valid_modifies;
 extern vector<PqlToken> valid_follows;
 
 extern vector<PqlToken> valid_parent;
+
+extern vector<PqlToken> valid_follows_double_wildcard;
 
 extern vector<PqlToken> valid_with;
 

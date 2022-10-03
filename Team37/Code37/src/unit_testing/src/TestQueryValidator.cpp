@@ -138,6 +138,15 @@ TEST_CASE("Valid Follows clause")
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+
+TEST_CASE("Valid Follows clause with double wildcard")
+{
+	QueryValidator sut = QueryValidator(valid_follows_double_wildcard);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
 TEST_CASE("Valid Modifies clause")
 {
 	QueryValidator sut = QueryValidator(valid_modifies);

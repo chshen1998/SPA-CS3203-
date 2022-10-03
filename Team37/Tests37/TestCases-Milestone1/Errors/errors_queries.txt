@@ -38,3 +38,8 @@ variable v; assign a;
 pattern a (v, "x")
 Syntax Error
 5000
+10 - Invalid parameter "+x"
+variable v; assign a;
+Select v pattern a (v, "+x")
+Semantic Error
+5000

@@ -23,34 +23,30 @@ public:
 
     /**
      * Creates ReadStatement object with specified parent.
-     * @param line read statement in string
-     * @param parent parent node of read statement
+     * @param line raw read statement, no semicolon, trimmed. First 5 characters are: "read "
      * @return ReadStatement object
      */
-    static shared_ptr<ReadStatement> tokenizeRead(string line, shared_ptr<TNode> parent);
+    static shared_ptr<ReadStatement> tokenizeRead(string line);
 
     /**
      * Creates PrintStatement object with specified parent.
-     * @param line print statement in string
-     * @param parent parent node of read statement
+     * @param line raw print statement, no semicolon, trimmed. First 6 characters are: "print "
      * @return PrintStatement object
      */
-    static shared_ptr<PrintStatement> tokenizePrint(string line, shared_ptr<TNode> parent);
+    static shared_ptr<PrintStatement> tokenizePrint(string line);
 
     /**
      * Creates a AssignStatement object with specified parent.
-     * @param line raw assign statement string, no semicolons, trimmed
-     * @param parent parent node of assign statement
+     * @param line raw assign statement string, no semicolon, trimmed
      * @return AssignStatement object
      */
-    static shared_ptr<AssignStatement> tokenizeAssign(string line, shared_ptr<TNode> parent);
+    static shared_ptr<AssignStatement> tokenizeAssign(string line);
 
     /**
      * Creates a CallStatement object with specified parent.
-     * @param line raw call statement string, no semicolons, trimmed
-     * @param parent parent node of call statement
+     * @param line raw call statement string, no semicolon, trimmed
      */
-    static shared_ptr<CallStatement> tokenizeCall(string line, shared_ptr<TNode> parent);
+    static shared_ptr<CallStatement> tokenizeCall(string line);
 
     /**
      * Creates a RelationalFactor object with the specified parent.
@@ -59,45 +55,6 @@ public:
      * @return
      */
     static shared_ptr<RelationalFactor> tokenizeRelFactor(string line);
-
-
-    /**
-     * Creates statement objects and sets procedure as the parent node
-     * @param procedures vector containing all procedures of program
-     * @param statements vector containing statement lists as strings for each procedure
-     * @return vector containing procedures with corresponding statement objects
-     */
-    static vector<shared_ptr<Procedure>>
-    tokenizeStatements(vector<shared_ptr<Procedure>> procedures, vector<vector<string>> statements);
-
-    /**
-     * Converts procedures as strings to Procedure objects.
-     * @param names vector containing all names of procedures in strings
-     * @param statements vector containing vector of statements corresponding to each procedure
-     * @return vector containing procedures containing statement lists.
-     */
-    static vector<shared_ptr<Procedure>> tokenizeProcedure(vector<string> names, vector<vector<string>> statements);
-
-    /**
-     * Tokenizes SourceCode and sets SourceCode as parent to all corresponding procedures.
-     * @param srcCode sourcecode object that acts as root node
-     * @param names vector of all procedure names of program
-     * @param statements vector of vector containing statements as strings for each corresponding procedure
-     * @return sourcecode node that now has all procedures in its procedure list
-     */
-    static shared_ptr<SourceCode>
-    tokenize(shared_ptr<SourceCode> srcCode, vector<string> names, vector<vector<string>> statements);
-
-//    static void tokenizeOperatedExprByVar(string line, vector<int> indexes, string lhs, shared_ptr<TNode> parent, int lineNo);
-
-
-//    static void tokenizeCondition(string condition);
-
-//    static void tokenizeIf(string line, int stmtNo, shared_ptr<TNode> parent);
-
-//    static void tokenizeWhile(string line, int stmtNo, shared_ptr<TNode> parent);
-
-//    static void tokenizeAssignment(string line, int lineNo, shared_ptr<TNode> parent);
 };
 
 #endif

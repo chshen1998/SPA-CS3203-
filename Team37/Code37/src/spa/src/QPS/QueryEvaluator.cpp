@@ -43,10 +43,10 @@ void QueryEvaluator::evaluate() {
     //    return;
     //}
 
-    //result.push_back(pq.clauses[0].left.value);
-    //result.push_back(pq.clauses[0].right.value);
+    result.push_back(pq.clauses[0].left.value);
+    result.push_back(pq.clauses[0].right.value);
     
-    //return;
+    return;
 
     StmtStmtEvaluator stmtStmtEvaluator = StmtStmtEvaluator(servicer, pq.declarations);
     StmtVarEvaluator stmtVarEvaluator = StmtVarEvaluator(servicer, pq.declarations);
@@ -115,6 +115,7 @@ void QueryEvaluator::evaluate() {
     }
 
     if (finalResult.size() == 0) {
+        
         selectAll(type);
         return;
     }

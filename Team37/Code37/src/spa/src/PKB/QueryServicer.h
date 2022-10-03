@@ -63,4 +63,5 @@ public:
     vector<string> forwardRetrieveRelation(string, ProcVarRelationType);
     vector<string> reverseRetrieveRelation(string, ProcVarRelationType);
 };
+
 #endif

@@ -5,6 +5,7 @@ using namespace std;
 #include <vector>
 
 #include "../Types/TokenType.h"
+#include "PqlToken.h"
 
 #ifndef TEAM37_PQLQUERY_H
 #define TEAM37_PQLQUERY_H
@@ -36,6 +37,10 @@ public:
     PqlToken right;
     PqlToken rightAttr;
     TokenType category;
+
+    inline bool checkIfBooleanClause() {
+        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM;
+    };
 };
 
 /*

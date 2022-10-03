@@ -9,6 +9,9 @@ using namespace std;
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"
 
+
+extern set<TokenType> doubleAttrTokens;
+
 class WithEvaluator : public GeneralEvaluator {
 
 public:
@@ -17,7 +20,8 @@ public:
 
     vector<vector<string>> evaluateClause(const Clause&, vector<vector<string>>);
     bool evaluateBooleanClause(const Clause&);
-
-};
+    bool WithEvaluator::addProcName(vector<vector<string>>&, const PqlToken&);
+    inline string updatedColumnName(const PqlToken&);
+    };
 
 #endif

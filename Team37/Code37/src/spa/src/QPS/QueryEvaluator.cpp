@@ -44,24 +44,43 @@ void QueryEvaluator::evaluate() {
     
     for (Clause clause : pq.clauses) {
         if (clause.category == TokenType::WITH) {
-            if (clause.leftAttr.type == TokenType::NONE && clause.rightAttr.type == TokenType::NONE) {
+            if (clause.leftAttr.type == TokenType::NONE) {
                 if (!withEvaluator.evaluateBooleanClause(clause)) {
                     return;
                 }
             }
             else {
+                // If our initial table is empty, we need to populate with for WITH clause
+                if (finalResult.empty()) {
+                    finalResult.push_back(vector<string> { clause.left.value });
+
+                    list<string> intermediate;
+                    selectAll(pq.declarations[clause.left.value], intermediate);
+
+                    if (clause.right.type == TokenType::SYNONYM) {
+                        finalResult[0].push_back(clause.right.value);
+                        list<string> intermediateRight;
+                        selectAll(pq.declarations[clause.right.value], intermediateRight);
+
+                        for (string left : intermediate) {
+                            for (string right : intermediateRight) {
+                                finalResult.push_back(vector<string> { left, right });
+                            }
+                        }
+                    }
+                    else {
+                        for (string left : intermediate) {
+                            finalResult.push_back(vector<string> { left });
+                        }
+                    }
+                }
+
                 finalResult = withEvaluator.evaluateClause(clause, finalResult);
             }
         }
 
         else if (clause.category == TokenType::PATTERN) {
             finalResult = assignEvaluator.evaluateClause(clause, finalResult);
-
-            for (vector<string> s : finalResult) {
-                for (string s1 : s) {
-                    cout << s1 << endl;
-                }
-            }
         }
 
         else {
@@ -80,8 +99,22 @@ void QueryEvaluator::evaluate() {
                 }
             }
 
+            // Uses_P, Modifies_P, Calls
+            else if (clause.left.type == TokenType::STRING || pq.declarations[clause.left.value] == TokenType::PROCEDURE) {
+                cout << "ProcVar" << endl;
+
+                if (clause.checkIfBooleanClause()) {
+                    if (!procVarEvaluator.evaluateBooleanClause(clause)) {
+                        return;
+                    }
+                }
+                else {
+                    finalResult = procVarEvaluator.evaluateSynonymClause(clause, finalResult);
+                }
+            }
             // Uses_S, Modifies_S
-            else if (suchThatStmtRefVarRef.find(suchThatType) != suchThatStmtRefVarRef.end()) {
+            else  {
+                cout << "StmtVar" << endl;
                 if (clause.checkIfBooleanClause()) {
                     if (!stmtVarEvaluator.evaluateBooleanClause(clause)) {
                         return;
@@ -92,26 +125,15 @@ void QueryEvaluator::evaluate() {
                 }
             }
 
-            // Uses_P, Modifies_P, Calls
-            else {
-                if (clause.checkIfBooleanClause()) {
-                    if (!procVarEvaluator.evaluateBooleanClause(clause)) {
-                        return;
-                    }
-                }
-                else {
-                    finalResult = procVarEvaluator.evaluateSynonymClause(clause, finalResult);
-                }
-            }
+            
         }
     }
 
     // If there are no clauses
     if (finalResult.size() == 0) {
-        selectAll(type);
+        selectAll(type, result);
         return;
     }
-
 
     getResultFromFinalTable(finalResult);
 }
@@ -121,6 +143,7 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
     int index = 0;
     // Find the column index where the synonym value == select synonym value
     for (int i = 0; i < table[0].size(); i++) {
+        // TODO: update for attrRef
         if (table[0][i] == pq.select) {
             index = i;
             break;
@@ -130,8 +153,6 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
     // Add the result values of that column into result
     for (int j = 1; j < table.size(); j++) {
         if (find(result.begin(), result.end(), table[j][index]) == result.end()) {
-            cout << "Final table combination" << endl;
-            cout << table[j][index] << endl;
             result.push_back(table[j][index]);
         }
     }
@@ -140,7 +161,7 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
 }
 
 
-void QueryEvaluator::selectAll(TokenType type) {
+void QueryEvaluator::selectAll(TokenType type, list<string>& result) {
     if (type == TokenType::VARIABLE) {
         for (NameExpression v : servicer->getAllVar()) {
             result.push_back(v.getVarName());

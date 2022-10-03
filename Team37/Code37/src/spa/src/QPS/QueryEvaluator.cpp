@@ -12,6 +12,10 @@ using namespace std;
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 
+#include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
+
 #include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "AST/Statement/Statement.h"
@@ -22,41 +26,6 @@ using namespace std;
 #include "PKB/Types/StmtVarRelationType.h"
 #include "PKB/Types/ProcVarRelationType.h"
 
-
-/*
-unordered_map<TokenType, StatementType> tokenTypeToStatementType = {
-    { TokenType::STATEMENT, StatementType::STATEMENT},
-    { TokenType::ASSIGN, StatementType::ASSIGN },
-    { TokenType::CALL, StatementType::CALL },
-    { TokenType::IF, StatementType::IF },
-    { TokenType::PRINT, StatementType::PRINT },
-    { TokenType::READ, StatementType::READ },
-    { TokenType::WHILE, StatementType::WHILE }
-};
-
-unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType = {
-    { TokenType::USES, StmtVarRelationType::USESSV},
-    { TokenType::USES_P, StmtVarRelationType::USESSV },
-    { TokenType::MODIFIES, StmtVarRelationType::MODIFIESSV },
-    { TokenType::MODIFIES_P, StmtVarRelationType::MODIFIESSV },
-};
-
-unordered_map<TokenType, ProcVarRelationType> tokenTypeToProcVarRelationType = {
-    { TokenType::USES_P, ProcVarRelationType::USESPV },
-    { TokenType::MODIFIES_P, ProcVarRelationType::MODIFIESPV },
-};
-
-unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType = {
-    { TokenType::FOLLOWS, StmtStmtRelationType::FOLLOWS},
-    { TokenType::FOLLOWS_A, StmtStmtRelationType::FOLLOWSS },
-    { TokenType::PARENT, StmtStmtRelationType::PARENT },
-    { TokenType::PARENT_A, StmtStmtRelationType::PARENTS },
-};
-*/
-
-set<TokenType> suchThatStmtRefStmtRef = {
-    TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A
-};
 
 
 QueryEvaluator::QueryEvaluator(PqlQuery& pqlQuery, shared_ptr<QueryServicer> s, list<string>& r) :
@@ -71,6 +40,35 @@ void QueryEvaluator::evaluate() {
         selectAll(type);
         return;
     }
+
+    StmtStmtEvaluator stmtStmtEvaluator = StmtStmtEvaluator(servicer, pq.declarations);
+    StmtVarEvaluator stmtVarEvaluator = StmtVarEvaluator(servicer, pq.declarations);
+    ProcVarEvaluator procVarEvaluator = ProcVarEvaluator(servicer, pq.declarations);
+
+
+    vector<vector<string>> finalResult;
+
+    for (Clause clause : pq.clauses) {
+
+        if (clause.category == TokenType::WITH) {
+
+
+        }
+
+        else if (clause.category == TokenType::PATTERN) {
+
+        }
+
+        else {
+            if (clause.left.type != TokenType::SYNONYM && clause.left.type != TokenType::SYNONYM) {
+
+            }
+
+        }
+    }
+
+
+
 
     // Using multimap in order to join our tables
     vector<vector<string>> patternTable;

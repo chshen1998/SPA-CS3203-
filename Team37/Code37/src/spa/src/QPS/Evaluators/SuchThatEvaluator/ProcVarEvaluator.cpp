@@ -1,10 +1,10 @@
 using namespace std;
 
-#include "../Structures/PqlQuery.h"
-#include "../Structures/PqlToken.h"
-#include "../Types/TokenType.h"
+#include "QPS/Structures/PqlQuery.h"
+#include "QPS/Structures/PqlToken.h"
+#include "QPS/Types/TokenType.h"
 #include "ProcVarEvaluator.h"
-#include "EvaluatorUtils.h"
+#include "../EvaluatorUtils.h"
 
 using namespace EvaluatorUtils;
 

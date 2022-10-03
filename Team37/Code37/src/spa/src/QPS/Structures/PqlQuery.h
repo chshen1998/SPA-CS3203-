@@ -37,6 +37,8 @@ public:
     PqlToken right;
     PqlToken rightAttr;
     TokenType category;
+
+    inline bool checkIfBooleanClause();
 };
 
 /*

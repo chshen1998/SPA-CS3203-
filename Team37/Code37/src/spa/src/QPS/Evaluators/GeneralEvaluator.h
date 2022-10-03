@@ -18,13 +18,11 @@ public:
 
     virtual ~GeneralEvaluator() {}; // destructor for polymorphism
 
-    virtual void evaluateSynonymClause(const Clause&, vector<vector<string>>& intermediate) {};
-
 protected:
     shared_ptr<QueryServicer> servicer;
     unordered_map<string, TokenType>& declarations;
 
-    void getAllLineNumOfStmtType(vector<int>&, const StatementType);
+    vector<int> getAllLineNumOfStmtType(const StatementType);
 };
 
 

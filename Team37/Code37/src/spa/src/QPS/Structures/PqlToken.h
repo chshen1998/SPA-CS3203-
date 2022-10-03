@@ -1,6 +1,7 @@
     using namespace std;
 
 #include <string>
+#include <set>
 #include <unordered_map>
 #include <vector>
 
@@ -8,6 +9,10 @@
 
 #ifndef TEAM37_PQLTOKEN_H
 #define TEAM37_PQLTOKEN_H
+
+extern set<TokenType> suchThatStmtRefStmtRef;
+extern set<TokenType> suchThatStmtRefVarRef;
+extern set<TokenType> suchThatProcRefVarRef;
 
 /*
  * PqlTokens are created after tokenizing an element from query string.

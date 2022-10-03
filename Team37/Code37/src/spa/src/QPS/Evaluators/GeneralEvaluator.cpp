@@ -4,7 +4,7 @@ using namespace std;
 #include "../Structures/PqlQuery.h"
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"
-#include "SuchThatEvaluator.h"
+#include "GeneralEvaluator.h"
 
 unordered_map<TokenType, StatementType> tokenTypeToStatementType = {
     { TokenType::STATEMENT, StatementType::STATEMENT},
@@ -16,8 +16,12 @@ unordered_map<TokenType, StatementType> tokenTypeToStatementType = {
     { TokenType::WHILE, StatementType::WHILE }
 };
 
-void GeneralEvaluator::getAllLineNumOfStmtType(vector<int>& result, const StatementType ss) {
+vector<int> GeneralEvaluator::getAllLineNumOfStmtType(const StatementType ss) {
+    vector<int> result;
+
     for (shared_ptr<Statement> s : servicer->getAllStmt(ss)) {
         result.push_back(s->getLineNum());
     }
+
+    return result;
 }

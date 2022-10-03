@@ -147,10 +147,10 @@ add_library(spa ${srcs} ${headers}
         "src/QPS/Validators/WithValidator.h" 
         "src/QPS/Validators/WithValidator.cpp" 
         "src/QPS/Structures/PqlQuery.cpp" 
-        "src/QPS/Evaluators/StmtStmtEvaluator.h" 
-        "src/QPS/Evaluators/StmtStmtEvaluator.cpp" 
-        "src/QPS/Evaluators/SuchThatEvaluator.h"
-         "src/QPS/Evaluators/EvaluatorUtils.h" "src/QPS/Evaluators/EvaluatorUtils.cpp" "src/QPS/Evaluators/GeneralEvaluator.cpp" "src/QPS/Evaluators/StmtVarEvaluator.h" "src/QPS/Evaluators/StmtVarEvaluator.cpp" "src/QPS/Evaluators/ProcVarEvaluator.cpp" "src/QPS/Evaluators/ProcVarEvaluator.h")
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h" 
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.cpp" 
+        "src/QPS/Evaluators/SuchThatEvaluator/SuchThatEvaluator.h"
+         "src/QPS/Evaluators/EvaluatorUtils.h" "src/QPS/Evaluators/EvaluatorUtils.cpp" "src/QPS/Evaluators/GeneralEvaluator.cpp" "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h" "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.cpp" "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.cpp" "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"  "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.h" "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.cpp" "src/QPS/Evaluators/WithEvaluator.h" "src/QPS/Evaluators/WithEvaluator.cpp")
 
 
 # this makes the headers accessible for other projects which uses spa lib

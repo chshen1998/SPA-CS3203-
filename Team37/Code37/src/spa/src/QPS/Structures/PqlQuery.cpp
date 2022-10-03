@@ -26,3 +26,7 @@ Clause::Clause(PqlToken type, PqlToken l, PqlToken r, TokenType categoryType, Pq
     rightAttr = ra;
     category = categoryType;
 }
+
+inline bool Clause::checkIfBooleanClause() {
+    return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM) {
+}

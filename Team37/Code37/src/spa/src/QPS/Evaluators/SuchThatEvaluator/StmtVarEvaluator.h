@@ -3,7 +3,7 @@
 
 using namespace std;
 
-#include "../Structures/PqlQuery.h"
+#include "QPS/Structures/PqlQuery.h"
 #include "SuchThatEvaluator.h"
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"

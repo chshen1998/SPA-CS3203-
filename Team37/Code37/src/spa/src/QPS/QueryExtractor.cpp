@@ -83,7 +83,7 @@ PqlToken QueryExtractor::extractPatternClause()
         getNextToken(); // OPEN BRACKET
         left = getNextToken();
         getNextToken(); // COMMA
-        right = getNextToken();
+        right = extractString(getNextToken());
         getNextToken(); // CLOSE BRACKET
         pq.clauses.push_back(Clause(pattern, left, right, TokenType::PATTERN));
         next = getNextToken();
@@ -141,15 +141,35 @@ PqlToken QueryExtractor::extractSuchThatClause()
     {
 	    suchThatClause = getNextToken();
 	    getNextToken(); // OPEN BRACKET
-	    left = getNextToken();
+	    left = extractString(getNextToken());
 	    getNextToken(); // COMMA
-	    right = getNextToken();
+	    right = extractString(getNextToken());
 	    getNextToken(); // CLOSE BRACKET
 	    pq.clauses.push_back(Clause(suchThatClause, left, right, TokenType::SUCH_THAT));
         next = getNextToken();
     }
 
     return next;
+}
+
+PqlToken QueryExtractor::extractString(PqlToken token)
+{
+	if (token.type == TokenType::STRING)
+	{
+        string s = token.value;
+        string newS = s.substr(1, s.size()-2);
+        return PqlToken(TokenType::STRING, newS);
+	}
+    else if (token.type == TokenType::WILDCARD_STRING)
+    {
+        string s = token.value;
+        string newS = s.substr(2, s.size() - 4);
+        return PqlToken(TokenType::WILDCARD_STRING, newS);
+    }
+    else
+    {
+        return token;
+    }
 }
 
 PqlToken QueryExtractor::getNextToken()

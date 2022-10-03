@@ -39,6 +39,34 @@ void ClauseValidator::validateParameters(PqlToken left, PqlToken right, set<Toke
 	}
 }
 
+void ClauseValidator::validateEntityRef(PqlToken token, string clauseType)
+{
+	if (validEntityRef.find(token.type) == validEntityRef.end())
+	{
+		throw SemanticError("Invalid parameters for " + clauseType + " clause");
+	}
+	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
+	{
+		throw SemanticError(token.value + " is undeclared parameter for " + clauseType + " clause");
+	} 
+}
+
+void ClauseValidator::validateStatementRef(PqlToken token, string clauseType)
+{
+	if (validStatementRef.find(token.type) == validStatementRef.end())
+	{
+		throw SemanticError("Invalid parameters for " + clauseType + " clause");
+	}
+	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
+	{
+		throw SemanticError(token.value + " is undeclared parameter for " + clauseType + " clause");
+	}
+	else if (token.type == TokenType::WILDCARD_STRING)
+	{
+		// Implement wildcard string validation
+	}
+}
+
 bool ClauseValidator::isDeclared(PqlToken synonym)
 {
 	auto findit = declarations.find(synonym.value);

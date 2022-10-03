@@ -23,5 +23,17 @@ void PatternValidator::validatePattern(PqlToken pattern)
 
 void PatternValidator::validate(PqlToken left, PqlToken right)
 {
-	validateParameters(left, right, validEntityRef, validExpressionSpec, "pattern");
+	validateEntityRef(left, "pattern");
+}
+
+void PatternValidator::validateExpressionSpec(PqlToken token)
+{
+	if (validExpressionSpec.find(token.type) == validExpressionSpec.end())
+	{
+		throw SemanticError("Invalid parameters for pattern clause");
+	}
+	else if (token.type == TokenType::WILDCARD_STRING)
+	{
+		// Implement wildcard string validation
+	}
 }

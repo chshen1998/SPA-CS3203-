@@ -20,6 +20,7 @@ class PatternValidator : public ClauseValidator {
 public:
 	PatternValidator(unordered_map<string, TokenType> declarations, TokenType token);
 	void validatePattern(PqlToken assign);
+	void validateExpressionSpec(PqlToken token);
 	void validate(PqlToken left, PqlToken right);
 };
 

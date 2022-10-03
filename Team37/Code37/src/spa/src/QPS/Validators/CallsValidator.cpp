@@ -15,8 +15,10 @@ CallsValidator::CallsValidator(unordered_map<string, TokenType> declarations, To
 
 void CallsValidator::validate(PqlToken left, PqlToken right)
 {
-	validateParameters(left, right, validStatementRef, validEntityRef, "calls");
 	if (left.type == TokenType::WILDCARD) {
 		throw SemanticError("Uses clause arg1 cannot be wildcard");
 	}
+
+	validateEntityRef(left, "calls");
+	validateEntityRef(right, "calls");
 }

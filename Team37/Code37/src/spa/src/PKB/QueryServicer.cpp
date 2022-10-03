@@ -143,3 +143,34 @@ Retrieve Reverse Relation Stored. For Relation(stmt, var)
 vector<int> QueryServicer::reverseRetrieveRelation(string var, StmtVarRelationType type) {
 	return storage->reverseRetrieveRelation(var, type);
 }
+
+/*
+Retrieve Relation Stored. For Relation(proc, var)
+@param proc procedure name
+@param var Variable Name
+@param type Type of relation
+@returns If Relation(proc, var) is True
+*/
+bool QueryServicer::retrieveRelation(string proc, string var, ProcVarRelationType type) {
+	return storage->retrieveRelation(proc, var, type);
+}
+
+/*
+Retrieve Forward Relation Stored. For Relation(proc, var)
+@param proc procedure name
+@param type Type of relation
+@returns All var such that Relatioin(proc, var) is True
+*/
+vector<string> QueryServicer::forwardRetrieveRelation(string proc, ProcVarRelationType type) {
+	return storage->forwardRetrieveRelation(proc, type);
+}
+
+/*
+Retrieve Reverse Relation Stored. For Relation(proc, var)
+@param var
+@param type Type of relation
+@returns All stmt1 such that Relatioin(proc, var) is True
+*/
+vector<string> QueryServicer::reverseRetrieveRelation(string var, ProcVarRelationType type) {
+	return storage->reverseRetrieveRelation(var, type);
+}

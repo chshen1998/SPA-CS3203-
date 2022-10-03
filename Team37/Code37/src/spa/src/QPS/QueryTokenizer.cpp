@@ -38,6 +38,12 @@ vector<PqlToken> QueryTokenizer::Tokenize() {
     Split();
     ConvertIntoTokens();
 
+    
+    for (PqlToken t : tokens) {
+        cout << t << endl;
+    }
+    
+
     return tokens;
 }
 

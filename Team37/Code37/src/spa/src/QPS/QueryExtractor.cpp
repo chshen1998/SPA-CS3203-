@@ -1,4 +1,6 @@
 #include <iso646.h>
+
+#include "Validators/ValidatorUtils.h"
 using namespace std;
 
 #include <string>
@@ -154,22 +156,45 @@ PqlToken QueryExtractor::extractSuchThatClause()
 
 PqlToken QueryExtractor::extractString(PqlToken token)
 {
+    string newS = "";
 	if (token.type == TokenType::STRING)
 	{
         string s = token.value;
-        string newS = s.substr(1, s.size()-2);
-        return PqlToken(TokenType::STRING, newS);
+        //string newS = "";
+        for (int i=1; i<s.length()-1; i++)
+        {
+	        if (!(s[i] == ' '))
+	        {
+                newS.push_back(s[i]);
+	        }
+        }
+        //string newS = s.substr(1, s.size()-2);
+        //return PqlToken(TokenType::STRING, newS);
 	}
     else if (token.type == TokenType::WILDCARD_STRING)
     {
         string s = token.value;
-        string newS = s.substr(2, s.size() - 4);
-        return PqlToken(TokenType::WILDCARD_STRING, newS);
+        //string newS = "";
+        for (int i = 2; i < s.length() - 2; i++)
+        {
+            if (!(s[i] == ' '))
+            {
+                newS.push_back(s[i]);
+            }
+        }
+       //string newS = s.substr(2, s.size() - 4);
+        //return PqlToken(TokenType::WILDCARD_STRING, newS);
     }
     else
     {
         return token;
     }
+
+    if (newS.length() > 0 && newS[0] == '+')
+    {
+        throw SemanticError("Invalid parameter: " + token.value);
+    }
+    return PqlToken(token.type, newS);
 }
 
 PqlToken QueryExtractor::getNextToken()

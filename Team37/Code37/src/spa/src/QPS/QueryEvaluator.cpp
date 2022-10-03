@@ -20,8 +20,10 @@ using namespace std;
 #include "PKB/Types/StatementType.h"
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/Types/StmtVarRelationType.h"
+#include "PKB/Types/ProcVarRelationType.h"
 
 
+/*
 unordered_map<TokenType, StatementType> tokenTypeToStatementType = {
     { TokenType::STATEMENT, StatementType::STATEMENT},
     { TokenType::ASSIGN, StatementType::ASSIGN },
@@ -39,12 +41,18 @@ unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType = {
     { TokenType::MODIFIES_P, StmtVarRelationType::MODIFIESSV },
 };
 
+unordered_map<TokenType, ProcVarRelationType> tokenTypeToProcVarRelationType = {
+    { TokenType::USES_P, ProcVarRelationType::USESPV },
+    { TokenType::MODIFIES_P, ProcVarRelationType::MODIFIESPV },
+};
+
 unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType = {
     { TokenType::FOLLOWS, StmtStmtRelationType::FOLLOWS},
     { TokenType::FOLLOWS_A, StmtStmtRelationType::FOLLOWSS },
     { TokenType::PARENT, StmtStmtRelationType::PARENT },
     { TokenType::PARENT_A, StmtStmtRelationType::PARENTS },
 };
+*/
 
 set<TokenType> suchThatStmtRefStmtRef = {
     TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A
@@ -343,6 +351,9 @@ void QueryEvaluator::evaluatePatternClause(vector<vector<string>> & intermediate
 }
 
 
+
+
+
 // Filters a list of statement numbers
 // Boolean indicates if filtering is successful (mostly in the case of 2 value arguments)
 // If false, we can immediately return an empty vector for result
@@ -354,6 +365,7 @@ int QueryEvaluator::evaluateSuchThatClause(vector<vector<string>>& intermediate)
         PqlToken leftArg = clause.left;
         PqlToken rightArg = clause.right;
         TokenType clauseType = clause.clauseType.type;
+
 
         // If Both arguments are NOT synonyms
         if (leftArg.type != TokenType::SYNONYM && rightArg.type != TokenType::SYNONYM) {

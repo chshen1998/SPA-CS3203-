@@ -42,6 +42,8 @@ private:
 
     void evaluatePatternClause(vector<vector<string>> &);
 
+    bool evaluateBooleanClauses();
+
     void getResultFromFinalTable(const vector<vector<string>> &);
 
     vector<vector<string>>

@@ -146,7 +146,11 @@ add_library(spa ${srcs} ${headers}
         "src/QPS/Validators/AffectsValidator.cpp" 
         "src/QPS/Validators/WithValidator.h" 
         "src/QPS/Validators/WithValidator.cpp" 
-        "src/QPS/Structures/PqlQuery.cpp")
+        "src/QPS/Structures/PqlQuery.cpp" 
+        "src/QPS/Evaluators/StmtStmtEvaluator.h" 
+        "src/QPS/Evaluators/StmtStmtEvaluator.cpp" 
+        "src/QPS/Evaluators/SuchThatEvaluator.h"
+         "src/QPS/Evaluators/EvaluatorUtils.h" "src/QPS/Evaluators/EvaluatorUtils.cpp" "src/QPS/Evaluators/GeneralEvaluator.cpp" "src/QPS/Evaluators/StmtVarEvaluator.h" "src/QPS/Evaluators/StmtVarEvaluator.cpp" "src/QPS/Evaluators/ProcVarEvaluator.cpp" "src/QPS/Evaluators/ProcVarEvaluator.h")
 
 
 # this makes the headers accessible for other projects which uses spa lib

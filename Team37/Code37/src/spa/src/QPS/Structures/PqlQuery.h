@@ -5,6 +5,7 @@ using namespace std;
 #include <vector>
 
 #include "../Types/TokenType.h"
+#include "PqlToken.h"
 
 #ifndef TEAM37_PQLQUERY_H
 #define TEAM37_PQLQUERY_H

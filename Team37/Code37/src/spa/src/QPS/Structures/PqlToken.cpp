@@ -3,11 +3,23 @@ using namespace std;
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <set>
 #include <iostream>
 
 #include "../Types/TokenType.h"
 #include "PqlToken.h"
 
+set<TokenType> suchThatStmtRefStmtRef = {
+    TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A
+};
+
+set<TokenType> suchThatStmtRefVarRef = {
+    TokenType::USES, TokenType::MODIFIES
+};
+
+set<TokenType> suchThatProcRefVarRef = {
+    TokenType::USES_P, TokenType::MODIFIES_P
+};
 
 std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     string typeString = "unknown";

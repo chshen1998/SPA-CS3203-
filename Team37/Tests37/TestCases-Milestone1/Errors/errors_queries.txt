@@ -33,12 +33,7 @@ variable v;
 Select v such that Uses(_, v)
 Semantic Error 
 5000
-8 - Invalid extra such that clause
-variable v; stmt s;
-Select s such that Uses(s, v) such that Modifies(s, v)
-Semantic Error 
-5000
-9 - Missing Select
+8 - Missing Select
 variable v; assign a;
 pattern a (v, "x")
 Syntax Error

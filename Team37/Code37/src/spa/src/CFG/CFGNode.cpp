@@ -1,10 +1,10 @@
 #include "CFGNode.h"
 
-CFGNode::CFGNode(shared_ptr<TNode> tNode, shared_ptr<CFGNode> parent, vector<shared_ptr<CFGNode>> children)
-        : tNode(tNode), parent(parent), children(children) {}
+CFGNode::CFGNode(shared_ptr<TNode> tNode, vector<shared_ptr<CFGNode>> parents)
+        : tNode(tNode), parents(parents) {}
 
-shared_ptr<CFGNode> CFGNode::getParent() {
-    return parent;
+vector<shared_ptr<CFGNode>> CFGNode::getParents() {
+    return parents;
 }
 
 vector<shared_ptr<CFGNode>> CFGNode::getChildren() {
@@ -17,7 +17,7 @@ shared_ptr<CFGNode> CFGNode::getChild(int i) {
 }
 
 void CFGNode::setParent(shared_ptr<CFGNode> newParent) {
-    parent = newParent;
+    parents.push_back(newParent);
 }
 
 void CFGNode::addChild(shared_ptr<CFGNode> newChild) {

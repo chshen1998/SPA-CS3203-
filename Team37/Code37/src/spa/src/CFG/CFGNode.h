@@ -12,19 +12,19 @@ using namespace std;
 
 class CFGNode : public enable_shared_from_this<CFGNode> {
 private:
-    shared_ptr<CFGNode> parent = nullptr;
+    vector<shared_ptr<CFGNode>> parents = {};
     vector<shared_ptr<CFGNode>> children = {};
     shared_ptr<TNode> tNode = nullptr;
     int visited = 0;
 
 public:
-    CFGNode(shared_ptr<TNode> tNode, shared_ptr<CFGNode> parent, vector<shared_ptr<CFGNode>> children);
+    CFGNode(shared_ptr<TNode> tNode, vector<shared_ptr<CFGNode>> parents);
 
     /**
-     * Gets the parent of the CFGNode
-     * @return a CFGNode or nullptr
+     * Gets the parents of the CFGNode
+     * @return parents of CFGNode
      */
-    shared_ptr<CFGNode> getParent();
+    vector<shared_ptr<CFGNode>> getParents();
 
     /**
      * Gets all children of the CFGNode
@@ -41,7 +41,7 @@ public:
 
     /**
      * Sets the parent of the CFGNode to newParent
-     * @param newParent the new parents of the CFGNode
+     * @param newParent the new parent of the CFGNode
      */
     void setParent(shared_ptr<CFGNode> newParent);
 

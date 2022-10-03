@@ -14,6 +14,23 @@ vector<shared_ptr<Statement> > Procedure::getStatements() {
     return this->stmtLst;
 }
 
+shared_ptr<CFG> Procedure::getCFG() {
+    return this->cfg;
+}
+
+void Procedure::buildCFG(shared_ptr<TNode> tNode) {
+    if (this->cfg->getStartNode() == nullptr) {
+        vector<shared_ptr<CFGNode>> parents = {};
+        this->cfg->setStartNode(make_shared<CFGNode>(tNode, parents));
+    } else {
+        vector<shared_ptr<CFGNode>> parents = this->cfg->getEndNodes();
+        vector<shared_ptr<CFGNode>> newEndNodes;
+        shared_ptr<CFGNode> newEndNode = make_shared<CFGNode>(tNode, parents);
+        newEndNodes.push_back(newEndNode);
+        this->cfg->setEndNodes(newEndNodes);
+    }
+}
+
 void Procedure::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitProcedure(shared_from_this());
 }

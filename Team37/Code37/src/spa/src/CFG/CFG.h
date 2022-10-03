@@ -23,6 +23,12 @@ public:
     shared_ptr<CFGNode> getStartNode();
 
     /**
+     * Sets start node of CFG
+     * @param newStartNode new start node to set
+     */
+    void setStartNode(shared_ptr<CFGNode> newStartNode);
+
+    /**
      * Gets all the end CFGNodes in the CFG,
      * as there could be more than 1 end node e.g. in if-else
      * @return the end CFGNode of the CFG
@@ -37,10 +43,16 @@ public:
     shared_ptr<CFGNode> getEndNode(int i);
 
     /**
-     * Sets the end node of the CFG
-     * @param newEndNode the end node to set
+     * Adds an end node of the CFG
+     * @param newEndNode the end node to add
      */
-    void setEndNode(shared_ptr<CFGNode> newEndNode);
+    void addEndNode(shared_ptr<CFGNode> newEndNode);
+
+    /**
+     * Resets the end nodes and sets new end nodes
+     * @param newEndNodes new end nodes to set
+     */
+    void setEndNodes(vector<shared_ptr<CFGNode>> newEndNodes);
 
 
 };

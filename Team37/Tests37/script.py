@@ -8,7 +8,6 @@ AUTOTESTER_PATH = Path("../Code37/cmake-build-debug/src/autotester/autotester")
 if sys.platform == "win32":
     AUTOTESTER_PATH = Path("../Code37/out/build/x64-Release/src/autotester/autotester")
 
-
 OUTPUT_XML_PATH = Path("./out.xml")
 
 milestones = [milestone.name for milestone in Path(".").iterdir() if milestone.is_dir()]
@@ -23,7 +22,7 @@ if "TestOutputs" in milestones:
 OUTPUT_FOLDER.mkdir()
 
 for milestone in milestones:
-    if milestone == "TestOutputs":
+    if milestone == "TestOutputs" or milestone == "TestCases-Progress":
         continue
 
     Path(f"./TestOutputs/{milestone}").mkdir()
@@ -46,7 +45,6 @@ for milestone in milestones:
                 source_file = test_file
             elif "queries" in test_file:
                 testcases.append(test_file)
-
 
         for testcase in testcases:
             testcase_source_path = Path(f"./{milestone}/{testcase_folder}/{source_file}")

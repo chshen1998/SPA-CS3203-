@@ -17,6 +17,8 @@ using namespace std;
 #include "Types/StatementType.h"
 #include "Types/StmtStmtRelationType.h"
 #include "Types/StmtVarRelationType.h"
+#include "Types/ProcVarRelationType.h"
+#include "Types/ProcProcRelationType.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Statement/Statement.h"
@@ -62,6 +64,11 @@ public:
     bool retrieveRelation(string, string, ProcVarRelationType);
     vector<string> forwardRetrieveRelation(string, ProcVarRelationType);
     vector<string> reverseRetrieveRelation(string, ProcVarRelationType);
+
+    // Procedure-Procedure Relations
+    bool retrieveRelation(string, string, ProcProcRelationType);
+    vector<string> forwardRetrieveRelation(string, ProcProcRelationType);
+    vector<string> reverseRetrieveRelation(string, ProcProcRelationType);
 };
 
 #endif

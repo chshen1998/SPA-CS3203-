@@ -71,10 +71,13 @@ TEST_CASE("Reverse retrieve pattern match") {
     REQUIRE(queryServicer->reverseRetrievePatternMatch("x * y", true).size() == 1);
     REQUIRE(queryServicer->reverseRetrievePatternMatch("v + x * y", true).size() == 1);
     REQUIRE(queryServicer->reverseRetrievePatternMatch("z * t", true).size() == 1);
+    //TODO: need SP support to pass this testcase
+    REQUIRE(queryServicer->reverseRetrievePatternMatch("v", true).size() == 1);
     REQUIRE(queryServicer->reverseRetrievePatternMatch("v + x * y + z * t", true).size() == 1);
     REQUIRE(queryServicer->reverseRetrievePatternMatch("v + x * y + z * t", false).size() == 1);
 
     // Negative testcases
+    REQUIRE(queryServicer->reverseRetrievePatternMatch("v", false).empty());
     REQUIRE(queryServicer->reverseRetrievePatternMatch("x * y", false).empty());
     REQUIRE(queryServicer->reverseRetrievePatternMatch("v + x * y", false).empty());
     REQUIRE(queryServicer->reverseRetrievePatternMatch("z * t", false).empty());

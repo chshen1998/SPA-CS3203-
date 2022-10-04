@@ -15,13 +15,16 @@ extern set<TokenType> doubleAttrTokens;
 class WithEvaluator : public GeneralEvaluator {
 
 public:
-    WithEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
-        GeneralEvaluator(s, d) {};
+    WithEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType> &d) :
+            GeneralEvaluator(s, d) {};
 
-    vector<vector<string>> evaluateClause(const Clause&, vector<vector<string>>);
-    bool evaluateBooleanClause(const Clause&);
-    bool WithEvaluator::addProcName(vector<vector<string>>&, const PqlToken&);
-    inline string updatedColumnName(const PqlToken&);
-    };
+    vector<vector<string>> evaluateClause(const Clause &, vector<vector<string>>);
+
+    bool evaluateBooleanClause(const Clause &);
+
+    bool addProcName(vector<vector<string>> &, const PqlToken &);
+
+    inline string updatedColumnName(const PqlToken &);
+};
 
 #endif

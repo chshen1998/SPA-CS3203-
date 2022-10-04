@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 #include "catch.hpp"
+#include "QPS/Validators/ValidatorUtils.h"
 using namespace std;
 
 bool isSameMap(unordered_map<string, TokenType> ans, unordered_map<string, TokenType> result) {
@@ -93,6 +94,19 @@ TEST_CASE("Test Pattern clause with String")
 	REQUIRE(isSameClauses(ans, results.clauses));
 }
 
+TEST_CASE("Test Pattern clause with String and whitespace")
+{
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::STRING, "x+y"),
+								  TokenType::PATTERN) };
+
+	QueryExtractor sut(valid_pattern_with_string_and_whitespace);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
 TEST_CASE("Test Pattern clause with Wildcard String")
 {
 	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
@@ -102,7 +116,7 @@ TEST_CASE("Test Pattern clause with Wildcard String")
 
 	QueryExtractor sut(valid_pattern_with_wildcard_string);
 	PqlQuery results = sut.extractSemantics();
-
+	//REQUIRE("x+y" == results.clauses[0].right.value);
 	REQUIRE(isSameClauses(ans, results.clauses));
 }
 

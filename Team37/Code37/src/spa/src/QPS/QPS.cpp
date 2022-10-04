@@ -54,12 +54,23 @@ void QPS::evaluate(string query, list<string>& results) {
     if (pe.errorType != ErrorType::NONE)
     {
         results.push_back(errorTypeToStringMap[pe.errorType]);
-        //cout << pe.message;
+        cout << pe.message;
         return;
     }
 
     QueryExtractor extractor(tokens);
-    PqlQuery pq = extractor.extractSemantics();
+    PqlQuery pq;
+    try
+    {
+        pq = extractor.extractSemantics();
+    }
+    catch (SemanticError pe)
+    {
+        results.push_back("Semantic Error");
+        cout << pe.message;
+        return;
+    }
+
 
 
     QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);

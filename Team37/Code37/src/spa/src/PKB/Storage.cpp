@@ -425,3 +425,80 @@ vector<string> Storage::reverseRetrieveRelation(string var, ProcVarRelationType 
             throw invalid_argument("Not a Procedure-Variable Relation");
     }
 }
+
+/*
+Store Relation of a Procedure-Procedure Relationship. For Relation(proc1, proc2)
+@param proc Procedure Name 1
+@param proc Procedure Name 2
+@param type Type of relation
+*/
+void Storage::storeRelation(string proc1, string proc2, ProcVarRelationType type) {
+    switch (type) {
+    case (CALLS):
+        Calls.store(proc1, proc2);
+        break;
+    case (CALLSS):
+        CallsS.store(proc1, proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
+    }
+}
+
+/*
+Retrieve Procedure-Procedure Relationship. For Relation(proc1, proc2)
+@param proc Procedure Name
+@param var Variable Name
+@param type Type of relation
+@returns Value of relation stored
+*/
+bool Storage::retrieveRelation(string proc1, string proc2, ProcVarRelationType type) {
+    switch (type) {
+    case (CALLS):
+        Calls.retrieve(proc1, proc2);
+        break;
+    case (CALLSS):
+        CallsS.retrieve(proc1, proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Realtion");
+    }
+}
+
+/*
+Retrieve Forward Relation Stored. For Relation(proc1, proc2)
+@param proc Procedure Name
+@param type Type of relation
+@returns All proc2 such that Relation(proc1, proc2) is True
+*/
+vector<string> Storage::forwardRetrieveRelation(string proc1, ProcVarRelationType type) {
+    switch (type) {
+    case (CALLS):
+        return Calls.forwardRetrieve(proc1);
+        break;
+    case (CALLSS):
+        return CallsS.forwardRetrieve(proc1);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
+    }
+}
+
+/*
+Retrieve Reverse Relation Stored. For Relation(proc1, proc2)
+@param var Variable Name
+@param type Type of relation
+@returns All proc1 such that Relation(proc1, proc2) is True
+*/
+vector<string> Storage::reverseRetrieveRelation(string proc2, ProcVarRelationType type) {
+    switch (type) {
+    case (USESSV):
+        return Calls.reverseRetrieve(proc2);
+        break;
+    case (MODIFIESSV):
+        return CallsS.reverseRetrieve(proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
+    }
+}

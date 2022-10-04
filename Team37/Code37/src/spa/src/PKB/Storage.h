@@ -31,6 +31,7 @@
 #include "Types/StmtStmtRelationType.h"
 #include "Types/StmtVarRelationType.h"
 #include "Types/ProcVarRelationType.h"
+#include "Types/ProcProcRelationType.h"
 
 using namespace std;
 
@@ -53,6 +54,9 @@ private:
 
     RelationStorage<string, string> UsesPV = RelationStorage<string, string>();
     RelationStorage<string, string> ModifiesPV = RelationStorage<string, string>();
+
+    RelationStarStorage<string, string> Calls = RelationStarStorage<string, string>();
+    RelationStarStorage<string, string> CallsS = RelationStarStorage<string, string>();
 
 public:
     // Constructor
@@ -118,6 +122,15 @@ public:
     vector<std::string> forwardRetrieveRelation(std::string, ProcVarRelationType);
 
     vector<std::string> reverseRetrieveRelation(std::string, ProcVarRelationType);
+
+    // Calls
+    void storeRelation(std::string, std::string, ProcProcRelationType);
+
+    bool retrieveRelation(std::string, std::string, ProcProcRelationType);
+
+    vector<std::string> forwardRetrieveRelation(std::string, ProcProcRelationType);
+
+    vector<std::string> reverseRetrieveRelation(std::string, ProcProcRelationType);
 };
 
 #endif

@@ -163,7 +163,7 @@ add_library(spa ${srcs} ${headers}
          "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.cpp" 
          "src/QPS/Evaluators/WithEvaluator.h" 
          "src/QPS/Evaluators/WithEvaluator.cpp"
-         )
+          "src/PKB/Types/ProcProcRelationType.h")
 
 
 # this makes the headers accessible for other projects which uses spa lib

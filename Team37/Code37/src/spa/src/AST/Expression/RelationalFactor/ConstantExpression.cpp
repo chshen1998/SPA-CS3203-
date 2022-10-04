@@ -13,5 +13,5 @@ void ConstantExpression::accept(shared_ptr<ASTVisitor> visitor) {
 }
 
 string ConstantExpression::generateString() {
-    return to_string(this->getValue());
+    return "(" + to_string(this->getValue()) + ")";
 }

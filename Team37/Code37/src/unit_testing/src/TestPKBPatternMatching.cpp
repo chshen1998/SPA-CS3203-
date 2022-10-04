@@ -25,7 +25,7 @@ TEST_CASE("Parsing bracketed relational factors") {
 
     string generatedString = relFactor->generateString();
 
-    REQUIRE(generatedString == "((v + (x * y)) + (z * t))");
+    REQUIRE(generatedString == "(((v) + ((x) * (y))) + ((z) * (t)))");
 
     deque<string> parsedRelationalFactors = QueryServicer::parseRelationalFactorString(generatedString);
 
@@ -71,7 +71,6 @@ TEST_CASE("Reverse retrieve pattern match") {
     REQUIRE(queryServicer->reverseRetrievePatternMatch("x * y", true).size() == 1);
     REQUIRE(queryServicer->reverseRetrievePatternMatch("v + x * y", true).size() == 1);
     REQUIRE(queryServicer->reverseRetrievePatternMatch("z * t", true).size() == 1);
-    //TODO: need SP support to pass this testcase
     REQUIRE(queryServicer->reverseRetrievePatternMatch("v", true).size() == 1);
     REQUIRE(queryServicer->reverseRetrievePatternMatch("v + x * y + z * t", true).size() == 1);
     REQUIRE(queryServicer->reverseRetrievePatternMatch("v + x * y + z * t", false).size() == 1);

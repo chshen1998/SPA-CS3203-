@@ -13,5 +13,5 @@ void NameExpression::accept(shared_ptr<ASTVisitor> visitor) {
 }
 
 string NameExpression::generateString() {
-    return this->getVarName();
+    return "(" + this->getVarName() + ")";
 }

@@ -52,11 +52,6 @@ public:
     void visitOrCondition(shared_ptr<OrCondition> orCondition);
 
     void visitParentAndStore(shared_ptr<TNode> node, string variable);
-
-    static deque<string> parseRelationalFactorString(const std::string &str);
-
-    static string sanitizeString(string word);
-
 };
 
 

@@ -133,36 +133,3 @@ TEST_CASE("Uses call statements") {
 
     REQUIRE(usesVariables.size() == 3);
 }
-
-TEST_CASE("Parsing bracketed relational factors") {
-
-    string rawRelFactor = "v + x * y + z * t";
-    shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
-
-    string generatedString = relFactor->generateString();
-
-    REQUIRE(generatedString == "(((v) + ((x) * (y))) + ((z) * (t)))");
-
-    deque<string> parsedRelationalFactors = ExtractUsesASTVisitor::parseRelationalFactorString(generatedString);
-
-    vector<string> sanitizedRelationalFactors = {};
-    for (const string &parsedFactor: parsedRelationalFactors) {
-        string sanitizedString = ExtractUsesASTVisitor::sanitizeString(parsedFactor);
-
-        sanitizedRelationalFactors.push_back(sanitizedString);
-    }
-
-    // check whether relational factor strings are sanitized and parsed correctly
-    auto it = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "x * y");
-    REQUIRE(it != sanitizedRelationalFactors.end());
-
-    auto it2 = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "v + x * y");
-    REQUIRE(it2 != sanitizedRelationalFactors.end());
-
-    auto it3 = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "z * t");
-    REQUIRE(it3 != sanitizedRelationalFactors.end());
-
-    auto it4 = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "v + x * y + z * t");
-    REQUIRE(it4 != sanitizedRelationalFactors.end());
-
-}

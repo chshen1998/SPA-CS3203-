@@ -3,16 +3,19 @@ using namespace std;
 #include "EvaluatorUtils.h"
 #include <algorithm>
 #include <iterator>
+#include <iostream>
 
 
 vector<vector<string>> EvaluatorUtils::JoinTable(const vector<vector<string>>& v1,
     const vector<vector<string>>& v2) {
 
     if (v2.empty()) {
+        cout << "final Empty" << endl;
         return v1;
     }
 
     if (v1.empty()) {
+        cout << "intermediate Empty" << endl;
         return v2;
     }
 

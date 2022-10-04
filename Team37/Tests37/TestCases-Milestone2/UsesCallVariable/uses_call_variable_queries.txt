@@ -1,7 +1,7 @@
 1 - TEST 1
 variable v;
 Select v such that Uses(3,v)
-t, u
+x, y
 5000
 2 - TEST 2
 call c;

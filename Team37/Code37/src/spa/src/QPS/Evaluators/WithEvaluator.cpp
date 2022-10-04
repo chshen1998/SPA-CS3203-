@@ -57,7 +57,7 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     // One Synonyms - c.procName() = "main"
     else {
         int leftArgIndex = -1;
-
+        cout << leftValue << endl;
         for (int i = 0; i < intermediate[0].size(); i++) {
             if (intermediate[0][i] == leftValue) {
                 leftArgIndex = i;

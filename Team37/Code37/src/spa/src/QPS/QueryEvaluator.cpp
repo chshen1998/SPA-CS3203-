@@ -51,6 +51,7 @@ void QueryEvaluator::evaluate() {
             }
             else {
                 // If our initial table is empty, we need to populate with for WITH clause
+                // TODO: Shift this into WithEvaluator as temporarily here due to to SelectAll() in this file
                 if (finalResult.empty()) {
                     finalResult.push_back(vector<string> { clause.left.value });
 
@@ -124,8 +125,6 @@ void QueryEvaluator::evaluate() {
                     finalResult = stmtVarEvaluator.evaluateSynonymClause(clause, finalResult);
                 }
             }
-
-            
         }
     }
 
@@ -142,6 +141,9 @@ void QueryEvaluator::evaluate() {
 void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table) {
     int index = 0;
     // Find the column index where the synonym value == select synonym value
+    // TODO: Update to get tuples of elems and logic for attrRef
+    // - Tuples just get indexes of elements we need
+    // - Apart from call, print and read, any attrRef returns the default value
     for (int i = 0; i < table[0].size(); i++) {
         // TODO: update for attrRef
         if (table[0][i] == pq.select) {

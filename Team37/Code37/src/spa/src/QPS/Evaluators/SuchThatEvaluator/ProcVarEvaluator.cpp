@@ -45,6 +45,7 @@ vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& cla
 
     for (Procedure p : servicer->getAllProc()) {
         allProcedures.push_back(p.getProcedureName());
+        cout << p.getProcedureName() << endl;
     }
 
 
@@ -75,17 +76,9 @@ vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& cla
         cout << rightArg.value << endl;
         intermediateStmtLines = servicer->reverseRetrieveRelation(rightArg.value, pv);
 
-        for (string p : allProcedures) {
-            cout << p << endl;
-        }
+        //getLineNumInteresection(finalResult, allProcedures, intermediateStmtLines);
 
-        for (string p : intermediateStmtLines) {
-            cout << p << endl;
-        }
-
-        getLineNumInteresection(finalResult, allProcedures, intermediateStmtLines);
-
-        for (string procedure : finalResult) {
+        for (string procedure : intermediateStmtLines) {
             finalTable.push_back(vector<string> { procedure });
         }
     }

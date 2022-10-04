@@ -4,4 +4,5 @@
 enum ProcProcRelationType {
 	CALLS,
 	CALLSS
-}
+};
+#endif

@@ -95,7 +95,7 @@ public:
     void storeCallStmtProcedure(ProcVarRelationType, StmtVarRelationType);
 
     // Statement-Statemenet Relations
-    void storeRelation(int, int, bool, StmtStmtRelationType);
+    void storeRelation(int, int, StmtStmtRelationType);
 
     bool retrieveRelation(int, int, StmtStmtRelationType);
 
@@ -131,6 +131,8 @@ public:
     vector<std::string> forwardRetrieveRelation(std::string, ProcProcRelationType);
 
     vector<std::string> reverseRetrieveRelation(std::string, ProcProcRelationType);
+
+    void buildStar(ProcProcRelationType);
 };
 
 #endif

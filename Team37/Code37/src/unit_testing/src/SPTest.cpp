@@ -796,9 +796,9 @@ TEST_CASE("Tokenize Call - 1") {
 TEST_CASE("RelationalFactor Generate String") {
     string rawRelFactor = "a%b-c/d+e%f*g+h-i";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
-    REQUIRE(relFactor->generateString() == "(((((a % b) - (c / d)) + ((e % f) * g)) + h) - i)");
+    REQUIRE(relFactor->generateString() == "((((((a) % (b)) - ((c) / (d))) + (((e) % (f)) * (g))) + (h)) - (i))");
 
     rawRelFactor = "(a + b) * (3 + (x * 3 * 2 % ((1-2) / q)) + 9)";
     relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
-    REQUIRE(relFactor->generateString() == "((a + b) * ((3 + (((x * 3) * 2) % ((1 - 2) / q))) + 9))");
+    REQUIRE(relFactor->generateString() == "(((a) + (b)) * (((3) + ((((x) * (3)) * (2)) % (((1) - (2)) / (q)))) + (9)))");
 }

@@ -141,7 +141,7 @@ TEST_CASE("Parsing bracketed relational factors") {
 
     string generatedString = relFactor->generateString();
 
-    REQUIRE(generatedString == "((v + (x * y)) + (z * t))");
+    REQUIRE(generatedString == "(((v) + ((x) * (y))) + ((z) * (t)))");
 
     deque<string> parsedRelationalFactors = ExtractUsesASTVisitor::parseRelationalFactorString(generatedString);
 
@@ -157,7 +157,7 @@ TEST_CASE("Parsing bracketed relational factors") {
     REQUIRE(it != sanitizedRelationalFactors.end());
 
     auto it2 = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "v + x * y");
-    REQUIRE(it2 != sanitizedRelationalFactors.end());\
+    REQUIRE(it2 != sanitizedRelationalFactors.end());
 
     auto it3 = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "z * t");
     REQUIRE(it3 != sanitizedRelationalFactors.end());

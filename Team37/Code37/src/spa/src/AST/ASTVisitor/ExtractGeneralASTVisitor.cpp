@@ -29,6 +29,7 @@ void ExtractGeneralASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode
     vector<shared_ptr<Procedure>> procedures = sourceCode->getProcedures();
 
     for (auto procedure: procedures) {
+        this->storage->storeProc(*procedure);
         procedure->accept(shared_from_this());
     }
 }

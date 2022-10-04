@@ -12,8 +12,6 @@
 #include <memory>
 #include <tuple>
 
-using namespace std;
-
 #include "../AST/TNode.h"
 #include "../AST/Procedure.h"
 #include "../AST/SourceCode.h"
@@ -27,14 +25,14 @@ using namespace std;
 
 
 #include "../AST/Statement/Statement.h"
-#include "Structures/Array2D.h"
-#include "Structures/StatementVariableStorage.h"
-#include "Structures/ProcedureVariableStorage.h"
+#include "Structures/RelationStorage.h"
+#include "Structures/RelationStarStorage.h"
 
 #include "Types/StmtStmtRelationType.h"
 #include "Types/StmtVarRelationType.h"
 #include "Types/ProcVarRelationType.h"
 
+using namespace std;
 
 class Storage : public enable_shared_from_this<Storage> {
 private:
@@ -44,16 +42,17 @@ private:
     set<Procedure> procedures = {};
     set<shared_ptr<Statement>> statements = {};
 
-    Array2D Follows = NULL;
-    Array2D FollowsS = NULL;
-    Array2D Parent = NULL;
-    Array2D ParentS = NULL;
+    // RelationalStore<int, int> Follows = RelationalStore<int, int>();
+    RelationStarStorage<int, int> Follows = RelationStarStorage<int, int>();
+    RelationStarStorage<int, int> FollowsS = RelationStarStorage<int, int>();
+    RelationStarStorage<int, int> Parent = RelationStarStorage<int, int>();
+    RelationStarStorage<int, int> ParentS = RelationStarStorage<int, int>();
 
-    StatementVariableStorage UsesSV = StatementVariableStorage();
-    StatementVariableStorage ModifiesSV = StatementVariableStorage();
+    RelationStorage<int, string> UsesSV = RelationStorage<int, string>();
+    RelationStorage<int, string> ModifiesSV = RelationStorage<int, string>();
 
-    ProcedureVariableStorage UsesPV = ProcedureVariableStorage();
-    ProcedureVariableStorage ModifiesPV = ProcedureVariableStorage();
+    RelationStorage<string, string> UsesPV = RelationStorage<string, string>();
+    RelationStorage<string, string> ModifiesPV = RelationStorage<string, string>();
 
 public:
     // Constructor
@@ -61,7 +60,7 @@ public:
 
     // Queue helper for AST traversal
     // tuple triplet of (line number,container procedure name,called procedure name)
-    vector<tuple<int, string, string>> callStmtProcedureQueue = {};
+    vector<tuple<int, std::string, std::string>> callStmtProcedureQueue = {};
 
     // AST
     void storeAST(shared_ptr<SourceCode>);
@@ -103,22 +102,22 @@ public:
     void buildStar(StmtStmtRelationType);
 
     // Statement-Variable Relations
-    void storeRelation(int, string, StmtVarRelationType);
+    void storeRelation(int, std::string, StmtVarRelationType);
 
-    bool retrieveRelation(int, string, StmtVarRelationType);
+    bool retrieveRelation(int, std::string, StmtVarRelationType);
 
-    vector<string> forwardRetrieveRelation(int, StmtVarRelationType);
+    vector<std::string> forwardRetrieveRelation(int, StmtVarRelationType);
 
-    vector<int> reverseRetrieveRelation(string, StmtVarRelationType);
+    vector<int> reverseRetrieveRelation(std::string, StmtVarRelationType);
 
     // Procedure-Variable Relations
-    void storeRelation(string, string, ProcVarRelationType);
+    void storeRelation(std::string, std::string, ProcVarRelationType);
 
-    bool retrieveRelation(string, string, ProcVarRelationType);
+    bool retrieveRelation(std::string, std::string, ProcVarRelationType);
 
-    vector<string> forwardRetrieveRelation(string, ProcVarRelationType);
+    vector<std::string> forwardRetrieveRelation(std::string, ProcVarRelationType);
 
-    vector<string> reverseRetrieveRelation(string, ProcVarRelationType);
+    vector<std::string> reverseRetrieveRelation(std::string, ProcVarRelationType);
 };
 
 #endif

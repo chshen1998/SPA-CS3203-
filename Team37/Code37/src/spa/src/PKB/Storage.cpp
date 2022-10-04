@@ -10,10 +10,6 @@ Store the AST
 void Storage::storeAST(shared_ptr<SourceCode> AST) {
     this->AST = AST;
 
-    // Get AST statement num and intialise Array2D
-    Follows = Array2D(AST->getNumOfStatements());
-    Parent = Array2D(AST->getNumOfStatements());
-
     // initialising AST visitors
     shared_ptr<ExtractGeneralASTVisitor> generalAstVisitor = make_shared<ExtractGeneralASTVisitor>(shared_from_this());
     shared_ptr<ExtractParentsASTVisitor> parentsAstVisitor = make_shared<ExtractParentsASTVisitor>(shared_from_this());
@@ -155,10 +151,10 @@ Store Relation of a Statement-Statement Relationship (Non-star). For Relation(st
 void Storage::storeRelation(int stmt1, int stmt2, bool value, StmtStmtRelationType type) {
     switch (type) {
         case (FOLLOWS):
-            Follows.store(stmt1, stmt2, value);
+            Follows.store(stmt1, stmt2);
             break;
         case (PARENT):
-            Parent.store(stmt1, stmt2, value);
+            Parent.store(stmt1, stmt2);
             break;
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");

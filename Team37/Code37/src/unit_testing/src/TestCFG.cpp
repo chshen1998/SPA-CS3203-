@@ -223,3 +223,76 @@ TEST_CASE("Procedure with while statement") {
     REQUIRE(constantExpression->getValue() == 0);
     REQUIRE(condExpr->getOperator() == RelationalOperator::GREATER_THAN);
 }
+
+TEST_CASE("Procedure with while statement and if statement") {
+    string proc = "procedure main {\n"
+                     "    while (flag >= 0) {\n"
+                     "        if (flag >= 0) then {\n"
+                     "            print flag;\n"
+                     "        } else {\n"
+                     "            read flag;\n"
+                     "        }"
+                     "        x = 5;"
+                     "    }\n"
+                     "        flag = 5;"
+                     "}\n";
+    shared_ptr<Procedure> procedure = Parser::parseProcedure(proc);
+    procedure->buildCFG(procedure->getProcedureName());
+    shared_ptr<CFG> cfg = procedure->getCFG();
+    REQUIRE(cfg->getName() == "main");
+
+    shared_ptr<CFGNode> cfgNode1 = cfg->getStartNode();
+    REQUIRE(cfgNode1->getNumChildren() == 2);
+    shared_ptr<WhileStatement> whileStatement = dynamic_pointer_cast<WhileStatement>(cfgNode1->getTNode());
+    shared_ptr<RelationalExpression> condExpr =
+            dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(condExpr->getRelFactor1());
+    shared_ptr<ConstantExpression> constantExpression =
+            dynamic_pointer_cast<ConstantExpression>(condExpr->getRelFactor2());
+    REQUIRE(nameExpr->getVarName() == "flag");
+    REQUIRE(constantExpression->getValue() == 0);
+    REQUIRE(condExpr->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
+    REQUIRE(cfgNode1->getNumChildren() == 2);
+    shared_ptr<CFGNode> cfgNode2 = cfgNode1->getChild(0);
+    shared_ptr<CFGNode> dummyNode2 = cfgNode1->getChild(1);
+    REQUIRE(dummyNode2->getTNode() == nullptr);
+    REQUIRE(dummyNode2->getStoredStmt() == cfgNode1);
+    REQUIRE(dummyNode2->getNumChildren() == 1);
+    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(cfgNode2->getTNode());
+    shared_ptr<RelationalExpression> condExpr2 =
+            dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    shared_ptr<NameExpression> nameExpr2 = dynamic_pointer_cast<NameExpression>(condExpr2->getRelFactor1());
+    shared_ptr<ConstantExpression> constantExpression2 =
+            dynamic_pointer_cast<ConstantExpression>(condExpr2->getRelFactor2());
+    REQUIRE(nameExpr2->getVarName() == "flag");
+    REQUIRE(constantExpression2->getValue() == 0);
+    REQUIRE(condExpr2->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
+    REQUIRE(cfgNode2->getNumChildren() == 2);
+    shared_ptr<CFGNode> cfgNode3 = cfgNode2->getChild(0);
+    shared_ptr<PrintStatement> printStatement = dynamic_pointer_cast<PrintStatement>(cfgNode3->getTNode());
+    REQUIRE(printStatement->getVariableName() == "flag");
+    shared_ptr<CFGNode> dummyNode1 = cfgNode3->getChild(0);
+    REQUIRE(dummyNode1->getNumChildren() == 1);
+    shared_ptr<CFGNode> cfgNode4 = cfgNode2->getChild(1);
+    REQUIRE(cfgNode4->getNumChildren() == 1);
+    dummyNode1 = cfgNode4->getChild(0);
+    REQUIRE(dummyNode1->getTNode() == nullptr);
+    REQUIRE(dummyNode1->getStoredStmt() == cfgNode2);
+    shared_ptr<CFGNode> cfgNode5 = dummyNode1->getChild(0);
+    shared_ptr<AssignStatement> assignStatement = dynamic_pointer_cast<AssignStatement>(cfgNode5->getTNode());
+    REQUIRE(assignStatement->getVarName() == "x");
+    shared_ptr<ConstantExpression> constantExpression3 =
+            dynamic_pointer_cast<ConstantExpression>(assignStatement->getRelFactor());
+    REQUIRE(constantExpression3->getValue() == 5);
+    REQUIRE(cfgNode5->getNumChildren() == 2);
+    REQUIRE(cfgNode5->getChild(0) == cfgNode1);
+    REQUIRE(cfgNode5->getChild(1) == dummyNode2);
+    REQUIRE(dummyNode2->getNumChildren() == 1);
+    shared_ptr<CFGNode> cfgNode6 = dummyNode2->getChild(0);
+    assignStatement = dynamic_pointer_cast<AssignStatement>(cfgNode6->getTNode());
+    REQUIRE(assignStatement->getVarName() == "flag");
+    constantExpression3 =
+            dynamic_pointer_cast<ConstantExpression>(assignStatement->getRelFactor());
+    REQUIRE(constantExpression3->getValue() == 5);
+    REQUIRE(cfgNode6->getNumChildren() == 0);
+}

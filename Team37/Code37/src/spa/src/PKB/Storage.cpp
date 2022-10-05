@@ -10,10 +10,6 @@ Store the AST
 void Storage::storeAST(shared_ptr<SourceCode> AST) {
     this->AST = AST;
 
-    // Get AST statement num and intialise Array2D
-    Follows = Array2D(AST->getNumOfStatements());
-    Parent = Array2D(AST->getNumOfStatements());
-
     // initialising AST visitors
     shared_ptr<ExtractGeneralASTVisitor> generalAstVisitor = make_shared<ExtractGeneralASTVisitor>(shared_from_this());
     shared_ptr<ExtractParentsASTVisitor> parentsAstVisitor = make_shared<ExtractParentsASTVisitor>(shared_from_this());
@@ -152,13 +148,13 @@ Store Relation of a Statement-Statement Relationship (Non-star). For Relation(st
 @param value Value of relation
 @param type Type of relation
 */
-void Storage::storeRelation(int stmt1, int stmt2, bool value, StmtStmtRelationType type) {
+void Storage::storeRelation(int stmt1, int stmt2, StmtStmtRelationType type) {
     switch (type) {
         case (FOLLOWS):
-            Follows.store(stmt1, stmt2, value);
+            Follows.store(stmt1, stmt2);
             break;
         case (PARENT):
-            Parent.store(stmt1, stmt2, value);
+            Parent.store(stmt1, stmt2);
             break;
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
@@ -259,7 +255,7 @@ vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType typ
 
 
 /**
-Only called after filling up Statement-Statement Array2D, fills in the Star Array2D
+Only called after filling up Statement-Statement, fills in the Star
 @param type Type of relation
 
 */
@@ -427,5 +423,97 @@ vector<string> Storage::reverseRetrieveRelation(string var, ProcVarRelationType 
             break;
         default:
             throw invalid_argument("Not a Procedure-Variable Relation");
+    }
+}
+
+/*
+Store Relation of a Procedure-Procedure Relationship. For Relation(proc1, proc2)
+@param proc Procedure Name 1
+@param proc Procedure Name 2
+@param type Type of relation
+*/
+void Storage::storeRelation(string proc1, string proc2, ProcProcRelationType type) {
+    switch (type) {
+    case (CALLS):
+        Calls.store(proc1, proc2);
+        break;
+    case (CALLSS):
+        CallsS.store(proc1, proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
+    }
+}
+
+/*
+Retrieve Procedure-Procedure Relationship. For Relation(proc1, proc2)
+@param proc Procedure Name
+@param var Variable Name
+@param type Type of relation
+@returns Value of relation stored
+*/
+bool Storage::retrieveRelation(string proc1, string proc2, ProcProcRelationType type) {
+    switch (type) {
+    case (CALLS):
+        Calls.retrieve(proc1, proc2);
+        break;
+    case (CALLSS):
+        CallsS.retrieve(proc1, proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Realtion");
+    }
+}
+
+/*
+Retrieve Forward Relation Stored. For Relation(proc1, proc2)
+@param proc Procedure Name
+@param type Type of relation
+@returns All proc2 such that Relation(proc1, proc2) is True
+*/
+vector<string> Storage::forwardRetrieveRelation(string proc1, ProcProcRelationType type) {
+    switch (type) {
+    case (CALLS):
+        return Calls.forwardRetrieve(proc1);
+        break;
+    case (CALLSS):
+        return CallsS.forwardRetrieve(proc1);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
+    }
+}
+
+/*
+Retrieve Reverse Relation Stored. For Relation(proc1, proc2)
+@param var Variable Name
+@param type Type of relation
+@returns All proc1 such that Relation(proc1, proc2) is True
+*/
+vector<string> Storage::reverseRetrieveRelation(string proc2, ProcProcRelationType type) {
+    switch (type) {
+    case (USESSV):
+        return Calls.reverseRetrieve(proc2);
+        break;
+    case (MODIFIESSV):
+        return CallsS.reverseRetrieve(proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
+    }
+}
+
+/**
+Only called after filling up Procedure-Procedure, fills in the Star
+@param type Type of relation
+
+*/
+void Storage::buildStar(ProcProcRelationType type) {
+    switch (type) {
+    case (CALLS):
+        CallsS = Calls.buildStar();
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Realtion");
     }
 }

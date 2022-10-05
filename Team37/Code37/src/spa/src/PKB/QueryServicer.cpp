@@ -262,3 +262,34 @@ string QueryServicer::sanitizeString(string word) {
     }
     return word;
 }
+
+/*
+Retrieve Relation Stored. For Relation(proc1, proc2)
+@param proc1
+@param proc2
+@param type Type of relation
+@returns If Relation(proc1, proc2) is True
+*/
+bool QueryServicer::retrieveRelation(string proc1, string proc2, ProcProcRelationType type) {
+	return storage->retrieveRelation(proc1, proc2, type);
+}
+
+/*
+Retrieve Forward Relation Stored. For Relation(proc1, proc2)
+@param proc1
+@param type Type of relation
+@returns All var such that Relation(proc1, proc2) is True
+*/
+vector<string> QueryServicer::forwardRetrieveRelation(string proc1, ProcProcRelationType type) {
+	return storage->forwardRetrieveRelation(proc1, type);
+}
+
+/*
+Retrieve Reverse Relation Stored. For Relation(proc1, proc2)
+@param proc2
+@param type Type of relation
+@returns All stmt1 such that Relation(proc1, proc2) is True
+*/
+vector<string> QueryServicer::reverseRetrieveRelation(string proc2, ProcProcRelationType type) {
+	return storage->reverseRetrieveRelation(proc2, type);
+}

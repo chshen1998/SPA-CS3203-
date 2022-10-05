@@ -5,6 +5,7 @@ using namespace std;
 #include <vector>
 
 #include "../Types/TokenType.h"
+#include "PqlToken.h"
 
 #ifndef TEAM37_PQLQUERY_H
 #define TEAM37_PQLQUERY_H
@@ -15,18 +16,31 @@ using namespace std;
  *
  * These synonyms must be variable type.
  */
-struct Clause
+class Clause
 {
-    PqlToken clauseType;
-    PqlToken left;
-    PqlToken right;
-    TokenType category;
+public:
+    Clause(PqlToken clauseType, PqlToken left, PqlToken right, TokenType category);
 
-    Clause(PqlToken type, PqlToken l, PqlToken r, TokenType c) : clauseType(type), left(l), right(r), category(c) {}
+    Clause(PqlToken clauseType, PqlToken left, PqlToken right, TokenType category, PqlToken leftAttr, PqlToken rightAttr);
 
     bool operator==(const Clause& other) const {
+        if (category == TokenType::WITH)
+        {
+	        return (other.clauseType == clauseType) && (other.left == left) && (other.right == right) && (other.leftAttr == leftAttr) && (other.rightAttr == rightAttr);
+        }
         return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
     }
+
+    PqlToken clauseType;
+    PqlToken left;
+    PqlToken leftAttr;
+    PqlToken right;
+    PqlToken rightAttr;
+    TokenType category;
+
+    inline bool checkIfBooleanClause() {
+        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM;
+    };
 };
 
 /*

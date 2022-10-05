@@ -138,6 +138,15 @@ TEST_CASE("Valid Follows clause")
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+
+TEST_CASE("Valid Follows clause with double wildcard")
+{
+	QueryValidator sut = QueryValidator(valid_follows_double_wildcard);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
 TEST_CASE("Valid Modifies clause")
 {
 	QueryValidator sut = QueryValidator(valid_modifies);
@@ -210,3 +219,72 @@ TEST_CASE("Valid multi-pattern and multi-such that")
 	REQUIRE(results.message == "");
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
+
+TEST_CASE("Valid With clause")
+{
+	QueryValidator sut = QueryValidator(valid_with);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid multi With clause")
+{
+	QueryValidator sut = QueryValidator(valid_multi_with);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid multi Pattern, With and Such That clauses")
+{
+	QueryValidator sut = QueryValidator(valid_multi_pattern_with_such_that);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Invalid With clause parameter type")
+{
+	QueryValidator sut = QueryValidator(invalid_with_parameter_type);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Invalid With clause undeclared parameters")
+{
+	QueryValidator sut = QueryValidator(invalid_with_undeclared_synonym);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Invalid With clause synonym attrname")
+{
+	QueryValidator sut = QueryValidator(invalid_with_synonym_attrname);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Invalid With clause missing dot between synonym and attrName")
+{
+	QueryValidator sut = QueryValidator(invalid_with_missing_dot);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Invalid With clause parameters extra tokens")
+{
+	QueryValidator sut = QueryValidator(invalid_with_parameter_extra_tokens);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+

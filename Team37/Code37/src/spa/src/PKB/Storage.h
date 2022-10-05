@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #ifndef SPA_STORAGE_H
 #define SPA_STORAGE_H
@@ -10,8 +10,7 @@
 #include <set>
 #include <unordered_set>
 #include <memory>
-
-using namespace std;
+#include <tuple>
 
 #include "../AST/TNode.h"
 #include "../AST/Procedure.h"
@@ -24,15 +23,17 @@ using namespace std;
 #include "../AST/ASTVisitor/ExtractModifiesASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractUsesASTVisitor.h"
 
+
 #include "../AST/Statement/Statement.h"
-#include "Structures/Array2D.h"
-#include "Structures/StatementVariableStorage.h"
-#include "Structures/ProcedureVariableStorage.h"
+#include "Structures/RelationStorage.h"
+#include "Structures/RelationStarStorage.h"
 
 #include "Types/StmtStmtRelationType.h"
 #include "Types/StmtVarRelationType.h"
 #include "Types/ProcVarRelationType.h"
+#include "Types/ProcProcRelationType.h"
 
+using namespace std;
 
 class Storage : public enable_shared_from_this<Storage> {
 private:
@@ -42,20 +43,28 @@ private:
     set<Procedure> procedures = {};
     set<shared_ptr<Statement>> statements = {};
 
-    Array2D Follows = NULL;
-    Array2D FollowsS = NULL;
-    Array2D Parent = NULL;
-    Array2D ParentS = NULL;
+    // RelationalStore<int, int> Follows = RelationalStore<int, int>();
+    RelationStarStorage<int, int> Follows = RelationStarStorage<int, int>();
+    RelationStarStorage<int, int> FollowsS = RelationStarStorage<int, int>();
+    RelationStarStorage<int, int> Parent = RelationStarStorage<int, int>();
+    RelationStarStorage<int, int> ParentS = RelationStarStorage<int, int>();
 
-    StatementVariableStorage UsesSV = StatementVariableStorage();
-    StatementVariableStorage ModifiesSV = StatementVariableStorage();
+    RelationStorage<int, string> UsesSV = RelationStorage<int, string>();
+    RelationStorage<int, string> ModifiesSV = RelationStorage<int, string>();
 
-    ProcedureVariableStorage UsesPV = ProcedureVariableStorage();
-    ProcedureVariableStorage ModifiesPV = ProcedureVariableStorage();
+    RelationStorage<string, string> UsesPV = RelationStorage<string, string>();
+    RelationStorage<string, string> ModifiesPV = RelationStorage<string, string>();
+
+    RelationStarStorage<string, string> Calls = RelationStarStorage<string, string>();
+    RelationStarStorage<string, string> CallsS = RelationStarStorage<string, string>();
 
 public:
     // Constructor
     Storage();
+
+    // Queue helper for AST traversal
+    // tuple triplet of (line number,container procedure name,called procedure name)
+    vector<tuple<int, std::string, std::string>> callStmtProcedureQueue = {};
 
     // AST
     void storeAST(shared_ptr<SourceCode>);
@@ -82,8 +91,11 @@ public:
 
     set<shared_ptr<Statement>> getAllStmt();
 
+    // Post-traversal
+    void storeCallStmtProcedure(ProcVarRelationType, StmtVarRelationType);
+
     // Statement-Statemenet Relations
-    void storeRelation(int, int, bool, StmtStmtRelationType);
+    void storeRelation(int, int, StmtStmtRelationType);
 
     bool retrieveRelation(int, int, StmtStmtRelationType);
 
@@ -94,21 +106,33 @@ public:
     void buildStar(StmtStmtRelationType);
 
     // Statement-Variable Relations
-    void storeRelation(int, string, StmtVarRelationType);
+    void storeRelation(int, std::string, StmtVarRelationType);
 
-    bool retrieveRelation(int, string, StmtVarRelationType);
+    bool retrieveRelation(int, std::string, StmtVarRelationType);
 
-    vector<string> forwardRetrieveRelation(int, StmtVarRelationType);
+    vector<std::string> forwardRetrieveRelation(int, StmtVarRelationType);
 
-    vector<int> reverseRetrieveRelation(string, StmtVarRelationType);
+    vector<int> reverseRetrieveRelation(std::string, StmtVarRelationType);
 
     // Procedure-Variable Relations
-    void storeRelation(string, string, ProcVarRelationType);
+    void storeRelation(std::string, std::string, ProcVarRelationType);
 
-    bool retrieveRelation(string, string, ProcVarRelationType);
+    bool retrieveRelation(std::string, std::string, ProcVarRelationType);
 
-    vector<string> forwardRetrieveRelation(string, ProcVarRelationType);
+    vector<std::string> forwardRetrieveRelation(std::string, ProcVarRelationType);
 
-    vector<string> reverseRetrieveRelation(string, ProcVarRelationType);
+    vector<std::string> reverseRetrieveRelation(std::string, ProcVarRelationType);
+
+    // Calls
+    void storeRelation(std::string, std::string, ProcProcRelationType);
+
+    bool retrieveRelation(std::string, std::string, ProcProcRelationType);
+
+    vector<std::string> forwardRetrieveRelation(std::string, ProcProcRelationType);
+
+    vector<std::string> reverseRetrieveRelation(std::string, ProcProcRelationType);
+
+    void buildStar(ProcProcRelationType);
 };
+
 #endif

@@ -82,7 +82,7 @@ void ExtractParentsASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> wh
 
     for (auto statement: statements) {
         // store Parent relationship
-        this->storage->storeRelation(parentLineNum, statement->getLineNum(), true, PARENT);
+        this->storage->storeRelation(parentLineNum, statement->getLineNum(), PARENT);
 
         // iterate children
         statement->accept(shared_from_this());
@@ -99,7 +99,7 @@ void ExtractParentsASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
     vector<shared_ptr<Statement>> thenStmts = ifStmt->getThenStatements();
     for (auto statement: thenStmts) {
         // store Parent relationship
-        this->storage->storeRelation(parentLineNum, statement->getLineNum(), true, PARENT);
+        this->storage->storeRelation(parentLineNum, statement->getLineNum(), PARENT);
 
         // iterate children
         statement->accept(shared_from_this());
@@ -108,7 +108,7 @@ void ExtractParentsASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
     vector<shared_ptr<Statement>> elseStmts = ifStmt->getElseStatements();
     for (auto statement: elseStmts) {
         // store Parent relationship
-        this->storage->storeRelation(parentLineNum, statement->getLineNum(), true, PARENT);
+        this->storage->storeRelation(parentLineNum, statement->getLineNum(), PARENT);
 
         // iterate children
         statement->accept(shared_from_this());

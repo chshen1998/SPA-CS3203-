@@ -58,6 +58,14 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
+        src/QPS/Tokenizers/GeneralTokenizer.h
+        src/QPS/Tokenizers/DeclarationTokenizer.h
+        src/QPS/Tokenizers/SelectTokenizer.h
+        src/QPS/Tokenizers/SuchThatTokenizer.h
+        src/QPS/Tokenizers/PatternTokenizer.h
+        src/QPS/Tokenizers/WithTokenizer.h
+        src/QPS/Tokenizers/TokenizerUtils.h
+
 
         src/SP/Utilities/Utils.h
         src/SP/SP.h
@@ -82,6 +90,15 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryTokenizer.cpp
         src/QPS/QueryValidator.cpp
 
+        src/QPS/Tokenizers/DeclarationTokenizer.cpp
+        src/QPS/Tokenizers/SelectTokenizer.cpp
+        src/QPS/Tokenizers/SuchThatTokenizer.cpp
+        src/QPS/Tokenizers/PatternTokenizer.cpp
+        src/QPS/Tokenizers/WithTokenizer.cpp
+        src/QPS/Tokenizers/TokenizerUtils.cpp
+       
+
+
         src/PKB/PKB.h
         src/PKB/PKB.cpp
         src/PKB/QueryServicer.h
@@ -96,13 +113,15 @@ add_library(spa ${srcs} ${headers}
         src/PKB/Types/StatementType.h
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.cpp
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.h
-        src/PKB/Structures/Array2D.h
-        src/PKB/Structures/Array2D.cpp
-        src/PKB/Structures/StatementVariableStorage.h
-        src/PKB/Structures/StatementVariableStorage.cpp
-        src/PKB/Structures/ProcedureVariableStorage.h
-        src/PKB/Structures/ProcedureVariableStorage.cpp
-        src/PKB/Structures/Array2D.cpp
+        
+        
+        
+        
+        
+        
+
+        "src/PKB/Structures/RelationStorage.h"
+        "src/PKB/Structures/RelationStarStorage.h"
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.cpp
         src/AST/ASTVisitor/ExtractFollowsASTVisitor.h
         src/AST/ASTVisitor/ExtractParentsASTVisitor.cpp
@@ -122,7 +141,29 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Types/TokenType.cpp
         src/QPS/Types/ErrorType.cpp
         src/QPS/Structures/PqlToken.cpp
-        src/PKB/Types/ProcVarRelationType.h src/CFG/CFGNode.cpp src/CFG/CFGNode.h)
+        src/PKB/Types/ProcVarRelationType.h 
+        "src/QPS/Validators/NextValidator.h" 
+        "src/QPS/Validators/NextValidator.cpp" 
+        "src/QPS/Validators/AffectsValidator.h" 
+        "src/QPS/Validators/AffectsValidator.cpp" 
+        "src/QPS/Validators/WithValidator.h" 
+        "src/QPS/Validators/WithValidator.cpp" 
+        "src/QPS/Structures/PqlQuery.cpp" 
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h" 
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.cpp" 
+        "src/QPS/Evaluators/SuchThatEvaluator/SuchThatEvaluator.h"
+         "src/QPS/Evaluators/EvaluatorUtils.h" 
+         "src/QPS/Evaluators/EvaluatorUtils.cpp" 
+         "src/QPS/Evaluators/GeneralEvaluator.cpp" 
+         "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h" 
+         "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.cpp" 
+         "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.cpp" 
+         "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"  
+         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.h" 
+         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.cpp" 
+         "src/QPS/Evaluators/WithEvaluator.h" 
+         "src/QPS/Evaluators/WithEvaluator.cpp"
+          "src/PKB/Types/ProcProcRelationType.h")
 
 
 # this makes the headers accessible for other projects which uses spa lib

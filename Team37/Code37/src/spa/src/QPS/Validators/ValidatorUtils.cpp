@@ -80,7 +80,7 @@ set<TokenType> validAttrName = {
     TokenType::PROCNAME,
     TokenType::VARNAME,
     TokenType::VALUE,
-    TokenType::STATEMENT_NUM
+    TokenType::STMTLINE
 };
 
 set<TokenType> validPatternType = {

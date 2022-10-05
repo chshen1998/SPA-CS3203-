@@ -8,43 +8,7 @@
 
 using namespace std;
 
-void require(bool b);
-
-TEST_CASE("Extract Procedures") {
-    vector<string> procedures;
-    string p = "procedure main {\n"
-                      "    flag = 0;\n"
-                      "    print flag;\n"
-                      "    read flag;\n"
-                      "\n"
-                      "    x = 1;\n"
-                      "    y = 2;\n"
-                      "    print x;\n"
-                      "}";
-    procedures.push_back(p);
-
-    vector<string> result;
-    result = Parser::extractProcedures(p, result);
-
-    REQUIRE(result == procedures);
-}
-
-TEST_CASE("Extract procedure names") {
-    string procedure = "procedure main {\n"
-                       "    flag = 0;\n"
-                       "    print flag;\n"
-                       "    read flag;\n"
-                       "\n"
-                       "    x = 1;\n"
-                       "    y = 2;\n"
-                       "    print x;\n"
-                       "}";
-
-    string result = Parser::extractProcName(procedure);
-
-    string expectedName = "main";
-    REQUIRE(expectedName == result);
-}
+// TODO: Continue organizing test files
 
 TEST_CASE("Remove procedure wrapper - Good input") {
     string procedure = "procedure main {\n"
@@ -103,228 +67,18 @@ TEST_CASE("Remove procedure wrapper - Good input") {
     REQUIRE(result == expected);
 }
 
-
-TEST_CASE("Extract Statements - No while and if-else") {
-    string rawStatementList = "flag = 0;\n"
-                       "    print flag;\n"
-                       "    read flag;\n"
-                       "\n"
-                       "    x = 1;\n"
-                       "    y = 2;\n"
-                       "print x;";
-
-    vector<string> statementList;
-
-    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
-    vector<string> expected;
-    string stmt1 = "flag = 0";
-    string stmt2 = "print flag";
-    string stmt3 = "read flag";
-    string stmt4 = "x = 1";
-    string stmt5 = "y = 2";
-    string stmt6 = "print x";
-
-    expected.push_back(stmt1);
-    expected.push_back(stmt2);
-    expected.push_back(stmt3);
-    expected.push_back(stmt4);
-    expected.push_back(stmt5);
-    expected.push_back(stmt6);
-
-    REQUIRE(result == expected);
-}
-
-TEST_CASE("Extract Statements - While and if-else included") {
-    string rawStatementList = "while () {\n"
-                       "    print flag;\n"
-                       "    read flag;\n"
-                       "\n"
-                       "    x = 1;\n"
-                       "    y = 2;\n"
-                       "    }\n"
-                       "    print x;\n"
-                       "    if () then {\n"
-                       "        print flag;\n"
-                       "    } else {\n"
-                       "        read flag;\n"
-                       "    }";
-
-    vector<string> statementList;
-
-    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
-    vector<string> expected;
-    string stmt1 = "while () {\n"
-                   "    print flag;\n"
-                   "    read flag;\n"
-                   "\n"
-                   "    x = 1;\n"
-                   "    y = 2;\n"
-                   "    }";
-    string stmt2 = "print x";
-    string stmt3 = "if () then {\n"
-                    "        print flag;\n"
-                    "    } else {\n"
-                    "        read flag;\n"
-                    "    }";
-
-    expected.push_back(stmt1);
-    expected.push_back(stmt2);
-    expected.push_back(stmt3);
-
-    REQUIRE(result == expected);
-}
-
-TEST_CASE("Extract Statements - Nested While and if-else") {
-    string rawStatementList = "while () {\n"
-                              "\t\tcall x;\n"
-                              "\t\tread x;\n"
-                              "\t\twhile () {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t}\n"
-                              "\t\tif () then {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t} else {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t}\n"
-                              "}\n"
-                              "\n"
-                              "if () then {\n"
-                              "\t\twhile () {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t}\n"
-                              "} else {\n"
-                              "\t\tif () then {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t} else {\n"
-                              "\t\t\t\tread x;\n"
-                              "\t\t}\n"
-                              "}";
-    vector<string> statementList;
-    vector<string> result = Parser::extractStatements(rawStatementList, statementList);
-
-    vector<string> expected;
-    string stmt1 = "while () {\n"
-                   "\t\tcall x;\n"
-                   "\t\tread x;\n"
-                   "\t\twhile () {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "\t\tif () then {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t} else {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "}";
-    string stmt2 = "if () then {\n"
-                   "\t\twhile () {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "} else {\n"
-                   "\t\tif () then {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t} else {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t}\n"
-                   "}";
-
-    expected.push_back(stmt1);
-    expected.push_back(stmt2);
-
-    REQUIRE(result == expected);
-}
-
 TEST_CASE("Tokenize read") {
-    shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>("");
-    shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sourceCode, "p1");
-    shared_ptr<ReadStatement> readStatement = make_shared<ReadStatement>(procedure1, "v");
-
     string line = "read v";
-    shared_ptr<ReadStatement> result = Tokenizer::tokenizeRead(line, procedure1);
+    shared_ptr<ReadStatement> result = Tokenizer::tokenizeRead(line);
 
-    REQUIRE(result->getVariableName() == readStatement->getVariableName());
-    REQUIRE(result->getParent() == readStatement->getParent());
+    REQUIRE(result->getVariableName() == "v");
 }
 
 TEST_CASE("Tokenize print") {
-    shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>("");
-    shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sourceCode, "p1");
-    shared_ptr<PrintStatement> printStatement = make_shared<PrintStatement>(procedure1, "v");
-
     string line = "print v";
-    shared_ptr<PrintStatement> result = Tokenizer::tokenizePrint(line, procedure1);
+    shared_ptr<PrintStatement> result = Tokenizer::tokenizePrint(line);
 
-    REQUIRE(result->getVariableName() == printStatement->getVariableName());
-    REQUIRE(result->getParent() == printStatement->getParent());
-}
-
-TEST_CASE("Tokenize Statements") {
-    shared_ptr<SourceCode> sourceCode = make_shared<SourceCode>("");
-    shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sourceCode, "p1");
-
-    vector<shared_ptr<Procedure> > procedures;
-    procedures.push_back(procedure1);
-
-    vector<vector<string> > statements;
-    vector<string> stmts1;
-
-    string s1 = "print flag";
-    string s2 = "read flag";
-
-    stmts1.push_back(s1);
-    stmts1.push_back(s2);
-
-    statements.push_back(stmts1);
-
-    vector<shared_ptr<Procedure> > result = Tokenizer::tokenizeStatements(procedures, statements);
-
-    vector<shared_ptr<Procedure> > expected;
-    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(procedure1, "flag");
-    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(procedure1, "flag");
-
-    vector<shared_ptr<Statement> > resultStatements = result[0]->getStatements();
-
-    REQUIRE(resultStatements[0]->getParent() == print1->getParent());
-
-    REQUIRE(resultStatements[1]->getParent() == read1->getParent());
-
-}
-
-TEST_CASE("Tokenize SourceCode") {
-    shared_ptr<SourceCode> srcCode = make_shared<SourceCode>("");
-
-    vector<string> names;
-    string name = "ABC";
-    names.push_back(name);
-    shared_ptr<Procedure> p1 = make_shared<Procedure>(srcCode, name);
-
-    vector<vector<string> > statements;
-    string s1 = "print flag";
-    string s2 = "read flag";
-    vector<string> stmtlst;
-    stmtlst.push_back(s1);
-    stmtlst.push_back(s2);
-    statements.push_back(stmtlst);
-
-    shared_ptr<PrintStatement> print1 = make_shared<PrintStatement>(p1, "flag");
-    shared_ptr<ReadStatement> read1 = make_shared<ReadStatement>(p1, "flag");
-
-    p1->addStatement(print1);
-    p1->addStatement(read1);
-    srcCode->addProcedure(p1);
-
-    shared_ptr<SourceCode> srcCode2 = make_shared<SourceCode>("");
-    srcCode2 = Tokenizer::tokenize(srcCode, names, statements);
-
-    vector<shared_ptr<Procedure> > resultProcLst = srcCode2->getProcedures();
-    vector<shared_ptr<Statement> > resultStmtLst = resultProcLst[0]->getStatements();
-    string resultProcName = resultProcLst[0]->getProcedureName();
-
-    REQUIRE(resultStmtLst[0]->getLineNum() == print1->getLineNum());
-    REQUIRE(resultStmtLst[0]->getParent() == print1->getParent());
-
-    REQUIRE(resultStmtLst[1]->getLineNum() == read1->getLineNum());
-    REQUIRE(resultStmtLst[1]->getParent() == read1->getParent());
-
+    REQUIRE(result->getVariableName() == "v");
 }
 
 TEST_CASE("Tokenize RelFactor - Simple Addition / Subtraction") {
@@ -514,17 +268,9 @@ TEST_CASE("Tokenize RelFactor - Brackets changing priority") {
     REQUIRE(nameExpression->getVarName() == "c");
 }
 
-
-TEST_CASE("Extract Conditional Expression") {
-    string ifStatementStr = "if ((x != 9) && (x <= y))";
-    string expected = "(x != 9) && (x <= y)";
-    string result = Parser::extractConditionalExpr(ifStatementStr);
-    REQUIRE(result == expected);
-}
-
 TEST_CASE("Parse relational expression") {
     string expr1 = "x >= 5";
-    shared_ptr<RelationalExpression> relExpr1 = Parser::parseRelExpr(expr1, nullptr);
+    shared_ptr<RelationalExpression> relExpr1 = Parser::parseRelExpr(expr1);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor1());
     shared_ptr<ConstantExpression> constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr1->getRelFactor2());
     REQUIRE(relExpr1->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
@@ -532,7 +278,7 @@ TEST_CASE("Parse relational expression") {
     REQUIRE(constExpr->getValue() == 5);
 
     string expr2 = "x > y";
-    shared_ptr<RelationalExpression> relExpr2 = Parser::parseRelExpr(expr2, nullptr);
+    shared_ptr<RelationalExpression> relExpr2 = Parser::parseRelExpr(expr2);
     REQUIRE(relExpr2->getOperator() == RelationalOperator::GREATER_THAN);
     nameExpr = dynamic_pointer_cast<NameExpression>(relExpr2->getRelFactor1());
     REQUIRE(nameExpr->getVarName() == "x");
@@ -540,7 +286,7 @@ TEST_CASE("Parse relational expression") {
     REQUIRE(nameExpr->getVarName() == "y");
 
     string expr3 = "x == 5";
-    shared_ptr<RelationalExpression> relExpr3 = Parser::parseRelExpr(expr3, nullptr);
+    shared_ptr<RelationalExpression> relExpr3 = Parser::parseRelExpr(expr3);
     REQUIRE(relExpr3->getOperator() == RelationalOperator::EQUALS);
     nameExpr = dynamic_pointer_cast<NameExpression>(relExpr3->getRelFactor1());
     constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr3->getRelFactor2());
@@ -548,7 +294,7 @@ TEST_CASE("Parse relational expression") {
     REQUIRE(constExpr->getValue() == 5);
 
     string expr4 = "x != (y + 5)";
-    shared_ptr<RelationalExpression> relExpr4 = Parser::parseRelExpr(expr4, nullptr);
+    shared_ptr<RelationalExpression> relExpr4 = Parser::parseRelExpr(expr4);
     REQUIRE(relExpr4->getOperator() == RelationalOperator::NOT_EQUALS);
     nameExpr = dynamic_pointer_cast<NameExpression>(relExpr4->getRelFactor1());
     shared_ptr<OperatedExpression> opExpr = dynamic_pointer_cast<OperatedExpression>(relExpr4->getRelFactor2());
@@ -562,7 +308,7 @@ TEST_CASE("Parse relational expression") {
 
 TEST_CASE("Parse Conditional Expression - Relational Condition") {
     string str = "x <= 5";
-    shared_ptr<RelationalExpression> result = dynamic_pointer_cast<RelationalExpression>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<RelationalExpression> result = dynamic_pointer_cast<RelationalExpression>(Parser::parseCondExpr(str));
     REQUIRE(result->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(result->getRelFactor1());
     REQUIRE(nameExpr->getVarName() == "x");
@@ -572,7 +318,7 @@ TEST_CASE("Parse Conditional Expression - Relational Condition") {
 
 TEST_CASE("Parse Conditional Expression - Relational Condition with Extra bracket") {
     string str = "(x <= 5)";
-    shared_ptr<RelationalExpression> result = dynamic_pointer_cast<RelationalExpression>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<RelationalExpression> result = dynamic_pointer_cast<RelationalExpression>(Parser::parseCondExpr(str));
     REQUIRE(result->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(result->getRelFactor1());
     REQUIRE(nameExpr->getVarName() == "x");
@@ -582,7 +328,7 @@ TEST_CASE("Parse Conditional Expression - Relational Condition with Extra bracke
 
 TEST_CASE("Parse Conditional Expression - Not Condition with Relational Expression") {
     string str = "!(x <= 5)";
-    shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str));
     shared_ptr<RelationalExpression> condExpr = dynamic_pointer_cast<RelationalExpression>(result->getConditionalExpression());
     REQUIRE(condExpr->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(condExpr->getRelFactor1());
@@ -593,7 +339,7 @@ TEST_CASE("Parse Conditional Expression - Not Condition with Relational Expressi
 
 TEST_CASE("Parse Conditional Expression - Not Condition with nested Or conditional expression") {
     string str = "!((x <= 5) || (x == 10))";
-    shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str));
     shared_ptr<OrCondition> orExpr = dynamic_pointer_cast<OrCondition>(result->getConditionalExpression());
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(orExpr->getConditionalExpression1());
     shared_ptr<RelationalExpression> relExpr2 = dynamic_pointer_cast<RelationalExpression>(orExpr->getConditionalExpression2());
@@ -613,7 +359,7 @@ TEST_CASE("Parse Conditional Expression - Not Condition with nested Or condition
 
 TEST_CASE("Parse conditional expression - Nested conditional expressions") {
     string str = "((x < y) || (x == y)) && !(x > 3)";
-    shared_ptr<AndCondition> result = dynamic_pointer_cast<AndCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<AndCondition> result = dynamic_pointer_cast<AndCondition>(Parser::parseCondExpr(str));
     shared_ptr<OrCondition> orCond = dynamic_pointer_cast<OrCondition>(result->getConditionalExpression1());
 
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(orCond->getConditionalExpression1());
@@ -641,7 +387,7 @@ TEST_CASE("Parse conditional expression - Nested conditional expressions") {
 
 TEST_CASE("Parse conditional with nested Not") {
     string str = "(x > y) || !(x == 5)";
-    shared_ptr<OrCondition> orCond = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<OrCondition> orCond = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(str));
     shared_ptr<RelationalExpression> rel1 = dynamic_pointer_cast<RelationalExpression>(orCond->getConditionalExpression1());
     shared_ptr<NotCondition> notExpr = dynamic_pointer_cast<NotCondition>(orCond->getConditionalExpression2());
 
@@ -661,7 +407,7 @@ TEST_CASE("Parse conditional with nested Not") {
 
 TEST_CASE("Parse complex nested conditional") {
     string str = "!((x > 5) && (x < (y + 3))) || ((x==3) && (y!=1))";
-    shared_ptr<OrCondition> orCondition = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<OrCondition> orCondition = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(str));
     shared_ptr<NotCondition> notCondition = dynamic_pointer_cast<NotCondition>(orCondition->getConditionalExpression1());
     shared_ptr<AndCondition> andCondition = dynamic_pointer_cast<AndCondition>(notCondition->getConditionalExpression());
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(andCondition->getConditionalExpression1());
@@ -696,7 +442,7 @@ TEST_CASE("Parse complex nested conditional") {
 
 TEST_CASE("Nested not relational expression") {
     string str = "((x==3) && (y!=1))";
-    shared_ptr<AndCondition> andCondition = dynamic_pointer_cast<AndCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<AndCondition> andCondition = dynamic_pointer_cast<AndCondition>(Parser::parseCondExpr(str));
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(andCondition->getConditionalExpression1());
     REQUIRE(relExpr1->getOperator() == RelationalOperator::EQUALS);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor1());
@@ -713,7 +459,7 @@ TEST_CASE("Nested not relational expression") {
 
 TEST_CASE("Not relational expr") {
     string str = "!(y!=1)";
-    shared_ptr<NotCondition> notCondition = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<NotCondition> notCondition = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str));
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(notCondition->getConditionalExpression());
     REQUIRE(relExpr1->getOperator() == RelationalOperator::NOT_EQUALS);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor1());
@@ -724,7 +470,7 @@ TEST_CASE("Not relational expr") {
 
 TEST_CASE("Extra brackets") {
     string str = "((!((x <= 5))))";
-    shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str));
     shared_ptr<RelationalExpression> condExpr = dynamic_pointer_cast<RelationalExpression>(result->getConditionalExpression());
     REQUIRE(condExpr->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(condExpr->getRelFactor1());
@@ -746,13 +492,13 @@ TEST_CASE("Parse statement") {
                    "\t\tread x;\n"
                    "\t\t}\n";
 
-    shared_ptr<PrintStatement> printStmt = dynamic_pointer_cast<PrintStatement>(Parser::parseStatement(stmt1, nullptr));
+    shared_ptr<PrintStatement> printStmt = dynamic_pointer_cast<PrintStatement>(Parser::parseStatement(stmt1));
     REQUIRE(printStmt->getVariableName() == "x");
 
-    shared_ptr<ReadStatement> readStatement = dynamic_pointer_cast<ReadStatement>(Parser::parseStatement(stmt2, nullptr));
+    shared_ptr<ReadStatement> readStatement = dynamic_pointer_cast<ReadStatement>(Parser::parseStatement(stmt2));
     REQUIRE(readStatement->getVariableName() == "x");
 
-    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(Parser::parseStatement(stmt3, nullptr));
+    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(Parser::parseStatement(stmt3));
     shared_ptr<NotCondition> condExpr = dynamic_pointer_cast<NotCondition>(ifStatement->getConditionalExpression());
     shared_ptr<RelationalExpression> relExpr = dynamic_pointer_cast<RelationalExpression>(condExpr->getConditionalExpression());
     REQUIRE(relExpr->getOperator() == RelationalOperator::EQUALS);
@@ -765,7 +511,7 @@ TEST_CASE("Parse statement") {
     printStmt = dynamic_pointer_cast<PrintStatement>((ifStatement->getElseStatements())[0]);
     REQUIRE(printStmt->getVariableName() == "x");
 
-    shared_ptr<WhileStatement> whileStatement = dynamic_pointer_cast<WhileStatement>(Parser::parseStatement(stmt4, nullptr));
+    shared_ptr<WhileStatement> whileStatement = dynamic_pointer_cast<WhileStatement>(Parser::parseStatement(stmt4));
     relExpr = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
     REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
     nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
@@ -787,7 +533,7 @@ TEST_CASE("Extract Relational Conditional Expression") {
 
 TEST_CASE("Parse complex relational expression conditional - 2") {
     string str = "1>= 1%((1))";
-    shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(str, nullptr);
+    shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(str);
     REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
     shared_ptr<ConstantExpression> relFact1 = dynamic_pointer_cast<ConstantExpression>(relExpr->getRelFactor1());
     REQUIRE(relFact1->getValue() == 1);
@@ -815,7 +561,7 @@ TEST_CASE("Extract Relational Conditional Expression- 3") {
 
 TEST_CASE("Parse complex conditional expression - 3") {
     string str = "! ((1==0) && (1==0))";
-    shared_ptr<NotCondition> notCond = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str, nullptr));
+    shared_ptr<NotCondition> notCond = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str));
     shared_ptr<AndCondition> andCond = dynamic_pointer_cast<AndCondition>(notCond->getConditionalExpression());
 
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(andCond->getConditionalExpression1());
@@ -835,7 +581,7 @@ TEST_CASE("Parse complex conditional expression - 3") {
 
 TEST_CASE("Parse complex conditional -4") {
     string source6 = "(1 >= x ) || (!(procedure == 2147483647))";
-    shared_ptr<OrCondition> orCondition = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(source6, nullptr));
+    shared_ptr<OrCondition> orCondition = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(source6));
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(orCondition->getConditionalExpression1());
     REQUIRE(relExpr1->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
     shared_ptr<ConstantExpression> constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr1->getRelFactor1());
@@ -854,28 +600,28 @@ TEST_CASE("Syntax Error for missing else block for if statement") {
     string str = "if (!(x == y)) then {\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for missing then keyword for if statement") {
     string str = "if (!(x == y)) {\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid conditional, missing condition") {
     string str = "while (!(x == y) && ) {\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid conditional, extra bracket") {
     string str = "while (!(x == y))) {\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid statement, missing semicolon") {
@@ -890,45 +636,45 @@ TEST_CASE("Syntax Error for invalid nested statement, missing semicolon") {
     string str = "while (x == 0) {\n"
                  "\t\t\t\tread x\n"
                  "\t\t}";
-    REQUIRE_THROWS_AS(Parser::parseWhile(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseWhile(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid syntax, extra } bracket") {
     string str = "while (!(x == y)) {\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}}";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid syntax, extra { bracket") {
     string str = "while (!(x == y)) {{\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid syntax, missing } bracket") {
     string str = "while (x<1) {\n"
                  "\t\t\t\tread x;\n";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid syntax, missing { bracket") {
     string str = "while (x<1) \n"
                  "\t\t\t\tread x;}\n";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid syntax, missing { bracket in if stmt") {
     string str = "if (x>y) then \n"
                  "\t\t\t\tread x;}\n";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Syntax Error for invalid syntax, missing { bracket in while stmt") {
     string str = "while (x>y) \n"
                  "\t\t\t\tread x;}\n";
-    REQUIRE_THROWS_AS(Parser::parseStatement(str, nullptr), InvalidSyntaxException);
+    REQUIRE_THROWS_AS(Parser::parseStatement(str), InvalidSyntaxException);
 }
 
 TEST_CASE("Nested if block") {
@@ -943,8 +689,8 @@ TEST_CASE("Nested if block") {
                  "else{\n"
                  "x=1;\n"
                  "}\n";
-    shared_ptr<IfStatement> ifStatement = Parser::parseIfElse(str, nullptr);
-    REQUIRE_NOTHROW(Parser::parseIfElse(str, nullptr));
+    shared_ptr<IfStatement> ifStatement = Parser::parseIfElse(str);
+    REQUIRE_NOTHROW(Parser::parseIfElse(str));
     shared_ptr<RelationalExpression> relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
     REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN);
     shared_ptr<NameExpression> nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
@@ -981,7 +727,7 @@ TEST_CASE("Parse if else statement") {
                    "\t\t\t\tprint x;\n"
                    "\t\t}";
 
-    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(Parser::parseStatement(stmt3, nullptr));
+    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(Parser::parseStatement(stmt3));
     shared_ptr<NotCondition> condExpr = dynamic_pointer_cast<NotCondition>(ifStatement->getConditionalExpression());
     shared_ptr<RelationalExpression> relExpr = dynamic_pointer_cast<RelationalExpression>(condExpr->getConditionalExpression());
     REQUIRE(relExpr->getOperator() == RelationalOperator::EQUALS);
@@ -1009,7 +755,7 @@ TEST_CASE("Parse procedure with nested if else") {
                  "x=1;\n"
                  "}\n"
                  "}";
-    shared_ptr<Procedure> procedure = Parser::parseProcedure(str, nullptr);
+    shared_ptr<Procedure> procedure = Parser::parseProcedure(str);
     REQUIRE(procedure->getProcedureName() == "Main");
     shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(procedure->getStatements()[0]);
     shared_ptr<RelationalExpression> relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
@@ -1043,25 +789,16 @@ TEST_CASE("Parse procedure with nested if else") {
 
 TEST_CASE("Tokenize Call - 1") {
     string rawCallStatement = "call monster";
-    shared_ptr<CallStatement> callStatement = Tokenizer::tokenizeCall(rawCallStatement, nullptr);
+    shared_ptr<CallStatement> callStatement = Tokenizer::tokenizeCall(rawCallStatement);
     REQUIRE(callStatement->getProcedureName() == "monster");
 }
 
 TEST_CASE("RelationalFactor Generate String") {
     string rawRelFactor = "a%b-c/d+e%f*g+h-i";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
-    REQUIRE(relFactor->generateString() == "(((((a % b) - (c / d)) + ((e % f) * g)) + h) - i)");
+    REQUIRE(relFactor->generateString() == "((((((a) % (b)) - ((c) / (d))) + (((e) % (f)) * (g))) + (h)) - (i))");
 
     rawRelFactor = "(a + b) * (3 + (x * 3 * 2 % ((1-2) / q)) + 9)";
     relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
-    REQUIRE(relFactor->generateString() == "((a + b) * ((3 + (((x * 3) * 2) % ((1 - 2) / q))) + 9))");
+    REQUIRE(relFactor->generateString() == "(((a) + (b)) * (((3) + ((((x) * (3)) * (2)) % (((1) - (2)) / (q)))) + (9)))");
 }
-
-
-
-
-
-
-
-
-

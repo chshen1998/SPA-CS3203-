@@ -47,7 +47,7 @@ void ExtractFollowsASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
         }
         int followeeLineNum = statements[index]->getLineNum();
         int followerLineNum = statements[index + 1]->getLineNum();
-        this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
+        this->storage->storeRelation(followeeLineNum, followerLineNum, FOLLOWS);
     }
 
     // iterate statements
@@ -98,7 +98,7 @@ void ExtractFollowsASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> wh
     for (int index = 0; index < (int) statements.size() - 1; index++) {
         int followeeLineNum = statements[index]->getLineNum();
         int followerLineNum = statements[index + 1]->getLineNum();
-        this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
+        this->storage->storeRelation(followeeLineNum, followerLineNum, FOLLOWS);
     }
 
     for (auto statement: statements) {
@@ -119,7 +119,7 @@ void ExtractFollowsASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
     for (int index = 0; index < (int) thenStmts.size() - 1; index++) {
         int followeeLineNum = thenStmts[index]->getLineNum();
         int followerLineNum = thenStmts[index + 1]->getLineNum();
-        this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
+        this->storage->storeRelation(followeeLineNum, followerLineNum, FOLLOWS);
     }
 
     for (auto statement: thenStmts) {
@@ -134,7 +134,7 @@ void ExtractFollowsASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
     for (int index = 0; index < (int) elseStmts.size() - 1; index++) {
         int followeeLineNum = elseStmts[index]->getLineNum();
         int followerLineNum = elseStmts[index + 1]->getLineNum();
-        this->storage->storeRelation(followeeLineNum, followerLineNum, true, FOLLOWS);
+        this->storage->storeRelation(followeeLineNum, followerLineNum, FOLLOWS);
     }
 
     for (auto statement: elseStmts) {

@@ -3,7 +3,7 @@ import sys
 import shutil
 from pathlib import Path
 
-AUTOTESTER_PATH = Path("../Code37/cmake-build-debug/src/autotester/autotester")
+AUTOTESTER_PATH = Path("../Code37/cmake-build-release/src/autotester/autotester")
 
 if sys.platform == "win32":
     AUTOTESTER_PATH = Path("../Code37/out/build/x64-Release/src/autotester/autotester")

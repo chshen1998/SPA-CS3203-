@@ -54,7 +54,7 @@ bool Utils::validateName(string varName) {
         return false;
     }
 
-    varName.erase(0);
+    varName = varName.erase(0, 1);
 
     for (char& c: varName)  {
         if (!(isalpha(c) || isdigit(c))) {

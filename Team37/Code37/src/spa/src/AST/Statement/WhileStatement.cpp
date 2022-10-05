@@ -36,7 +36,18 @@ shared_ptr<CFGNode> WhileStatement::buildCFG(vector<shared_ptr<CFGNode> > parent
         newParents.push_back(cfgNode);
     }
     // link last cfg node back to while node
-    cfgNode->addChild(whileNode);
+    cfgNode->addChild(whileNode); // child 0 of cfg node is while node
     whileNode->addParent(cfgNode);
-    return whileNode;
+
+    // create dummy node to continue from while node and last statement in while loop
+    vector<shared_ptr<CFGNode> > dummyParents;
+    shared_ptr<CFGNode> dummyNode = make_shared<CFGNode>(nullptr, dummyParents);
+    cfgNode->addChild(dummyNode); //child 1 of cfg node is dummy node
+    dummyNode->addParent(cfgNode); //dummy node parents[0] is cfg node before it
+    whileNode->addChild(dummyNode);
+    dummyNode->addParent(whileNode); //dummy node parents[1] is while node
+
+    //store while statement in dummy node
+    dummyNode->setStmtToStore(whileNode);
+    return dummyNode;
 }

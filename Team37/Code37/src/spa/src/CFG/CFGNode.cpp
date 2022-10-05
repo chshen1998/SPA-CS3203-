@@ -35,3 +35,11 @@ shared_ptr<TNode> CFGNode::getTNode() {
 void CFGNode::setAsVisited() {
     visited = 1;
 }
+
+void CFGNode::setStmtToStore(shared_ptr<CFGNode> stmt) {
+    stmtToStore = stmt;
+}
+
+shared_ptr<CFGNode> CFGNode::getStoredStmt() {
+    return stmtToStore;
+}

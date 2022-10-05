@@ -24,14 +24,23 @@ void Procedure::buildCFG(string procName) {
 
     // set first statement as start node of CFG
     vector<shared_ptr<Statement> > stmtLst = this->getStatements();
-    shared_ptr<CFGNode> startNode = make_shared<CFGNode>(stmtLst[0], parents);
+    shared_ptr<CFGNode> firstNode = stmtLst[0]->buildCFG(parents);
+    shared_ptr<CFGNode> startNode;
+
+    // check if firstNode is a dummy node, as while or if buildCFG returns a dummy node
+    if (firstNode->getTNode() == nullptr) {
+        // get the stored while or if cfg node
+        startNode = firstNode->getStoredStmt();
+    } else {
+        startNode = firstNode;
+    }
 
     // remove first statement from stmtLst
     stmtLst.erase(stmtLst.begin());
 
-    // reset parents of next node to startNode
+    // reset parents of next node to firstNode
     parents.clear();
-    parents.push_back(startNode);
+    parents.push_back(firstNode);
 
     for (auto s : stmtLst) {
         shared_ptr<CFGNode> cfgNode = s->buildCFG(parents);

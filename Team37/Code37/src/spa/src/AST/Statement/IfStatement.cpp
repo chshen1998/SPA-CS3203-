@@ -64,5 +64,7 @@ shared_ptr<CFGNode> IfStatement::buildCFG(vector<shared_ptr<CFGNode> > parents) 
     cfgNode->addChild(dummyNode);
     dummyNode->addParent(cfgNode);
 
+    // store if statement node in dummy node
+    dummyNode->setStmtToStore(ifNode);
     return dummyNode;
 }

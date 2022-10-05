@@ -12,6 +12,7 @@ using namespace std;
 
 class CFGNode : public enable_shared_from_this<CFGNode> {
 private:
+    shared_ptr<CFGNode> stmtToStore = nullptr;
     vector<shared_ptr<CFGNode>> parents = {};
     vector<shared_ptr<CFGNode>> children = {};
     shared_ptr<TNode> tNode = nullptr;
@@ -67,6 +68,19 @@ public:
      * Flags the CFGNode as visited
      */
     void setAsVisited();
+
+    /**
+     * Stores a while or if statement when needed as building a cfg node
+     * for a while or if statement returns a dummy node
+     * @param stmt while or if statement to store
+     */
+    void setStmtToStore(shared_ptr<CFGNode> stmt);
+
+    /**
+     * Gets the stored while or if statement
+     * @return the stored while or if statement
+     */
+    shared_ptr<CFGNode> getStoredStmt();
 
 };
 

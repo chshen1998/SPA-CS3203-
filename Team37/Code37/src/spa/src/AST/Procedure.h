@@ -48,7 +48,7 @@ public:
      */
     shared_ptr<CFG> getCFG();
 
-    void buildCFG(shared_ptr<TNode> tnode);
+    void buildCFG(shared_ptr<TNode> tnode, string procName);
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 

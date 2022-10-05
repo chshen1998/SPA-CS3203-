@@ -18,8 +18,9 @@ shared_ptr<CFG> Procedure::getCFG() {
     return this->cfg;
 }
 
-void Procedure::buildCFG(shared_ptr<TNode> tNode) {
+void Procedure::buildCFG(shared_ptr<TNode> tNode, string procName) {
     if (this->cfg->getStartNode() == nullptr) {
+        this->cfg->setName(procName);
         vector<shared_ptr<CFGNode>> parents = {};
         this->cfg->setStartNode(make_shared<CFGNode>(tNode, parents));
     } else {

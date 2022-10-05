@@ -10,10 +10,13 @@ using namespace std;
 
 class CFG {
 private:
+    string procName = "";
     shared_ptr<CFGNode> startNode = nullptr;
     vector<shared_ptr<CFGNode>> endNodes = {};
 public:
     CFG(shared_ptr<CFGNode> startNode);
+
+    void setName(string name);
 
     /**
      * Gets the start CFGNode that is associated to the first TNode

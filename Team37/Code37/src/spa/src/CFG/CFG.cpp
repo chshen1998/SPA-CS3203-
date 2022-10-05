@@ -2,6 +2,10 @@
 
 CFG::CFG(shared_ptr<CFGNode> startNode) : startNode(startNode) {}
 
+void CFG::setName(string name) {
+    procName = name;
+}
+
 shared_ptr<CFGNode> CFG::getStartNode() {
     return startNode;
 }

@@ -79,10 +79,12 @@ string Parser::extractProcName(string procedure) {
         throw InvalidSyntaxException((char *) "Did you forget brackets in your procedure?");
     }
 
+    procedureName = Utils::trim(procedureName);
+
     if (!Utils::validateName(procedureName)) {
         throw InvalidSyntaxException((char *) "Procedure name is invalid");
     }
-    return Utils::trim(procedureName);
+    return procedureName;
 }
 
 // TODO: cannot parse variables that contain "if" or "while" as the first 5 characters

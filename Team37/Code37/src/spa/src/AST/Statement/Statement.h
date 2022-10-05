@@ -6,6 +6,7 @@
 using namespace std;
 
 #include "AST/TNode.h"
+#include "CFG/CFG.h"
 
 #include <string>
 #include <memory>
@@ -44,5 +45,12 @@ public:
      static void resetLineNumCount() {
          lineNumCount = 1;
      }
+
+     /**
+      * Builds on to the CFG by adding the statement to the CFG as a CFGNode
+      * @param parents parent CFGNodes of the statement
+      * @return CFGNode for the statement
+      */
+     virtual shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode>> parents) = 0;
 };
 #endif //TEAM37_STATEMENT_H

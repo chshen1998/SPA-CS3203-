@@ -57,7 +57,7 @@ public:
      * Gets all the CFG associated with each procedure in the source code.
      * @return vector containing all CFGs in the program
      */
-    vector<shared_ptr<CFG>> getAllCFGs();
+    vector<shared_ptr<CFG> > getAllCFGs();
 
     bool operator==(const SourceCode &other) {
         return procedureLst == other.procedureLst && filename == other.filename;

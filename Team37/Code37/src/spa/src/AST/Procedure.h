@@ -16,7 +16,7 @@ class Procedure : public TNode, public enable_shared_from_this<Procedure> {
 private:
     string procedureName = "";
     vector<shared_ptr<Statement> > stmtLst = {};
-    shared_ptr<CFG> cfg = make_shared<CFG>(nullptr);
+    shared_ptr<CFG> cfg = nullptr;
 public:
     Procedure(shared_ptr<TNode> parent, string procedureName);
 
@@ -48,7 +48,11 @@ public:
      */
     shared_ptr<CFG> getCFG();
 
-    void buildCFG(shared_ptr<TNode> tnode, string procName);
+    /**
+     * Builds the CFG for the procedure
+     * @param procName Name of the procedure
+     */
+    void buildCFG(string procName);
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 

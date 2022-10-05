@@ -18,18 +18,27 @@ shared_ptr<CFG> Procedure::getCFG() {
     return this->cfg;
 }
 
-void Procedure::buildCFG(shared_ptr<TNode> tNode, string procName) {
-    if (this->cfg->getStartNode() == nullptr) {
-        this->cfg->setName(procName);
-        vector<shared_ptr<CFGNode>> parents = {};
-        this->cfg->setStartNode(make_shared<CFGNode>(tNode, parents));
-    } else {
-        vector<shared_ptr<CFGNode>> parents = this->cfg->getEndNodes();
-        vector<shared_ptr<CFGNode>> newEndNodes;
-        shared_ptr<CFGNode> newEndNode = make_shared<CFGNode>(tNode, parents);
-        newEndNodes.push_back(newEndNode);
-        this->cfg->setEndNodes(newEndNodes);
+void Procedure::buildCFG(string procName) {
+    // start node does not have any parents
+    vector<shared_ptr<CFGNode> > parents = {};
+
+    // set first statement as start node of CFG
+    vector<shared_ptr<Statement> > stmtLst = this->getStatements();
+    shared_ptr<CFGNode> startNode = make_shared<CFGNode>(stmtLst[0], parents);
+
+    // remove first statement from stmtLst
+    stmtLst.erase(stmtLst.begin());
+
+    // reset parents of next node to startNode
+    parents.clear();
+    parents.push_back(startNode);
+
+    for (auto s: stmtLst) { //todo statement list is all statements irregardless of nesting level???
+        shared_ptr<CFGNode> cfgNode = s->buildCFG(parents);
+        parents.clear();
+        parents.push_back(cfgNode);
     }
+    this->cfg = make_shared<CFG>(startNode, procName);
 }
 
 void Procedure::accept(shared_ptr<ASTVisitor> visitor) {

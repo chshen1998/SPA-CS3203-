@@ -12,11 +12,14 @@ class CFG {
 private:
     string procName = "";
     shared_ptr<CFGNode> startNode = nullptr;
-    vector<shared_ptr<CFGNode>> endNodes = {};
 public:
-    CFG(shared_ptr<CFGNode> startNode);
+    CFG(shared_ptr<CFGNode> startNode, string procName);
 
-    void setName(string name);
+    /**
+     * Gets the name of the procedure associated with the CFG
+     * @return name of the procedure associated with the CFG
+     */
+    string getName();
 
     /**
      * Gets the start CFGNode that is associated to the first TNode
@@ -30,33 +33,6 @@ public:
      * @param newStartNode new start node to set
      */
     void setStartNode(shared_ptr<CFGNode> newStartNode);
-
-    /**
-     * Gets all the end CFGNodes in the CFG,
-     * as there could be more than 1 end node e.g. in if-else
-     * @return the end CFGNode of the CFG
-     */
-    vector<shared_ptr<CFGNode>> getEndNodes();
-
-    /**
-     * Gets a specific end node by the index
-     * @param i index of the end node
-     * @return the end CFGNode
-     */
-    shared_ptr<CFGNode> getEndNode(int i);
-
-    /**
-     * Adds an end node of the CFG
-     * @param newEndNode the end node to add
-     */
-    void addEndNode(shared_ptr<CFGNode> newEndNode);
-
-    /**
-     * Resets the end nodes and sets new end nodes
-     * @param newEndNodes new end nodes to set
-     */
-    void setEndNodes(vector<shared_ptr<CFGNode>> newEndNodes);
-
 
 };
 

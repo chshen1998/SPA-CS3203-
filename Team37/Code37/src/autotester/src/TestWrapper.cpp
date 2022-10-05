@@ -27,6 +27,7 @@ TestWrapper::~TestWrapper() {
 void TestWrapper::parse(string filename) {
     try {
         shared_ptr<SourceCode> AST = SP::parse(filename);
+        vector<shared_ptr<CFG> > cfgLst = AST->getAllCFGs();
         knowledgeBase->buildFromAst(AST);
         queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
     } catch (InvalidSyntaxException e){

@@ -33,7 +33,7 @@ void Procedure::buildCFG(string procName) {
     parents.clear();
     parents.push_back(startNode);
 
-    for (auto s: stmtLst) { //todo statement list is all statements irregardless of nesting level???
+    for (auto s : stmtLst) {
         shared_ptr<CFGNode> cfgNode = s->buildCFG(parents);
         parents.clear();
         parents.push_back(cfgNode);

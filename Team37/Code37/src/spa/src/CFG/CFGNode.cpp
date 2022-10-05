@@ -16,7 +16,7 @@ shared_ptr<CFGNode> CFGNode::getChild(int i) {
     return children[i];
 }
 
-void CFGNode::setParent(shared_ptr<CFGNode> newParent) {
+void CFGNode::addParent(shared_ptr<CFGNode> newParent) {
     parents.push_back(newParent);
 }
 

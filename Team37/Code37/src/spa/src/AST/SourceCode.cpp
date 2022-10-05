@@ -29,7 +29,7 @@ void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
 
 vector<shared_ptr<CFG> > SourceCode::getAllCFGs() {
     vector<shared_ptr<CFG>> CFGLst;
-    for (auto p: this->procedureLst) {
+    for (auto p : this->procedureLst) {
         p->buildCFG(p->getProcedureName());
         CFGLst.push_back(p->getCFG());
     }

@@ -43,7 +43,7 @@ public:
      * Sets the parent of the CFGNode to newParent
      * @param newParent the new parent of the CFGNode
      */
-    void setParent(shared_ptr<CFGNode> newParent);
+    void addParent(shared_ptr<CFGNode> newParent);
 
     /**
      * Adds a child to the CFGNode

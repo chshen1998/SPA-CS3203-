@@ -3,10 +3,23 @@ using namespace std;
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <set>
 #include <iostream>
 
 #include "../Types/TokenType.h"
 #include "PqlToken.h"
+
+set<TokenType> suchThatStmtRefStmtRef = {
+    TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A
+};
+
+set<TokenType> suchThatStmtRefVarRef = {
+    TokenType::USES, TokenType::MODIFIES
+};
+
+set<TokenType> suchThatProcRefVarRef = {
+    TokenType::USES_P, TokenType::MODIFIES_P
+};
 
 std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     string typeString = "unknown";
@@ -53,6 +66,7 @@ std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     case(TokenType::SEMICOLON): typeString = "semicolon"; break;
     case(TokenType::COMMA): typeString = "comma"; break;
     case(TokenType::DOT): typeString = "dot"; break;
+    case(TokenType::EQUAL): typeString = "equal"; break;
     case(TokenType::OPEN_BRACKET): typeString = "open_bracket"; break;
     case(TokenType::CLOSED_BRACKET): typeString = "closed_bracket"; break;
     case(TokenType::OPEN_ARROW): typeString = "open_arrow"; break;

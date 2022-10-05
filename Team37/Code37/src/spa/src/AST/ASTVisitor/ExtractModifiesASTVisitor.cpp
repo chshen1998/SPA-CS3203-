@@ -75,7 +75,25 @@ void ExtractModifiesASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> p
  * @param callStmt
  */
 void ExtractModifiesASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt) {
-    //TODO
+    string calledProcedureName = callStmt->getProcedureName();
+    int lineNum = callStmt->getLineNum();
+    vector<string> storedVariablesInProcedure = this->storage->forwardRetrieveRelation(calledProcedureName, MODIFIESPV);
+
+    /**
+     * if procedure called has been traversed before,
+     * we add relationships from the storage with Modifies(calledProcedureName,v)
+     */
+    if (!storedVariablesInProcedure.empty()) {
+        for (const auto &variable: storedVariablesInProcedure) {
+            // store Modifies(c,v)
+            this->storage->storeRelation(lineNum, variable, MODIFIESSV);
+        }
+        // if procedure called has not been traversed yet, we add them to a queue
+    } else {
+        string parentProcedureName = dynamic_pointer_cast<Procedure>(callStmt->getParent())->getProcedureName();
+        tuple<int, string, string> lineNumProcedureTuple(lineNum, parentProcedureName, calledProcedureName);
+        this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
+    }
 }
 
 /**
@@ -227,12 +245,9 @@ void ExtractModifiesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, stri
             this->storage->storeRelation(whileStmt->getLineNum(), variable, MODIFIESSV);
         }
 
-        // TODO: Procedure Statement: Modifies(p, v)
         if (dynamic_pointer_cast<Procedure>(node) != nullptr) {
-        }
-
-        // Call Statement: Modifies(c, v)
-        if (dynamic_pointer_cast<CallStatement>(node) != nullptr) {
+            shared_ptr<Procedure> procedure = dynamic_pointer_cast<Procedure>(node);
+            this->storage->storeRelation(procedure->getProcedureName(), variable, MODIFIESPV);
         }
 
         // traverse upwards

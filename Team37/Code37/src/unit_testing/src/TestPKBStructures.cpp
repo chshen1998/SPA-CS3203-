@@ -2,12 +2,12 @@
 
 using namespace std;
 
-#include "PKB/Structures/Array2D.h"
-#include "PKB/Structures/StatementVariableStorage.h"
-#include "PKB/Structures/ProcedureVariableStorage.h"
+#include "PKB/Structures/RelationStorage.h"
+#include "PKB/Structures/RelationStarStorage.h"
 
-TEST_CASE("Structure - Matrix") {
-    Array2D matrix = Array2D(2);
+
+TEST_CASE("Structure - Statement-Statement Star") {
+    RelationStarStorage<int, int> matrix = RelationStarStorage<int, int>();
 
     // Check initial matrix is empty
     REQUIRE(matrix.retrieve(1, 1) == false);
@@ -16,8 +16,8 @@ TEST_CASE("Structure - Matrix") {
     REQUIRE(matrix.retrieve(2, 2) == false);
 
     // Check Store and retrieve
-    matrix.store(1, 1, true);
-    matrix.store(2, 2, true);
+    matrix.store(1, 1);
+    matrix.store(2, 2);
 
     REQUIRE(matrix.retrieve(1, 1) == true);
     REQUIRE(matrix.retrieve(2, 1) == false);
@@ -41,25 +41,25 @@ TEST_CASE("Structure - Matrix") {
     REQUIRE(col_1 == cmp_1);
 
     // Test build star
-    Array2D testStarMatrix = Array2D(3);
-    testStarMatrix.store(1, 2, true);
-    testStarMatrix.store(2, 3, true);
+    RelationStarStorage<int, int> testStarMatrix = RelationStarStorage<int, int>();
+    testStarMatrix.store(1, 2);
+    testStarMatrix.store(2, 3);
 
     vector<int> cmp_star_1{ 2, 3 };
     vector<int> cmp_star_2{ 3 };
     vector<int> cmp_star_3{};
 
-    Array2D starMatrix = testStarMatrix.buildStar();
+    RelationStarStorage<int, int> starMatrix = testStarMatrix.buildStar();
 
     REQUIRE(starMatrix.forwardRetrieve(1) == cmp_star_1);
     REQUIRE(starMatrix.forwardRetrieve(2) == cmp_star_2);
     REQUIRE(starMatrix.forwardRetrieve(3) == cmp_star_3);
 
     // Test loop in build star terminates
-    Array2D testStarMatrixLoop = Array2D(2);
-    testStarMatrixLoop.store(1, 2, true);
-    testStarMatrixLoop.store(2, 1, true);
-    Array2D StarMatrixLoop = testStarMatrixLoop.buildStar();
+    RelationStarStorage<int, int> testStarMatrixLoop = RelationStarStorage<int, int>();
+    testStarMatrixLoop.store(1, 2);
+    testStarMatrixLoop.store(2, 1);
+    RelationStarStorage<int, int> StarMatrixLoop = testStarMatrixLoop.buildStar();
 
     REQUIRE(StarMatrixLoop.retrieve(1, 2));
     REQUIRE(StarMatrixLoop.retrieve(1, 1));
@@ -67,8 +67,8 @@ TEST_CASE("Structure - Matrix") {
     REQUIRE(StarMatrixLoop.retrieve(2, 2));
 }
 
-TEST_CASE("Structure - StatementVariableStorage") {
-    StatementVariableStorage store = StatementVariableStorage();
+TEST_CASE("Structure - Statement-Variable") {
+    RelationStorage<int, string> store = RelationStorage<int, string>();
 
     // Initally Empty
     REQUIRE(!store.retrieve(1, "x"));
@@ -102,8 +102,8 @@ TEST_CASE("Structure - StatementVariableStorage") {
     REQUIRE(store.reverseRetrieve("z") == cmp_z);
 }
 
-TEST_CASE("Structure - ProcedureVariableStorage") {
-    ProcedureVariableStorage store = ProcedureVariableStorage();
+TEST_CASE("Structure - Procedure - Variable") {
+    RelationStorage<string, string> store = RelationStorage<string, string>();
 
     // Initally Empty
     REQUIRE(!store.retrieve("main", "x"));

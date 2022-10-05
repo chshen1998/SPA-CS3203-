@@ -43,7 +43,7 @@ void QPS::evaluate(string query, list<string>& results) {
     } catch (SyntaxError pe)
     {
         results.push_back("Syntax Error");
-        cout << pe.message;
+        //cout << pe.message;
         return;
     } 
     
@@ -59,7 +59,18 @@ void QPS::evaluate(string query, list<string>& results) {
     }
 
     QueryExtractor extractor(tokens);
-    PqlQuery pq = extractor.extractSemantics();
+    PqlQuery pq;
+    try
+    {
+        pq = extractor.extractSemantics();
+    }
+    catch (SemanticError pe)
+    {
+        results.push_back("Semantic Error");
+        cout << pe.message;
+        return;
+    }
+
 
 
     QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);

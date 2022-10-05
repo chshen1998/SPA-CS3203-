@@ -174,8 +174,8 @@ TEST_CASE("Storage - Stmt-Stmt Relation") {
     REQUIRE(!store->retrieveRelation(1, 3, FOLLOWS));
 
     // Parent
-    store->storeRelation(1, 2, true, PARENT);
-    store->storeRelation(2, 3, true, PARENT);
+    store->storeRelation(1, 2, PARENT);
+    store->storeRelation(2, 3, PARENT);
 
     vector<int> cmp_1{2};
     vector<int> cmp_2{3};
@@ -202,8 +202,8 @@ TEST_CASE("Storage - Stmt-Stmt Relation") {
     REQUIRE(store->forwardRetrieveRelation(3, PARENTS) == cmp_star_3);
 
     // Follows
-    store->storeRelation(1, 2, true, FOLLOWS);
-    store->storeRelation(2, 3, true, FOLLOWS);
+    store->storeRelation(1, 2, FOLLOWS);
+    store->storeRelation(2, 3, FOLLOWS);
 
     cmp_1 = {2};
     cmp_2 = {3};
@@ -347,5 +347,40 @@ TEST_CASE("Storage - Proc-Var Relation") {
     REQUIRE(store->reverseRetrieveRelation("x", MODIFIESPV) == cmp_x);
     REQUIRE(store->reverseRetrieveRelation("y", MODIFIESPV) == cmp_y);
     REQUIRE(store->reverseRetrieveRelation("z", MODIFIESPV) == cmp_z);
+
+}
+
+TEST_CASE("Storage - Proc-Proc Relation") {
+    shared_ptr<Storage> store = make_shared<Storage>();
+
+    shared_ptr<SourceCode> AST = make_shared<SourceCode>("../../../Test37/easy.txt");
+    AST->setNumOfStatements(3);
+    store->storeAST(AST);
+
+    // Initally Empty
+    REQUIRE(!store->retrieveRelation("x", "y", CALLS));
+    REQUIRE(!store->retrieveRelation("y", "z", CALLS));
+    REQUIRE(!store->retrieveRelation("x", "z", CALLS));
+
+    store->storeRelation("x", "y", CALLS);
+    store->storeRelation("y", "z", CALLS);
+
+    vector<string> cmp_1{ "y"};
+    vector<string> cmp_2{ "z"};
+    vector<string> cmp_3{};
+
+    REQUIRE(store->forwardRetrieveRelation("x", CALLS) == cmp_1);
+    REQUIRE(store->forwardRetrieveRelation("y", CALLS) == cmp_2);
+    REQUIRE(store->forwardRetrieveRelation("z", CALLS) == cmp_3);
+
+    store->buildStar(CALLS);
+
+    vector<string> cmp_star_1{ "y", "z"};
+    vector<string> cmp_star_2{ "z"};
+    vector<string> cmp_star_3{};
+
+    REQUIRE(store->forwardRetrieveRelation("x", CALLSS) == cmp_star_1);
+    REQUIRE(store->forwardRetrieveRelation("y", CALLSS) == cmp_star_2);
+    REQUIRE(store->forwardRetrieveRelation("z", CALLSS) == cmp_star_3);
 
 }

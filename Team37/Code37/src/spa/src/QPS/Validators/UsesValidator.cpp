@@ -15,8 +15,17 @@ UsesValidator::UsesValidator(unordered_map<string, TokenType> declarations, Toke
 
 void UsesValidator::validate(PqlToken left, PqlToken right)
 {
-	validateParameters(left, right, validStatementRef, validEntityRef, "uses");
 	if (left.type == TokenType::WILDCARD) {
 		throw SemanticError("Uses clause arg1 cannot be wildcard");
 	}
+
+	if (validStatementRef.find(left.type) != validStatementRef.end())
+	{
+		validateStatementRef(left, "uses");
+	}
+	else
+	{
+		validateEntityRef(left, "uses");
+	}
+	validateEntityRef(right, "uses");
 }

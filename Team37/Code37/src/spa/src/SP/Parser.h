@@ -22,105 +22,106 @@ using namespace std;
 class Parser {
 public:
     /**
-     * Extracts each procedure as a string. Ultimately produces ProcedureList.
-     * @param srcCode source code as a string
+     * Extracts raw procedure strings from a raw sourceCode string
+     * @param srcCode raw sourceCode string, trimmed
      * @param procedures vector to store procedures as strings.
-     * @return ProcedureList which is a vector containing procedures as strings
+     * @return a list containing raw procedure strings, with keyword, with name, with brackets
      */
     static vector<string> extractProcedures(string srcCode, vector<string> procedures);
 
     /**
-     * Extracts the name of the procedure.
-     * @param procedure unprocessed procedure string
-     * @return names of the procedure
+     * Extracts the name of a procedure.
+     * @param procedure raw procedure string, inclusive of "procedure" keyword and brackets "{...}", trimmed
+     * @return name of the procedure
      */
     static string extractProcName(string procedure);
 
     /**
-     * Takes in a raw procedure string and only returns the statements within the curly braces of the procedure
+     * Extracts statements from a raw string of statements
+     * @param statements a raw string of statements (with semicolons)
+     * @param statementList a predeclared vector of statements so that we can do recursion with it
+     * @return a list of statements (without semicolons)
+     */
+    static vector<string> extractStatements(string statements, vector<string> statementList);
+
+    // TODO: check description
+    /**
+     * Parses an if or while statement string and extracts the conditional
+     * expression as a string that sits between the first set of parentheses ( )
+     * @param str an if or while statement string that contains a conditional expression
+     * @return the conditional expression as a string without the bracket wrapper
+     */
+    static string extractConditionalExpr(string str);
+
+    /**
+     * Takes in a raw procedure string and removes the keyword, procedure name, and brackets
      * @param procedure a raw procedure string
      * @return a raw string of the statements in the procedure
      */
     static string removeProcedureWrapper(string procedure);
 
     /**
-     * Extracts statements of a procedure as strings.
-     * @param procedure a raw list of statements
-     * @param statementList a predeclared vector of statements so that we can do recursion with it
-     * @return StatementList which is a vector containing statements (without semicolon) as strings.
+     * Parses raw sourceCode string
+     * @param srcCode raw sourcecode string
+     * @param filename the filename of the SIMPLE source code
+     * @return a SourceCode node
      */
-    static vector<string> extractStatements(string procedure, vector<string> statementList);
+    static shared_ptr<SourceCode> parseSourceCode(string srcCode, string filename);
 
     /**
-     * Parses an unprocessed statement string and calls relevant Tokenizer method
-     * for that statement type.
-     * @param statement unprocessed statement string
+     * Parses raw procedure string
+     * @param procedure unprocessed procedure string
+     * @return a Procedure node
+     */
+    static shared_ptr<Procedure> parseProcedure(string procedure);
+
+    /**
+     * Parses an unprocessed statement string
+     * @param statement unprocessed statement string (without semicolon)
      * @param parentNode parent node of the statement
      * @return a Statement node
      */
-    static shared_ptr<Statement> parseStatement(string statement, shared_ptr<TNode> parentNode);
+    static shared_ptr<Statement> parseStatement(string statement);
 
     /**
-     * Parses an unprocessed procedure string and produces a statement list which
-     * is a vector containing unprocessed statement strings.
-     * @param procedure unprocessed procedure string
-     * @param srcCodeNode parent SourceCode node of the procedure
-     * @return a Procedure node
-     */
-    static shared_ptr<Procedure> parseProcedure(string procedure, shared_ptr<SourceCode> srcCodeNode);
-
-    /**
-     * Parses unprocessed source code string and produces a procedure list
-     * which is a vector containing unprocessed procedures as strings.
-     * @param srcCode sourcecode which has been converted to a string
-     * @param filepath the filepath of the SIMPLE source code
-     * @return a SourceCode node
-     */
-    static shared_ptr<SourceCode> parseSourceCode(string srcCode, string filepath);
-
-    /**
-     * Parses unprocessed if-else block string and produces a statement list
-     * which is a vector containing unprocessed statements as strings.
+     * Parses raw if-else block string
      * @param ifElseBlock if-else block string
      * @param parent parent node of the if statement
      * @return an IfStatement node
      */
-    static shared_ptr<IfStatement> parseIfElse(string ifElseBlock, shared_ptr<TNode> parent);
+    static shared_ptr<IfStatement> parseIfElse(string ifElseBlock);
 
     /**
-     * Parses unprocessed while block string and produces a statement list
-     * which is a vector containing unprocessed statements as strings.
+     * Parses raw while block string
      * @param whileBlock while block string
      * @param parent parent node of the while statement
      * @return a WhileStatement node
      */
-    static shared_ptr<WhileStatement> parseWhile(string whileBlock, shared_ptr<TNode> parent);
+    static shared_ptr<WhileStatement> parseWhile(string whileBlock);
 
     /**
-     * Parses unprocessed conditional expression string
-     * @param condExprStr conditional expression string
+     * Parses raw conditional expression string
+     * @param condExprStr raw conditional expression string
      * @param parent parent node of the conditional expression
      * @return a ConditionalExpression node
      */
-    static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr, shared_ptr<TNode> parent);
+    static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr);
 
     /**
-     * Parses an if or while statement string and extracts the conditional
-     * expression as a string that sits between the first set of parentheses ( )
-     * @param str an if or while statement string that contains a
-     * conditional expression
-     * @return the conditional expression as a string without the bracket wrapper
-     */
-    static string extractConditionalExpr(string str);
-
-    /**
-     * Parses a relational expression string
-     * @param relExprStr relational expression string that has not been processed
+     * Parses a raw relational expression string
+     * @param relExprStr raw relational expression string
      * @param parent parent node of the relational expression
      * @return a RelationalExpression node
      */
-    static shared_ptr<RelationalExpression> parseRelExpr(string relExprStr, shared_ptr<TNode> parent);
-};
+    static shared_ptr<RelationalExpression> parseRelExpr(string relExprStr);
 
+    /**
+     * Checks if a statement is an assign statement
+     * Serves as a helper function for parseStatement
+     * @param statement raw statement to be checked (without semicolon)
+     * @return true if statement is an assign statement, false otherwise
+     */
+    static bool isAssignStatement(string statement);
+};
 
 #endif //SPA_PARSER_H

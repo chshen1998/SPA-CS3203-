@@ -26,4 +26,27 @@ Clause::Clause(PqlToken type, PqlToken l, PqlToken r, TokenType categoryType, Pq
     rightAttr = ra;
     category = categoryType;
 }
+
+SelectObject::SelectObject(SelectType t)
+{
+    type = t;
+    synonym = "";
+    attrName = "";
+}
+
+
+SelectObject::SelectObject(SelectType t, string s)
+{
+    type = t;
+    synonym = s;
+    attrName = "";
+}
+
+
+SelectObject::SelectObject(SelectType t, string s, string a) 
+{
+    type = t;
+    synonym = s;
+    attrName = a;
+}
    

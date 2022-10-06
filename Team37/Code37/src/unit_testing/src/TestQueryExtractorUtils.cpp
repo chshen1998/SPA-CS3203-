@@ -27,6 +27,77 @@ vector<PqlToken> basic_tokens = {
 	PqlToken(TokenType::SYNONYM, "v")
 };
 
+vector<PqlToken> valid_select_boolean = {
+	PqlToken(TokenType::VARIABLE, "variable"),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::BOOLEAN, "BOOLEAN")
+};
+
+vector<PqlToken> valid_select_attrname = {
+	PqlToken(TokenType::STATEMENT, "stmt"),
+	PqlToken(TokenType::SYNONYM, "s"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::SYNONYM, "s"),
+	PqlToken(TokenType::DOT, "."),
+	PqlToken(TokenType::STMTLINE, "stmt#")
+};
+
+vector<PqlToken> valid_select_tuple = {
+	PqlToken(TokenType::VARIABLE, "variable"),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::STATEMENT, "stmt"),
+	PqlToken(TokenType::SYNONYM, "s"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::OPEN_ARROW, "<"),
+	PqlToken(TokenType::SYNONYM, "s"),
+	PqlToken(TokenType::DOT, "."),
+	PqlToken(TokenType::STMTLINE, "stmt#"),
+	PqlToken(TokenType::COMMA, ","),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::CLOSED_ARROW, ">")
+};
+
+vector<PqlToken> invalid_select_missing_arrows = {
+	PqlToken(TokenType::VARIABLE, "variable"),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::STATEMENT, "stmt"),
+	PqlToken(TokenType::SYNONYM, "s"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::SYNONYM, "s"),
+	PqlToken(TokenType::DOT, "."),
+	PqlToken(TokenType::STMTLINE, "stmt#"),
+	PqlToken(TokenType::COMMA, ","),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::CLOSED_ARROW, ">")
+};
+
+vector<PqlToken> invalid_select_missing_comma = {
+	PqlToken(TokenType::VARIABLE, "variable"),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::STATEMENT, "stmt"),
+	PqlToken(TokenType::SYNONYM, "s"),
+	PqlToken(TokenType::SEMICOLON, ";"),
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::SYNONYM, "s"),
+	PqlToken(TokenType::DOT, "."),
+	PqlToken(TokenType::STMTLINE, "stmt#"),
+	PqlToken(TokenType::SYNONYM, "v"),
+	PqlToken(TokenType::CLOSED_ARROW, ">")
+};
+
 vector<PqlToken> valid_pattern = {
 	PqlToken(TokenType::VARIABLE, "variable"),
 	PqlToken(TokenType::SYNONYM, "v"),

@@ -35,9 +35,9 @@ PqlError QueryValidator::validateQuery()
     try {
         declarations = validateDeclarations();
     
-        validateSelect();
+        PqlToken curr = validateSelect();
 
-	    validateClauses();
+	    validateClauses(curr);
 
         return PqlError(ErrorType::NONE, "");
     }
@@ -63,18 +63,50 @@ unordered_map<string, TokenType> QueryValidator::validateDeclarations()
     return declarations;
 }
 
-void QueryValidator::validateSelect()
+PqlToken QueryValidator::validateSelect()
 {
     SelectValidator validator = SelectValidator(declarations);
-    PqlToken select = getNextToken();
-    PqlToken synonym = getNextToken();
 
-    validator.validate(select, synonym);
+    validator.validateSelect(getNextToken()); // Select token
+
+   
+    PqlToken curr = getNextToken();
+    if (curr.type == TokenType::OPEN_ARROW) {
+        vector<PqlToken> tokens;
+
+        curr = getNextToken(); // Get Token after open arrow
+        while (curr.type != TokenType::CLOSED_ARROW) {
+            tokens.push_back(curr);
+            curr = getNextToken();
+        }
+        tokens.push_back(curr);
+        validator.validateMultiple(tokens);
+
+        curr = getNextToken(); // Get Token after closed arros
+    }
+    else if (curr.type == TokenType::BOOLEAN) {
+        // No validation required for boolean
+        curr = getNextToken();
+    } 
+    else {
+        // If not boolean then validate synonym
+        validator.validateSynonym(curr);
+        curr = getNextToken();
+
+        // Check for select synonym attrName
+        if (curr.type == TokenType::DOT) {
+            PqlToken attrName = getNextToken();
+            validator.validateAttrName(curr, attrName);
+
+            curr = getNextToken(); // Get Token after attrName
+        }
+    }
+
+    return curr;
 }
 
-void QueryValidator::validateClauses()
+void QueryValidator::validateClauses(PqlToken curr)
 {
-    PqlToken curr = getNextToken();
     while (curr.type != TokenType::END)
     {
 	    if (curr.type == TokenType::PATTERN)

@@ -46,6 +46,44 @@ TEST_CASE("Multiple variable declarations")
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+TEST_CASE("Valid Select boolean") {
+	QueryValidator sut = QueryValidator(valid_select_boolean);
+	PqlError results = sut.validateQuery();
+	REQUIRE(results.message == "");
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Select attrName") {
+	QueryValidator sut = QueryValidator(valid_select_attrname);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Select tuple") {
+	QueryValidator sut = QueryValidator(valid_select_tuple);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Error: Select tuple missing open arrow") {
+	QueryValidator sut = QueryValidator(invalid_select_missing_arrows);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
+}
+
+TEST_CASE("Error: Select tuple missing comma")
+{
+	QueryValidator sut = QueryValidator(invalid_select_missing_comma);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
+}
 
 TEST_CASE("Error: Missing semicolon")
 {

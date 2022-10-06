@@ -13,6 +13,18 @@ using namespace std;
 
 extern vector<PqlToken> basic_tokens;
 
+extern vector<PqlToken> valid_select_boolean;
+
+extern vector<PqlToken> valid_select_attrname;
+
+extern vector<PqlToken> valid_select_tuple;
+
+extern vector<PqlToken> invalid_select_missing_arrows;
+
+extern vector<PqlToken> invalid_select_missing_comma;
+
+extern vector<PqlToken> valid_select_boolean;
+
 extern vector<PqlToken> valid_pattern;
 
 extern vector<PqlToken> valid_pattern_with_string;

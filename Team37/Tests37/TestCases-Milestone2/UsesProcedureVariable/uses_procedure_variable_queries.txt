@@ -1,0 +1,10 @@
+1 - TEST 1
+variable v;
+Select v such that Uses("a", v)
+x, y, t, u
+5000
+1 - TEST 2
+procedure p;
+Select p such that Uses(p, "u")
+a, b
+5000

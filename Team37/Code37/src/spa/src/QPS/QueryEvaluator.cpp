@@ -43,6 +43,7 @@ void QueryEvaluator::evaluate() {
     vector<vector<string>> finalResult;
     
     for (Clause clause : pq.clauses) {
+
         if (clause.category == TokenType::WITH) {
             if (clause.leftAttr.type == TokenType::NONE) {
                 if (!withEvaluator.evaluateBooleanClause(clause)) {
@@ -74,6 +75,15 @@ void QueryEvaluator::evaluate() {
                             finalResult.push_back(vector<string> { left });
                         }
                     }
+                }
+
+                for (vector<string> v : finalResult) {
+                    string result = "";
+                    for (string s : v) {
+                        result += s;
+                        result += "  ";
+                    }
+                    cout << result << endl;
                 }
 
                 finalResult = withEvaluator.evaluateClause(clause, finalResult);
@@ -126,6 +136,18 @@ void QueryEvaluator::evaluate() {
                 }
             }
         }
+
+        cout << "\n" << endl;
+
+        for (vector<string> v : finalResult) {
+            string result = "";
+            for (string s : v) {
+                result += s;
+                result += "  ";
+            }
+            cout << result << endl;
+        }
+
     }
 
     // If there are no clauses

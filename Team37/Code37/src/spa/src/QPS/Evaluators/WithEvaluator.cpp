@@ -20,6 +20,8 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     PqlToken rightArg = clause.right;
     vector<vector<string>> finalResult;
 
+    finalResult.push_back(intermediate[0]);
+
     // Add procName for call, print, and read
     bool isLeftDoubleAttr = WithEvaluator::addProcName(intermediate, leftArg);
     string leftValue = isLeftDoubleAttr ? updatedColumnName(leftArg) : leftArg.value;
@@ -29,7 +31,6 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
         bool isRightDoubleAttr = WithEvaluator::addProcName(intermediate, rightArg);
 
         // Insert Column headers
-        finalResult.push_back(intermediate[0]);
 
         int leftArgIndex = -1;
         int rightArgIndex = -1;
@@ -57,7 +58,7 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     // One Synonyms - c.procName() = "main"
     else {
         int leftArgIndex = -1;
-        cout << leftValue << endl;
+
         for (int i = 0; i < intermediate[0].size(); i++) {
             if (intermediate[0][i] == leftValue) {
                 leftArgIndex = i;
@@ -77,8 +78,7 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
 /*
 * For cases with 1 = 1 or "x" = "x"
 */
-bool WithEvaluator::evaluateBooleanClause(const Clause& clause)
-{
+bool WithEvaluator::evaluateBooleanClause(const Clause& clause) {
     return clause.left == clause.right;
 }
 

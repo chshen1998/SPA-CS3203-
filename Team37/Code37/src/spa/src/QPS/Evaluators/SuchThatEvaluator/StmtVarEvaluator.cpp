@@ -55,7 +55,6 @@ vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(const Clause& cla
         for (int line : allLineNumOfSynonym) {
             for (string v : servicer->forwardRetrieveRelation(line, sv)) {
                 finalTable.push_back(vector<string> { to_string(line), v });
-               // cout << to_string(line) << " " + v << endl;
             }
         }
     }

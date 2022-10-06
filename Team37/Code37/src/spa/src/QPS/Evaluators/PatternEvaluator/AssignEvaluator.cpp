@@ -24,14 +24,18 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
 
 
     if (leftArg.type == TokenType::SYNONYM) {
+        // Add Synonym column header
         finalTable[0].push_back(leftArg.value);
 
         // Synonym - WildCardString/String
-        if (rightArg.type == TokenType::WILDCARD) {
-            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESSV);
-            getLineNumInteresection(finalResult, allStmtWithRightArg, allAssignStmtLines);
+        if (rightArg.type != TokenType::WILDCARD) {
+            cout << "SynonymWildCardString/String" << endl;
 
-            for (int lines : finalResult) {
+            bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
+
+            set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value, rightArgWildCardString);
+
+            for (int lines : allStmtWithRightArg) {
                 for (string v : servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
                     finalTable.push_back(vector<string> {to_string(lines), v});
                 }
@@ -39,8 +43,10 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
         }
         // Synonym - WildCard
         else {
+            cout << "SynonymWildCard" << endl;
             for (int lines : allAssignStmtLines) {
                 for (string v : servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
+                    cout << to_string(lines) + " "+ v << endl;
                     finalTable.push_back(vector<string> {to_string(lines), v});
                 }
             }
@@ -50,28 +56,28 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
     else {
         // String- WildCardString/String pattern a ("x", "x + y")
         if (leftArg.type == TokenType::STRING && checkWildCardStringOrString(rightArg.type)) {
+            bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
 
-            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESSV);
+            set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value, rightArgWildCardString);
             vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::MODIFIESSV);
-            vector<int> intermediate;
 
-            getLineNumInteresection(intermediate, allStmtWithRightArg, allStmtWithLeftArg);
-            getLineNumInteresection(finalResult, intermediate, allAssignStmtLines);
+            getLineNumInteresection(finalResult, vector(allStmtWithRightArg.begin(), allStmtWithRightArg.end()), allStmtWithLeftArg);
         }
 
-        // String - WildCard
+        // String - WildCard (Essentially a modifies statement)
         else if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::WILDCARD) {
             vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::MODIFIESSV);
             getLineNumInteresection(finalResult, allStmtWithLeftArg, allAssignStmtLines);
         }
 
         // Wildcard- WildCardString/String
-        else if (leftArg.type == TokenType::WILDCARD && checkWildCardStringOrString(rightArg.type)) {
-            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESSV);
+        else {
+            bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
+            
+            set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value, rightArgWildCardString); 
 
-            getLineNumInteresection(finalResult, allStmtWithRightArg, allAssignStmtLines);
+            finalResult = vector(allStmtWithRightArg.begin(), allStmtWithRightArg.end());
         }
-
 
         for (int line : finalResult) {
             finalTable.push_back(vector<string> { to_string(line) });

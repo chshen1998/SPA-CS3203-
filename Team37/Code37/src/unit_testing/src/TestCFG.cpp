@@ -305,6 +305,78 @@ TEST_CASE("Procedure with while statement and if statement") {
     REQUIRE(cfg->getMap()->size() == 6);
 }
 
+TEST_CASE("Procedure with while statement and if statement - test 2") {
+    string proc = "procedure main {\n"
+                  "    flag = 5;"
+                  "    while (flag >= 0) {\n"
+                  "        if (flag >= 0) then {\n"
+                  "            print flag;\n"
+                  "        } else {\n"
+                  "            read flag;\n"
+                  "        }"
+                  "    }\n"
+                  "}\n";
+    shared_ptr<Procedure> procedure = Parser::parseProcedure(proc);
+    procedure->buildCFG(procedure->getProcedureName());
+    shared_ptr<CFG> cfg = procedure->getCFG();
+    REQUIRE(cfg->getName() == "main");
+
+    shared_ptr<CFGNode> cfgNode1 = cfg->getStartNode();
+    REQUIRE(cfgNode1->getNumChildren() == 1);
+    shared_ptr<AssignStatement> assignStatement = dynamic_pointer_cast<AssignStatement>(cfgNode1->getTNode());
+    REQUIRE(assignStatement->getVarName() == "flag");
+    shared_ptr<ConstantExpression> constantExpression1 =
+            dynamic_pointer_cast<ConstantExpression>(assignStatement->getRelFactor());
+    REQUIRE(constantExpression1->getValue() == 5);
+
+    shared_ptr<CFGNode> cfgNode2 = cfgNode1->getChild(0);
+    shared_ptr<WhileStatement> whileStatement = dynamic_pointer_cast<WhileStatement>(cfgNode2->getTNode());
+    shared_ptr<RelationalExpression> condExpr =
+            dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(condExpr->getRelFactor1());
+    shared_ptr<ConstantExpression> constantExpression =
+            dynamic_pointer_cast<ConstantExpression>(condExpr->getRelFactor2());
+    REQUIRE(nameExpr->getVarName() == "flag");
+    REQUIRE(constantExpression->getValue() == 0);
+    REQUIRE(condExpr->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
+    REQUIRE(cfgNode2->getNumChildren() == 2);
+
+    shared_ptr<CFGNode> cfgNode3 = cfgNode2->getChild(0);
+    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(cfgNode3->getTNode());
+    shared_ptr<RelationalExpression> condExpr2 =
+            dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    shared_ptr<NameExpression> nameExpr2 = dynamic_pointer_cast<NameExpression>(condExpr2->getRelFactor1());
+    shared_ptr<ConstantExpression> constantExpression2 =
+            dynamic_pointer_cast<ConstantExpression>(condExpr2->getRelFactor2());
+    REQUIRE(nameExpr2->getVarName() == "flag");
+    REQUIRE(constantExpression2->getValue() == 0);
+    REQUIRE(condExpr2->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
+    REQUIRE(cfgNode3->getNumChildren() == 2);
+
+    shared_ptr<CFGNode> cfgNode4 = cfgNode3->getChild(0);
+    shared_ptr<PrintStatement> printStatement = dynamic_pointer_cast<PrintStatement>(cfgNode4->getTNode());
+    REQUIRE(printStatement->getVariableName() == "flag");
+
+    shared_ptr<CFGNode> dummyNode1 = cfgNode4->getChild(0);
+    REQUIRE(dummyNode1->getNumChildren() == 2);
+
+    shared_ptr<CFGNode> cfgNode5 = cfgNode3->getChild(1);
+    shared_ptr<ReadStatement> readStatement = dynamic_pointer_cast<ReadStatement>(cfgNode5->getTNode());
+    REQUIRE(readStatement->getVariableName() == "flag");
+
+    dummyNode1 = cfgNode5->getChild(0);
+    REQUIRE(dummyNode1->getNumChildren() == 2);
+    REQUIRE(dummyNode1->getTNode() == nullptr);
+    REQUIRE(dummyNode1->getChild(0) == cfgNode2);
+
+    shared_ptr<CFGNode> dummyNode2 = dummyNode1->getChild(1);
+    REQUIRE(dummyNode2->getTNode() == nullptr);
+    REQUIRE(dummyNode2->getStoredStmt() == cfgNode2);
+    REQUIRE(dummyNode2->getParents()[1] == cfgNode2);
+
+    REQUIRE(cfg->getMap()->size() == 5);
+}
+
 TEST_CASE("Sourcecode with two procedures") {
     string srcCode = "procedure main {\n"
                   "    while (flag >= 0) {\n"

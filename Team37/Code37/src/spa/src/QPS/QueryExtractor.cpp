@@ -25,8 +25,8 @@ QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector)
 PqlQuery QueryExtractor::extractSemantics()
 {
     extractDeclarations();
-    extractSelect();
-    extractClauses();
+    PqlToken curr = extractSelect();
+    extractClauses(curr);
     return pq;
 }
 
@@ -44,17 +44,46 @@ void QueryExtractor::extractDeclarations()
     }
 }
 
-void QueryExtractor::extractSelect()
+PqlToken QueryExtractor::extractSelect()
 {
-    getNextToken();
-    const PqlToken synonym = getNextToken();
-    pq.select = synonym.value;
+    getNextToken(); // Select token
+
+    PqlToken token = getNextToken();
+    if (token.type == TokenType::OPEN_ARROW) {
+        PqlToken comma = PqlToken(TokenType::COMMA, ",");
+
+        // While loop ends when closed arrow is reached
+        while (comma.type == TokenType::COMMA) {
+            token = getNextToken(); // Get token after open arrow/comma
+            comma = extractSelectObject(token); // Returns either comma or closed arrow
+        }
+        return getNextToken(); // Get token after closed arrow
+    }
+    else {
+        token = extractSelectObject(token);
+        return token; 
+    }
 }
 
-void QueryExtractor::extractClauses()
-{
+PqlToken QueryExtractor::extractSelectObject(PqlToken curr) {
     PqlToken nextToken = getNextToken();
+    if (nextToken.type == TokenType::DOT) {
+        nextToken = getNextToken();
+        pq.selectObjects.push_back(SelectObject(SelectType::ATTRNAME, curr.value, nextToken));
+        nextToken = getNextToken();
+    }
+    else if (curr.type == TokenType::BOOLEAN) {
+        pq.selectObjects.push_back(SelectObject(SelectType::BOOLEAN));
+    }
+    else {
+        pq.selectObjects.push_back(SelectObject(SelectType::SYNONYM, curr.value));
+    }
 
+    return nextToken;
+}
+
+void QueryExtractor::extractClauses(PqlToken nextToken)
+{
     while (nextToken.type != TokenType::END)
     {
 	    if (nextToken.type == TokenType::PATTERN)

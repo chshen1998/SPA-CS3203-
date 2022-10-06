@@ -31,7 +31,7 @@ SelectObject::SelectObject(SelectType t)
 {
     type = t;
     synonym = "";
-    attrName = "";
+    attrName = PqlToken();
 }
 
 
@@ -39,11 +39,11 @@ SelectObject::SelectObject(SelectType t, string s)
 {
     type = t;
     synonym = s;
-    attrName = "";
+    attrName = PqlToken();
 }
 
 
-SelectObject::SelectObject(SelectType t, string s, string a) 
+SelectObject::SelectObject(SelectType t, string s, PqlToken a)
 {
     type = t;
     synonym = s;

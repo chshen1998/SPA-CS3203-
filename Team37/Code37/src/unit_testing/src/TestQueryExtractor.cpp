@@ -62,11 +62,47 @@ TEST_CASE("Test declartions")
 
 TEST_CASE("Test Select clause")
 {
+	vector<SelectObject> ans = { SelectObject(SelectType::SYNONYM, "v") };
+
 	QueryExtractor sut(basic_tokens);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(results.select == "v");
+	REQUIRE(results.selectObjects == ans);
 }
+
+TEST_CASE("Test Select boolean")
+{
+	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };
+
+	QueryExtractor sut(valid_select_boolean);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(results.selectObjects == ans);
+}
+
+TEST_CASE("Test Select attrName")
+{
+	vector<SelectObject> ans = { SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#"))};
+
+	QueryExtractor sut(valid_select_attrname);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(results.selectObjects == ans);
+}
+
+TEST_CASE("Test Select tuple")
+{
+	vector<SelectObject> ans = { 
+		SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#")),
+		SelectObject(SelectType::SYNONYM, "v")
+	};
+
+	QueryExtractor sut(valid_select_tuple);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(results.selectObjects == ans);
+}
+
 
 TEST_CASE("Test Pattern clause")
 {

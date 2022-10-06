@@ -56,11 +56,11 @@ public:
 
     SelectObject(SelectType type, string synonym);
 
-    SelectObject(SelectType type, string synonym, string attrName);
+    SelectObject(SelectType type, string synonym, PqlToken attrName);
     
     SelectType type;
     string synonym;
-    string attrName;
+    PqlToken attrName;
 
     bool operator==(const SelectObject& other) const {
         return (other.type == type) && (other.synonym == synonym) && (other.attrName == attrName);

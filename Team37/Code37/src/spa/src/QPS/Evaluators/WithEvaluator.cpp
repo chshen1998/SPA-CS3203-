@@ -31,7 +31,6 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
         bool isRightDoubleAttr = WithEvaluator::addProcName(intermediate, rightArg);
 
         // Insert Column headers
-
         int leftArgIndex = -1;
         int rightArgIndex = -1;
 

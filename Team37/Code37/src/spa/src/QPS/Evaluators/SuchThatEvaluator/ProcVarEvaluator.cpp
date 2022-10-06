@@ -40,18 +40,16 @@ vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& cla
     ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
     vector<vector<string>> finalTable;
     vector<string> finalResult;
-    vector<string> intermediateStmtLines;
     vector<string> allProcedures;
 
     for (Procedure p : servicer->getAllProc()) {
         allProcedures.push_back(p.getProcedureName());
-        cout << p.getProcedureName() << endl;
     }
-
 
     // Synonym-Synonym --> Eg. Uses(p, v) 
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string> { leftArg.value, rightArg.value });
+
         for (string procedure : allProcedures) {
             for (string v : servicer->forwardRetrieveRelation(procedure, pv)) {
                 finalTable.push_back(vector<string> { procedure , v });
@@ -73,10 +71,7 @@ vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& cla
     // Synonym-string --> Eg. Uses(p, "x") 
     else if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STRING) {
         finalTable.push_back(vector<string> { leftArg.value });
-        cout << rightArg.value << endl;
-        intermediateStmtLines = servicer->reverseRetrieveRelation(rightArg.value, pv);
-
-        //getLineNumInteresection(finalResult, allProcedures, intermediateStmtLines);
+        vector<string> intermediateStmtLines = servicer->reverseRetrieveRelation(rightArg.value, pv);
 
         for (string procedure : intermediateStmtLines) {
             finalTable.push_back(vector<string> { procedure });
@@ -91,10 +86,8 @@ vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& cla
 
         for (string v : intermediateVariables) {
             finalTable.push_back(vector<string> { v });
-            //cout << v << endl;
         }
     }
 
     return JoinTable(intermediate, finalTable);
-        // Join With Intermediate table
 }

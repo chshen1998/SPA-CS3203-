@@ -5,6 +5,7 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include "QPS/Types/TokenType.h"
 
 namespace EvaluatorUtils {

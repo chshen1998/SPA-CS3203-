@@ -77,15 +77,6 @@ void QueryEvaluator::evaluate() {
                     }
                 }
 
-                for (vector<string> v : finalResult) {
-                    string result = "";
-                    for (string s : v) {
-                        result += s;
-                        result += "  ";
-                    }
-                    cout << result << endl;
-                }
-
                 finalResult = withEvaluator.evaluateClause(clause, finalResult);
             }
         }
@@ -112,7 +103,6 @@ void QueryEvaluator::evaluate() {
 
             // Uses_P, Modifies_P, Calls
             else if (clause.left.type == TokenType::STRING || pq.declarations[clause.left.value] == TokenType::PROCEDURE) {
-                cout << "ProcVar" << endl;
 
                 if (clause.checkIfBooleanClause()) {
                     if (!procVarEvaluator.evaluateBooleanClause(clause)) {
@@ -125,7 +115,6 @@ void QueryEvaluator::evaluate() {
             }
             // Uses_S, Modifies_S
             else  {
-                cout << "StmtVar" << endl;
                 if (clause.checkIfBooleanClause()) {
                     if (!stmtVarEvaluator.evaluateBooleanClause(clause)) {
                         return;
@@ -136,18 +125,6 @@ void QueryEvaluator::evaluate() {
                 }
             }
         }
-
-        cout << "\n" << endl;
-
-        for (vector<string> v : finalResult) {
-            string result = "";
-            for (string s : v) {
-                result += s;
-                result += "  ";
-            }
-            cout << result << endl;
-        }
-
     }
 
     // If there are no clauses

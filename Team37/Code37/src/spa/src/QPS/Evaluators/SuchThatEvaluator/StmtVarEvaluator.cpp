@@ -38,19 +38,15 @@ vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(const Clause& cla
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
     StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
-    vector<int> allLineNumOfSynonym;
-    StatementType st;
     vector<vector<string>> finalTable;
 
-    
+    string synonymValue = leftArg.type == TokenType::SYNONYM ? leftArg.value : rightArg.value;
+    StatementType st = tokenTypeToStatementType[declarations[synonymValue]];
+    vector<int> allLineNumOfSynonym = getAllLineNumOfStmtType(st);
+
     // Synonym-Synonym --> Eg. Uses(s, v) 
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string>{ leftArg.value, rightArg.value });
-        st = tokenTypeToStatementType[declarations[leftArg.value]];
-
-        for (shared_ptr<Statement> s : servicer->getAllStmt(st)) {
-            allLineNumOfSynonym.push_back(s->getLineNum());
-        }
 
         for (int line : allLineNumOfSynonym) {
             for (string v : servicer->forwardRetrieveRelation(line, sv)) {
@@ -59,14 +55,8 @@ vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(const Clause& cla
         }
     }
     else {
-        string synonymValue = leftArg.type == TokenType::SYNONYM ? leftArg.value : rightArg.value;
         finalTable.push_back(vector<string>{ synonymValue });
-        st = tokenTypeToStatementType[declarations[synonymValue]];
-        
-        for (shared_ptr<Statement> s : servicer->getAllStmt(st)) {
-            allLineNumOfSynonym.push_back(s->getLineNum());
-        }
-
+           
         // Synonym-WildCard --> Eg. Uses(s, _) 
         if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::WILDCARD) {
             for (int lines : allLineNumOfSynonym) {

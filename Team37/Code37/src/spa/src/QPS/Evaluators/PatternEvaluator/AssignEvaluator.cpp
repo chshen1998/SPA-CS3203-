@@ -14,9 +14,8 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
     PqlToken rightArg = clause.right;
     TokenType patternType = declarations[clause.clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
-    vector<int> finalResult;
     vector<vector<string>> finalTable;
-
+    bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
     vector<int> allAssignStmtLines = AssignEvaluator::getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
@@ -29,10 +28,6 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
 
         // Synonym - WildCardString/String
         if (rightArg.type != TokenType::WILDCARD) {
-            cout << "SynonymWildCardString/String" << endl;
-
-            bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
-
             set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value, rightArgWildCardString);
 
             for (int lines : allStmtWithRightArg) {
@@ -43,10 +38,8 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
         }
         // Synonym - WildCard
         else {
-            cout << "SynonymWildCard" << endl;
             for (int lines : allAssignStmtLines) {
                 for (string v : servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
-                    cout << to_string(lines) + " "+ v << endl;
                     finalTable.push_back(vector<string> {to_string(lines), v});
                 }
             }
@@ -54,10 +47,10 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
     }
 
     else {
+        vector<int> finalResult;
+
         // String- WildCardString/String pattern a ("x", "x + y")
         if (leftArg.type == TokenType::STRING && checkWildCardStringOrString(rightArg.type)) {
-            bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
-
             set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value, rightArgWildCardString);
             vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::MODIFIESSV);
 
@@ -71,9 +64,7 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vec
         }
 
         // Wildcard- WildCardString/String
-        else {
-            bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
-            
+        else {            
             set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value, rightArgWildCardString); 
 
             finalResult = vector(allStmtWithRightArg.begin(), allStmtWithRightArg.end());

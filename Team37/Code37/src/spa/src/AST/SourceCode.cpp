@@ -35,3 +35,11 @@ vector<shared_ptr<CFG> > SourceCode::getAllCFGs() {
     }
     return CFGLst;
 }
+
+vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > SourceCode::getAllCFGMaps() {
+    vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > allMaps;
+    for (auto p : this->procedureLst) {
+        allMaps.push_back(p->getCFG()->getMap());
+    }
+    return allMaps;
+}

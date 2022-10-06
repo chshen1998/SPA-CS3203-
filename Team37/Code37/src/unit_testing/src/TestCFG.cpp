@@ -29,7 +29,8 @@ TEST_CASE("Simple While statement") {
     whileStatement->addStatement(readStatement);
     whileStatement->addStatement(printStatement);
     vector<shared_ptr<CFGNode> > parents;
-    shared_ptr<CFGNode> dummyNode = whileStatement->buildCFG(parents);
+    shared_ptr<CFG> cfg = make_shared<CFG>(nullptr, "");
+    shared_ptr<CFGNode> dummyNode = whileStatement->buildCFG(parents, cfg);
 
     REQUIRE(dummyNode->getParents().size() == 2);
     shared_ptr<CFGNode> cfgNode1 = dummyNode->getParents()[1];
@@ -64,7 +65,8 @@ TEST_CASE("Nested While statement") {
     printStatement->setParent(whileStatement2);
     whileStatement2->addStatement(printStatement);
     vector<shared_ptr<CFGNode> > parents;
-    shared_ptr<CFGNode> dummyNode2 = whileStatement->buildCFG(parents);
+    shared_ptr<CFG> cfg = make_shared<CFG>(nullptr, "");
+    shared_ptr<CFGNode> dummyNode2 = whileStatement->buildCFG(parents, cfg);
 
     REQUIRE(dummyNode2->getParents().size() == 2);
     shared_ptr<CFGNode> cfgNode1 = dummyNode2->getParents()[1];
@@ -107,7 +109,8 @@ TEST_CASE("Simple If Statement") {
     ifStatement->addElseStatement(printStatement);
 
     vector<shared_ptr<CFGNode> > parents;
-    shared_ptr<CFGNode> result = ifStatement->buildCFG(parents);
+    shared_ptr<CFG> cfg = make_shared<CFG>(nullptr, "");
+    shared_ptr<CFGNode> result = ifStatement->buildCFG(parents, cfg);
     REQUIRE(result->getParents().size() == 2);
     shared_ptr<CFGNode> cfgNode2 = result->getParents()[0];
     REQUIRE(cfgNode2->getTNode() == readStatement);
@@ -150,7 +153,8 @@ TEST_CASE("Nested If statements") {
     ifStatement2->addElseStatement(assignStatement);
 
     vector<shared_ptr<CFGNode> > parents;
-    shared_ptr<CFGNode> dummyNode1 = ifStatement->buildCFG(parents);
+    shared_ptr<CFG> cfg = make_shared<CFG>(nullptr, "");
+    shared_ptr<CFGNode> dummyNode1 = ifStatement->buildCFG(parents, cfg);
     REQUIRE(dummyNode1->getParents().size() == 2);
     shared_ptr<CFGNode> cfgNode2 = dummyNode1->getParents()[0];
     REQUIRE(cfgNode2->getTNode() == readStatement);
@@ -222,6 +226,8 @@ TEST_CASE("Procedure with while statement") {
     REQUIRE(nameExpr->getVarName() == "flag");
     REQUIRE(constantExpression->getValue() == 0);
     REQUIRE(condExpr->getOperator() == RelationalOperator::GREATER_THAN);
+
+    REQUIRE(cfg->getMap()->size() == 4);
 }
 
 TEST_CASE("Procedure with while statement and if statement") {
@@ -295,6 +301,8 @@ TEST_CASE("Procedure with while statement and if statement") {
             dynamic_pointer_cast<ConstantExpression>(assignStatement->getRelFactor());
     REQUIRE(constantExpression3->getValue() == 5);
     REQUIRE(cfgNode6->getNumChildren() == 0);
+
+    REQUIRE(cfg->getMap()->size() == 6);
 }
 
 TEST_CASE("Sourcecode with two procedures") {
@@ -408,4 +416,66 @@ TEST_CASE("Sourcecode with two procedures") {
     REQUIRE(nameExpr->getVarName() == "flag");
     REQUIRE(constantExpression->getValue() == 0);
     REQUIRE(condExpr->getOperator() == RelationalOperator::GREATER_THAN);
+
+    REQUIRE(cfg1->getMap()->size() == 6);
+    REQUIRE(cfg2->getMap()->size() == 4);
+}
+
+TEST_CASE("Get all maps from source code") {
+    string srcCode = "procedure main {\n"
+                     "    while (flag >= 0) {\n"
+                     "        if (flag >= 0) then {\n"
+                     "            print flag;\n"
+                     "        } else {\n"
+                     "            read flag;\n"
+                     "        }"
+                     "        x = 5;"
+                     "    }\n"
+                     "    call abc;"
+                     "}\n"
+                     "procedure abc {\n"
+                     "    while (flag > 0) {\n"
+                     "        print flag;\n"
+                     "        read flag;\n"
+                     "    }\n"
+                     "    print x;\n"
+                     "}\n";
+    Statement::resetLineNumCount();
+    shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
+    vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
+    vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > mapLst = sourceCode->getAllCFGMaps();
+    REQUIRE(mapLst.size() == 2);
+    shared_ptr<map<int, shared_ptr<CFGNode> > > map1 = mapLst[0];
+    shared_ptr<map<int, shared_ptr<CFGNode> > > map2 = mapLst[1];
+    REQUIRE(map1->size() == 6);
+    REQUIRE(map2->size() == 4);
+
+    shared_ptr<CFG> cfg1 = cfgLst[0];
+    shared_ptr<CFGNode> cfgNode1 = cfg1->getStartNode();
+    shared_ptr<CFGNode> cfgNode2 = cfgNode1->getChild(0);
+    shared_ptr<CFGNode> dummyNode2 = cfgNode1->getChild(1);
+    shared_ptr<CFGNode> cfgNode3 = cfgNode2->getChild(0);
+    shared_ptr<CFGNode> dummyNode1 = cfgNode3->getChild(0);
+    shared_ptr<CFGNode> cfgNode4 = cfgNode2->getChild(1);
+    shared_ptr<CFGNode> cfgNode5 = dummyNode1->getChild(0);
+    shared_ptr<CFGNode> cfgNode6 = dummyNode2->getChild(0);
+
+    REQUIRE(map1->at(1) == cfgNode1);
+    REQUIRE(map1->at(2) == cfgNode2);
+    REQUIRE(map1->at(3) == cfgNode3);
+    REQUIRE(map1->at(4) == cfgNode4);
+    REQUIRE(map1->at(5) == cfgNode5);
+    REQUIRE(map1->at(6) == cfgNode6);
+
+    shared_ptr<CFG> cfg2 = cfgLst[1];
+    cfgNode1 = cfg2->getStartNode();
+    cfgNode2 = cfgNode1->getChild(0);
+    shared_ptr<CFGNode> dummyNode = cfgNode1->getChild(1);
+    cfgNode4 = dummyNode->getChild(0);
+    cfgNode3 = cfgNode2->getChild(0);
+
+    REQUIRE(map2->at(7) == cfgNode1);
+    REQUIRE(map2->at(8) == cfgNode2);
+    REQUIRE(map2->at(9) == cfgNode3);
+    REQUIRE(map2->at(10) == cfgNode4);
 }

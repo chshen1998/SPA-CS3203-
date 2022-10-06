@@ -21,8 +21,12 @@ void WhileStatement::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitWhileStatement(shared_from_this());
 }
 
-shared_ptr<CFGNode> WhileStatement::buildCFG(vector<shared_ptr<CFGNode> > parents) {
+shared_ptr<CFGNode> WhileStatement::buildCFG(vector<shared_ptr<CFGNode> > parents, shared_ptr<CFG> cfg) {
     shared_ptr<CFGNode> whileNode = make_shared<CFGNode>(shared_from_this(), parents);
+
+    //store mapping of while statement
+    cfg->addMapping(this->getLineNum(), whileNode);
+
     for (auto p : parents) {
         p->addChild(whileNode);
     }
@@ -31,7 +35,7 @@ shared_ptr<CFGNode> WhileStatement::buildCFG(vector<shared_ptr<CFGNode> > parent
     newParents.push_back(whileNode);
     shared_ptr<CFGNode> cfgNode;
     for (auto s : stmtLst) {
-        cfgNode = s->buildCFG(newParents);
+        cfgNode = s->buildCFG(newParents, cfg);
         newParents.clear();
         newParents.push_back(cfgNode);
     }

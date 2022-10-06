@@ -24,7 +24,7 @@ void Procedure::buildCFG(string procName) {
 
     // set first statement as start node of CFG
     vector<shared_ptr<Statement> > stmtLst = this->getStatements();
-    shared_ptr<CFGNode> firstNode = stmtLst[0]->buildCFG(parents);
+    shared_ptr<CFGNode> firstNode = stmtLst[0]->buildCFG(parents, this->getCFG());
     shared_ptr<CFGNode> startNode;
 
     // check if firstNode is a dummy node, as while or if buildCFG returns a dummy node
@@ -43,11 +43,13 @@ void Procedure::buildCFG(string procName) {
     parents.push_back(firstNode);
 
     for (auto s : stmtLst) {
-        shared_ptr<CFGNode> cfgNode = s->buildCFG(parents);
+        shared_ptr<CFGNode> cfgNode = s->buildCFG(parents, this->getCFG());
         parents.clear();
         parents.push_back(cfgNode);
     }
-    this->cfg = make_shared<CFG>(startNode, procName);
+//    this->cfg = make_shared<CFG>(startNode, procName);
+    this->cfg->setStartNode(startNode);
+    this->cfg->setName(procName);
 }
 
 void Procedure::accept(shared_ptr<ASTVisitor> visitor) {

@@ -29,11 +29,15 @@ void IfStatement::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitIfStatement(shared_from_this());
 }
 
-shared_ptr<CFGNode> IfStatement::buildCFG(vector<shared_ptr<CFGNode> > parents) {
+shared_ptr<CFGNode> IfStatement::buildCFG(vector<shared_ptr<CFGNode> > parents, shared_ptr<CFG> cfg) {
     shared_ptr<CFGNode> ifNode = make_shared<CFGNode>(shared_from_this(), parents);
     for (auto p : parents) {
         p->addChild(ifNode);
     }
+
+    //store mapping of if statement
+    cfg->addMapping(this->getLineNum(), ifNode);
+
     vector<shared_ptr<Statement> > thenStmtList = shared_from_this()->getThenStatements();
     vector<shared_ptr<Statement> > elseStmtList = shared_from_this()->getElseStatements();
     vector<shared_ptr<CFGNode> > newParents;
@@ -46,7 +50,7 @@ shared_ptr<CFGNode> IfStatement::buildCFG(vector<shared_ptr<CFGNode> > parents) 
 
     // add all then statements
     for (auto s : thenStmtList) {
-        cfgNode = s->buildCFG(newParents);
+        cfgNode = s->buildCFG(newParents, cfg);
         newParents.clear();
         newParents.push_back(cfgNode);
     }
@@ -57,7 +61,7 @@ shared_ptr<CFGNode> IfStatement::buildCFG(vector<shared_ptr<CFGNode> > parents) 
     newParents.clear();
     newParents.push_back(ifNode);
     for (auto s : elseStmtList) {
-        cfgNode = s->buildCFG(newParents);
+        cfgNode = s->buildCFG(newParents, cfg);
         newParents.clear();
         newParents.push_back(cfgNode);
     }

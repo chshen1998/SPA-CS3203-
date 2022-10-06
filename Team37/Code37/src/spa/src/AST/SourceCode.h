@@ -59,6 +59,12 @@ public:
      */
     vector<shared_ptr<CFG> > getAllCFGs();
 
+    /**
+     * Gets all the statement number to CFG node mappings for every procedure
+     * @return all the statement number to CFG node mappings for every procedure
+     */
+    vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > getAllCFGMaps();
+
     bool operator==(const SourceCode &other) {
         return procedureLst == other.procedureLst && filename == other.filename;
     };

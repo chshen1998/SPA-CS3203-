@@ -1,6 +1,6 @@
 #include "Procedure.h"
 
-Procedure::Procedure(shared_ptr<TNode> parent, string procedureName) : TNode(parent), procedureName(procedureName) { }
+Procedure::Procedure(shared_ptr<TNode> parent, string procedureName) : TNode(parent), procedureName(procedureName) {}
 
 void Procedure::addStatement(shared_ptr<Statement> stmt) {
     this->stmtLst.push_back(stmt);
@@ -42,7 +42,7 @@ void Procedure::buildCFG(string procName) {
     parents.clear();
     parents.push_back(firstNode);
 
-    for (auto s : stmtLst) {
+    for (auto s: stmtLst) {
         shared_ptr<CFGNode> cfgNode = s->buildCFG(parents, this->getCFG());
         parents.clear();
         parents.push_back(cfgNode);
@@ -55,3 +55,8 @@ void Procedure::buildCFG(string procName) {
 void Procedure::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitProcedure(shared_from_this());
 }
+
+void Procedure::accept(shared_ptr<CFGVisitor> visitor) {
+    visitor->visitProcedure(shared_from_this());
+}
+

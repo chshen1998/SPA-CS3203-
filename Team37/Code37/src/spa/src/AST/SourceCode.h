@@ -53,6 +53,8 @@ public:
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
+    void accept(shared_ptr<CFGVisitor> visitor);
+
     /**
      * Gets all the CFG associated with each procedure in the source code.
      * @return vector containing all CFGs in the program

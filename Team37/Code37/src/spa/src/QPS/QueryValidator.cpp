@@ -135,14 +135,35 @@ PqlToken QueryValidator::validatePattern()
     PqlToken andToken = PqlToken(TokenType::AND, "and");
     while (andToken.type == TokenType::AND)
     {
-    	validator.validatePattern(getNextToken());
-	    PqlToken open = getNextToken();
-	    PqlToken left = getNextToken();
-	    PqlToken comma = getNextToken();
-	    PqlToken right = getNextToken();
-	    PqlToken close = getNextToken();
-	    validator.validateBrackets(open, comma, close);
-	    validator.validate(left, right);
+        PqlToken pattern = getNextToken();
+        validator.validatePattern(pattern);
+
+        if (declarations[pattern.value] == TokenType::ASSIGN) {
+            validator.validateOpen(getNextToken()); // Open bracket
+	        PqlToken left = getNextToken();
+            validator.validateComma(getNextToken()); // Comma
+	        PqlToken right = getNextToken();
+            validator.validateClose(getNextToken()); // Closed bracket
+            validator.validate(left, right);
+        }
+        else if (declarations[pattern.value] == TokenType::WHILE) {
+            validator.validateOpen(getNextToken()); // Open bracket
+            PqlToken left = getNextToken();
+            validator.validateComma(getNextToken()); // Comma
+            PqlToken right = getNextToken();
+            validator.validateClose(getNextToken()); // Closed bracket
+            validator.validateWhile(left, right);
+        }
+        else { // IF
+            validator.validateOpen(getNextToken()); // Open bracket
+            PqlToken left = getNextToken();
+            validator.validateComma(getNextToken()); // Comma
+            PqlToken mid = getNextToken();
+            validator.validateComma(getNextToken()); // Comma
+            PqlToken right = getNextToken();
+            validator.validateClose(getNextToken()); // Closed bracket
+            validator.validateIf(left, mid, right);
+        }
         andToken = getNextToken();
     }
     return andToken;
@@ -177,12 +198,11 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
     while (andToken.type == TokenType::AND)
     {
         shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
-	    PqlToken open = getNextToken();
-	    PqlToken left = getNextToken();
-	    PqlToken comma = getNextToken();
-	    PqlToken right = getNextToken();
-	    PqlToken close = getNextToken();
-	    validator->validateBrackets(open, comma, close);
+        validator->validateOpen(getNextToken()); // Open bracket
+        PqlToken left = getNextToken();
+        validator->validateComma(getNextToken()); // Comma
+        PqlToken right = getNextToken();
+        validator->validateClose(getNextToken()); // Closed bracket
 	    validator->validate(left, right);
         andToken = getNextToken();
     }

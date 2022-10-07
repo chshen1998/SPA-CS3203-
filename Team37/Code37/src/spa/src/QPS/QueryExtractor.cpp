@@ -115,8 +115,16 @@ PqlToken QueryExtractor::extractPatternClause()
         left = getNextToken();
         getNextToken(); // COMMA
         right = extractString(getNextToken());
-        getNextToken(); // CLOSE BRACKET
+        getNextToken(); // CLOSE BRACKET or COMMA for IF pattern
+
+        // For WHILE and IF pattern, only left arg matters since mid/right args must be wildcard 
         pq.clauses.push_back(Clause(pattern, left, right, TokenType::PATTERN));
+
+        if (pq.declarations[pattern.value] == TokenType::IF) {
+            getNextToken(); // right arg
+            getNextToken(); // close bracket
+        }
+
         next = getNextToken();
     }
     return next;

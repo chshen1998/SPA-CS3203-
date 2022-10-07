@@ -111,13 +111,56 @@ TEST_CASE("Error: Undeclared select parameters")
 	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
 }
 
-TEST_CASE("Valid Pattern clause")
+TEST_CASE("Valid Pattern clause assign")
 {
-	QueryValidator sut = QueryValidator(valid_pattern);
+	QueryValidator sut = QueryValidator(valid_pattern_assign);
 	PqlError results = sut.validateQuery();
 
 	REQUIRE(results.message == "");
 	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Pattern clause while")
+{
+	QueryValidator sut = QueryValidator(valid_pattern_while);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Pattern clause if")
+{
+	QueryValidator sut = QueryValidator(valid_pattern_if);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid multi-pattern")
+{
+	QueryValidator sut = QueryValidator(valid_pattern_multi);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Error: Invalid Pattern while parameter type")
+{
+	QueryValidator sut = QueryValidator(invalid_pattern_while_parameters);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Error: Invalid Pattern if missing argument")
+{
+	QueryValidator sut = QueryValidator(invalid_pattern_if_parameters);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
 
 TEST_CASE("Error: Undeclared Pattern assign")
@@ -128,7 +171,7 @@ TEST_CASE("Error: Undeclared Pattern assign")
 	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
 }
 
-TEST_CASE("Error: Undeclared Pattern parameters")
+TEST_CASE("Error: Undeclared Pattern assign parameters")
 {
 	QueryValidator sut = QueryValidator(undeclared_pattern_parameter);
 	PqlError results = sut.validateQuery();
@@ -136,7 +179,7 @@ TEST_CASE("Error: Undeclared Pattern parameters")
 	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
 }
 
-TEST_CASE("Error: Invalid Pattern parameter type")
+TEST_CASE("Error: Invalid Pattern assign parameter type")
 {
 	QueryValidator sut = QueryValidator(invalid_pattern_parameter);
 	PqlError results = sut.validateQuery();

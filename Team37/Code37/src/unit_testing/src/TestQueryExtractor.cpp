@@ -104,18 +104,64 @@ TEST_CASE("Test Select tuple")
 }
 
 
-TEST_CASE("Test Pattern clause")
+TEST_CASE("Test Pattern clause assign")
 {
 	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
 								  TokenType::PATTERN)};
 
-	QueryExtractor sut(valid_pattern);
+	QueryExtractor sut(valid_pattern_assign);
 	PqlQuery results = sut.extractSemantics();
 
 	REQUIRE(isSameClauses(ans, results.clauses));
 }
+
+TEST_CASE("Test Pattern clause while")
+{
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "w"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::WILDCARD, "_"),
+								  TokenType::PATTERN) };
+
+	QueryExtractor sut(valid_pattern_while);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
+TEST_CASE("Test Pattern clause if")
+{
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "ifs"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::WILDCARD, "_"),
+								  TokenType::PATTERN) };
+
+	QueryExtractor sut(valid_pattern_if);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
+TEST_CASE("Test Pattern clause multi")
+{
+	vector<Clause> ans = { 
+		Clause(PqlToken(TokenType::SYNONYM, "ifs"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::WILDCARD, "_"),
+								  TokenType::PATTERN),
+		Clause(PqlToken(TokenType::SYNONYM, "w"),
+								  PqlToken(TokenType::SYNONYM, "v"),
+								  PqlToken(TokenType::WILDCARD, "_"),
+								  TokenType::PATTERN)
+	};
+
+	QueryExtractor sut(valid_pattern_multi);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(isSameClauses(ans, results.clauses));
+}
+
 
 TEST_CASE("Test Pattern clause with String")
 {

@@ -25,7 +25,13 @@ extern vector<PqlToken> invalid_select_missing_comma;
 
 extern vector<PqlToken> valid_select_boolean;
 
-extern vector<PqlToken> valid_pattern;
+extern vector<PqlToken> valid_pattern_assign;
+
+extern vector<PqlToken> valid_pattern_while;
+
+extern vector<PqlToken> valid_pattern_if;
+
+extern vector<PqlToken> valid_pattern_multi;
 
 extern vector<PqlToken> valid_pattern_with_string;
 
@@ -34,6 +40,10 @@ extern vector<PqlToken> valid_pattern_with_invalid_string;
 extern vector<PqlToken> valid_pattern_with_string_and_whitespace;
 
 extern vector<PqlToken> valid_pattern_with_wildcard_string;
+
+extern vector<PqlToken> invalid_pattern_while_parameters;
+
+extern vector<PqlToken> invalid_pattern_if_parameters;
 
 extern vector<PqlToken> valid_uses;
 

@@ -556,6 +556,9 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
             }
             expression.push_back(nextChar);
             condExprStr.erase(0, 1);
+            if (condExprStr.length() == 0 && bracketCounter != 0) {
+                throw InvalidSyntaxException((char *) "Too many open brackets in conditional expression");
+            }
             continue;
         }
 
@@ -566,6 +569,11 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
             condExprStr.erase(0, 1);
             bracketsDetected = true;
             continue;
+        }
+
+        // Cannot close bracket without open
+        if (nextChar == ')') {
+            throw InvalidSyntaxException((char *) "Invalid syntax");
         }
 
         if (andOrOperators.find(nextChar) == string::npos) {

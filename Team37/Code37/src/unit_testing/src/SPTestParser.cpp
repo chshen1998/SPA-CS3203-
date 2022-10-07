@@ -1012,7 +1012,11 @@ TEST_CASE("parseCondExpr - Negative Case - Missing expression") {
 }
 
 TEST_CASE("parseCondExpr - Negative Case - Extra Bracket") {
-    string rawCondExpr = "(!(x == y)))";
+    string rawCondExpr;
+    rawCondExpr = "(!(x == y)))";
+    REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
+
+    rawCondExpr = "((!(x == y))";
     REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
 }
 
@@ -1081,12 +1085,20 @@ TEST_CASE("parseRelExpr - Positive Case - Simple expressions") {
 
 TEST_CASE("parseRelExpr - Positive Case - Annoying Brackets") {
     // TODO: Fix function..? and add test case
+    string rawRelExpr;
+    rawRelExpr = "(((((x)) <= (((((1)) + 2))))))";
+    try {
+        shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(rawRelExpr);
+    } catch(InvalidSyntaxException e) {
+        cout << e.what();
+    }
+
 }
 
 TEST_CASE("parseRelExpr - Positive Case") {
     // TODO: breaks when the 1 on the left is wrapped in brackets
-    string str = "1>= ((1%((1))))";
-    shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(str);
+    string rawRelExpr = "1>= ((1%((1))))";
+    shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(rawRelExpr);
     REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
     shared_ptr<ConstantExpression> relFact1 = dynamic_pointer_cast<ConstantExpression>(relExpr->getRelFactor1());
     REQUIRE(relFact1->getValue() == 1);

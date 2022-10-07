@@ -78,7 +78,6 @@ public:
     /**
      * Parses an unprocessed statement string
      * @param statement unprocessed statement string (without semicolon)
-     * @param parentNode parent node of the statement
      * @return a Statement node
      */
     static shared_ptr<Statement> parseStatement(string statement);
@@ -86,7 +85,6 @@ public:
     /**
      * Parses raw if-else block string
      * @param ifElseBlock if-else block string
-     * @param parent parent node of the if statement
      * @return an IfStatement node
      */
     static shared_ptr<IfStatement> parseIfElse(string ifElseBlock);
@@ -94,7 +92,6 @@ public:
     /**
      * Parses raw while block string
      * @param whileBlock while block string
-     * @param parent parent node of the while statement
      * @return a WhileStatement node
      */
     static shared_ptr<WhileStatement> parseWhile(string whileBlock);
@@ -102,15 +99,13 @@ public:
     /**
      * Parses raw conditional expression string
      * @param condExprStr raw conditional expression string
-     * @param parent parent node of the conditional expression
      * @return a ConditionalExpression node
      */
     static shared_ptr<ConditionalExpression> parseCondExpr(string condExprStr);
 
     /**
      * Parses a raw relational expression string
-     * @param relExprStr raw relational expression string
-     * @param parent parent node of the relational expression
+     * @param relExprStr raw relational expression string, no surrounding brackets
      * @return a RelationalExpression node
      */
     static shared_ptr<RelationalExpression> parseRelExpr(string relExprStr);

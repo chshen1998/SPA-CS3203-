@@ -20,7 +20,9 @@
 class ClauseValidator
 {
 public:
-	void validateBrackets(PqlToken open, PqlToken comma, PqlToken close);
+	void validateOpen(PqlToken token);
+	void validateClose(PqlToken token);
+	void validateComma(PqlToken token);
 	virtual void validate(PqlToken left, PqlToken right) = 0;
 
 protected:

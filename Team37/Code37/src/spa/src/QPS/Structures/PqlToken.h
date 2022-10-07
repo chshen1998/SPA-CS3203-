@@ -22,7 +22,10 @@ struct PqlToken {
     TokenType type;
     string value;
 
-    PqlToken() {}
+    PqlToken() {
+        type = TokenType::NONE;
+        value = "";
+    }
 
     PqlToken(TokenType tokenType, string tokenValue) {
         type = tokenType;

@@ -16,11 +16,21 @@ ClauseValidator::ClauseValidator(unordered_map<string, TokenType> declarationsMa
 	validatorType = token;
 }
 
-void ClauseValidator::validateBrackets(PqlToken open, PqlToken comma, PqlToken close)
-{
-	if (!(open.type == TokenType::OPEN_BRACKET) || !(comma.type == TokenType::COMMA) || !(close.type == TokenType::CLOSED_BRACKET))
-	{
-		throw SyntaxError( relationshipToStringMap[validatorType] + " clause parameters must be enclosed within brackets and separated by a comma");
+void ClauseValidator::validateOpen(PqlToken token) {
+	if (token.type != TokenType::OPEN_BRACKET) {
+		throw SyntaxError("Invalid " + relationshipToStringMap[validatorType] + " clause missing open bracket");
+	}
+}
+
+void ClauseValidator::validateClose(PqlToken token) {
+	if (token.type != TokenType::CLOSED_BRACKET) {
+		throw SyntaxError("Invalid " + relationshipToStringMap[validatorType] + " clause missing closed bracket");
+	}
+}
+
+void ClauseValidator::validateComma(PqlToken token) {
+	if (token.type != TokenType::COMMA) {
+		throw SyntaxError("Invalid " + relationshipToStringMap[validatorType] + " clause missing comma between parameters");
 	}
 }
 

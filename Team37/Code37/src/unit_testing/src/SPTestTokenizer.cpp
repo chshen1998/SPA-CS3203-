@@ -336,9 +336,9 @@ TEST_CASE("tokenizeRelFactor - Positive Case - Brackets changing priority") {
 TEST_CASE("generateString (relFactor) - Positive Case") {
     string rawRelFactor = "a%b-c/d+e%f*g+h-i";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
-    REQUIRE(relFactor->generateString() == "(((((a % b) - (c / d)) + ((e % f) * g)) + h) - i)");
+    REQUIRE(relFactor->generateString() == "((((((a) % (b)) - ((c) / (d))) + (((e) % (f)) * (g))) + (h)) - (i))");
 
     rawRelFactor = "(a + b) * (3 + (x * 3 * 2 % ((1-2) / q)) + 9)";
     relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
-    REQUIRE(relFactor->generateString() == "((a + b) * ((3 + (((x * 3) * 2) % ((1 - 2) / q))) + 9))");
+    REQUIRE(relFactor->generateString() == "(((a) + (b)) * (((3) + ((((x) * (3)) * (2)) % (((1) - (2)) / (q)))) + (9)))");
 }

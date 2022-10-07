@@ -298,7 +298,7 @@ TEST_CASE("extractConditionalExpr - Positive Case") {
     string expected;
     string result;
 
-    rawStatementString = "if ((x != 9) && (x <= y))";
+    rawStatementString = "if ((x != 9) && (x <= y)) then {";
     expected = "(x != 9) && (x <= y)";
     result = Parser::extractConditionalExpr(rawStatementString);
     REQUIRE(result == expected);
@@ -308,7 +308,7 @@ TEST_CASE("extractConditionalExpr - Positive Case") {
     result = Parser::extractConditionalExpr(rawStatementString);
     REQUIRE(result == expected);
 
-    rawStatementString = "if(((x != 9)&&(x <= y)))";
+    rawStatementString = "if(((x != 9)&&(x <= y)))then{";
     expected = "((x != 9)&&(x <= y))";
     result = Parser::extractConditionalExpr(rawStatementString);
     REQUIRE(result == expected);
@@ -317,8 +317,6 @@ TEST_CASE("extractConditionalExpr - Positive Case") {
     expected = "! ((1==0) && (1==0))";
     result = Parser::extractConditionalExpr(rawStatementString);
     REQUIRE(result == expected);
-
-    // TODO: write more test cases for this after checking the function
 }
 
 TEST_CASE("extractConditionalExpr - Positive Case - Contains RelFactor 1") {
@@ -1014,9 +1012,17 @@ TEST_CASE("parseCondExpr - Negative Case - Missing expression") {
 }
 
 TEST_CASE("parseCondExpr - Negative Case - Extra Bracket") {
-    // TODO: Debug parseCondExpr, add error checking
-    string str = "(!(x == y)))";
-    REQUIRE_THROWS_AS(Parser::parseCondExpr(str), InvalidSyntaxException);
+    string rawCondExpr = "(!(x == y)))";
+    REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
+}
+
+TEST_CASE("parseCondExpr - Negative Case - Invalid conditional operators") {
+    string rawCondExpr;
+    rawCondExpr = "(!(x == y) & (x != 5))";
+    REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
+
+    rawCondExpr = "(!(x == y) | (x != 5))";
+    REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
 }
 
 TEST_CASE("parseRelExpr - Positive Case - Simple expressions") {

@@ -486,11 +486,7 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
 
 // TODO: check fully
 shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
-    int openIdx = relExprStr.find("(");
-    int closeIdx = relExprStr.find_last_of(")");
-    if (openIdx == 0 && closeIdx != -1) {
-        relExprStr = relExprStr.substr(openIdx + 1, closeIdx - openIdx - 1);
-    }
+    cout << relExprStr << endl;
     int greaterEqIdx = relExprStr.find(">=");
     int lessEqIdx = relExprStr.find("<=");
     int notEqIdx = relExprStr.find("!=");

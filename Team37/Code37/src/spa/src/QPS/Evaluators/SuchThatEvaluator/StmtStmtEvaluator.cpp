@@ -127,9 +127,6 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         }
     }
 
-    cout << '\n' << endl;
-    EvaluatorUtils::printTable(finalTable);
-
     // Join With Intermediate table
     return JoinTable(intermediate, finalTable);
 }

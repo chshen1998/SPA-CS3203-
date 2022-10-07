@@ -58,7 +58,7 @@ void ExtractNextCFGVisitor::visitCFGNode(shared_ptr<CFGNode> cfgNode) {
     }
 
     if (dynamic_pointer_cast<Statement>(parentNode) != nullptr) {
-        shared_ptr<Statement> precedingStatement = dynamic_pointer_cast<Statement>(node);
+        shared_ptr<Statement> precedingStatement = dynamic_pointer_cast<Statement>(parentNode);
         int precedingLineNum = precedingStatement->getLineNum();
 
         vector<shared_ptr<CFGNode>> childNodes = cfgNode->getChildren();

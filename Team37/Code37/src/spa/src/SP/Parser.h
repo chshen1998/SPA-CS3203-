@@ -44,10 +44,9 @@ public:
      */
     static vector<string> extractStatements(string statements, vector<string> statementList);
 
-    // TODO: check description
     /**
      * Parses an if or while statement string and extracts the conditional
-     * expression as a string that sits between the first set of parentheses ( )
+     * expression as a string that sits between the outermost set of parentheses ( )
      * @param str an if or while statement string that contains a conditional expression
      * @return the conditional expression as a string without the bracket wrapper
      */

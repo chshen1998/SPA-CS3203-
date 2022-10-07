@@ -6,6 +6,7 @@
 
 #include "Procedure.h"
 #include "CFG/CFG.h"
+#include "CFG/CFGVisitor/CFGVisitor.h"
 
 class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:

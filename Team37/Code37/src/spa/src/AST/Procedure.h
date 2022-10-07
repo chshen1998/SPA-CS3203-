@@ -11,6 +11,7 @@ using namespace std;
 
 #include "./Statement/Statement.h"
 #include "CFG/CFG.h"
+#include "CFG/CFGVisitor/CFGVisitor.h"
 
 class Procedure : public TNode, public enable_shared_from_this<Procedure> {
 private:

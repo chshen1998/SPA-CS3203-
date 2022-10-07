@@ -16,7 +16,7 @@ public:
 
     void visitProcedure(shared_ptr<Procedure> procedure);
 
-    void visitCFGNode(shared_ptr<CFGNode> procedure);
+    void visitCFGNode(shared_ptr<CFGNode> cfgNode);
 
 
 };

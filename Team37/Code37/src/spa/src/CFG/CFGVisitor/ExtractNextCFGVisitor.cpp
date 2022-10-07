@@ -42,12 +42,35 @@ void ExtractNextCFGVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
     procedure->buildCFG(procedure->getProcedureName());
     shared_ptr<CFG> cfg = procedure->getCFG();
     shared_ptr<CFGNode> startCFGNode = cfg->getStartNode();
+    startCFGNode->accept(shared_from_this());
 }
 
 /**
  * We traverse all statements in the procedure to accept a visitor
  * @param procedure
  */
-void ExtractNextCFGVisitor::visitCFGNode(shared_ptr<CFGNode> procedure) {
+void ExtractNextCFGVisitor::visitCFGNode(shared_ptr<CFGNode> cfgNode) {
 
+    shared_ptr<TNode> parentNode = cfgNode->getTNode();
+
+    if (dynamic_pointer_cast<Procedure>(parentNode) != nullptr) {
+        cfgNode->accept(shared_from_this());
+    }
+
+    if (dynamic_pointer_cast<Statement>(parentNode) != nullptr) {
+        shared_ptr<Statement> precedingStatement = dynamic_pointer_cast<Statement>(node);
+        int precedingLineNum = precedingStatement->getLineNum();
+
+        vector<shared_ptr<CFGNode>> childNodes = cfgNode->getChildren();
+
+        for (auto childNode: childNodes) {
+            shared_ptr<Statement> proceedingStatement = dynamic_pointer_cast<Statement>(childNode->getTNode());
+            int proceedingLineNumber = proceedingStatement->getLineNum();
+
+            // store Relation
+            // this->storage->storeRelation(precedingLineNum,proceedingLineNumber)
+
+            childNode->accept(shared_from_this());
+        }
+    }
 }

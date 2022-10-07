@@ -342,7 +342,7 @@ vector<PqlToken> valid_with = {
 	PqlToken(TokenType::DOT, "."),
 	PqlToken(TokenType::VARNAME, "var"),
 	PqlToken(TokenType::EQUAL, "="),
-	PqlToken(TokenType::STRING, "answer")
+	PqlToken(TokenType::STRING, "\"answer\"")
 };
 
 vector<PqlToken> valid_multi_with = {
@@ -357,9 +357,9 @@ vector<PqlToken> valid_multi_with = {
 	PqlToken(TokenType::DOT, "."),
 	PqlToken(TokenType::VARNAME, "var"),
 	PqlToken(TokenType::EQUAL, "="),
-	PqlToken(TokenType::STRING, "answer"),
+	PqlToken(TokenType::STRING, "\" answer\""),
 	PqlToken(TokenType::AND, "and"),
-	PqlToken(TokenType::STRING, "answer2"),
+	PqlToken(TokenType::STRING, "\"answer2\""),
 	PqlToken(TokenType::EQUAL, "="),
 	PqlToken(TokenType::SYNONYM, "p"),
 	PqlToken(TokenType::DOT, "."),

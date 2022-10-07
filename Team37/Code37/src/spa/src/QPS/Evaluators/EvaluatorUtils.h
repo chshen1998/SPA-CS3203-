@@ -5,6 +5,7 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include "QPS/Types/TokenType.h"
 
 namespace EvaluatorUtils {
@@ -18,13 +19,27 @@ namespace EvaluatorUtils {
             back_inserter(intersection));
     }
 
-    vector<vector<string>> JoinTable(const vector<vector<string>>& v1,
-        const vector<vector<string>>& v2);
+    vector<vector<string>> JoinTable(const vector<vector<string>>&,
+        const vector<vector<string>>&);
 
-    vector<vector<string>> JoinToIntermediateTable(const vector<vector<string>>& v1, size_t columnIndex1, const vector<vector<string>>& v2, size_t columnIndex2);
+    unordered_map<int, int> findCommonColumnIndex(const vector<vector<string>>&,
+        const vector<vector<string>>&);
+    
+    vector<vector<string>> JoinToIntermediateTable(const vector<vector<string>>&, const vector<vector<string>>&, unordered_map<int, int>&);
 
     inline bool checkWildCardStringOrString(TokenType type) {
         return type == TokenType::STRING || type == TokenType::WILDCARD_STRING;
+    }
+
+    inline void printTable(const vector<vector<string>>& table) {
+        for (vector<string> v : table) {
+            string result = "";
+            for (string s : v) {
+                result += s;
+                result += "\t\t";
+            }
+            cout << result << endl;
+        }
     }
 
 };

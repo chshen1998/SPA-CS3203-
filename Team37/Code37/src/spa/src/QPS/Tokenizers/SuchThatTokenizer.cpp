@@ -54,7 +54,11 @@ TokenType SuchThatTokenizer::checkSuchThatTokenType(const string& s, const Claus
     switch (clauseType) {
     case ClauseType::USE:
     case ClauseType::MODIFIES:
-        return argNum == suchThatClauseFirstArgIndex ? getStmtRefToken(s) : getEntRefToken(s);
+        if (argNum == suchThatClauseFirstArgIndex) {
+            TokenType result = getStmtRefToken(s);
+
+            return result == TokenType::UNKNOWN ? getEntRefToken(s) : result;
+        }
     case ClauseType::CALL:
         return getEntRefToken(s);
     default:

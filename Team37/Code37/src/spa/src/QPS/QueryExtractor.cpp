@@ -140,7 +140,7 @@ PqlToken QueryExtractor::extractWithClause()
     PqlToken next = PqlToken(TokenType::AND, "and");
     while (next.type == TokenType::AND)
     {
-        left = getNextToken();
+        left = extractString(getNextToken());
         leftAttr = PqlToken(TokenType::NONE, "");
 
         next = getNextToken(); // Either "." or "="
@@ -150,7 +150,7 @@ PqlToken QueryExtractor::extractWithClause()
             getNextToken(); // "="
         }
 
-        right = getNextToken();
+        right = extractString(getNextToken());
         rightAttr = PqlToken(TokenType::NONE, "");
 
         next = getNextToken(); // Either "." or "and"

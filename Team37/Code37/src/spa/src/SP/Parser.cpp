@@ -484,9 +484,7 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     return whileStatement;
 }
 
-// TODO: check fully
 shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
-    cout << relExprStr << endl;
     int greaterEqIdx = relExprStr.find(">=");
     int lessEqIdx = relExprStr.find("<=");
     int notEqIdx = relExprStr.find("!=");
@@ -524,6 +522,8 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
         opr = RelationalOperator::LESS_THAN;
         relFactorStr1 = Utils::trim(relExprStr.substr(0, lesserIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(lesserIdx + 1, string::npos));
+    } else {
+        throw InvalidSyntaxException((char *) "No valid relational operator found");
     }
     relFactor1 = Tokenizer::tokenizeRelFactor(relFactorStr1);
     relFactor2 = Tokenizer::tokenizeRelFactor(relFactorStr2);

@@ -460,7 +460,7 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
                     "\t\tlength = radius * 10;\n"
                     "\t\tbreadth = radius + 10;\n"
                     "\t} else {\n"
-                    "\t\twhile ((left + 1 > 2) || (radius + 1 > 2)) {\n"
+                    "\t\twhile ((((((left)))) + 1 > 2) || ((radius + ((1))) > 2)) {\n"
                     "\t\t\tbreadth = radius - 100;\n"
                     "\t\t\tlength = left + right;\n"
                     "\t\t}\n"
@@ -476,7 +476,7 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
                     "\t\twhile ((left + 1 > 2) || (radius + 1 > 2)) {\n"
                     "\t\t\tbreadth = radius - 100;\n"
                     "\t\t\tlength = left + right;\n"
-                    "\t\t\tif (1 > 2) then {\n"
+                    "\t\t\tif (((1 > 2))) then {\n"
                     "\t\t\t\tprocedure  = 5;\n"
                     "\t\t\t} else {\n"
                     "\t\t\t\tlength = no;\n"
@@ -1083,21 +1083,22 @@ TEST_CASE("parseRelExpr - Positive Case - Simple expressions") {
     REQUIRE(constExpr->getValue() == 3245);
 }
 
-TEST_CASE("parseRelExpr - Positive Case - Annoying Brackets") {
-    // TODO: Fix function..? and add test case
+TEST_CASE("parseRelExpr - Positive Case - Annoying brackets 1") {
+    // NO Surrounding brackets on outside, refer to function description
     string rawRelExpr;
-    rawRelExpr = "(((((x)) <= (((((1)) + 2))))))";
-    try {
-        shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(rawRelExpr);
-    } catch(InvalidSyntaxException e) {
-        cout << e.what();
-    }
+    rawRelExpr = "(x) <= (((1 + (((2))))))";
+    shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(rawRelExpr);
+    REQUIRE(relExpr->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
+    REQUIRE(dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1())->getVarName() == "x");
 
+    shared_ptr<OperatedExpression> oprExpr = dynamic_pointer_cast<OperatedExpression>(relExpr->getRelFactor2());
+
+    REQUIRE(dynamic_pointer_cast<ConstantExpression>(oprExpr->getExpression1())->getValue() == 1);
+    REQUIRE(dynamic_pointer_cast<ConstantExpression>(oprExpr->getExpression2())->getValue() == 2);
 }
 
-TEST_CASE("parseRelExpr - Positive Case") {
-    // TODO: breaks when the 1 on the left is wrapped in brackets
-    string rawRelExpr = "1>= ((1%((1))))";
+TEST_CASE("parseRelExpr - Positive Case - Annoying brackets 2") {
+    string rawRelExpr = "(((1)))>= (((((1)))%((1))))";
     shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(rawRelExpr);
     REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
     shared_ptr<ConstantExpression> relFact1 = dynamic_pointer_cast<ConstantExpression>(relExpr->getRelFactor1());
@@ -1108,6 +1109,24 @@ TEST_CASE("parseRelExpr - Positive Case") {
     REQUIRE(constExpr->getValue() == 1);
     shared_ptr<ConstantExpression> constExpr2 = dynamic_pointer_cast<ConstantExpression>(opExpr->getExpression2());
     REQUIRE(constExpr2->getValue() == 1);
+}
+
+TEST_CASE("parseRelExpr - Negative Case") {
+    string rawRelExpr;
+    rawRelExpr = "x >(=<) 5";
+    REQUIRE_THROWS_AS(Parser::parseRelExpr(rawRelExpr), InvalidSyntaxException);
+
+    rawRelExpr = "x >=< 5";
+    REQUIRE_THROWS_AS(Parser::parseRelExpr(rawRelExpr), InvalidSyntaxException);
+
+    rawRelExpr = "((x)) === 5";
+    REQUIRE_THROWS_AS(Parser::parseRelExpr(rawRelExpr), InvalidSyntaxException);
+
+    rawRelExpr = "x >= x 5";
+    REQUIRE_THROWS_AS(Parser::parseRelExpr(rawRelExpr), InvalidSyntaxException);
+
+    rawRelExpr = "x = 5";
+    REQUIRE_THROWS_AS(Parser::parseRelExpr(rawRelExpr), InvalidSyntaxException);
 }
 
 TEST_CASE("isAssignStatement - Positive Case") {
@@ -1160,4 +1179,3 @@ TEST_CASE("isAssignStatement - Negative Case") {
     REQUIRE(!Parser::isAssignStatement(rawAssignStatement));
 }
 
-// TODO: Shift more test cases into more organized files, continue writing more unit tests

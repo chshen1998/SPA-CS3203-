@@ -22,6 +22,7 @@
 #include "../AST/ASTVisitor/ExtractParentsASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractModifiesASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractUsesASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractCallsASTVisitor.h"
 
 
 #include "../AST/Statement/Statement.h"

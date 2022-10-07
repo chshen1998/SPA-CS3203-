@@ -40,12 +40,15 @@ class OrCondition;
 
 class TNode;
 
+class CFGNode;
+
 class CFGVisitor {
 public:
     virtual void visitSourceCode(shared_ptr<SourceCode> sourceCode) = 0;
 
     virtual void visitProcedure(shared_ptr<Procedure> procedure) = 0;
 
+    virtual void visitCFGNode(shared_ptr<CFGNode> cfgNode) = 0;
 
 };
 

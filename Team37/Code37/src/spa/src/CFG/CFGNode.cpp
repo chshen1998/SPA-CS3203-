@@ -43,3 +43,7 @@ void CFGNode::setStmtToStore(shared_ptr<CFGNode> stmt) {
 shared_ptr<CFGNode> CFGNode::getStoredStmt() {
     return stmtToStore;
 }
+
+void CFGNode::accept(shared_ptr<CFGVisitor> visitor) {
+    visitor->visitCFGNode(shared_from_this());
+}

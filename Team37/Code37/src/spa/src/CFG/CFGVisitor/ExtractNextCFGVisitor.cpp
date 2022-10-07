@@ -42,5 +42,12 @@ void ExtractNextCFGVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
     procedure->buildCFG(procedure->getProcedureName());
     shared_ptr<CFG> cfg = procedure->getCFG();
     shared_ptr<CFGNode> startCFGNode = cfg->getStartNode();
+}
+
+/**
+ * We traverse all statements in the procedure to accept a visitor
+ * @param procedure
+ */
+void ExtractNextCFGVisitor::visitCFGNode(shared_ptr<CFGNode> procedure) {
 
 }

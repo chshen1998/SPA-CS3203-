@@ -112,7 +112,7 @@ PqlToken QueryExtractor::extractPatternClause()
     {
         pattern = getNextToken();
         getNextToken(); // OPEN BRACKET
-        left = getNextToken();
+        left = extractString(getNextToken());
         getNextToken(); // COMMA
         right = extractString(getNextToken());
         getNextToken(); // CLOSE BRACKET or COMMA for IF pattern

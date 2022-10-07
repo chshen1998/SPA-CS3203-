@@ -127,8 +127,9 @@ void QueryEvaluator::evaluate() {
                 }
             }
         }
-        //EvaluatorUtils::printTable(finalResult);
     }
+
+    //EvaluatorUtils::printTable(finalResult);
 
     // If there are no clauses
     if (finalResult.size() == 0) {

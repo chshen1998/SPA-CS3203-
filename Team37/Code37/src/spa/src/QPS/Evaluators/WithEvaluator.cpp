@@ -20,10 +20,14 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     PqlToken rightArg = clause.right;
     vector<vector<string>> finalResult;
 
+    EvaluatorUtils::printTable(intermediate);
+
     finalResult.push_back(intermediate[0]);
 
     // Add procName for call, print, and read
     bool isLeftDoubleAttr = WithEvaluator::addProcName(intermediate, leftArg);
+
+
     string leftValue = isLeftDoubleAttr ? updatedColumnName(leftArg) : leftArg.value;
 
     // Two Synonyms - s.procName() = v.procName()
@@ -84,7 +88,7 @@ bool WithEvaluator::evaluateBooleanClause(const Clause& clause) {
 bool WithEvaluator::addProcName(vector<vector<string>>& intermediate, const PqlToken& token) {
     string updated = updatedColumnName(token);
     if (doubleAttrTokens.find(declarations[token.value]) != doubleAttrTokens.end() &&
-        find(intermediate[0].begin(), intermediate[0].end(), updated) == intermediate[0].end()) {
+        find(intermediate[0].begin(), intermediate[0].end(), token.value) == intermediate[0].end()) {
         int index = -1;
 
         // Get the column index of the synonym
@@ -96,9 +100,18 @@ bool WithEvaluator::addProcName(vector<vector<string>>& intermediate, const PqlT
 
         intermediate[0].push_back(updated);
 
-        for (int i = 1; i < intermediate.size(); i++) {
-            // We should only get one variable for Call, Print, Read
-            intermediate[i].push_back(servicer->forwardRetrieveRelation(stoi(intermediate[i][index]), StmtVarRelationType::USESSV)[0]);
+        if (token.type == TokenType::CALL) {
+            for (int i = 1; i < intermediate.size(); i++) {
+                // insert to get procedure name for each call statement
+            }
+        }
+        else {
+            StmtVarRelationType sv = token.type == TokenType::READ ? StmtVarRelationType::MODIFIESSV : StmtVarRelationType::USESSV;
+
+            for (int i = 1; i < intermediate.size(); i++) {
+                // We should only get one variable for Call, Print, Read
+                intermediate[i].push_back(servicer->forwardRetrieveRelation(stoi(intermediate[i][index]), sv)[0]);
+            }
         }
 
         return true;

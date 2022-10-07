@@ -129,11 +129,8 @@ void QueryEvaluator::evaluate() {
         }
     }
 
-    //EvaluatorUtils::printTable(finalResult);
-
     // If there are no clauses
     if (finalResult.size() == 0) {
-        //cout << "Here" << endl;
         selectAll(type, result);
         return;
     }
@@ -170,8 +167,6 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
 void QueryEvaluator::selectAll(TokenType type, list<string>& result) {
     if (type == TokenType::VARIABLE) {
         for (NameExpression v : servicer->getAllVar()) {
-            cout << v.getVarName() << endl;
-
             result.push_back(v.getVarName());
         }
     }

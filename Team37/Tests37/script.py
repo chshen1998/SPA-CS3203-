@@ -5,8 +5,10 @@ from pathlib import Path
 
 AUTOTESTER_PATH = Path("../Code37/cmake-build-release/src/autotester/autotester")
 
+buildType = "Debug"
+
 if sys.platform == "win32":
-    AUTOTESTER_PATH = Path("../Code37/out/build/x64-Release/src/autotester/autotester")
+    AUTOTESTER_PATH = Path("../Code37/out/build/x64-{}/src/autotester/autotester".format(buildType))
 
 OUTPUT_XML_PATH = Path("./out.xml")
 

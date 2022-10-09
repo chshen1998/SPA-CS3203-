@@ -16,6 +16,7 @@ using namespace std;
 #include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
+#include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Evaluators/WithEvaluator.h"
 
 #include "AST/Expression/RelationalFactor/NameExpression.h"
@@ -30,7 +31,8 @@ QueryEvaluator::QueryEvaluator(PqlQuery& pqlQuery, shared_ptr<QueryServicer> s, 
     result(r), servicer(s), pq(pqlQuery) {}
 
 void QueryEvaluator::evaluate() {
-    const string selectSynonym = pq.select;
+    // Hack fix: must urgently fix this in next PR
+    const string selectSynonym = pq.selectObjects[0].synonym;
     const TokenType type = pq.declarations[selectSynonym];
  
     // TODO: restructure this 
@@ -43,7 +45,6 @@ void QueryEvaluator::evaluate() {
     vector<vector<string>> finalResult;
     
     for (Clause clause : pq.clauses) {
-
         if (clause.category == TokenType::WITH) {
             if (clause.leftAttr.type == TokenType::NONE) {
                 if (!withEvaluator.evaluateBooleanClause(clause)) {
@@ -145,7 +146,7 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
     // - Apart from call, print and read, any attrRef returns the default value
     for (int i = 0; i < table[0].size(); i++) {
         // TODO: update for attrRef
-        if (table[0][i] == pq.select) {
+        if (table[0][i] == pq.selectObjects[0].synonym) {
             index = i;
             break;
         }

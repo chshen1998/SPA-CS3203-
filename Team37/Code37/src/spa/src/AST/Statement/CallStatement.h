@@ -23,6 +23,8 @@ public:
     string getProcedureName();
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
+
+    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode> > parents, shared_ptr<CFG> cfg) override;
 };
 
 #endif

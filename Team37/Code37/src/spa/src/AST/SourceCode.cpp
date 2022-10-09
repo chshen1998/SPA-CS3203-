@@ -26,10 +26,6 @@ void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitSourceCode(shared_from_this());
 }
 
-void SourceCode::accept(shared_ptr<CFGVisitor> visitor) {
-    visitor->visitSourceCode(shared_from_this());
-}
-
 
 vector<shared_ptr<CFG> > SourceCode::getAllCFGs() {
     vector<shared_ptr<CFG>> CFGLst;

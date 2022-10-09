@@ -11,7 +11,6 @@ using namespace std;
 
 #include "./Statement/Statement.h"
 #include "CFG/CFG.h"
-#include "CFG/CFGVisitor/CFGVisitor.h"
 
 class Procedure : public TNode, public enable_shared_from_this<Procedure> {
 private:
@@ -57,9 +56,7 @@ public:
     void buildCFG(string procName);
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
-
-    void accept(shared_ptr<CFGVisitor> visitor);
-
+    
     bool operator==(const Procedure &other) const {
         return procedureName == other.procedureName && stmtLst == other.stmtLst;
     };

@@ -9,7 +9,6 @@
 using namespace std;
 
 #include "AST/TNode.h"
-#include "CFG/CFGVisitor/CFGVisitor.h"
 
 class CFGNode : public enable_shared_from_this<CFGNode> {
 private:
@@ -83,13 +82,6 @@ public:
      */
     shared_ptr<CFGNode> getStoredStmt();
 
-    /**
-     * Accepts a visitor
-     *
-     * @param visitor the visitor to accept
-     * @return none
-     */
-    void accept(shared_ptr<CFGVisitor> visitor);
 
 };
 

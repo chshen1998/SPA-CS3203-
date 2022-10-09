@@ -6,7 +6,6 @@
 
 #include "Procedure.h"
 #include "CFG/CFG.h"
-#include "CFG/CFGVisitor/CFGVisitor.h"
 
 class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
@@ -53,9 +52,7 @@ public:
     int getNumOfStatements() const;
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
-
-    void accept(shared_ptr<CFGVisitor> visitor);
-
+    
     /**
      * Gets all the CFG associated with each procedure in the source code.
      * @return vector containing all CFGs in the program

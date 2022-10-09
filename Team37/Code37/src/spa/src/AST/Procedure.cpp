@@ -55,8 +55,3 @@ void Procedure::buildCFG(string procName) {
 void Procedure::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitProcedure(shared_from_this());
 }
-
-void Procedure::accept(shared_ptr<CFGVisitor> visitor) {
-    visitor->visitProcedure(shared_from_this());
-}
-

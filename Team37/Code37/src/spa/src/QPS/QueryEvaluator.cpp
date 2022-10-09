@@ -16,6 +16,7 @@ using namespace std;
 #include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
+#include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Evaluators/WithEvaluator.h"
 
 #include "AST/Expression/RelationalFactor/NameExpression.h"
@@ -30,7 +31,8 @@ QueryEvaluator::QueryEvaluator(PqlQuery& pqlQuery, shared_ptr<QueryServicer> s, 
     result(r), servicer(s), pq(pqlQuery) {}
 
 void QueryEvaluator::evaluate() {
-    const string selectSynonym = pq.select;
+    // Hack fix: must urgently fix this in next PR
+    const string selectSynonym = pq.selectObjects[0].synonym;
     const TokenType type = pq.declarations[selectSynonym];
  
     // TODO: restructure this 
@@ -44,12 +46,38 @@ void QueryEvaluator::evaluate() {
     
     for (Clause clause : pq.clauses) {
         if (clause.category == TokenType::WITH) {
-            if (clause.leftAttr.type == TokenType::NONE && clause.rightAttr.type == TokenType::NONE) {
+            if (clause.leftAttr.type == TokenType::NONE) {
                 if (!withEvaluator.evaluateBooleanClause(clause)) {
                     return;
                 }
             }
             else {
+                // If our initial table is empty, we need to populate with for WITH clause
+                // TODO: Shift this into WithEvaluator as temporarily here due to to SelectAll() in this file
+                if (finalResult.empty()) {
+                    finalResult.push_back(vector<string> { clause.left.value });
+
+                    list<string> intermediate;
+                    selectAll(pq.declarations[clause.left.value], intermediate);
+
+                    if (clause.right.type == TokenType::SYNONYM) {
+                        finalResult[0].push_back(clause.right.value);
+                        list<string> intermediateRight;
+                        selectAll(pq.declarations[clause.right.value], intermediateRight);
+
+                        for (string left : intermediate) {
+                            for (string right : intermediateRight) {
+                                finalResult.push_back(vector<string> { left, right });
+                            }
+                        }
+                    }
+                    else {
+                        for (string left : intermediate) {
+                            finalResult.push_back(vector<string> { left });
+                        }
+                    }
+                }
+
                 finalResult = withEvaluator.evaluateClause(clause, finalResult);
             }
         }
@@ -74,20 +102,9 @@ void QueryEvaluator::evaluate() {
                 }
             }
 
-            // Uses_S, Modifies_S
-            else if (suchThatStmtRefVarRef.find(suchThatType) != suchThatStmtRefVarRef.end()) {
-                if (clause.checkIfBooleanClause()) {
-                    if (!stmtVarEvaluator.evaluateBooleanClause(clause)) {
-                        return;
-                    }
-                }
-                else {
-                    finalResult = stmtVarEvaluator.evaluateSynonymClause(clause, finalResult);
-                }
-            }
-
             // Uses_P, Modifies_P, Calls
-            else {
+            else if (clause.left.type == TokenType::STRING || pq.declarations[clause.left.value] == TokenType::PROCEDURE) {
+
                 if (clause.checkIfBooleanClause()) {
                     if (!procVarEvaluator.evaluateBooleanClause(clause)) {
                         return;
@@ -97,12 +114,23 @@ void QueryEvaluator::evaluate() {
                     finalResult = procVarEvaluator.evaluateSynonymClause(clause, finalResult);
                 }
             }
+            // Uses_S, Modifies_S
+            else  {
+                if (clause.checkIfBooleanClause()) {
+                    if (!stmtVarEvaluator.evaluateBooleanClause(clause)) {
+                        return;
+                    }
+                }
+                else {
+                    finalResult = stmtVarEvaluator.evaluateSynonymClause(clause, finalResult);
+                }
+            }
         }
     }
 
     // If there are no clauses
     if (finalResult.size() == 0) {
-        selectAll(type);
+        selectAll(type, result);
         return;
     }
 
@@ -113,8 +141,12 @@ void QueryEvaluator::evaluate() {
 void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table) {
     int index = 0;
     // Find the column index where the synonym value == select synonym value
+    // TODO: Update to get tuples of elems and logic for attrRef
+    // - Tuples just get indexes of elements we need
+    // - Apart from call, print and read, any attrRef returns the default value
     for (int i = 0; i < table[0].size(); i++) {
-        if (table[0][i] == pq.select) {
+        // TODO: update for attrRef
+        if (table[0][i] == pq.selectObjects[0].synonym) {
             index = i;
             break;
         }
@@ -131,7 +163,7 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
 }
 
 
-void QueryEvaluator::selectAll(TokenType type) {
+void QueryEvaluator::selectAll(TokenType type, list<string>& result) {
     if (type == TokenType::VARIABLE) {
         for (NameExpression v : servicer->getAllVar()) {
             result.push_back(v.getVarName());

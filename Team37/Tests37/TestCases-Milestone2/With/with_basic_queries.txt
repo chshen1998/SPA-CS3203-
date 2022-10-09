@@ -1,6 +1,6 @@
 1 - With Statement number
 variable v; stmt s;
-Select v such that Uses(s, v) with s.stmt# = 3
+Select v such that Uses(s, v) with s.stmt# = 2
 flag
 5000
 2 - With Variable varName

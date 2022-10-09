@@ -43,15 +43,38 @@ public:
     };
 };
 
+enum class SelectType {
+    BOOLEAN,
+    SYNONYM,
+    ATTRNAME
+};
+
+class SelectObject
+{
+public:
+    SelectObject(SelectType type);
+
+    SelectObject(SelectType type, string synonym);
+
+    SelectObject(SelectType type, string synonym, PqlToken attrName);
+    
+    SelectType type;
+    string synonym;
+    PqlToken attrName;
+
+    bool operator==(const SelectObject& other) const {
+        return (other.type == type) && (other.synonym == synonym) && (other.attrName == attrName);
+    }
+};
+
 /*
  * ParsedQueries are created after extracting the components from the query.
  */
 struct PqlQuery {
     unordered_map<string, TokenType> declarations = {};
     string select;
+    vector<SelectObject> selectObjects;
     vector<Clause> clauses;
-    vector<Clause> patternClauses;
-    vector<Clause> suchThatClauses;
 };
 
 #endif 

@@ -17,13 +17,25 @@ void PatternValidator::validatePattern(PqlToken pattern)
 {
 	if (pattern.type != TokenType::SYNONYM || !isDeclared(pattern) || validPatternType.find(declarations[pattern.value]) == validPatternType.end())
 	{
-		throw SemanticError(pattern.value + " is not a valid pattern");
+		throw SemanticError("Invalid pattern: " + pattern.value);
 	}
 }
 
 void PatternValidator::validate(PqlToken left, PqlToken right)
 {
 	validateEntityRef(left, "pattern");
+	validateExpressionSpec(right);
+}
+
+void PatternValidator::validateWhile(PqlToken left, PqlToken right) {
+	validateEntityRef(left, "pattern");
+	validateWildcard(right);
+}
+
+void PatternValidator::validateIf(PqlToken left, PqlToken mid, PqlToken right) {
+	validateEntityRef(left, "pattern");
+	validateWildcard(mid);
+	validateWildcard(right);
 }
 
 void PatternValidator::validateExpressionSpec(PqlToken token)
@@ -35,5 +47,11 @@ void PatternValidator::validateExpressionSpec(PqlToken token)
 	else if (token.type == TokenType::WILDCARD_STRING)
 	{
 		// Implement wildcard string validation
+	}
+}
+
+void PatternValidator::validateWildcard(PqlToken token) {
+	if (token.type != TokenType::WILDCARD) {
+		throw SemanticError("Invalid parameters for pattern clause");
 	}
 }

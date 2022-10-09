@@ -15,7 +15,9 @@ add_executable(unit_testing ${srcs}
         "src/Scratch.cpp"
         "src/SPTestParser.cpp"
         "src/TestPKBPatternMatching.cpp"
-        src/TestCFG.cpp
-        src/TestsCallsASTVisitor.cpp)
+        src/TestsCallsASTVisitor.cpp
+        "src/TestPKBPatternMatching.cpp"
+        "src/SPTestTokenizer.cpp"
+        "src/TestCFG.cpp")
 target_link_libraries(unit_testing spa)
 

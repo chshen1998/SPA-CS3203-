@@ -22,7 +22,10 @@ struct PqlToken {
     TokenType type;
     string value;
 
-    PqlToken() {}
+    PqlToken() {
+        type = TokenType::NONE;
+        value = "";
+    }
 
     PqlToken(TokenType tokenType, string tokenValue) {
         type = tokenType;
@@ -35,9 +38,7 @@ struct PqlToken {
 
 public:
     // For debugging when writing unit tests
-    friend ostream& operator<< (std::ostream& os, const PqlToken& token);
-       
+    friend ostream& operator<< (std::ostream& os, const PqlToken& token); 
 };
-
 
 #endif 

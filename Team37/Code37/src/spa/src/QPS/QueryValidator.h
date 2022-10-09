@@ -30,8 +30,8 @@ public:
 
 private:
     unordered_map<string, TokenType> validateDeclarations();
-    void validateSelect();
-    void validateClauses();
+    PqlToken validateSelect();
+    void validateClauses(PqlToken token);
     PqlToken validatePattern();
     PqlToken validateWith();
     PqlToken validateSuchThat(PqlToken such);

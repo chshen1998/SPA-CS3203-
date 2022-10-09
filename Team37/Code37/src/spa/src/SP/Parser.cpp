@@ -79,10 +79,12 @@ string Parser::extractProcName(string procedure) {
         throw InvalidSyntaxException((char *) "Did you forget brackets in your procedure?");
     }
 
+    procedureName = Utils::trim(procedureName);
+
     if (!Utils::validateName(procedureName)) {
         throw InvalidSyntaxException((char *) "Procedure name is invalid");
     }
-    return Utils::trim(procedureName);
+    return procedureName;
 }
 
 // TODO: cannot parse variables that contain "if" or "while" as the first 5 characters
@@ -221,7 +223,6 @@ vector<string> Parser::extractStatements(string statements, vector<string> state
     return extractStatements(statements, statementList);
 }
 
-// TODO: check fully
 string Parser::extractConditionalExpr(string str) {
     str = Utils::trim(str);
     size_t condExprStart = str.find_first_of(Keywords::OPEN_BRACKET) + 1;
@@ -483,13 +484,7 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     return whileStatement;
 }
 
-// TODO: check fully
 shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
-    int openIdx = relExprStr.find("(");
-    int closeIdx = relExprStr.find_last_of(")");
-    if (openIdx == 0 && closeIdx != -1) {
-        relExprStr = relExprStr.substr(openIdx + 1, closeIdx - openIdx - 1);
-    }
     int greaterEqIdx = relExprStr.find(">=");
     int lessEqIdx = relExprStr.find("<=");
     int notEqIdx = relExprStr.find("!=");
@@ -527,16 +522,17 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
         opr = RelationalOperator::LESS_THAN;
         relFactorStr1 = Utils::trim(relExprStr.substr(0, lesserIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(lesserIdx + 1, string::npos));
+    } else {
+        throw InvalidSyntaxException((char *) "No valid relational operator found");
     }
     relFactor1 = Tokenizer::tokenizeRelFactor(relFactorStr1);
     relFactor2 = Tokenizer::tokenizeRelFactor(relFactorStr2);
     return make_shared<RelationalExpression>(nullptr, opr, relFactor1, relFactor2);
 }
 
-// TODO: check fully
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
     condExprStr = Utils::trim(condExprStr);
-    string andOrOperators = "&&||";
+    string andOrOperators = "&|";
     string notOperator = "!";
 
     char nextChar;
@@ -556,6 +552,9 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
             }
             expression.push_back(nextChar);
             condExprStr.erase(0, 1);
+            if (condExprStr.length() == 0 && bracketCounter != 0) {
+                throw InvalidSyntaxException((char *) "Too many open brackets in conditional expression");
+            }
             continue;
         }
 
@@ -568,11 +567,16 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
             continue;
         }
 
+        // Cannot close bracket without open
+        if (nextChar == ')') {
+            throw InvalidSyntaxException((char *) "Invalid syntax");
+        }
+
         if (andOrOperators.find(nextChar) == string::npos) {
             expression.push_back(nextChar);
             condExprStr.erase(0, 1);
             continue;
-        } else { // not in bracket and hit && or || operator
+        } else { // not in bracket and hit & or | operator
             shared_ptr<ConditionalExpression> leftSide = parseCondExpr(Utils::trim(expression));
             shared_ptr<ConditionalExpression> rightSide = parseCondExpr(Utils::trim(condExprStr.substr(2)));
             shared_ptr<ConditionalExpression> conditionalExpression;
@@ -597,16 +601,17 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
     expression.clear();
     bracketCounter = 0;
 
-    // check for not operator
+    // Check for not operator
     while (condExprStr.length() > 0) {
         nextChar = condExprStr[0];
-        // skip brackets
+        // Bracket skipping
         if (bracketCounter != 0) {
             if (nextChar == '(') {
                 bracketCounter += 1;
             } else if (nextChar == ')') {
                 bracketCounter -= 1;
             }
+            // Don't add last bracket
             if (bracketCounter != 0) {
                 expression.push_back(nextChar);
             }
@@ -616,13 +621,17 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
 
         if (nextChar == '(') {
             bracketCounter += 1;
-            condExprStr.erase(0, 1); // does not add to expression this time
+            condExprStr.erase(0, 1); // Don't add first bracket
             bracketsDetected = true;
             continue;
         }
 
-        if (notOperator.find(nextChar) == string::npos ||
-            condExprStr.substr(0, 2) == "!=") {
+        // Cannot close bracket without open
+        if (nextChar == ')') {
+            throw InvalidSyntaxException((char *) "Invalid syntax");
+        }
+
+        if (notOperator.find(nextChar) == string::npos || condExprStr.substr(0, 2) == "!=") {
             expression.push_back(nextChar);
             condExprStr.erase(0, 1);
             continue;
@@ -646,7 +655,6 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
     expression.clear();
 
     // check if is a relational expr
-    nextChar = condExprStr[0];
     if (condExprStr.find('<') != string::npos ||
         condExprStr.find("<=") != string::npos ||
         condExprStr.find('>') != string::npos ||

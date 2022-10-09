@@ -4,31 +4,43 @@ using namespace std;
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
 #include "WithEvaluator.h"
+#include "PKB/Types/StatementType.h"
+#include "PKB/Types/StmtVarRelationType.h"
 #include "EvaluatorUtils.h"
 
 using namespace EvaluatorUtils;
+
+set<TokenType> doubleAttrTokens = {
+    TokenType::CALL, TokenType::PRINT, TokenType::READ
+};
 
 vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vector<vector<string>> intermediate)
 {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
-    TokenType patternType = declarations[clause.clauseType.value];
-    StatementType patternStmtType = tokenTypeToStatementType[patternType];
     vector<vector<string>> finalResult;
 
-    // Insert Column headers
+    // Add procName for call, print, and read
+    bool isLeftDoubleAttr = WithEvaluator::addProcName(intermediate, leftArg);
+    string leftValue = isLeftDoubleAttr ? updatedColumnName(leftArg) : leftArg.value;
     finalResult.push_back(intermediate[0]);
 
-    if (clause.leftAttr.type != TokenType::NONE && clause.rightAttr.type != TokenType::NONE) {
+    // Two Synonyms - s.procName() = v.procName()
+    if (clause.rightAttr.type != TokenType::NONE) {        
+        bool isRightDoubleAttr = WithEvaluator::addProcName(intermediate, rightArg);
+
+        // Insert Column headers
         int leftArgIndex = -1;
         int rightArgIndex = -1;
 
+        string rightValue = isRightDoubleAttr ? updatedColumnName(rightArg) : rightArg.value;
+
         for (int i = 0; i < intermediate[0].size(); i++) {
-            if (intermediate[0][i] == leftArg.value) {
+            if (intermediate[0][i] == leftValue) {
                 leftArgIndex = i;
             }
 
-            if (intermediate[0][i] == rightArg.value) {
+            if (intermediate[0][i] == rightValue) {
                 rightArgIndex = i;
             }
         }
@@ -40,11 +52,13 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
         }
     }
 
+    // intermediate: c, v (stmtnums, var)
+    // One Synonyms - c.procName() = "main"
     else {
         int leftArgIndex = -1;
 
         for (int i = 0; i < intermediate[0].size(); i++) {
-            if (intermediate[0][i] == leftArg.value) {
+            if (intermediate[0][i] == leftValue) {
                 leftArgIndex = i;
             }
         }
@@ -62,8 +76,47 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
 /*
 * For cases with 1 = 1 or "x" = "x"
 */
-bool WithEvaluator::evaluateBooleanClause(const Clause& clause)
-{
+bool WithEvaluator::evaluateBooleanClause(const Clause& clause) {
     return clause.left == clause.right;
 }
+
+bool WithEvaluator::addProcName(vector<vector<string>>& intermediate, const PqlToken& token) {
+    string updated = updatedColumnName(token);
+    if (doubleAttrTokens.find(declarations[token.value]) != doubleAttrTokens.end() &&
+        find(intermediate[0].begin(), intermediate[0].end(), token.value) != intermediate[0].end()) {
+        int index = -1;
+
+        // Get the column index of the synonym
+        for (int i = 0; i < intermediate[0].size(); i++) {
+            if (intermediate[0][i] == token.value) {
+                index = i;
+            }
+        }
+
+        intermediate[0].push_back(updated);
+
+        if (token.type == TokenType::CALL) {
+            for (int i = 1; i < intermediate.size(); i++) {
+                // insert to get procedure name for each call statement
+            }
+        }
+        else {
+            StmtVarRelationType sv = declarations[token.value] == TokenType::READ ? StmtVarRelationType::MODIFIESSV : StmtVarRelationType::USESSV;
+
+            for (int i = 1; i < intermediate.size(); i++) {
+                // We should only get one variable for Call, Print, Read
+                intermediate[i].push_back(servicer->forwardRetrieveRelation(stoi(intermediate[i][index]), sv)[0]);
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+inline string WithEvaluator::updatedColumnName(const PqlToken& token) {
+    return token.type == TokenType::CALL ? token.value + ".ProcName" : token.value + ".VarName";
+}
+
 

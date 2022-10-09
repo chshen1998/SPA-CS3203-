@@ -8,74 +8,74 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> AssignEvaluator::evaluateClause(const Clause& clause, vector<vector<string>> intermediate)
-{
+vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
     TokenType patternType = declarations[clause.clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
-    vector<int> finalResult;
-    vector<vector<string>> final;
-
+    vector<vector<string>> finalTable;
+    bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
     vector<int> allAssignStmtLines = AssignEvaluator::getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
-    final.push_back(vector<string> {clause.clauseType.value});
+    finalTable.push_back(vector<string>{clause.clauseType.value});
 
 
     if (leftArg.type == TokenType::SYNONYM) {
+        // Add Synonym column header
+        finalTable[0].push_back(leftArg.value);
+
         // Synonym - WildCardString/String
-        if (rightArg.type == TokenType::WILDCARD) {
-            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESSV);
-            getLineNumInteresection(finalResult, allStmtWithRightArg, allAssignStmtLines);
+        if (rightArg.type != TokenType::WILDCARD) {
+            set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value,
+                                                                                 rightArgWildCardString);
 
-            for (int lines : finalResult) {
-                for (string v : servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
-                    final.push_back(vector<string> {to_string(lines), v});
+            for (int lines: allStmtWithRightArg) {
+                for (string v: servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
+                    finalTable.push_back(vector<string>{to_string(lines), v});
                 }
             }
         }
-        // Synonym - WildCard
+            // Synonym - WildCard
         else {
-            for (int lines : allAssignStmtLines) {
-                for (string v : servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
-                    final.push_back(vector<string> {to_string(lines), v});
+            for (int lines: allAssignStmtLines) {
+                for (string v: servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
+                    finalTable.push_back(vector<string>{to_string(lines), v});
                 }
             }
         }
-    }
+    } else {
+        vector<int> finalResult;
 
-    else {
         // String- WildCardString/String pattern a ("x", "x + y")
         if (leftArg.type == TokenType::STRING && checkWildCardStringOrString(rightArg.type)) {
-
-            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESSV);
-            vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::MODIFIESSV);
-            vector<int> intermediate;
-
-            getLineNumInteresection(intermediate, allStmtWithRightArg, allStmtWithLeftArg);
-            getLineNumInteresection(finalResult, intermediate, allAssignStmtLines);
+            set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value,
+                                                                                 rightArgWildCardString);
+            vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value,
+                                                                               StmtVarRelationType::MODIFIESSV);
+            vector<int> allStmtWithRightArgV = vector(allStmtWithRightArg.begin(), allStmtWithRightArg.end());
+            getLineNumInteresection(finalResult, allStmtWithRightArgV, allStmtWithLeftArg);
         }
 
-        // String - WildCard
+            // String - WildCard (Essentially a modifies statement)
         else if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::WILDCARD) {
-            vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::MODIFIESSV);
+            vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value,
+                                                                               StmtVarRelationType::MODIFIESSV);
             getLineNumInteresection(finalResult, allStmtWithLeftArg, allAssignStmtLines);
         }
 
-        // Wildcard- WildCardString/String
-        else if (leftArg.type == TokenType::WILDCARD && checkWildCardStringOrString(rightArg.type)) {
-            vector<int> allStmtWithRightArg = servicer->reverseRetrieveRelation(rightArg.value, StmtVarRelationType::USESSV);
+            // Wildcard- WildCardString/String
+        else {
+            set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value,
+                                                                                 rightArgWildCardString);
 
-            getLineNumInteresection(finalResult, allStmtWithRightArg, allAssignStmtLines);
+            finalResult = vector(allStmtWithRightArg.begin(), allStmtWithRightArg.end());
         }
 
-
-        for (int line : finalResult) {
-            final.push_back(vector<string> { to_string(line) });
+        for (int line: finalResult) {
+            finalTable.push_back(vector<string>{to_string(line)});
         }
     }
 
-    return JoinTable(final, intermediate);
-    
+    return JoinTable(finalTable, intermediate);
 }

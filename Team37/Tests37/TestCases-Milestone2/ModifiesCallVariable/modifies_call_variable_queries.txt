@@ -1,0 +1,10 @@
+1 - TEST 1
+variable v;
+Select v such that Modifies(3,v)
+t, u
+5000
+2 - TEST 2
+call c;
+Select c such that Modifies(c,"t")
+3
+5000

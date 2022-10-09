@@ -9,8 +9,8 @@ using namespace std;
 using namespace EvaluatorUtils;
 
 unordered_map<TokenType, ProcVarRelationType> tokenTypeToProcVarRelationType = {
-    { TokenType::USES_P, ProcVarRelationType::USESPV },
-    { TokenType::MODIFIES_P, ProcVarRelationType::MODIFIESPV },
+    { TokenType::USES, ProcVarRelationType::USESPV },
+    { TokenType::MODIFIES, ProcVarRelationType::MODIFIESPV },
 };
 
 
@@ -38,9 +38,8 @@ vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& cla
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
     ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
-    vector<vector<string>> final;
+    vector<vector<string>> finalTable;
     vector<string> finalResult;
-    vector<string> intermediateStmtLines;
     vector<string> allProcedures;
 
     for (Procedure p : servicer->getAllProc()) {
@@ -49,44 +48,46 @@ vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& cla
 
     // Synonym-Synonym --> Eg. Uses(p, v) 
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
+        finalTable.push_back(vector<string> { leftArg.value, rightArg.value });
+
         for (string procedure : allProcedures) {
             for (string v : servicer->forwardRetrieveRelation(procedure, pv)) {
-                final.push_back(vector<string> { procedure , v });
+                finalTable.push_back(vector<string> { procedure , v });
             }
         }
     }
 
     // For wildcards --> Uses(p,_)
     else if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::WILDCARD) {
+        finalTable.push_back(vector<string> { leftArg.value });
+
         for (string procedure : allProcedures) {
             if (!servicer->forwardRetrieveRelation(procedure, pv).empty()) {
-                final.push_back(vector<string>{ procedure });
+                finalTable.push_back(vector<string>{ procedure });
             }
         }
     }
 
     // Synonym-string --> Eg. Uses(p, "x") 
     else if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STRING) {
-        intermediateStmtLines = servicer->reverseRetrieveRelation(rightArg.value, pv);
-        getLineNumInteresection(finalResult, allProcedures, intermediateStmtLines);
+        finalTable.push_back(vector<string> { leftArg.value });
+        vector<string> intermediateStmtLines = servicer->reverseRetrieveRelation(rightArg.value, pv);
 
-        for (string procedure : finalResult) {
-            final.push_back(vector<string> { procedure });
+        for (string procedure : intermediateStmtLines) {
+            finalTable.push_back(vector<string> { procedure });
         }
     }
 
-    // StmtNum-Synonym --> Eg. Modifies("procedure", s) 
-    else if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::SYNONYM) {
+    // string-Synonym --> Eg. Modifies("procedure", s) 
+    else if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::SYNONYM) {
+        finalTable.push_back(vector<string> { rightArg.value });
+
         vector<string> intermediateVariables = servicer->forwardRetrieveRelation(leftArg.value, pv);
 
         for (string v : intermediateVariables) {
-            final.push_back(vector<string> { v });
+            finalTable.push_back(vector<string> { v });
         }
     }
 
-    
-    return JoinTable(intermediate, final);
-        // Join With Intermediate table
-    
-
+    return JoinTable(intermediate, finalTable);
 }

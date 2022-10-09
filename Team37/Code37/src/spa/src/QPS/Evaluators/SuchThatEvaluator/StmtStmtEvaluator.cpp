@@ -61,25 +61,19 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
     // Synonym-Synonym --> Eg. Follows(s1, s2) 
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string> { leftArg.value, rightArg.value});
+
         StatementType st1 = tokenTypeToStatementType[declarations[leftArg.value]];
         StatementType st2 = tokenTypeToStatementType[declarations[rightArg.value]];
 
-        vector<int> allLineNumOfLeftSynonym;
-        vector<int> allLineNumOfRightSynonym;
-
-        for (shared_ptr<Statement> s : servicer->getAllStmt(st1)) {
-            allLineNumOfLeftSynonym.push_back(s->getLineNum());
-        }
-
-        for (shared_ptr<Statement> s : servicer->getAllStmt(st2)) {
-            allLineNumOfRightSynonym.push_back(s->getLineNum());
-        }
+        vector<int> allLineNumOfLeftSynonym = getAllLineNumOfStmtType(st1);
+        vector<int> allLineNumOfRightSynonym = getAllLineNumOfStmtType(st2);
 
         // For each s1, we get the forward retrieve, aka possible s2 such that Follows(s1,s2)
         // Intersect possible s2 with all statements of type s2
         // Add combinations of (s1, s2) into table
         for (int leftSynonym : allLineNumOfLeftSynonym) {
             intermediateStmtLines = servicer->forwardRetrieveRelation(leftSynonym, ss);
+            finalResult.clear();
             getLineNumInteresection(finalResult, intermediateStmtLines, allLineNumOfRightSynonym);
 
             for (int rightSynonym : finalResult) {
@@ -92,11 +86,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         string synonymValue = leftArg.type == TokenType::SYNONYM ? leftArg.value : rightArg.value;
         finalTable.push_back(vector<string> { synonymValue });
         StatementType st = tokenTypeToStatementType[declarations[synonymValue]];
-        vector<int> allLineNumOfSynonym;
-        
-        for (shared_ptr<Statement> s : servicer->getAllStmt(st)) {
-            allLineNumOfSynonym.push_back(s->getLineNum());
-        }
+        vector<int> allLineNumOfSynonym = getAllLineNumOfStmtType(st);
 
             
         // Synonym-WildCard --> Eg. Follows(s, _) 
@@ -135,11 +125,8 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
                 finalTable.push_back(vector<string> { to_string(line) } );
             }
         }
-
-            
-        // Join With Intermediate table
-        return JoinTable(intermediate, finalTable);
-
     }
 
+    // Join With Intermediate table
+    return JoinTable(intermediate, finalTable);
 }

@@ -583,6 +583,8 @@ vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node) {
     vector<int> lstLineNum = {};
     // add children
     for (const auto &childNode: node->getChildren()) {
+        //TODO: check if node has been visited(while loop)
+        // add children stmt to list
         shared_ptr<TNode> TNode = childNode->getTNode();
         if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
             shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
@@ -620,7 +622,7 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
 
         case (NEXTS):
             for (const auto &parentNode: cfgNode->getParents()) {
-                // add children stmt to list
+                // add parent stmt to list
                 shared_ptr<TNode> TNode = parentNode->getTNode();
                 if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
                     shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
@@ -647,6 +649,8 @@ vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node) {
 
     // add parents
     for (const auto &parentNode: node->getParents()) {
+        //TODO: check if node has been visited(while loop)
+        // add parent stmt to list
         shared_ptr<TNode> TNode = parentNode->getTNode();
         if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
             shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);

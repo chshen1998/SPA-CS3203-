@@ -188,16 +188,24 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
     switch (type) {
         case (FOLLOWS):
             return Follows.retrieve(stmt1, stmt2);
-            break;
         case (FOLLOWSS):
             return FollowsS.retrieve(stmt1, stmt2);
-            break;
         case (PARENT):
             return Parent.retrieve(stmt1, stmt2);
-            break;
         case (PARENTS):
             return ParentS.retrieve(stmt1, stmt2);
-            break;
+        case (NEXT): {
+            vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXT);
+
+            // search for stmt2 in all lineNum that fulfil Next(stmt1,_)
+            return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
+        }
+        case (NEXTS): {
+            vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXTS);
+
+            // search for stmt2 in all lineNum that fulfil Nexts(stmt1,_)
+            return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
+        }
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
     }
@@ -250,22 +258,6 @@ vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType typ
             break;
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
-    }
-    switch (type) {
-        case (FOLLOWS):
-            return Follows.forwardRetrieve(stmt1);
-            break;
-        case (FOLLOWSS):
-            return FollowsS.forwardRetrieve(stmt1);
-            break;
-        case (PARENT):
-            return Parent.forwardRetrieve(stmt1);
-            break;
-        case (PARENTS):
-            return ParentS.forwardRetrieve(stmt1);
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Statement Relation");
     }
 }
 
@@ -566,13 +558,12 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
                     lstLineNum.push_back(lineNum);
                 }
-
                 // recursively compute all transitively Next*(stmt, _)
                 vector<int> childrenLineNums = this->getNextStarForwardLineNum(childNode);
                 lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
             }
             // reset visited map
-            this->visited = {};
+            this->visited = make_shared<map<int, bool >>();
             return lstLineNum;
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
@@ -597,7 +588,7 @@ vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node) {
             if (visited->find(lineNum) != visited->end()) {
                 continue;
             } else {
-                // add children stmt to list
+                // add children stmt to1 list
                 visited->insert({lineNum, true});
                 lstLineNum.push_back(lineNum);
 
@@ -685,6 +676,5 @@ vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node) {
             }
         }
     }
-
     return lstLineNum;
 }

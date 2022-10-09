@@ -271,7 +271,7 @@ Retrieve Relation Stored. For Relation(proc1, proc2)
 @returns If Relation(proc1, proc2) is True
 */
 bool QueryServicer::retrieveRelation(string proc1, string proc2, ProcProcRelationType type) {
-	return storage->retrieveRelation(proc1, proc2, type);
+    return storage->retrieveRelation(proc1, proc2, type);
 }
 
 /*
@@ -281,7 +281,7 @@ Retrieve Forward Relation Stored. For Relation(proc1, proc2)
 @returns All var such that Relation(proc1, proc2) is True
 */
 vector<string> QueryServicer::forwardRetrieveRelation(string proc1, ProcProcRelationType type) {
-	return storage->forwardRetrieveRelation(proc1, type);
+    return storage->forwardRetrieveRelation(proc1, type);
 }
 
 /*
@@ -291,13 +291,13 @@ Retrieve Reverse Relation Stored. For Relation(proc1, proc2)
 @returns All stmt1 such that Relation(proc1, proc2) is True
 */
 vector<string> QueryServicer::reverseRetrieveRelation(string proc2, ProcProcRelationType type) {
-	return storage->reverseRetrieveRelation(proc2, type);
+    return storage->reverseRetrieveRelation(proc2, type);
 }
 
-vector<int> QueryServicer::forwardComputeRelation(int stmt, StmtStmtRelationType type){
-    return storage->forwardComputeRelation(stmt,type);
+vector<int> QueryServicer::forwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    return storage->forwardComputeRelation(stmt, type);
 }
 
-vector<int> QueryServicer::backwardComputeRelation(int stmt, StmtStmtRelationType type){
-    return storage->backwardComputeRelation(stmt,type)
+vector<int> QueryServicer::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    return storage->backwardComputeRelation(stmt, type);
 }

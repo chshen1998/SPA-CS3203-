@@ -125,6 +125,14 @@ set<shared_ptr<Statement>> Storage::getAllStmt() {
     return this->statements;
 }
 
+// CFG
+/*
+ * Stores CFGMap
+ */
+void Storage::storeCFGMap(vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > CFGMap) {
+    this->CFGMap = CFGMap;
+}
+
 /**
  * after traversing the AST we have to store the Uses(c,v) relations that was not handled in the queue
  */
@@ -523,5 +531,27 @@ void Storage::buildStar(ProcProcRelationType type) {
             break;
         default:
             throw invalid_argument("Not a Procedure-Procedure Realtion");
+    }
+}
+
+vector<int> forwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    switch (type) {
+        case (NEXT):
+            break;
+        case (NEXTS):
+            break;
+        default:
+            throw invalid_argument("Not a Statement-Statement Relation");
+    }
+}
+
+vector<int> backwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    switch (type) {
+        case (NEXT):
+            break;
+        case (NEXTS):
+            break;
+        default:
+            throw invalid_argument("Not a Statement-Statement Relation");
     }
 }

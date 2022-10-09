@@ -38,9 +38,7 @@ struct PqlToken {
 
 public:
     // For debugging when writing unit tests
-    friend ostream& operator<< (std::ostream& os, const PqlToken& token);
-       
+    friend ostream& operator<< (std::ostream& os, const PqlToken& token); 
 };
-
 
 #endif 

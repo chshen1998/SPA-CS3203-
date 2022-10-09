@@ -61,6 +61,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
     // Synonym-Synonym --> Eg. Follows(s1, s2) 
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string> { leftArg.value, rightArg.value});
+
         StatementType st1 = tokenTypeToStatementType[declarations[leftArg.value]];
         StatementType st2 = tokenTypeToStatementType[declarations[rightArg.value]];
 
@@ -72,6 +73,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         // Add combinations of (s1, s2) into table
         for (int leftSynonym : allLineNumOfLeftSynonym) {
             intermediateStmtLines = servicer->forwardRetrieveRelation(leftSynonym, ss);
+            finalResult.clear();
             getLineNumInteresection(finalResult, intermediateStmtLines, allLineNumOfRightSynonym);
 
             for (int rightSynonym : finalResult) {
@@ -123,10 +125,8 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
                 finalTable.push_back(vector<string> { to_string(line) } );
             }
         }
-
-        // Join With Intermediate table
-        return JoinTable(intermediate, finalTable);
-
     }
 
+    // Join With Intermediate table
+    return JoinTable(intermediate, finalTable);
 }

@@ -34,6 +34,7 @@ std::ostream& operator<< (std::ostream& os, const PqlToken& token) {
     case(TokenType::ELSE): typeString = "else"; break;
     case(TokenType::PRINT): typeString = "print"; break;
     case(TokenType::CALL): typeString = "call"; break;
+    case(TokenType::READ): typeString = "read"; break;
     case(TokenType::SYNONYM): typeString = "synonym"; break;
     case(TokenType::NUMBER): typeString = "number"; break;
     case(TokenType::STATEMENT_NUM): typeString = "statement_num"; break;

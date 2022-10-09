@@ -57,7 +57,7 @@ vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vect
     }
 
     for (int i = 0; i < v2[0].size(); i++) {
-        if (commonColumn.find(v2[0][i]) == commonColumn.end()) {
+        if (commonColumn.find(v2[0][i]) != commonColumn.end()) {
             tableTwoCommonIndex.insert(i);
         }
         else {

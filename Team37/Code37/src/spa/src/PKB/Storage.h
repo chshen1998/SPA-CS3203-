@@ -144,7 +144,10 @@ public:
 
     vector<int> backwardComputeRelation(int, StmtStmtRelationType);
 
-    vector<int> getNextStarLineNum(shared_ptr<CFGNode>);
+    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>);
+
+    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>);
+
 };
 
 #endif

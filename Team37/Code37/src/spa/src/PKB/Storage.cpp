@@ -129,8 +129,8 @@ set<shared_ptr<Statement>> Storage::getAllStmt() {
 /*
  * Stores CFGMap
  */
-void Storage::storeCFGMap(shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap) {
-    this->CFGMap = CFGMap;
+void Storage::storeCFGMap(shared_ptr<map<int, shared_ptr<CFGNode>>> map) {
+    this->CFGMap = map;
 }
 
 /**
@@ -534,16 +534,66 @@ void Storage::buildStar(ProcProcRelationType type) {
     }
 }
 
+/*
+Compute Forward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
+@param stmt lineNum
+@param type Type of relation
+@returns All stmt2 such that Relation(stmt, stmt2) is True
+*/
 vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+    vector<int> lstLineNum = {};
+
     switch (type) {
         case (NEXT):
-//            this->CFGMap.get
-            break;
+            for (const auto &childNode: cfgNode->getChildren()) {
+                shared_ptr<TNode> TNode = childNode->getTNode();
+                if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
+                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
+                    lstLineNum.push_back(stmt->getLineNum());
+                }
+            }
+            return lstLineNum;
         case (NEXTS):
-            break;
+            for (const auto &childNode: cfgNode->getChildren()) {
+                // add children stmt to list
+                shared_ptr<TNode> TNode = childNode->getTNode();
+                if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
+                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
+                    lstLineNum.push_back(stmt->getLineNum());
+                }
+
+                // recursively compute all transitively Next*(stmt, _)
+                vector<int> childrenLineNum = this->getNextStarLineNum(childNode);
+                lstLineNum.insert(lstLineNum.end(), childrenLineNum.begin(), childrenLineNum.end());
+            }
+            return lstLineNum;
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }
+}
+
+/**
+ * helper function to recursively get all line numbers of child nodes in CFGNode
+ * @param node
+ * @return lines numbers of all child nodes(recursively) where Next*(n1, n2)
+ */
+vector<int> Storage::getNextStarLineNum(shared_ptr<CFGNode> node) {
+    vector<int> lstLineNum = {};
+    // add children
+    for (const auto &childNode: node->getChildren()) {
+        shared_ptr<TNode> TNode = childNode->getTNode();
+        if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
+            shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
+
+            lstLineNum.push_back(stmt->getLineNum());
+
+            //recursively get child nodes
+            vector<int> childrenLineNum = getNextStarLineNum(childNode);
+            lstLineNum.insert(lstLineNum.end(), childrenLineNum.begin(), childrenLineNum.end());
+        }
+    }
+    return lstLineNum;
 }
 
 vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type) {

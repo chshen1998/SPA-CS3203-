@@ -36,10 +36,11 @@ vector<shared_ptr<CFG> > SourceCode::getAllCFGs() {
     return CFGLst;
 }
 
-vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > SourceCode::getAllCFGMaps() {
-    vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > allMaps;
+shared_ptr<map<int, shared_ptr<CFGNode>>> SourceCode::getAllCFGMaps() {
+    shared_ptr<map<int, shared_ptr<CFGNode>>> allMaps = make_shared<map<int, shared_ptr<CFGNode>>>();
     for (auto p: this->procedureLst) {
-        allMaps.push_back(p->getCFG()->getMap());
+        shared_ptr<map<int, shared_ptr<CFGNode>>> mapInProcedure = p->getCFG()->getMap();
+        allMaps->insert(mapInProcedure->begin(), mapInProcedure->end());
     }
     return allMaps;
 }

@@ -39,7 +39,7 @@ using namespace std;
 class Storage : public enable_shared_from_this<Storage> {
 private:
     shared_ptr<SourceCode> AST;
-    vector<shared_ptr<map<int, shared_ptr<CFGNode>>>> CFGMap;
+    shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap;
 
     set<NameExpression> variables = {};
     set<ConstantExpression> constants = {};
@@ -94,7 +94,7 @@ public:
 
     set<shared_ptr<Statement>> getAllStmt();
 
-    void storeCFGMap(vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > CFGMap);
+    void storeCFGMap(shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap);
 
     // Post-traversal
     void storeCallStmtProcedure(ProcVarRelationType, StmtVarRelationType);

@@ -28,7 +28,7 @@ public:
 
     void buildFromAst(shared_ptr<SourceCode> AST);
 
-    void buildFromCFG(vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > CFGMap);
+    void buildFromCFG(shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap);
 };
 
 #endif

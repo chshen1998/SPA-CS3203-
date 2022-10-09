@@ -129,7 +129,7 @@ set<shared_ptr<Statement>> Storage::getAllStmt() {
 /*
  * Stores CFGMap
  */
-void Storage::storeCFGMap(vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > CFGMap) {
+void Storage::storeCFGMap(shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap) {
     this->CFGMap = CFGMap;
 }
 
@@ -534,9 +534,10 @@ void Storage::buildStar(ProcProcRelationType type) {
     }
 }
 
-vector<int> forwardComputeRelation(int stmt, StmtStmtRelationType type) {
+vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type) {
     switch (type) {
         case (NEXT):
+//            this->CFGMap.get
             break;
         case (NEXTS):
             break;
@@ -545,7 +546,7 @@ vector<int> forwardComputeRelation(int stmt, StmtStmtRelationType type) {
     }
 }
 
-vector<int> backwardComputeRelation(int stmt, StmtStmtRelationType type) {
+vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
     switch (type) {
         case (NEXT):
             break;

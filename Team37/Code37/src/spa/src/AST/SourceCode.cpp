@@ -26,6 +26,20 @@ void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
     visitor->visitSourceCode(shared_from_this());
 }
 
-//int SourceCode::getNumStmts() {
-//    return this->numStmts;
-//}
+
+vector<shared_ptr<CFG> > SourceCode::getAllCFGs() {
+    vector<shared_ptr<CFG>> CFGLst;
+    for (auto p : this->procedureLst) {
+        p->buildCFG(p->getProcedureName());
+        CFGLst.push_back(p->getCFG());
+    }
+    return CFGLst;
+}
+
+vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > SourceCode::getAllCFGMaps() {
+    vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > allMaps;
+    for (auto p : this->procedureLst) {
+        allMaps.push_back(p->getCFG()->getMap());
+    }
+    return allMaps;
+}

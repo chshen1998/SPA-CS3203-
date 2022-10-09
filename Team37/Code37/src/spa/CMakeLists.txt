@@ -96,7 +96,7 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Tokenizers/PatternTokenizer.cpp
         src/QPS/Tokenizers/WithTokenizer.cpp
         src/QPS/Tokenizers/TokenizerUtils.cpp
-       
+
 
 
         src/PKB/PKB.h
@@ -113,12 +113,12 @@ add_library(spa ${srcs} ${headers}
         src/PKB/Types/StatementType.h
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.cpp
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.h
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
 
         "src/PKB/Structures/RelationStorage.h"
         "src/PKB/Structures/RelationStarStorage.h"
@@ -141,27 +141,32 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Types/TokenType.cpp
         src/QPS/Types/ErrorType.cpp
         src/QPS/Structures/PqlToken.cpp
-        src/PKB/Types/ProcVarRelationType.h 
-        "src/QPS/Validators/NextValidator.h" 
-        "src/QPS/Validators/NextValidator.cpp" 
-        "src/QPS/Validators/AffectsValidator.h" 
-        "src/QPS/Validators/AffectsValidator.cpp" 
-        "src/QPS/Validators/WithValidator.h" 
-        "src/QPS/Validators/WithValidator.cpp" 
-        "src/QPS/Structures/PqlQuery.cpp" 
-        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h" 
-        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.cpp" 
+        src/PKB/Types/ProcVarRelationType.h
+        src/CFG/CFGNode.cpp
+        src/CFG/CFGNode.h
+        src/CFG/CFG.cpp
+        src/CFG/CFG.h
+        src/PKB/Types/ProcVarRelationType.h
+        "src/QPS/Validators/NextValidator.h"
+        "src/QPS/Validators/NextValidator.cpp"
+        "src/QPS/Validators/AffectsValidator.h"
+        "src/QPS/Validators/AffectsValidator.cpp"
+        "src/QPS/Validators/WithValidator.h"
+        "src/QPS/Validators/WithValidator.cpp"
+        "src/QPS/Structures/PqlQuery.cpp"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.cpp"
         "src/QPS/Evaluators/SuchThatEvaluator/SuchThatEvaluator.h"
-         "src/QPS/Evaluators/EvaluatorUtils.h" 
-         "src/QPS/Evaluators/EvaluatorUtils.cpp" 
-         "src/QPS/Evaluators/GeneralEvaluator.cpp" 
-         "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h" 
-         "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.cpp" 
-         "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.cpp" 
-         "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"  
-         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.h" 
-         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.cpp" 
-         "src/QPS/Evaluators/WithEvaluator.h" 
+         "src/QPS/Evaluators/EvaluatorUtils.h"
+         "src/QPS/Evaluators/EvaluatorUtils.cpp"
+         "src/QPS/Evaluators/GeneralEvaluator.cpp"
+         "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
+         "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.cpp"
+         "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.cpp"
+         "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
+         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
+         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.cpp"
+         "src/QPS/Evaluators/WithEvaluator.h"
          "src/QPS/Evaluators/WithEvaluator.cpp"
           "src/PKB/Types/ProcProcRelationType.h")
 

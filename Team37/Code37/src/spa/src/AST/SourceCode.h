@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Procedure.h"
+#include "CFG/CFG.h"
 
 class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
@@ -51,6 +52,18 @@ public:
     int getNumOfStatements() const;
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
+
+    /**
+     * Gets all the CFG associated with each procedure in the source code.
+     * @return vector containing all CFGs in the program
+     */
+    vector<shared_ptr<CFG> > getAllCFGs();
+
+    /**
+     * Gets all the statement number to CFG node mappings for every procedure
+     * @return all the statement number to CFG node mappings for every procedure
+     */
+    vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > getAllCFGMaps();
 
     bool operator==(const SourceCode &other) {
         return procedureLst == other.procedureLst && filename == other.filename;

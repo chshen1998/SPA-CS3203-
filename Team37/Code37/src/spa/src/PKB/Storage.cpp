@@ -561,13 +561,18 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
                 shared_ptr<TNode> TNode = childNode->getTNode();
                 if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
                     shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
-                    lstLineNum.push_back(stmt->getLineNum());
+                    int lineNum = stmt->getLineNum();
+                    visited->insert({lineNum, true});
+
+                    lstLineNum.push_back(lineNum);
                 }
 
                 // recursively compute all transitively Next*(stmt, _)
                 vector<int> childrenLineNums = this->getNextStarForwardLineNum(childNode);
                 lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
             }
+            // reset visited map
+            this->visited = {};
             return lstLineNum;
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
@@ -583,17 +588,23 @@ vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node) {
     vector<int> lstLineNum = {};
     // add children
     for (const auto &childNode: node->getChildren()) {
-        //TODO: check if node has been visited(while loop)
-        // add children stmt to list
         shared_ptr<TNode> TNode = childNode->getTNode();
         if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
             shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
+            int lineNum = stmt->getLineNum();
 
-            lstLineNum.push_back(stmt->getLineNum());
+            //check if node has been visited(while loop)
+            if (visited->find(lineNum) != visited->end()) {
+                continue;
+            } else {
+                // add children stmt to list
+                visited->insert({lineNum, true});
+                lstLineNum.push_back(lineNum);
 
-            //recursively get child nodes
-            vector<int> childrenLineNums = getNextStarForwardLineNum(childNode);
-            lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
+                //recursively get child nodes
+                vector<int> childrenLineNums = getNextStarForwardLineNum(childNode);
+                lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
+            }
         }
     }
     return lstLineNum;
@@ -626,13 +637,18 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
                 shared_ptr<TNode> TNode = parentNode->getTNode();
                 if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
                     shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
-                    lstLineNum.push_back(stmt->getLineNum());
+                    int lineNum = stmt->getLineNum();
+                    visited->insert({lineNum, true});
+                    lstLineNum.push_back(lineNum);
                 }
 
                 // recursively compute all transitively Next*(stmt, _)
                 vector<int> parentLineNums = this->getNextStarBackwardLineNum(parentNode);
                 lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
             }
+            // reset visited map
+            this->visited = make_shared<map<int, bool >>();
+
             return lstLineNum;
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
@@ -647,20 +663,28 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
 vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node) {
     vector<int> lstLineNum = {};
 
-    // add parents
     for (const auto &parentNode: node->getParents()) {
-        //TODO: check if node has been visited(while loop)
-        // add parent stmt to list
         shared_ptr<TNode> TNode = parentNode->getTNode();
+
         if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
             shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
+            int lineNum = stmt->getLineNum();
 
-            lstLineNum.push_back(stmt->getLineNum());
 
-            //recursively get child nodes
-            vector<int> parentLineNums = getNextStarBackwardLineNum(parentNode);
-            lstLineNum.insert(parentLineNums.end(), parentLineNums.begin(), parentLineNums.end());
+            // IF FOUND
+            if (visited->find(lineNum) != visited->end()) {
+                continue;
+            } else {
+                // add parent stmt to list
+                visited->insert({lineNum, true});
+                lstLineNum.push_back(lineNum);
+
+                //recursively get parent nodes
+                vector<int> parentLineNums = getNextStarBackwardLineNum(parentNode);
+                lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
+            }
         }
     }
+
     return lstLineNum;
 }

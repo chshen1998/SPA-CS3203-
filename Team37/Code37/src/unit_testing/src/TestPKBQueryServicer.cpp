@@ -172,7 +172,6 @@ TEST_CASE("QueryServicer - Next Backward") {
                      "        } else {\n"
                      "            read flag;\n"
                      "        }"
-                     "        x = 5;"
                      "    }\n"
                      "    call abc;"
                      "}\n";
@@ -185,10 +184,15 @@ TEST_CASE("QueryServicer - Next Backward") {
 
     vector<int> nextStatements = pkb->getQueryServicer()->backwardComputeRelation(2, NEXT);
     // Contain lines 1 and 6
-    REQUIRE(nextStatements.size() == 2);
+    REQUIRE(nextStatements.size() == 1);
 
-    vector<int> nextStarStatements = pkb->getQueryServicer()->backwardComputeRelation(2, NEXTS);
-//    REQUIRE(nextStarStatements.size() == 2);
+//     Handle Next star for while loops
+    vector<int> nextStarStatements1 = pkb->getQueryServicer()->backwardComputeRelation(6, NEXTS);
+    REQUIRE(nextStarStatements1.size() == 2);
+    
+    vector<int> nextStarStatements2 = pkb->getQueryServicer()->backwardComputeRelation(4, NEXTS);
+
+    REQUIRE(nextStarStatements2.size() == 3);
 }
 
 TEST_CASE("QueryServicer - Next Backward While Statement") {

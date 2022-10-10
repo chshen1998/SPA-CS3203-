@@ -98,7 +98,6 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Tokenizers/TokenizerUtils.cpp
 
 
-
         src/PKB/PKB.h
         src/PKB/PKB.cpp
         src/PKB/QueryServicer.h
@@ -113,11 +112,6 @@ add_library(spa ${srcs} ${headers}
         src/PKB/Types/StatementType.h
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.cpp
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.h
-
-
-
-
-
 
 
         "src/PKB/Structures/RelationStorage.h"
@@ -157,18 +151,20 @@ add_library(spa ${srcs} ${headers}
         "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h"
         "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.cpp"
         "src/QPS/Evaluators/SuchThatEvaluator/SuchThatEvaluator.h"
-         "src/QPS/Evaluators/EvaluatorUtils.h"
-         "src/QPS/Evaluators/EvaluatorUtils.cpp"
-         "src/QPS/Evaluators/GeneralEvaluator.cpp"
-         "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
-         "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.cpp"
-         "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.cpp"
-         "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
-         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
-         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.cpp"
-         "src/QPS/Evaluators/WithEvaluator.h"
-         "src/QPS/Evaluators/WithEvaluator.cpp"
-          "src/PKB/Types/ProcProcRelationType.h")
+        "src/QPS/Evaluators/EvaluatorUtils.h"
+        "src/QPS/Evaluators/EvaluatorUtils.cpp"
+        "src/QPS/Evaluators/GeneralEvaluator.cpp"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.cpp"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.cpp"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
+        "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
+        "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.cpp"
+        "src/QPS/Evaluators/WithEvaluator.h"
+        "src/QPS/Evaluators/WithEvaluator.cpp"
+        "src/PKB/Types/ProcProcRelationType.h"
+        "src/AST/ASTVisitor/ExtractCallsASTVisitor.cpp"
+        "src/AST/ASTVisitor/ExtractCallsASTVisitor.h")
 
 
 # this makes the headers accessible for other projects which uses spa lib

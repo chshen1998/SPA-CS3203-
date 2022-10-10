@@ -81,6 +81,11 @@ public:
     vector<string> forwardRetrieveRelation(string, ProcProcRelationType);
 
     vector<string> reverseRetrieveRelation(string, ProcProcRelationType);
+
+    // Process Relations(Next/Affects)
+    vector<int> forwardComputeRelation(int, StmtStmtRelationType);
+
+    vector<int> backwardComputeRelation(int, StmtStmtRelationType);
 };
 
 #endif

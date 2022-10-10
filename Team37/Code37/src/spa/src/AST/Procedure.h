@@ -56,12 +56,12 @@ public:
     void buildCFG(string procName);
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
-
-    bool operator==(const Procedure& other) const {
+    
+    bool operator==(const Procedure &other) const {
         return procedureName == other.procedureName && stmtLst == other.stmtLst;
     };
 
-    bool operator<(const Procedure& other) const {
+    bool operator<(const Procedure &other) const {
         return procedureName > other.procedureName;
     };
 };

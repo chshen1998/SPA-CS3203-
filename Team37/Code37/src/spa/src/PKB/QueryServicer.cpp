@@ -292,3 +292,11 @@ Retrieve Reverse Relation Stored. For Relation(proc1, proc2)
 vector<string> QueryServicer::reverseRetrieveRelation(string proc2, ProcProcRelationType type) {
     return storage->reverseRetrieveRelation(proc2, type);
 }
+
+vector<int> QueryServicer::forwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    return storage->forwardComputeRelation(stmt, type);
+}
+
+vector<int> QueryServicer::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    return storage->backwardComputeRelation(stmt, type);
+}

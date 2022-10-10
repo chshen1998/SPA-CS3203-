@@ -15,6 +15,7 @@
 #include "../AST/TNode.h"
 #include "../AST/Procedure.h"
 #include "../AST/SourceCode.h"
+#include "../AST/Statement/Statement.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/ASTVisitor/ExtractGeneralASTVisitor.h"
@@ -22,9 +23,9 @@
 #include "../AST/ASTVisitor/ExtractParentsASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractModifiesASTVisitor.h"
 #include "../AST/ASTVisitor/ExtractUsesASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractCallsASTVisitor.h"
+#include "../CFG/CFG.h"
 
-
-#include "../AST/Statement/Statement.h"
 #include "Structures/RelationStorage.h"
 #include "Structures/RelationStarStorage.h"
 
@@ -38,10 +39,14 @@ using namespace std;
 class Storage : public enable_shared_from_this<Storage> {
 private:
     shared_ptr<SourceCode> AST;
+    shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap;
+
     set<NameExpression> variables = {};
     set<ConstantExpression> constants = {};
     set<Procedure> procedures = {};
     set<shared_ptr<Statement>> statements = {};
+    shared_ptr<map<int, bool >> visited =
+            make_shared<map<int, bool >>();
 
     // RelationalStore<int, int> Follows = RelationalStore<int, int>();
     RelationStarStorage<int, int> Follows = RelationStarStorage<int, int>();
@@ -91,6 +96,8 @@ public:
 
     set<shared_ptr<Statement>> getAllStmt();
 
+    void storeCFGMap(shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap);
+
     // Post-traversal
     void storeCallStmtProcedure(ProcVarRelationType, StmtVarRelationType);
 
@@ -133,6 +140,16 @@ public:
     vector<std::string> reverseRetrieveRelation(std::string, ProcProcRelationType);
 
     void buildStar(ProcProcRelationType);
+
+    // Process Relations(Next/Affects)
+    vector<int> forwardComputeRelation(int, StmtStmtRelationType);
+
+    vector<int> backwardComputeRelation(int, StmtStmtRelationType);
+
+    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>);
+
+    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>);
+
 };
 
 #endif

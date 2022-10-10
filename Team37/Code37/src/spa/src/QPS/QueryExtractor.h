@@ -18,6 +18,7 @@ public:
     vector<PqlToken> tokens;
     int size;
     int next;
+    bool booleanIsSynonym;
     PqlQuery pq;
 
     QueryExtractor(vector<PqlToken> tokenVector);

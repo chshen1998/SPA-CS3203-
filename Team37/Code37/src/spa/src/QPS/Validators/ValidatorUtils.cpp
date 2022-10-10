@@ -83,6 +83,11 @@ set<TokenType> validAttrName = {
     TokenType::STMTLINE
 };
 
+set<TokenType> validAttrType = {
+    TokenType::STRING,
+    TokenType::NUMBER,
+};
+
 set<TokenType> validPatternType = {
     TokenType::ASSIGN,
     TokenType::WHILE,
@@ -104,4 +109,17 @@ unordered_map<TokenType, string> relationshipToStringMap = {
     {TokenType::NEXT_A, "Next*"},
     {TokenType::AFFECTS, "Affects"},
     {TokenType::AFFECTS_A, "Affects*"}
+};
+
+unordered_map<TokenType, set<TokenType>> validSynonymToAttrMap = {
+    {TokenType::PROCEDURE, {TokenType::PROCNAME}},
+    {TokenType::CALL, {TokenType::PROCNAME, TokenType::STMTLINE}},
+    {TokenType::VARIABLE, {TokenType::VARNAME}},
+    {TokenType::READ, {TokenType::VARNAME, TokenType::STMTLINE}},
+    {TokenType::PRINT, {TokenType::VARNAME, TokenType::STMTLINE}},
+    {TokenType::CONSTANT, {TokenType::VALUE}},
+    {TokenType::STATEMENT, {TokenType::STMTLINE}},
+    {TokenType::WHILE, {TokenType::STMTLINE}},
+    {TokenType::IF, {TokenType::STMTLINE}},
+    {TokenType::ASSIGN, {TokenType::STMTLINE}}
 };

@@ -54,6 +54,23 @@ TEST_CASE("Valid Select boolean") {
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+
+TEST_CASE("Valid Select declared boolean synonym") {
+	QueryValidator sut = QueryValidator(valid_select_declared_boolean);
+	PqlError results = sut.validateQuery();
+	REQUIRE(results.message == "");
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Select declared boolean synonym attrName") {
+	QueryValidator sut = QueryValidator(valid_select_declared_boolean_attrname);
+	PqlError results = sut.validateQuery();
+	REQUIRE(results.message == "");
+
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
 TEST_CASE("Valid Select attrName") {
 	QueryValidator sut = QueryValidator(valid_select_attrname);
 	PqlError results = sut.validateQuery();
@@ -120,6 +137,16 @@ TEST_CASE("Valid Pattern clause assign")
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+TEST_CASE("Valid Pattern clause assign with BOOLEAN as assign")
+{
+	QueryValidator sut = QueryValidator(valid_pattern_assign_boolean);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+
 TEST_CASE("Valid Pattern clause while")
 {
 	QueryValidator sut = QueryValidator(valid_pattern_while);
@@ -146,6 +173,15 @@ TEST_CASE("Valid multi-pattern")
 	REQUIRE(results.message == "");
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
+
+TEST_CASE("Error: Invalid Pattern wildcard string")
+{
+	QueryValidator sut = QueryValidator(invalid_pattern_wildcard_string);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
 
 TEST_CASE("Error: Invalid Pattern while parameter type")
 {
@@ -327,6 +363,23 @@ TEST_CASE("Valid multi Pattern, With and Such That clauses")
 	REQUIRE(results.message == "");
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
+
+TEST_CASE("Invalid With clause synonym to attrName type mismatch")
+{
+	QueryValidator sut = QueryValidator(invalid_with_attrname_mismatch);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
+TEST_CASE("Invalid With clause ref type mismatch")
+{
+	QueryValidator sut = QueryValidator(invalid_with_ref_mismatch);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+}
+
 
 TEST_CASE("Invalid With clause parameter type")
 {

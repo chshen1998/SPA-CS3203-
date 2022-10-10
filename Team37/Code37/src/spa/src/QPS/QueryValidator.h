@@ -22,6 +22,7 @@ public:
     vector<PqlToken> tokens;
     int size;
     int next;
+    bool booleanIsSynonym;
     unordered_map<string, TokenType> declarations;
 
     QueryValidator(vector<PqlToken> tokens);

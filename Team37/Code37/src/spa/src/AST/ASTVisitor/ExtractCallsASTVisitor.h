@@ -7,6 +7,7 @@ using namespace std;
 
 #include <vector>
 #include <memory>
+#include <string>
 
 class ExtractCallsASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:

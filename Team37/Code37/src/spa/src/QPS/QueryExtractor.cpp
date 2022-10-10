@@ -18,6 +18,7 @@ QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector)
     tokens = tokenVector;
     size = tokens.size();
     next = 0;
+    booleanIsSynonym = false;
     pq = PqlQuery();
  
 }
@@ -25,8 +26,15 @@ QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector)
 PqlQuery QueryExtractor::extractSemantics()
 {
     extractDeclarations();
+
+    if (pq.declarations.find("BOOLEAN") != pq.declarations.end()) {
+        booleanIsSynonym = true;
+    }
+
     PqlToken curr = extractSelect();
+
     extractClauses(curr);
+
     return pq;
 }
 
@@ -242,6 +250,10 @@ PqlToken QueryExtractor::getNextToken()
     }
     PqlToken token = tokens[next];
     next = next +1;
+
+    if (token.type == TokenType::BOOLEAN && booleanIsSynonym == true) {
+        token.type = TokenType::SYNONYM;
+    }
     return token;
 
 }

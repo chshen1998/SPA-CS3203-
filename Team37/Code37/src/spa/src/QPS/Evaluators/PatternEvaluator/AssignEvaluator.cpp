@@ -68,7 +68,6 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vec
         else {
             set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value,
                                                                                  rightArgWildCardString);
-
             finalResult = vector(allStmtWithRightArg.begin(), allStmtWithRightArg.end());
         }
 

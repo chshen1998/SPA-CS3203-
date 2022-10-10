@@ -34,7 +34,7 @@ void WithValidator::validate()
             refTokens.push_back(curr);
             curr = getNextToken();
         }
-        validateRef(refTokens);
+        TokenType leftType = validateRef(refTokens);
 
         refTokens.clear();
         curr = getNextToken(); // Get token after "="
@@ -43,13 +43,17 @@ void WithValidator::validate()
             refTokens.push_back(curr);
             curr = getNextToken();
         }
-        validateRef(refTokens);
+        TokenType rightType = validateRef(refTokens);
+
+        if (leftType != rightType) {
+            throw SemanticError("For attrCompare, the two ref comparison must be of the same type");
+        }
 
         curr = getNextToken(); // Get token after "and"
     }
 }
 
-void WithValidator::validateRef(vector<PqlToken> refTokens)
+TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
 {
     if (refTokens.size() == 1)
     {
@@ -58,6 +62,7 @@ void WithValidator::validateRef(vector<PqlToken> refTokens)
 	    {
             throw SemanticError("Invalid With clause parameters 1");
 	    }
+        return type;
     }
     else if (refTokens.size() == 3)
     {
@@ -82,9 +87,24 @@ void WithValidator::validateRef(vector<PqlToken> refTokens)
         {
             throw SemanticError("Invalid With clause parameters 4");
         }
+
+        TokenType t = declarations[synonym.value];
+        if (validSynonymToAttrMap[t].find(attrName.type) == validSynonymToAttrMap[t].end()) {
+            throw SemanticError("Invalid attrName for attrRef synonym");
+        }
+
+
+        if (attrName.type == TokenType::PROCNAME || attrName.type == TokenType::VARNAME) {
+            return TokenType::STRING;
+        }
+        else {
+            return TokenType::NUMBER;
+        }
+
     } else
     {
         throw SemanticError("Invalid With Clause");
+        return TokenType::NONE;
     }
 }
 

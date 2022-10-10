@@ -46,7 +46,10 @@ void PatternValidator::validateExpressionSpec(PqlToken token)
 	}
 	else if (token.type == TokenType::WILDCARD_STRING)
 	{
-		// Implement wildcard string validation
+		int tokenLen = token.value.size();
+		if (token.value[0] != '_' || token.value[tokenLen - 1] != '_') {
+			throw SemanticError(token.value + " is invalid wildcard matching");
+		}
 	}
 }
 

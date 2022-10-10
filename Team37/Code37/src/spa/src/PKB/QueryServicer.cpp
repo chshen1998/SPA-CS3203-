@@ -194,8 +194,7 @@ Retrieve Reverse assignment statement stored. For Pattern(_,"x") and Pattern(_,_
 @param hasWildcard whether query contains wildcard
 @returns All assign stmt a such that pattern a (_,queryString) or (_,_queryString_) returns true
 */
-set<int> QueryServicer::reverseRetrievePatternMatch(const string &queryString, bool hasWildcard) {
-
+set<int> QueryServicer::reverseRetrievePatternMatch(string queryString, bool hasWildcard) {
     set<int> matchingLineNum = {};
     for (auto stmt: storage->getAllStmt()) {
         if (dynamic_pointer_cast<AssignStatement>(stmt) != nullptr) {
@@ -206,13 +205,13 @@ set<int> QueryServicer::reverseRetrievePatternMatch(const string &queryString, b
             if (hasWildcard) {
                 deque<string> parsedRelationalFactors = parseRelationalFactorString(generatedString);
                 for (const string &parsedFactor: parsedRelationalFactors) {
-                    if (sanitizeString(parsedFactor) == queryString) {
+                    if (sanitizeString(parsedFactor) == sanitizeString(queryString)) {
                         matchingLineNum.insert(currLineNum);
                     }
                 }
                 // if (_,queryString) we do exact string match
             } else {
-                if (sanitizeString(generatedString) == queryString) {
+                if (sanitizeString(generatedString) == sanitizeString(queryString)) {
                     matchingLineNum.insert(currLineNum);
                 }
             }
@@ -254,7 +253,7 @@ string QueryServicer::sanitizeString(string word) {
     int i = 0;
 
     while (i < word.size()) {
-        if (word[i] == '(' || word[i] == ')') {
+        if (word[i] == '(' || word[i] == ')' || word[i] == ' ') {
             word.erase(i, 1);
         } else {
             i++;

@@ -69,7 +69,7 @@ public:
 
     vector<string> reverseRetrieveRelation(string, ProcVarRelationType);
 
-    set<int> reverseRetrievePatternMatch(const string &, bool);
+    set<int> reverseRetrievePatternMatch(string, bool);
 
     static deque<string> parseRelationalFactorString(const std::string &str);
 

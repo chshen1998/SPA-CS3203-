@@ -71,10 +71,6 @@ void ClauseValidator::validateStatementRef(PqlToken token, string clauseType)
 	{
 		throw SemanticError(token.value + " is undeclared parameter for " + clauseType + " clause");
 	}
-	else if (token.type == TokenType::WILDCARD_STRING)
-	{
-		// Implement wildcard string validation
-	}
 }
 
 bool ClauseValidator::isDeclared(PqlToken synonym)

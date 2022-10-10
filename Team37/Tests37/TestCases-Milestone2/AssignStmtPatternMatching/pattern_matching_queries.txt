@@ -1,0 +1,45 @@
+1 - pattern 1
+assign a;
+Select a pattern a ( _ , "v + x * y + z * t")
+1
+5000
+2 - pattern 2
+assign a;
+Select a pattern a ( _ , "v")
+none
+5000
+3 - pattern 3
+assign a;
+Select a pattern a ( _ , _"v"_)
+1
+5000
+4 - pattern 4
+assign a;
+Select a pattern a ( _ , _"x*y"_)
+1
+5000
+5 - pattern 5
+assign a;
+Select a pattern a ( _ , _"v+x"_)
+none
+5000
+6 - pattern 6
+assign a;
+Select a pattern a ( _ , _"v+x*y"_)
+1
+5000
+7 - pattern 7
+assign a;
+Select a pattern a ( _ , _"y+z*t"_)
+none
+5000
+8 - pattern 8
+assign a;
+Select a pattern a ( _, _"x * y + z * t"_)
+none
+5000
+9 - pattern 9
+assign a;
+Select a pattern a ( _ , _"v + x * y + z * t"_)
+1
+5000

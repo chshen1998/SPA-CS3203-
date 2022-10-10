@@ -195,7 +195,6 @@ Retrieve Reverse assignment statement stored. For Pattern(_,"x") and Pattern(_,_
 @returns All assign stmt a such that pattern a (_,queryString) or (_,_queryString_) returns true
 */
 set<int> QueryServicer::reverseRetrievePatternMatch(string queryString, bool hasWildcard) {
-
     set<int> matchingLineNum = {};
     for (auto stmt: storage->getAllStmt()) {
         if (dynamic_pointer_cast<AssignStatement>(stmt) != nullptr) {
@@ -206,13 +205,13 @@ set<int> QueryServicer::reverseRetrievePatternMatch(string queryString, bool has
             if (hasWildcard) {
                 deque<string> parsedRelationalFactors = parseRelationalFactorString(generatedString);
                 for (const string &parsedFactor: parsedRelationalFactors) {
-                    if (sanitizeString(parsedFactor) == queryString) {
+                    if (sanitizeString(parsedFactor) == sanitizeString(queryString)) {
                         matchingLineNum.insert(currLineNum);
                     }
                 }
                 // if (_,queryString) we do exact string match
             } else {
-                if (sanitizeString(generatedString) == queryString) {
+                if (sanitizeString(generatedString) == sanitizeString(queryString)) {
                     matchingLineNum.insert(currLineNum);
                 }
             }

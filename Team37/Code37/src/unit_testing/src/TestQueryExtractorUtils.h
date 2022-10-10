@@ -15,6 +15,10 @@ extern vector<PqlToken> basic_tokens;
 
 extern vector<PqlToken> valid_select_boolean;
 
+extern vector<PqlToken> valid_select_declared_boolean;
+
+extern vector<PqlToken> valid_select_declared_boolean_attrname;
+
 extern vector<PqlToken> valid_select_attrname;
 
 extern vector<PqlToken> valid_select_tuple;
@@ -26,6 +30,8 @@ extern vector<PqlToken> invalid_select_missing_comma;
 extern vector<PqlToken> valid_select_boolean;
 
 extern vector<PqlToken> valid_pattern_assign;
+
+extern vector<PqlToken> valid_pattern_assign_boolean;
 
 extern vector<PqlToken> valid_pattern_while;
 
@@ -40,6 +46,8 @@ extern vector<PqlToken> valid_pattern_with_invalid_string;
 extern vector<PqlToken> valid_pattern_with_string_and_whitespace;
 
 extern vector<PqlToken> valid_pattern_with_wildcard_string;
+
+extern vector<PqlToken> invalid_pattern_wildcard_string;
 
 extern vector<PqlToken> invalid_pattern_while_parameters;
 
@@ -56,6 +64,8 @@ extern vector<PqlToken> valid_parent;
 extern vector<PqlToken> valid_follows_double_wildcard;
 
 extern vector<PqlToken> valid_with;
+
+extern vector<PqlToken> invalid_with_attrname_mismatch;
 
 extern vector<PqlToken> valid_multi_with;
 
@@ -101,6 +111,8 @@ extern vector<PqlToken> invalid_wildcard_modifies;
 
 extern vector<PqlToken> valid_multi_pattern_then_multi_such_that;
 
+extern vector<PqlToken> invalid_with_ref_mismatch;
+
 extern vector<PqlToken> invalid_with_parameter_type;
 
 extern vector<PqlToken> invalid_with_undeclared_synonym;
@@ -111,12 +123,3 @@ extern vector<PqlToken> invalid_with_missing_dot;
 
 extern vector<PqlToken> invalid_with_parameter_extra_tokens;
 
-extern vector<PqlToken> addPatternClause(vector<PqlToken> tokens);
-
-extern vector<PqlToken> addUsesClause(vector<PqlToken> tokens);
-
-extern vector<PqlToken> addModifiesClause(vector<PqlToken> tokens);
-
-extern vector<PqlToken> addParentClause(vector<PqlToken> tokens);
-
-extern vector<PqlToken> addFollowsClause(vector<PqlToken> tokens);

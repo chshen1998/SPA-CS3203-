@@ -29,17 +29,18 @@ void SourceCode::accept(shared_ptr<ASTVisitor> visitor) {
 
 vector<shared_ptr<CFG> > SourceCode::getAllCFGs() {
     vector<shared_ptr<CFG>> CFGLst;
-    for (auto p : this->procedureLst) {
+    for (auto p: this->procedureLst) {
         p->buildCFG(p->getProcedureName());
         CFGLst.push_back(p->getCFG());
     }
     return CFGLst;
 }
 
-vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > SourceCode::getAllCFGMaps() {
-    vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > allMaps;
-    for (auto p : this->procedureLst) {
-        allMaps.push_back(p->getCFG()->getMap());
+shared_ptr<map<int, shared_ptr<CFGNode>>> SourceCode::getAllCFGMaps() {
+    shared_ptr<map<int, shared_ptr<CFGNode>>> allMaps = make_shared<map<int, shared_ptr<CFGNode>>>();
+    for (auto p: this->procedureLst) {
+        shared_ptr<map<int, shared_ptr<CFGNode>>> mapInProcedure = p->getCFG()->getMap();
+        allMaps->insert(mapInProcedure->begin(), mapInProcedure->end());
     }
     return allMaps;
 }

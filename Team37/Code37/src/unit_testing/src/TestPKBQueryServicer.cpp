@@ -2,12 +2,13 @@
 
 using namespace std;
 
+#include "PKB/PKB.h"
 #include "PKB/Storage.h"
 #include "PKB/QueryServicer.h"
 #include "AST/SourceCode.h"
 #include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
-
+#include "SP/Parser.h"
 
 
 TEST_CASE("QueryServicer - Variable") {
@@ -34,7 +35,7 @@ TEST_CASE("QueryServicer - Constant") {
     ConstantExpression const_1 = ConstantExpression(nullptr, -1);
     store->storeConst(const_0);
     store->storeConst(const_1);
-    
+
     // Comparison Set
     set<ConstantExpression> cmp_set;
     cmp_set.insert(const_0);
@@ -94,34 +95,189 @@ TEST_CASE("QueryServicer - Statements") {
     REQUIRE(queryService->getAllStmt(StatementType::STATEMENT) == cmp_set);
 
     // Assign Statement
-   set<shared_ptr<Statement>> retrievedAssign = queryService->getAllStmt(StatementType::ASSIGN);
-   REQUIRE(retrievedAssign.size() == 1);
-   REQUIRE(*(retrievedAssign.begin()) == assignStmt);
+    set<shared_ptr<Statement>> retrievedAssign = queryService->getAllStmt(StatementType::ASSIGN);
+    REQUIRE(retrievedAssign.size() == 1);
+    REQUIRE(*(retrievedAssign.begin()) == assignStmt);
 
-   // Call Statement
-   set<shared_ptr<Statement>> retrievedCall = queryService->getAllStmt(StatementType::CALL);
-   /*REQUIRE(retrievedCall.size() == 1);*/
-   //REQUIRE(*(retrievedCall.begin()) == callStmt);
+    // Call Statement
+    set<shared_ptr<Statement>> retrievedCall = queryService->getAllStmt(StatementType::CALL);
+    /*REQUIRE(retrievedCall.size() == 1);*/
+    //REQUIRE(*(retrievedCall.begin()) == callStmt);
 
-   // If Statement
-   set<shared_ptr<Statement>> retrievedIf = queryService->getAllStmt(StatementType::IF);
-   REQUIRE(retrievedIf.size() == 1);
-   REQUIRE(*(retrievedIf.begin()) == ifStmt);
+    // If Statement
+    set<shared_ptr<Statement>> retrievedIf = queryService->getAllStmt(StatementType::IF);
+    REQUIRE(retrievedIf.size() == 1);
+    REQUIRE(*(retrievedIf.begin()) == ifStmt);
 
-   // Print Statement
-   set<shared_ptr<Statement>> retrievedPrint = queryService->getAllStmt(StatementType::PRINT);
-   REQUIRE(retrievedPrint.size() == 1);
-   REQUIRE(*(retrievedPrint.begin()) == printStmt);
+    // Print Statement
+    set<shared_ptr<Statement>> retrievedPrint = queryService->getAllStmt(StatementType::PRINT);
+    REQUIRE(retrievedPrint.size() == 1);
+    REQUIRE(*(retrievedPrint.begin()) == printStmt);
 
-   // Read Statement
-   set<shared_ptr<Statement>> retrievedRead = queryService->getAllStmt(StatementType::READ);
-   //REQUIRE(retrievedRead.size() == 1);
-   //REQUIRE(*(retrievedRead.begin()) == readStmt);
+    // Read Statement
+    set<shared_ptr<Statement>> retrievedRead = queryService->getAllStmt(StatementType::READ);
+    //REQUIRE(retrievedRead.size() == 1);
+    //REQUIRE(*(retrievedRead.begin()) == readStmt);
 
-   // While Statement
-   set<shared_ptr<Statement>> retrievedWhile = queryService->getAllStmt(StatementType::WHILE);
-   REQUIRE(retrievedWhile.size() == 1);
-   REQUIRE(*(retrievedWhile.begin()) == whileStmt);
+    // While Statement
+    set<shared_ptr<Statement>> retrievedWhile = queryService->getAllStmt(StatementType::WHILE);
+    REQUIRE(retrievedWhile.size() == 1);
+    REQUIRE(*(retrievedWhile.begin()) == whileStmt);
+}
+
+TEST_CASE("QueryServicer - Next Forward") {
+    shared_ptr<PKB> pkb = make_shared<PKB>();
+
+    string srcCode = "procedure main {\n"
+                     "    while (flag >= 0) {\n"
+                     "        if (flag >= 0) then {\n"
+                     "            print flag;\n"
+                     "        } else {\n"
+                     "            read flag;\n"
+                     "        }"
+                     "        x = 5;"
+                     "    }\n"
+                     "    call abc;"
+                     "}\n"
+                     "procedure abc {\n"
+                     "    while (flag > 0) {\n"
+                     "        print flag;\n"
+                     "        read flag;\n"
+                     "    }\n"
+                     "    print x;\n"
+                     "}\n";
+    Statement::resetLineNumCount();
+    shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
+    vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
+
+    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
+    pkb->buildFromCFG(cfgMap);
+
+    vector<int> nextStatements = pkb->getQueryServicer()->forwardComputeRelation(1, NEXT);
+    REQUIRE(nextStatements.size() == 1);
+
+    vector<int> nextStarStatements = pkb->getQueryServicer()->forwardComputeRelation(1, NEXTS);
+    REQUIRE(nextStarStatements.size() == 4);
+
+    bool checkRetrieveRelation1 = pkb->getQueryServicer()->retrieveRelation(1, 2, NEXT);
+    REQUIRE(checkRetrieveRelation1 == true);
+
+    bool checkRetrieveRelation2 = pkb->getQueryServicer()->retrieveRelation(1, 3, NEXT);
+    REQUIRE(checkRetrieveRelation2 == false);
+
+    bool checkRetrieveRelation3 = pkb->getQueryServicer()->retrieveRelation(1, 2, NEXTS);
+    REQUIRE(checkRetrieveRelation3 == true);
+
+    bool checkRetrieveRelation4 = pkb->getQueryServicer()->retrieveRelation(1, 3, NEXTS);
+    REQUIRE(checkRetrieveRelation4 == true);
+}
+
+TEST_CASE("QueryServicer - Next Backward") {
+    shared_ptr<PKB> pkb = make_shared<PKB>();
+
+    string srcCode = "procedure main {\n"
+                     "    x = 5;"
+                     "    while (flag >= 0) {\n"
+                     "        if (flag >= 0) then {\n"
+                     "            print flag;\n"
+                     "        } else {\n"
+                     "            read flag;\n"
+                     "        }"
+                     "    }\n"
+                     "    call abc;"
+                     "}\n";
+    Statement::resetLineNumCount();
+    shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
+    vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
+
+    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
+    pkb->buildFromCFG(cfgMap);
+
+    vector<int> nextStatements = pkb->getQueryServicer()->backwardComputeRelation(2, NEXT);
+    // Contain lines 1 and 6
+    REQUIRE(nextStatements.size() == 1);
+
+//     Handle Next star for while loops
+    vector<int> nextStarStatements1 = pkb->getQueryServicer()->backwardComputeRelation(6, NEXTS);
+    REQUIRE(nextStarStatements1.size() == 2);
+
+    vector<int> nextStarStatements2 = pkb->getQueryServicer()->backwardComputeRelation(4, NEXTS);
+
+    REQUIRE(nextStarStatements2.size() == 3);
+}
+
+TEST_CASE("QueryServicer - Next Backward While Statement") {
+    shared_ptr<PKB> pkb = make_shared<PKB>();
+
+    string srcCode = "procedure main {\n"
+                     "    while (flag >= 0) {\n"
+                     "        if (flag >= 0) then {\n"
+                     "            print flag;\n"
+                     "        } else {\n"
+                     "            read flag;\n"
+                     "        }"
+                     "        x = 5;"
+                     "    }\n"
+                     "    call abc;"
+                     "}\n"
+                     "procedure abc {\n"
+                     "    while (flag > 0) {\n"
+                     "        print flag;\n"
+                     "        read flag;\n"
+                     "    }\n"
+                     "    print x;\n"
+                     "}\n";
+    Statement::resetLineNumCount();
+    shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
+    vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
+
+    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
+    pkb->buildFromCFG(cfgMap);
+
+    vector<int> nextStatements = pkb->getQueryServicer()->backwardComputeRelation(1, NEXT);
+    REQUIRE(nextStatements.size() == 1);
+
+    vector<int> nextStarStatements = pkb->getQueryServicer()->backwardComputeRelation(1, NEXTS);
+    REQUIRE(nextStarStatements.size() == 1);
+}
+
+TEST_CASE("FAILING TESTCASE") {
+    shared_ptr<PKB> pkb = make_shared<PKB>();
+
+    string srcCode = "procedure main {\n"
+                     "    while (flag >= 0) {\n"
+                     "        if (flag >= 0) then {\n"
+                     "            print flag;\n"
+                     "        } else {\n"
+                     "            read flag;\n"
+                     "        }"
+                     "        x = 5;"
+                     "    }\n"
+                     "    call abc;"
+                     "}\n"
+                     "procedure abc {\n"
+                     "    while (flag > 0) {\n"
+                     "        print flag;\n"
+                     "        read flag;\n"
+                     "    }\n"
+                     "    print x;\n"
+                     "}\n";
+    Statement::resetLineNumCount();
+    shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
+    vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
+
+    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
+    pkb->buildFromCFG(cfgMap);
 
 
+    shared_ptr<CFGNode> cfgNode = cfgMap->at(5);
+    vector<shared_ptr<CFGNode>> parents = cfgNode->getParents();
+    if (parents[0]->getTNode() == nullptr) {
+        printf("Null pointer");
+    }
+    if (dynamic_pointer_cast<Statement>(parents[0]->getTNode()) != nullptr) {
+        shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(parents[0]->getTNode());
+        printf("LINE NUM %d \n", stmt->getLineNum());
+
+    }
 }

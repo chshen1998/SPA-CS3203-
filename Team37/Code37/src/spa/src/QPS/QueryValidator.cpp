@@ -28,12 +28,17 @@ QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
     tokens = tokenVector;
     size = tokens.size();
     next = 0;
+    booleanIsSynonym = false;
 }
 
 PqlError QueryValidator::validateQuery()
 {
     try {
         declarations = validateDeclarations();
+
+        if (declarations.find("BOOLEAN") != declarations.end()) {
+            booleanIsSynonym = true;
+        }
     
         PqlToken curr = validateSelect();
 
@@ -248,11 +253,14 @@ shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type
 
 PqlToken QueryValidator::getNextToken() {
     if (next == size)
-    {
+    {   
         return PqlToken(TokenType::END, "");
     }
     PqlToken token = tokens[next];
     next = next + 1;
+    if (token.type == TokenType::BOOLEAN && booleanIsSynonym) {
+        token.type = TokenType::SYNONYM;
+    }
     return token;
 
 }

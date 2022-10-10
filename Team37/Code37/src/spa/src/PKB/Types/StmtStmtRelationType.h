@@ -2,9 +2,11 @@
 #ifndef SPA_STMT_STMT_RELATION_TYPE_H
 #define SPA_STMT_STMT_RELATION_TYPE_H
 enum StmtStmtRelationType {
-	FOLLOWS,
-	FOLLOWSS,
-	PARENT,
-	PARENTS
+    FOLLOWS,
+    FOLLOWSS,
+    PARENT,
+    PARENTS,
+    NEXT,
+    NEXTS
 };
 #endif

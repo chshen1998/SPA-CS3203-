@@ -194,8 +194,7 @@ Retrieve Reverse assignment statement stored. For Pattern(_,"x") and Pattern(_,_
 @param hasWildcard whether query contains wildcard
 @returns All assign stmt a such that pattern a (_,queryString) or (_,_queryString_) returns true
 */
-set<int> QueryServicer::reverseRetrievePatternMatch(const string &queryString, bool hasWildcard) {
-
+set<int> QueryServicer::reverseRetrievePatternMatch(string queryString, bool hasWildcard) {
     set<int> matchingLineNum = {};
     for (auto stmt: storage->getAllStmt()) {
         if (dynamic_pointer_cast<AssignStatement>(stmt) != nullptr) {
@@ -206,13 +205,13 @@ set<int> QueryServicer::reverseRetrievePatternMatch(const string &queryString, b
             if (hasWildcard) {
                 deque<string> parsedRelationalFactors = parseRelationalFactorString(generatedString);
                 for (const string &parsedFactor: parsedRelationalFactors) {
-                    if (sanitizeString(parsedFactor) == queryString) {
+                    if (sanitizeString(parsedFactor) == sanitizeString(queryString)) {
                         matchingLineNum.insert(currLineNum);
                     }
                 }
                 // if (_,queryString) we do exact string match
             } else {
-                if (sanitizeString(generatedString) == queryString) {
+                if (sanitizeString(generatedString) == sanitizeString(queryString)) {
                     matchingLineNum.insert(currLineNum);
                 }
             }
@@ -254,7 +253,7 @@ string QueryServicer::sanitizeString(string word) {
     int i = 0;
 
     while (i < word.size()) {
-        if (word[i] == '(' || word[i] == ')') {
+        if (word[i] == '(' || word[i] == ')' || word[i] == ' ') {
             word.erase(i, 1);
         } else {
             i++;
@@ -271,7 +270,7 @@ Retrieve Relation Stored. For Relation(proc1, proc2)
 @returns If Relation(proc1, proc2) is True
 */
 bool QueryServicer::retrieveRelation(string proc1, string proc2, ProcProcRelationType type) {
-	return storage->retrieveRelation(proc1, proc2, type);
+    return storage->retrieveRelation(proc1, proc2, type);
 }
 
 /*
@@ -281,7 +280,7 @@ Retrieve Forward Relation Stored. For Relation(proc1, proc2)
 @returns All var such that Relation(proc1, proc2) is True
 */
 vector<string> QueryServicer::forwardRetrieveRelation(string proc1, ProcProcRelationType type) {
-	return storage->forwardRetrieveRelation(proc1, type);
+    return storage->forwardRetrieveRelation(proc1, type);
 }
 
 /*
@@ -291,5 +290,13 @@ Retrieve Reverse Relation Stored. For Relation(proc1, proc2)
 @returns All stmt1 such that Relation(proc1, proc2) is True
 */
 vector<string> QueryServicer::reverseRetrieveRelation(string proc2, ProcProcRelationType type) {
-	return storage->reverseRetrieveRelation(proc2, type);
+    return storage->reverseRetrieveRelation(proc2, type);
+}
+
+vector<int> QueryServicer::forwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    return storage->forwardComputeRelation(stmt, type);
+}
+
+vector<int> QueryServicer::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
+    return storage->backwardComputeRelation(stmt, type);
 }

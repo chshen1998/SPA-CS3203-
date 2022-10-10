@@ -182,12 +182,12 @@ TEST_CASE("Nested If statements") {
 
 TEST_CASE("Procedure with while statement") {
     string proc = "procedure main {\n"
-                "    while (flag > 0) {\n"
-                "        print flag;\n"
-                "        read flag;\n"
-                "    }\n"
-                "    print x;\n"
-                "}\n";
+                  "    while (flag > 0) {\n"
+                  "        print flag;\n"
+                  "        read flag;\n"
+                  "    }\n"
+                  "    print x;\n"
+                  "}\n";
     shared_ptr<Procedure> procedure = Parser::parseProcedure(proc);
     procedure->buildCFG(procedure->getProcedureName());
     shared_ptr<CFG> cfg = procedure->getCFG();
@@ -232,16 +232,16 @@ TEST_CASE("Procedure with while statement") {
 
 TEST_CASE("Procedure with while statement and if statement") {
     string proc = "procedure main {\n"
-                     "    while (flag >= 0) {\n"
-                     "        if (flag >= 0) then {\n"
-                     "            print flag;\n"
-                     "        } else {\n"
-                     "            read flag;\n"
-                     "        }"
-                     "        x = 5;"
-                     "    }\n"
-                     "        flag = 5;"
-                     "}\n";
+                  "    while (flag >= 0) {\n"
+                  "        if (flag >= 0) then {\n"
+                  "            print flag;\n"
+                  "        } else {\n"
+                  "            read flag;\n"
+                  "        }"
+                  "        x = 5;"
+                  "    }\n"
+                  "        flag = 5;"
+                  "}\n";
     shared_ptr<Procedure> procedure = Parser::parseProcedure(proc);
     procedure->buildCFG(procedure->getProcedureName());
     shared_ptr<CFG> cfg = procedure->getCFG();
@@ -379,23 +379,23 @@ TEST_CASE("Procedure with while statement and if statement - test 2") {
 
 TEST_CASE("Sourcecode with two procedures") {
     string srcCode = "procedure main {\n"
-                  "    while (flag >= 0) {\n"
-                  "        if (flag >= 0) then {\n"
-                  "            print flag;\n"
-                  "        } else {\n"
-                  "            read flag;\n"
-                  "        }"
-                  "        x = 5;"
-                  "    }\n"
-                  "    call abc;"
-                  "}\n"
-                  "procedure abc {\n"
-                  "    while (flag > 0) {\n"
-                  "        print flag;\n"
-                  "        read flag;\n"
-                  "    }\n"
-                  "    print x;\n"
-                  "}\n";
+                     "    while (flag >= 0) {\n"
+                     "        if (flag >= 0) then {\n"
+                     "            print flag;\n"
+                     "        } else {\n"
+                     "            read flag;\n"
+                     "        }"
+                     "        x = 5;"
+                     "    }\n"
+                     "    call abc;"
+                     "}\n"
+                     "procedure abc {\n"
+                     "    while (flag > 0) {\n"
+                     "        print flag;\n"
+                     "        read flag;\n"
+                     "    }\n"
+                     "    print x;\n"
+                     "}\n";
     shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
     vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
     REQUIRE(cfgLst.size() == 2);
@@ -515,12 +515,8 @@ TEST_CASE("Get all maps from source code") {
     Statement::resetLineNumCount();
     shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
     vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
-    vector<shared_ptr<map<int, shared_ptr<CFGNode> > > > mapLst = sourceCode->getAllCFGMaps();
-    REQUIRE(mapLst.size() == 2);
-    shared_ptr<map<int, shared_ptr<CFGNode> > > map1 = mapLst[0];
-    shared_ptr<map<int, shared_ptr<CFGNode> > > map2 = mapLst[1];
-    REQUIRE(map1->size() == 6);
-    REQUIRE(map2->size() == 4);
+
+    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
 
     shared_ptr<CFG> cfg1 = cfgLst[0];
     shared_ptr<CFGNode> cfgNode1 = cfg1->getStartNode();
@@ -531,13 +527,13 @@ TEST_CASE("Get all maps from source code") {
     shared_ptr<CFGNode> cfgNode4 = cfgNode2->getChild(1);
     shared_ptr<CFGNode> cfgNode5 = dummyNode1->getChild(0);
     shared_ptr<CFGNode> cfgNode6 = dummyNode2->getChild(0);
-
-    REQUIRE(map1->at(1) == cfgNode1);
-    REQUIRE(map1->at(2) == cfgNode2);
-    REQUIRE(map1->at(3) == cfgNode3);
-    REQUIRE(map1->at(4) == cfgNode4);
-    REQUIRE(map1->at(5) == cfgNode5);
-    REQUIRE(map1->at(6) == cfgNode6);
+    
+    REQUIRE(cfgMap->at(1) == cfgNode1);
+    REQUIRE(cfgMap->at(2) == cfgNode2);
+    REQUIRE(cfgMap->at(3) == cfgNode3);
+    REQUIRE(cfgMap->at(4) == cfgNode4);
+    REQUIRE(cfgMap->at(5) == cfgNode5);
+    REQUIRE(cfgMap->at(6) == cfgNode6);
 
     shared_ptr<CFG> cfg2 = cfgLst[1];
     cfgNode1 = cfg2->getStartNode();
@@ -546,8 +542,8 @@ TEST_CASE("Get all maps from source code") {
     cfgNode4 = dummyNode->getChild(0);
     cfgNode3 = cfgNode2->getChild(0);
 
-    REQUIRE(map2->at(7) == cfgNode1);
-    REQUIRE(map2->at(8) == cfgNode2);
-    REQUIRE(map2->at(9) == cfgNode3);
-    REQUIRE(map2->at(10) == cfgNode4);
+    REQUIRE(cfgMap->at(7) == cfgNode1);
+    REQUIRE(cfgMap->at(8) == cfgNode2);
+    REQUIRE(cfgMap->at(9) == cfgNode3);
+    REQUIRE(cfgMap->at(10) == cfgNode4);
 }

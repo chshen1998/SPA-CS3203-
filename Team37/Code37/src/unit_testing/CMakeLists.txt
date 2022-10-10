@@ -18,6 +18,7 @@ add_executable(unit_testing ${srcs}
         src/TestsCallsASTVisitor.cpp
         "src/TestPKBPatternMatching.cpp"
         "src/SPTestTokenizer.cpp"
-        "src/TestCFG.cpp")
+        "src/TestCFG.cpp"
+        "src/SPTestCallLoopChecker.cpp")
 target_link_libraries(unit_testing spa)
 

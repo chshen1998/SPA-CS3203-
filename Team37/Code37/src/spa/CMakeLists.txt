@@ -97,7 +97,6 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Tokenizers/WithTokenizer.cpp
         src/QPS/Tokenizers/TokenizerUtils.cpp
 
-
         src/PKB/PKB.h
         src/PKB/PKB.cpp
         src/PKB/QueryServicer.h
@@ -112,7 +111,6 @@ add_library(spa ${srcs} ${headers}
         src/PKB/Types/StatementType.h
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.cpp
         src/AST/ASTVisitor/ExtractGeneralASTVisitor.h
-
 
         "src/PKB/Structures/RelationStorage.h"
         "src/PKB/Structures/RelationStarStorage.h"
@@ -164,7 +162,9 @@ add_library(spa ${srcs} ${headers}
         "src/QPS/Evaluators/WithEvaluator.cpp"
         "src/PKB/Types/ProcProcRelationType.h"
         "src/AST/ASTVisitor/ExtractCallsASTVisitor.cpp"
-        "src/AST/ASTVisitor/ExtractCallsASTVisitor.h")
+        "src/AST/ASTVisitor/ExtractCallsASTVisitor.h"
+        "src/SP/Utilities/CallLoopChecker.cpp"
+        "src/SP/Utilities/CallLoopChecker.h")
 
 
 # this makes the headers accessible for other projects which uses spa lib

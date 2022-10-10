@@ -68,8 +68,8 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vec
         else {
             set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value,
                                                                                  rightArgWildCardString);
-
             finalResult = vector(allStmtWithRightArg.begin(), allStmtWithRightArg.end());
+            printf("FINAL RESULT SIZE: %d \n", finalResult.size());
         }
 
         for (int line: finalResult) {

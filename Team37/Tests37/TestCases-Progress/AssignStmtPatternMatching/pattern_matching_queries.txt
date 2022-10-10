@@ -38,3 +38,19 @@ assign a;
 Select a pattern a ( _ , _"v + x * y + z * t"_)
 1
 5000
+9 - pattern 9
+assign a;
+Select a pattern a ("y", "x")
+2
+5000
+10 - pattern 10
+assign a;
+Select a pattern a ("y", _"x"_)
+2, 3
+5000
+11 - pattern 11
+assign a;
+Select a pattern a ("y", _"0"_)
+4
+5000
+

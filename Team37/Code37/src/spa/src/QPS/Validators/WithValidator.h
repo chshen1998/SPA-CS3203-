@@ -22,7 +22,7 @@ public:
 	void validate();
 
 private:
-	void validateRef(vector<PqlToken> refTokens);
+	TokenType validateRef(vector<PqlToken> refTokens);
 	PqlToken getNextToken();
 
 	unordered_map<string, TokenType> declarations;

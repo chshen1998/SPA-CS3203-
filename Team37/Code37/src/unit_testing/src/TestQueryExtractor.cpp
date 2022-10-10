@@ -80,6 +80,16 @@ TEST_CASE("Test Select boolean")
 	REQUIRE(results.selectObjects == ans);
 }
 
+TEST_CASE("Test Select declared boolean")
+{
+	vector<SelectObject> ans = { SelectObject(SelectType::SYNONYM, "BOOLEAN")};
+
+	QueryExtractor sut(valid_select_declared_boolean);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(results.selectObjects == ans);
+}
+
 TEST_CASE("Test Select attrName")
 {
 	vector<SelectObject> ans = { SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#"))};
@@ -93,7 +103,7 @@ TEST_CASE("Test Select attrName")
 TEST_CASE("Test Select tuple")
 {
 	vector<SelectObject> ans = { 
-		SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#")),
+		SelectObject(SelectType::ATTRNAME, "BOOLEAN", PqlToken(TokenType::STMTLINE, "stmt#")),
 		SelectObject(SelectType::SYNONYM, "v")
 	};
 
@@ -209,7 +219,7 @@ TEST_CASE("Test With clause")
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::STRING, "answer"),
 								  TokenType::WITH, 								
-								  PqlToken(TokenType::VARNAME, "var"), 								  
+								  PqlToken(TokenType::PROCNAME, "procName"), 								  
 								  PqlToken(TokenType::NONE, "")
 		)};
 
@@ -225,7 +235,7 @@ TEST_CASE("Test Mulitple With clause")
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::STRING, "answer"),
 								  TokenType::WITH,
-								  PqlToken(TokenType::VARNAME, "var"),
+								  PqlToken(TokenType::PROCNAME, "procName"),
 								  PqlToken(TokenType::NONE, "")
 		),
 							Clause(PqlToken(TokenType::NONE, ""),
@@ -233,7 +243,7 @@ TEST_CASE("Test Mulitple With clause")
 									PqlToken(TokenType::SYNONYM, "p"),
 								  TokenType::WITH,
 								  PqlToken(TokenType::NONE, ""),
-								  PqlToken(TokenType::VARNAME, "var2")
+								  PqlToken(TokenType::PROCNAME, "procName")
 		) };
 
 	QueryExtractor sut(valid_multi_with);
@@ -418,17 +428,17 @@ TEST_CASE("Test Mulitple Pattern, With and Such That clauses")
 							  TokenType::PATTERN),
 						Clause(PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::SYNONYM, "p"),
-								  PqlToken(TokenType::NUMBER, "1"),
+								  PqlToken(TokenType::STRING, "one"),
 								  TokenType::WITH,
-								  PqlToken(TokenType::VARNAME, "var"),
+								  PqlToken(TokenType::PROCNAME, "procName"),
 								  PqlToken(TokenType::NONE, "")
 							),
 							Clause(PqlToken(TokenType::NONE, ""),
-									PqlToken(TokenType::NUMBER, "2"),
+									PqlToken(TokenType::STRING, "two"),
 									PqlToken(TokenType::SYNONYM, "p"),
 								  TokenType::WITH,
 								  PqlToken(TokenType::NONE, ""),
-								  PqlToken(TokenType::VARNAME, "var2")),
+								  PqlToken(TokenType::PROCNAME, "procName")),
 						Clause(PqlToken(TokenType::USES, "uses"),
 								PqlToken(TokenType::STATEMENT_NUM, "1"),
 								PqlToken(TokenType::SYNONYM, "v"),

@@ -39,8 +39,12 @@ extern set<TokenType> validExpressionSpec;
 
 extern set<TokenType> validAttrName;
 
+extern set<TokenType> validAttrType;
+
 extern set<TokenType> validPatternType;
 
 extern unordered_map<TokenType, string> relationshipToStringMap;
+
+extern unordered_map<TokenType, set<TokenType>> validSynonymToAttrMap;
 
 #endif //TEAM37_VALIDATORUTILS_H

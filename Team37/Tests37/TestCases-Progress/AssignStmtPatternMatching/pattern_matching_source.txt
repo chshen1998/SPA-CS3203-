@@ -2,5 +2,5 @@ procedure main {
     x = v + x * y + z * t;
     y = x;
     y = x * y * x;
-    y = 0;
+    y = 0 + 1;
 }

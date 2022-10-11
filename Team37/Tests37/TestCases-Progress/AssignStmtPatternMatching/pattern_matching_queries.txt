@@ -26,7 +26,7 @@ none
 6 - pattern 6
 assign a;
 Select a pattern a ( _ , _"v+x*y"_)
-none
+1
 5000
 7 - pattern 7
 assign a;

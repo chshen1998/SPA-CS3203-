@@ -34,7 +34,17 @@ public:
 
 private:
     void getResultFromFinalTable(const vector<vector<string>> &);
-    void selectAll(TokenType, list<string>&);
+
+    void getAllCombinations();
+
+    vector<string> selectAll(TokenType);
+    
+    unordered_map<TokenType, TokenType> attrNameToTokenType = {
+        {TokenType::PROCNAME, TokenType::PROCEDURE},
+        {TokenType::VARNAME, TokenType::VARIABLE},
+        {TokenType::VALUE, TokenType::CONSTANT},
+        {TokenType::STMTLINE, TokenType::STATEMENT},
+    };
 };
 
 

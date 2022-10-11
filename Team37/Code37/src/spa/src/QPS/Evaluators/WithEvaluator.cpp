@@ -20,6 +20,20 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     PqlToken rightArg = clause.right;
     vector<vector<string>> finalResult;
 
+    // If initial table is empty
+    // Eg. Query only consists of one WITH clause
+    if (intermediate.empty()) {
+        fillInitialTable(clause, intermediate);
+    }
+
+    // Check if current table does not consists of with arguments
+    if (find(intermediate[0].begin(), intermediate[0].end(), leftArg.value) == intermediate[0].end()) {
+        vector<vector<string>> temp;
+        fillInitialTable(clause, temp);
+
+        intermediate = JoinTable(intermediate, temp);
+    }
+
     // Add procName for call, print, and read
     bool isLeftDoubleAttr = WithEvaluator::addProcName(intermediate, leftArg);
     string leftValue = isLeftDoubleAttr ? updatedColumnName(leftArg) : leftArg.value;
@@ -119,4 +133,59 @@ inline string WithEvaluator::updatedColumnName(const PqlToken& token) {
     return token.type == TokenType::CALL ? token.value + ".ProcName" : token.value + ".VarName";
 }
 
+
+void WithEvaluator::fillInitialTable(const Clause& clause, vector<vector<string>>& intermediate) {
+    intermediate.push_back(vector<string> { clause.left.value });
+
+    if (clause.right.type == TokenType::SYNONYM) {
+        intermediate[0].push_back(clause.right.value);
+
+        for (string left : selectAll(declarations[clause.left.value])) {
+            for (string right : selectAll(declarations[clause.right.value])) {
+                intermediate.push_back(vector<string> { left, right });
+            }
+        }
+    }
+    else {
+        for (string left : selectAll(declarations[clause.left.value])) {
+            intermediate.push_back(vector<string> { left });
+        }
+    }
+}
+
+
+vector<string> WithEvaluator::selectAll(TokenType type) {
+    vector<string> result;
+
+    if (type == TokenType::VARIABLE) {
+        for (NameExpression v : servicer->getAllVar()) {
+            result.push_back(v.getVarName());
+        }
+    }
+
+    else if (type == TokenType::CONSTANT) {
+        for (ConstantExpression c : servicer->getAllConst()) {
+            result.push_back(to_string(c.getValue()));
+        }
+    }
+
+    else if (type == TokenType::PROCEDURE) {
+        for (Procedure p : servicer->getAllProc()) {
+            result.push_back(p.getProcedureName());
+        }
+    }
+
+    else {
+        if (tokenTypeToStatementType.find(type) != tokenTypeToStatementType.end()) {
+            StatementType stmtType = tokenTypeToStatementType[type];
+            set<shared_ptr<Statement>> statements = servicer->getAllStmt(stmtType);
+
+            for (shared_ptr<Statement> s : statements) {
+                result.push_back(to_string(s->getLineNum()));
+            }
+        }
+    }
+
+    return result;
+}
 

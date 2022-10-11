@@ -22,9 +22,18 @@ public:
 
     bool evaluateBooleanClause(const Clause &);
 
-    bool addProcName(vector<vector<string>> &, const PqlToken &);
 
-    inline string updatedColumnName(const PqlToken &);
+
+
+private:
+    bool addProcName(vector<vector<string>>&, const PqlToken&);
+
+    void fillInitialTable(const Clause&, vector<vector<string>>&);
+
+    inline string updatedColumnName(const PqlToken&);
+
+    vector<string> selectAll(TokenType);
+
 };
 
 #endif

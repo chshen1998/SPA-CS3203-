@@ -52,32 +52,6 @@ void QueryEvaluator::evaluate() {
                 }
             }
             else {
-                // If our initial table is empty, we need to populate with for WITH clause
-                // TODO: Shift this into WithEvaluator as temporarily here due to to SelectAll() in this file
-                if (finalResult.empty()) {
-                    finalResult.push_back(vector<string> { clause.left.value });
-
-                    list<string> intermediate;
-                    selectAll(pq.declarations[clause.left.value], intermediate);
-
-                    if (clause.right.type == TokenType::SYNONYM) {
-                        finalResult[0].push_back(clause.right.value);
-                        list<string> intermediateRight;
-                        selectAll(pq.declarations[clause.right.value], intermediateRight);
-
-                        for (string left : intermediate) {
-                            for (string right : intermediateRight) {
-                                finalResult.push_back(vector<string> { left, right });
-                            }
-                        }
-                    }
-                    else {
-                        for (string left : intermediate) {
-                            finalResult.push_back(vector<string> { left });
-                        }
-                    }
-                }
-
                 finalResult = withEvaluator.evaluateClause(clause, finalResult);
             }
         }
@@ -128,9 +102,9 @@ void QueryEvaluator::evaluate() {
         }
     }
 
-    // If there are no clauses
+    // If there are no clauses (our table will not even have column headers)
     if (finalResult.size() == 0) {
-        selectAll(type, result);
+        getAllCombinations();
         return;
     }
 
@@ -162,8 +136,74 @@ void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table
     return;
 }
 
+// In the case where we have no clauses, we get all combinations for tuples
+void QueryEvaluator::getAllCombinations() {
+    if (pq.selectObjects[0].type == SelectType::BOOLEAN) {
+        result.push_back("TRUE");
+        return;
+    }
+    
+    vector<vector<string>> finalResult;
 
-void QueryEvaluator::selectAll(TokenType type, list<string>& result) {
+    for (SelectObject s : pq.selectObjects) {
+        TokenType declarationType = pq.declarations[s.synonym];
+
+        if (s.type == SelectType::ATTRNAME) {            
+            switch (s.attrName.type) {
+            case TokenType::VARNAME:
+                declarationType = TokenType::VARIABLE;
+                break;
+            case TokenType::PROCNAME:
+                declarationType = TokenType::PROCEDURE;
+                break;
+            case TokenType::VALUE:
+                declarationType = TokenType::CONSTANT;
+                break;
+            } 
+        }
+
+        finalResult.push_back(selectAll(declarationType));
+    }
+
+    vector<int> indexes;
+    indexes.reserve(finalResult.size());
+
+    for (int i = 0; i < finalResult.size(); i++) {
+        indexes.push_back(0);
+    }
+
+    while (true) {
+        // We add combine our row into a string, and then add it to result
+        string row = "";
+        for (int k = 0; k < finalResult.size(); k++) {
+            row += finalResult[k][indexes[k]];
+
+            if (k != finalResult.size() - 1) {
+                row += " ";
+            }
+        }
+        result.push_back(row);
+
+        int current = 0;
+        indexes[current] += 1;
+
+        while (indexes[current] == finalResult[current].size()) {
+            if (current == finalResult.size() - 1) {
+                return;
+            }
+
+            indexes[current] = 0;
+            current += 1;
+            indexes[current] += 1;
+        }
+    }
+}
+
+
+
+vector<string> QueryEvaluator::selectAll(TokenType type) {
+    vector<string> result;
+
     if (type == TokenType::VARIABLE) {
         for (NameExpression v : servicer->getAllVar()) {
             result.push_back(v.getVarName());
@@ -186,11 +226,12 @@ void QueryEvaluator::selectAll(TokenType type, list<string>& result) {
         if (tokenTypeToStatementType.find(type) != tokenTypeToStatementType.end()) {
             StatementType stmtType = tokenTypeToStatementType[type];
             set<shared_ptr<Statement>> statements = servicer->getAllStmt(stmtType);
-            
+
             for (shared_ptr<Statement> s : statements) {
                 result.push_back(to_string(s->getLineNum()));
             }
         }
     }
-}
 
+    return result;
+}

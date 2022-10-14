@@ -1,0 +1,25 @@
+1 - next stmt
+stmt s;
+Select s such that Next(1,s)
+2
+5000
+2 - next if
+stmt s;
+Select s such that Next(5,s)
+6, 11
+5000
+3 - next while
+stmt s;
+Select s such that Next(13,s)
+14, 18
+5000
+4 - next end while loop
+stmt s;
+Select s such that Next(17,s)
+13, 18
+5000
+5 - next end if else 
+stmt s;
+Select s such that Next(11,s)
+12
+5000

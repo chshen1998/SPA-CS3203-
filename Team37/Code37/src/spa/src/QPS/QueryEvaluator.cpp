@@ -16,6 +16,7 @@ using namespace std;
 #include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
+#include "QPS/Evaluators/PatternEvaluator/WhileEvaluator.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Evaluators/WithEvaluator.h"
 
@@ -41,6 +42,7 @@ void QueryEvaluator::evaluate() {
     ProcVarEvaluator procVarEvaluator = ProcVarEvaluator(servicer, pq.declarations);
     AssignEvaluator assignEvaluator = AssignEvaluator(servicer, pq.declarations);
     WithEvaluator withEvaluator = WithEvaluator(servicer, pq.declarations);
+    WhileEvaluator whileEvaluator = WhileEvaluator(servicer, pq.declarations);
 
     vector<vector<string>> finalResult;
     

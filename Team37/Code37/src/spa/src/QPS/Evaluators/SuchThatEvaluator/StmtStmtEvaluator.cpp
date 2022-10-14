@@ -13,6 +13,8 @@ unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType =
     { TokenType::FOLLOWS_A, StmtStmtRelationType::FOLLOWSS },
     { TokenType::PARENT, StmtStmtRelationType::PARENT },
     { TokenType::PARENT_A, StmtStmtRelationType::PARENTS },
+    { TokenType::NEXT, StmtStmtRelationType::NEXT},
+    { TokenType::NEXT_A, StmtStmtRelationType::NEXTS}
 };
 
 bool StmtStmtEvaluator::evaluateBooleanClause(const Clause& clause) {

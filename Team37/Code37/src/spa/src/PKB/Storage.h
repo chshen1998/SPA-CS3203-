@@ -17,6 +17,7 @@
 #include "../AST/Procedure.h"
 #include "../AST/SourceCode.h"
 #include "../AST/Statement/Statement.h"
+#include "../AST/Statement/AssignStatement.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/ASTVisitor/ExtractGeneralASTVisitor.h"
@@ -63,6 +64,9 @@ private:
 
     RelationStarStorage<string, string> Calls = RelationStarStorage<string, string>();
     RelationStarStorage<string, string> CallsS = RelationStarStorage<string, string>();
+
+    // Helper functions
+    bool affectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, shared_ptr<CFGNode> targetNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>);
 
 public:
     // Constructor

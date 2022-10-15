@@ -213,11 +213,63 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
         }
         case (AFFECTS): {
-            // Check if both are 
+            // Check if both are affects
+            shared_ptr<AssignStatement> stmtNode1 = dynamic_pointer_cast<AssignStatement>(statements[stmt1]);
+            shared_ptr<AssignStatement> stmtNode2 = dynamic_pointer_cast<AssignStatement>(statements[stmt2]);
+
+            if (stmtNode1 == nullptr || stmtNode2 == nullptr || stmt1 == stmt2) {
+                return false;
+            }
+
+            // Check CFG path + if variable 
+            shared_ptr<CFGNode> cfgNode1 = this->CFGMap->at(stmt1);
+            shared_ptr<CFGNode> cfgNode2 = this->CFGMap->at(stmt2);
+
+            shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
+            
+            // Check if statement 1 modifies a variable used in statement 2
+            string var = stmtNode1->getVarName();
+
+            if (!retrieveRelation(stmt2, var, USESSV)) {
+                return false;
+            }
+
+            return affectsHelper(cfgNode1, nullptr, cfgNode2, var, visited);
         }
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
     }
+}
+
+bool Storage::affectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, shared_ptr<CFGNode> targetNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
+    // Check if path visited before
+    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) == visited->end()) {
+        return false;
+    }
+    visited->insert(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode));
+
+    // If reached target nodes return true
+    if (currNode == targetNode) {
+        return true;
+    }
+
+    // Check if intermediate node modifies variable
+    shared_ptr<Statement> tnode = dynamic_pointer_cast<Statement>(currNode->getTNode());
+    if (tnode == nullptr) {
+        return false;
+    }
+
+    int lineNo = tnode->getLineNum();
+    if (retrieveRelation(lineNo, var, MODIFIESSV)) {
+        return false;
+    }
+
+    bool result = false;
+    // Recurse to child nodes
+    for (const auto& childNode : currNode->getChildren()) {
+        result = result || affectsHelper(childNode, currNode, targetNode, var, visited);
+    }
+    return result;
 }
 
 /*
@@ -574,6 +626,8 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
             // reset visited map
             this->visited = make_shared<map<int, bool >>();
             return lstLineNum;
+        case(AFFECTS):
+            
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }

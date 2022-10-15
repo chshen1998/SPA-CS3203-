@@ -26,7 +26,7 @@ if "TestOutputs" in milestones:
 OUTPUT_FOLDER.mkdir()
 
 for milestone in milestones:
-    if milestone != "TestCases-Progress":
+    if milestone == "TestOutputs":
         continue
 
     Path(f"./TestOutputs/{milestone}").mkdir()
@@ -61,13 +61,13 @@ for milestone in milestones:
             with open(output_path) as f:
                 filetxt = f.read()
                 if 'Missing:' in filetxt or 'Additional:   ' in filetxt:
-                    print(f"{testcase_folder}/{testcase}\t Failed")
+                    print(f"Failed\t{testcase_folder}/{testcase}")
 
                 elif 'End of evaluating Query File.' not in filetxt:
-                    print(f"{testcase_folder}/{testcase}\t Not Completed")
+                    print(f"Not Completed\t{testcase_folder}/{testcase}")
 
                 else:
-                    print(f"{testcase_folder}/{testcase}\t Passed")
+                    print(f"Passed\t{testcase_folder}/{testcase}")
 
     print("")
 

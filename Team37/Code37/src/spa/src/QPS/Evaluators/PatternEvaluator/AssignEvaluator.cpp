@@ -8,6 +8,11 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
+// { "a", "s" },
+// { "1", "2" },
+
+
+
 vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
@@ -36,7 +41,7 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vec
                 }
             }
         }
-            // Synonym - WildCard
+            // Synonym - WildCard -->  pattern a (s, _) --> Modifies(_, s)
         else {
             for (int lines: allAssignStmtLines) {
                 for (string v: servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {

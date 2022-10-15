@@ -30,7 +30,8 @@ public:
         }
         return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
     }
-
+    // Uses (s, v)
+    // with s.varname = "x"
     PqlToken clauseType;
     PqlToken left;
     PqlToken leftAttr;

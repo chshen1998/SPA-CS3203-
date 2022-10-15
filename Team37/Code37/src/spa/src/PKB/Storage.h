@@ -11,6 +11,7 @@
 #include <unordered_set>
 #include <memory>
 #include <tuple>
+#include <unordered_map>
 
 #include "../AST/TNode.h"
 #include "../AST/Procedure.h"
@@ -33,6 +34,7 @@
 #include "Types/StmtVarRelationType.h"
 #include "Types/ProcVarRelationType.h"
 #include "Types/ProcProcRelationType.h"
+#include "Types/StatementType.h"
 
 using namespace std;
 
@@ -44,11 +46,10 @@ private:
     set<NameExpression> variables = {};
     set<ConstantExpression> constants = {};
     set<Procedure> procedures = {};
-    set<shared_ptr<Statement>> statements = {};
-    shared_ptr<map<int, bool >> visited =
-            make_shared<map<int, bool >>();
+    unordered_map<int, shared_ptr<Statement>> statements = {};
+    shared_ptr<map<int, bool>> visited = make_shared<map<int, bool >>();
 
-    // RelationalStore<int, int> Follows = RelationalStore<int, int>();
+    // Precompute
     RelationStarStorage<int, int> Follows = RelationStarStorage<int, int>();
     RelationStarStorage<int, int> FollowsS = RelationStarStorage<int, int>();
     RelationStarStorage<int, int> Parent = RelationStarStorage<int, int>();
@@ -150,6 +151,8 @@ public:
 
     vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>);
 
+    // Check statement type
+    StatementType checkStatementType(int);
 };
 
 #endif

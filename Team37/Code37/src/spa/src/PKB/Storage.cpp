@@ -114,7 +114,7 @@ Store a shared pointer to a statement
 @param stmtNode Shared pointers to a Statement Node
 */
 void Storage::storeStmt(shared_ptr<Statement> stmtNode) {
-    (this->statements).insert(stmtNode);
+    (this->statements).insert(make_pair(stmtNode->getLineNum(), stmtNode));
 }
 
 /*
@@ -122,7 +122,13 @@ Retrieve all stored statements
 @return Set of shared pointers of statements stored
 */
 set<shared_ptr<Statement>> Storage::getAllStmt() {
-    return this->statements;
+    set<shared_ptr<Statement>> output = {};
+
+    for (auto kv : statements) {
+        output.insert(kv.second);
+    }
+
+    return output;
 }
 
 // CFG
@@ -205,6 +211,9 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
 
             // search for stmt2 in all lineNum that fulfil Nexts(stmt1,_)
             return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
+        }
+        case (AFFECTS): {
+            // Check if both are 
         }
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
@@ -678,3 +687,10 @@ vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node) {
     }
     return lstLineNum;
 }
+
+/**
+ * helper function to recursively get all line numbers of parent nodes in CFGNode
+ * @param node
+ * @return lines numbers of all parent nodes(recursively) where Next*(n1, n2)
+ */
+StatementType checkStatementType(int);

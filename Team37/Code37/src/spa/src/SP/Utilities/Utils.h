@@ -55,6 +55,13 @@ public:
      * @return true if string is a valid integer, false otherwise
      */
     static bool validateInteger(string integer);
+
+    /**
+     * Strips all extra outer surrounding brackets.
+     * @param s
+     * @return a string a outer brackets trimmed
+     */
+    static string stripOuterBrackets(string s);
 };
 
 #endif //SP_UTILS_H

@@ -10,15 +10,12 @@ using namespace std;
 #include "CallsValidator.h"
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
+#include <iostream>
 
 CallsValidator::CallsValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void CallsValidator::validate(PqlToken left, PqlToken right)
 {
-	if (left.type == TokenType::WILDCARD) {
-		throw SemanticError("Uses clause arg1 cannot be wildcard");
-	}
-
 	validateEntityRef(left, "calls");
 	validateEntityRef(right, "calls");
 }

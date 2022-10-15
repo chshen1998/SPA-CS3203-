@@ -244,6 +244,34 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
         REQUIRE(q.tokens == expectedTokens);
     }
 
+    SECTION("Basic CALLS clause") {
+        inputQuery = R"(variable v; 
+                        Select v such that Calls(_,_))";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "variable", "v", ";", "Select", "v", "such", "that", "Calls", "(", "_", ",", "_", ")"};
+        vector<PqlToken> expectedTokens = {
+                PqlToken(TokenType::VARIABLE, "variable"),
+                PqlToken(TokenType::SYNONYM, "v"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::DECLARATION_END, ""),
+                PqlToken(TokenType::SELECT, "Select"),
+                PqlToken(TokenType::SYNONYM, "v"),
+                PqlToken(TokenType::SUCH, "such"),
+                PqlToken(TokenType::THAT, "that"),
+                PqlToken(TokenType::CALLS, "Calls"),
+                PqlToken(TokenType::OPEN_BRACKET, "("),
+                PqlToken(TokenType::WILDCARD, "_"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::WILDCARD, "_"),
+                PqlToken(TokenType::CLOSED_BRACKET, ")"),
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
+
 }
 
 

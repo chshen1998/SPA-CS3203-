@@ -59,7 +59,7 @@ TokenType SuchThatTokenizer::checkSuchThatTokenType(const string& s, const Claus
 
             return result == TokenType::UNKNOWN ? getEntRefToken(s) : result;
         }
-    case ClauseType::CALL:
+    case ClauseType::CALLS:
         return getEntRefToken(s);
     default:
         return getStmtRefToken(s);

@@ -13,6 +13,10 @@ using namespace std;
 
 extern vector<PqlToken> basic_tokens;
 
+extern vector<PqlToken> valid_select_only;
+
+extern vector<PqlToken> valid_calls_wildcards;
+
 extern vector<PqlToken> valid_select_boolean;
 
 extern vector<PqlToken> valid_select_declared_boolean;

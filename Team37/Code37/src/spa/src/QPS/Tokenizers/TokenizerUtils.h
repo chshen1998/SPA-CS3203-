@@ -18,7 +18,7 @@ enum class ClauseType {
 
     USE,
     MODIFIES,
-    CALL,
+    CALLS,
 
     ASSIGN,
     WHILE,

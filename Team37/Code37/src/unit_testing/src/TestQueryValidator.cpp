@@ -29,6 +29,22 @@ TEST_CASE("READ")
 	REQUIRE(results.errorType == ErrorType::NONE);
 }
 
+TEST_CASE("Valid select no declarations") {
+	QueryValidator sut = QueryValidator(valid_select_only);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
+TEST_CASE("Valid Calls wildcard") {
+	QueryValidator sut = QueryValidator(valid_calls_wildcards);
+	PqlError results = sut.validateQuery();
+
+	REQUIRE(results.message == "");
+	REQUIRE(results.errorType == ErrorType::NONE);
+}
+
 
 TEST_CASE("Valid declarations and select")
 {

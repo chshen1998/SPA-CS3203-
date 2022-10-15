@@ -87,132 +87,139 @@ string Parser::extractProcName(string procedure) {
     return procedureName;
 }
 
+// TODO: cannot parse variables that contain "if" or "while" as the first 5 characters
 vector<string> Parser::extractStatements(string statements, vector<string> statementList) {
     // Assume that the raw procedure string is already trimmed
     if (statements.length() == 0) {
         return statementList;
     }
-
-    char currChar;
-    string statement;
-    int bracketCount;
-
+    // If it is a while or if statement, do bracket matching
+    // Else process until semicolon
     if (statements.substr(0, 2) == "if") {
-        // Process between the "if" and the "{"
-        while (!statements.empty()) {
-            currChar = statements[0];
+        string statement;
+
+        // Process until first open bracket of if block
+        while (true) {
+            char nextLetter = statements[0];
             statements.erase(0, 1);
-            if (currChar == ';') { // Treat as assign statement
-                statementList.push_back(statement);
-                return extractStatements(Utils::trim(statements), statementList);
-            } else if (currChar == '{') {
-                statement.push_back(currChar);
-                break;
-            } else {
-                statement.push_back(currChar);
-            }
-        }
 
-        if (statements.empty()) {
-            throw InvalidSyntaxException((char *) "Cannot find '{' for if statement");
-        }
-
-        // Process the then block
-        bracketCount = 1;
-        while (bracketCount != 0) {
-            currChar = statements[0];
-            statements.erase(0, 1);
-            statement.push_back(currChar);
-
-            if (currChar == '{') {
-                bracketCount++;
-            } else if (currChar == '}') {
-                bracketCount--;
-            }
-        }
-
-        // Process until the start of the else block
-        while (!statements.empty()) {
-            currChar = statements[0];
-            statements.erase(0, 1);
-            statement.push_back(currChar);
-            if (currChar == '{') {
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
                 break;
             }
-        }
-
-        if (statements.empty()) {
-            throw InvalidSyntaxException((char *) "Cannot find '{' for else block in if statement");
-        }
-
-        // Process until end of else block
-        bracketCount = 1;
-        while (bracketCount != 0) {
-            currChar = statements[0];
-            statements.erase(0, 1);
-            statement.push_back(currChar);
-
-            if (currChar == '{') {
-                bracketCount++;
-            } else if (currChar == '}') {
-                bracketCount--;
+            if (statements.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
         }
+
+        int numBrackets = 1;
+
+        // Do bracket counting UNTIL end of if block
+        while (numBrackets != 0) {
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                numBrackets += 1;
+            } else if (nextLetter == '}') {
+                numBrackets -= 1;
+            }
+        }
+
+        // Process until first open bracket of else block
+        while (true) {
+            if (statements.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
+            }
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                break;
+            }
+        }
+
+        numBrackets = 1;
+
+        // Do bracket counting UNTIL end of else block
+        while (numBrackets != 0) {
+            if (statements.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
+            }
+
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                numBrackets += 1;
+            } else if (nextLetter == '}') {
+                numBrackets -= 1;
+            }
+        }
+
         statementList.push_back(statement);
-        return extractStatements(Utils::trim(statements), statementList);
+        statements = Utils::trim(statements);
 
     } else if (statements.substr(0, 5) == "while") {
-        // Process between the "while" and the "{"
-        while (!statements.empty()) {
-            currChar = statements[0];
+        string statement;
+
+        // Process until first open bracket
+        while (true) {
+            char nextLetter = statements[0];
             statements.erase(0, 1);
-            if (currChar == ';') { // Treat as assign statement
-                statementList.push_back(statement);
-                return extractStatements(Utils::trim(statements), statementList);
-            } else if (currChar == '{') {
-                statement.push_back(currChar);
+
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
                 break;
-            } else {
-                statement.push_back(currChar);
+            }
+            if (statements.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
             }
         }
 
-        if (statements.empty()) {
-            throw InvalidSyntaxException((char *) "Cannot find '{' for while statement");
-        }
+        int numBrackets = 1;
 
-        // Process until end of while block
-        bracketCount = 1;
-        while (bracketCount != 0) {
-            currChar = statements[0];
+        // Do bracket counting
+        while (numBrackets != 0) {
+            if (statements.length() == 0) {
+                throw InvalidSyntaxException((char *) "Invalid Syntax, no '}' found");
+            }
+            char nextLetter = statements[0];
             statements.erase(0, 1);
-            statement.push_back(currChar);
 
-            if (currChar == '{') {
-                bracketCount++;
-            } else if (currChar == '}') {
-                bracketCount--;
+            statement.push_back(nextLetter);
+            if (nextLetter == '{') {
+                numBrackets += 1;
+            } else if (nextLetter == '}') {
+                numBrackets -= 1;
             }
         }
 
         statementList.push_back(statement);
-        return extractStatements(Utils::trim(statements), statementList);
-    }
+        statements = Utils::trim(statements);
 
-    while (true) {
-        if (statements.empty()) {
-            throw InvalidSyntaxException((char *) "No semicolon found for statement");
+    } else {
+        string statement;
+        bool flag = true;
+        // Check character by character until semicolon reached
+        while (flag) {
+            if (statements.length() == 0) {
+                throw InvalidSyntaxException((char *) "Syntax Error, missing semicolon");
+            }
+            char nextLetter = statements[0];
+            statements.erase(0, 1);
+            if (nextLetter == ';') {
+                flag = false;
+            } else {
+                statement.push_back(nextLetter);
+            }
         }
-        currChar = statements[0];
-        statements.erase(0, 1);
-        if (currChar == ';') {
-            statementList.push_back(statement);
-            return extractStatements(Utils::trim(statements), statementList);
-        } else {
-            statement.push_back(currChar);
-        }
+        statementList.push_back(statement);
+        statements = Utils::trim(statements);
     }
-
     return extractStatements(statements, statementList);
 }
 
@@ -524,13 +531,14 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
 }
 
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
-    condExprStr = Utils::stripOuterBrackets(condExprStr);
+    condExprStr = Utils::trim(condExprStr);
     string andOrOperators = "&|";
     string notOperator = "!";
 
     char nextChar;
     string expression;
     int bracketCounter = 0;
+    bool bracketsDetected = false;
 
     // check for andOrOperators first, creates AndCondition or OrCondition if found
     while (condExprStr.length() > 0) {
@@ -555,6 +563,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
             bracketCounter += 1;
             expression.push_back(nextChar);
             condExprStr.erase(0, 1);
+            bracketsDetected = true;
             continue;
         }
 
@@ -602,17 +611,18 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
             } else if (nextChar == ')') {
                 bracketCounter -= 1;
             }
-
-            expression.push_back(nextChar);
-
+            // Don't add last bracket
+            if (bracketCounter != 0) {
+                expression.push_back(nextChar);
+            }
             condExprStr.erase(0, 1);
             continue;
         }
 
         if (nextChar == '(') {
             bracketCounter += 1;
-            condExprStr.erase(0, 1);
-            expression.push_back(nextChar);
+            condExprStr.erase(0, 1); // Don't add first bracket
+            bracketsDetected = true;
             continue;
         }
 
@@ -634,11 +644,14 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
         }
     }
 
-    // if code reaches here, there should be no && and || operators
-    // Might still have brackets from it being a relation factor
+    if (bracketsDetected) {
+        return parseCondExpr(Utils::trim(expression));
+    }
+
+    // if code reaches here, there should be no more brackets or &&,||operators
 
     //reset variables
-    condExprStr = Utils::stripOuterBrackets(expression);
+    condExprStr = expression;
     expression.clear();
 
     // check if is a relational expr

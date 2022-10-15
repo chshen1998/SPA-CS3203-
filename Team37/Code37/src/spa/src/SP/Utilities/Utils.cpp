@@ -78,39 +78,3 @@ bool Utils::validateInteger(string integer) {
 
     return true;
 }
-
-string Utils::stripOuterBrackets(string s) {
-    s = Utils::trim(s);
-    if (s[0] != '(') {
-        return s;
-    }
-    string processed;
-    char currChar = s[0];
-    s.erase(0, 1);
-    processed.push_back(currChar);
-    int bracketCount = 1;
-
-    while (bracketCount != 0) {
-        if (s.empty()) {
-            return processed;
-        }
-
-        currChar = s[0];
-        s.erase(0, 1);
-        processed.push_back(currChar);
-        if (currChar == '(') {
-            bracketCount++;
-        } else if (currChar == ')') {
-            bracketCount--;
-        }
-    }
-
-    if (!s.empty()) {
-        processed.append(s);
-        return processed;
-    } else {
-        processed.erase(0, 1);
-        processed.pop_back();
-        return stripOuterBrackets(processed);
-    }
-}

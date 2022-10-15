@@ -21,7 +21,7 @@ Select s such that Next(s,11)
 5 - next after while loop
 stmt s;
 Select s such that Next(s,16)
-15
+11
 5000
 6 - next star last stmt
 stmt s;

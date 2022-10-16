@@ -16,7 +16,7 @@ Select s such that Next(13,s)
 4 - next end while loop
 stmt s;
 Select s such that Next(17,s)
-13, 18
+13
 5000
 5 - next end if else 
 stmt s;

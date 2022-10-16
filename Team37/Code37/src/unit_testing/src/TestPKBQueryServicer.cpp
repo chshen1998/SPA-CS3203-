@@ -194,11 +194,11 @@ TEST_CASE("QueryServicer - Next Backward") {
     pkb->buildFromCFG(cfgMap);
 
     vector<int> nextStatements = pkb->getQueryServicer()->backwardComputeRelation(2, NEXT);
-    // Contain lines 1 and 6
-    REQUIRE(nextStatements.size() == 1);
+    // Contain lines 4,5,6
+    REQUIRE(nextStatements.size() == 3);
 
-//     Handle Next star for while loops
     vector<int> nextStarStatements1 = pkb->getQueryServicer()->backwardComputeRelation(6, NEXTS);
+    // Contain lines 1,2
     REQUIRE(nextStarStatements1.size() == 2);
 
     vector<int> nextStarStatements2 = pkb->getQueryServicer()->backwardComputeRelation(4, NEXTS);
@@ -271,13 +271,12 @@ TEST_CASE("FAILING TESTCASE") {
 
 
     shared_ptr<CFGNode> cfgNode = cfgMap->at(5);
-    vector<shared_ptr<CFGNode>> parents = cfgNode->getParents();
-    if (parents[0]->getTNode() == nullptr) {
-        printf("Null pointer");
-    }
-    if (dynamic_pointer_cast<Statement>(parents[0]->getTNode()) != nullptr) {
-        shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(parents[0]->getTNode());
-        printf("LINE NUM %d \n", stmt->getLineNum());
 
-    }
+
+    bool checkRetrieveRelation1 = pkb->getQueryServicer()->retrieveRelation(3, 5, NEXT);
+    REQUIRE(checkRetrieveRelation1 == true);
+
+    bool checkRetrieveRelation2 = pkb->getQueryServicer()->retrieveRelation(4, 5, NEXT);
+    REQUIRE(checkRetrieveRelation2 == true);
+
 }

@@ -538,6 +538,7 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
     switch (type) {
         case (NEXT): {
+
             for (const auto &childNode: cfgNode->getChildren()) {
                 shared_ptr<TNode> tNode = childNode->getTNode();
 
@@ -547,7 +548,7 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
                     lstLineNum.push_back(stmt->getLineNum());
 
                     // childNode is a dummy node
-                } else if (!childNode->getChildren().empty()) {
+                } else if (tNode == nullptr && !childNode->getChildren().empty()) {
                     for (const auto &storedChildNode: childNode->getChildren()) {
                         shared_ptr<TNode> storedChildTNode = storedChildNode->getTNode();
 
@@ -624,14 +625,24 @@ Compute Backward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
     shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
     vector<int> lstLineNum = {};
-
     switch (type) {
         case (NEXT):
             for (const auto &parentNode: cfgNode->getParents()) {
-                shared_ptr<TNode> TNode = parentNode->getTNode();
-                if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
-                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
+                shared_ptr<TNode> tNode = parentNode->getTNode();
+
+                if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
+                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
                     lstLineNum.push_back(stmt->getLineNum());
+
+                } else if (parentNode->getTNode() == nullptr && !parentNode->getParents().empty()) {
+                    for (const auto &storedParentNode: parentNode->getParents()) {
+                        shared_ptr<TNode> storedParentTNode = storedParentNode->getTNode();
+
+                        if (dynamic_pointer_cast<Statement>(storedParentTNode) != nullptr) {
+                            shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(storedParentTNode);
+                            lstLineNum.push_back(stmt->getLineNum());
+                        }
+                    }
                 }
             }
             return lstLineNum;
@@ -639,11 +650,12 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
         case (NEXTS):
             for (const auto &parentNode: cfgNode->getParents()) {
                 // add parent stmt to list
-                shared_ptr<TNode> TNode = parentNode->getTNode();
-                if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
-                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
+                shared_ptr<TNode> tNode = parentNode->getTNode();
+                if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
+                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
                     int lineNum = stmt->getLineNum();
                     lstLineNum.push_back(lineNum);
+
                 }
 
                 // recursively compute all transitively Next*(stmt, _)

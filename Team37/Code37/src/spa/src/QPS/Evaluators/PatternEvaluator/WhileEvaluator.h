@@ -5,6 +5,10 @@ using namespace std;
 
 #include "PatternEvaluator.h"
 #include "PKB/QueryServicer.h"
+#include "QPS/Types/TokenType.h"
+#include "QPS/Structures/PqlQuery.h"
+#include "PKB/Types/StmtStmtRelationType.h"
+#include "PKB/Types/StmtVarRelationType.h"
 
 class WhileEvaluator : public PatternEvaluator{
 

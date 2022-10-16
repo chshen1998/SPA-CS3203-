@@ -233,18 +233,28 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
         if (dynamic_pointer_cast<IfStatement>(node) != nullptr) {
             shared_ptr<IfStatement> ifStmt = dynamic_pointer_cast<IfStatement>(node);
             this->storage->storeRelation(ifStmt->getLineNum(), variable, USESSV);
-            if (ifStmt->getConditionalExpression() != nullptr) {
-                this->storage->storeRelation(ifStmt->getLineNum(), variable, USESSVPREDICATE);
-            }
         }
 
         // While Statement: Uses(s, v)
         if (dynamic_pointer_cast<WhileStatement>(node) != nullptr) {
             shared_ptr<WhileStatement> whileStmt = dynamic_pointer_cast<WhileStatement>(node);
             this->storage->storeRelation(whileStmt->getLineNum(), variable, USESSV);
-            if (whileStmt->getConditionalExpression() != nullptr) {
-                this->storage->storeRelation(whileStmt->getLineNum(), variable, USESSVPREDICATE);
+        }
+
+        if (dynamic_pointer_cast<ConditionalExpression>(node) != nullptr) {
+            shared_ptr<ConditionalExpression> condExpr = dynamic_pointer_cast<ConditionalExpression>(node);
+
+            // Store Uses SV Predicate for while stmt
+            if (dynamic_pointer_cast<WhileStatement>(node->getParent()) != nullptr) {
+                shared_ptr<WhileStatement> whileParent = dynamic_pointer_cast<WhileStatement>(node->getParent());
+                this->storage->storeRelation(whileParent->getLineNum(), variable, USESSVPREDICATE);
             }
+            // Store Uses SV Predicate for if stmt
+            if (dynamic_pointer_cast<IfStatement>(node->getParent()) != nullptr) {
+                shared_ptr<IfStatement> ifParent = dynamic_pointer_cast<IfStatement>(node->getParent());
+                this->storage->storeRelation(ifParent->getLineNum(), variable, USESSVPREDICATE);
+            }
+
         }
 
         if (dynamic_pointer_cast<Procedure>(node) != nullptr) {

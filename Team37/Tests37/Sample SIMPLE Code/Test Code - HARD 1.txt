@@ -13,16 +13,16 @@ procedure procedure {
     } else {
       else = if + then + procedure;
       while (5 > 0) {
-        if (then > else) then {
-          print x;
+        if (then > (else - procedure) * (then / 9342) + while) then {
+          print print;
         } else {
-          while (procedure > then) {
-            print x;
+          while (procedure >= then) {
+            print call;
           }
         }
       }
       while (procedure <= else + while) {
-        if (x == 1 + 3 + 5) then {
+        if ((x + 1) * (2 / 3) == 1 + 2 / 6 % 3 + 5 + 6 * 2 % 2) then {
           if (read == print) then {
             read x;
           } else {
@@ -42,7 +42,7 @@ procedure procedure {
 }
 
 procedure doNothing {
-  while = 1;
+  while = 1 + doNothing % doSomething * ifThen - print + a9345934un34ubhr / 23423453;
   ifThen = 2;
   if = 3;
   then = 4;
@@ -77,16 +77,16 @@ procedure doSomething {
       } else {
 06      else = if + then + procedure;
 07      while (5 > 0) {
-08        if (then > else) then {
-09          print x;
+08        if (then > (else - procedure) * (then / 9342) + while) then {
+09          print print;
           } else {
-10          while (procedure > then) {
-11            print x;
+10          while (procedure >= then) {
+11            print call;
             }
           }
         }
 12      while (procedure <= else + while) {
-13        if (x == 1 + 3 + 5) then {
+13        if ((x + 1) * (2 / 3) == 1 + 2 / 6 % 3 + 5 + 6 * 2 % 2) then {
 14          if (read == print) then {
 15            read x;
             } else {
@@ -106,7 +106,7 @@ procedure doSomething {
   }
 
   procedure doNothing {
-21  while = 1;
+21  while = 1 + doNothing % doSomething * ifThen - print + a9345934un34ubhr / 23423453;
 22  ifThen = 2;
 23  if = 3;
 24  then = 4;

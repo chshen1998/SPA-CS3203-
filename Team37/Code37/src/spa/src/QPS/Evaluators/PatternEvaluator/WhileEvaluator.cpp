@@ -26,7 +26,7 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
         finalTable[0].push_back(leftArg.value);
         for (int line: allWhileStmtLines) {
             for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV)) {
-                finalTable.push_back(vector<string>{to_string(line), v}); //why some pushback with v
+                finalTable.push_back(vector<string>{to_string(line), v});
             }
         }
     } else if (leftArg.type == TokenType::STRING) {
@@ -34,7 +34,7 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
         vector<int> allStmtsWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::USESSV);
         getLineNumInteresection(finalResult, allStmtsWithLeftArg, allWhileStmtLines);
         for (int line: finalResult) {
-            finalTable.push_back(vector<string>{to_string(line)}); //why some no pushback with variable
+            finalTable.push_back(vector<string>{to_string(line)});
         }
     } else {
         // First argument is wildcard --> Eg. w (_,_)

@@ -1,6 +1,6 @@
 1 - With and Tuple 
 print p; read r; while w;
-Select <p, r.varName> such that Uses(w, p) and Uses(w,r) with w.stmt# = 11
-16 flag
+Select <p, r.varName> such that Parent(w, p) and Parent(w,r) with w.stmt# = 11
+13 flag
 5000
 

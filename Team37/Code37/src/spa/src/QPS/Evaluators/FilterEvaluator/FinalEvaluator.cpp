@@ -25,12 +25,13 @@ void FinalEvaluator::getFinalResult(list<string>& result, vector<vector<string>>
     // in SelectObjects, we add them to our intermediate table
     updateFinalTableWithAttrName(intermediate);
 
+    printTable(intermediate);
+
     // Get the mapping of indexes from the intermediate table to the Select Object
     unordered_map<int, int> tableIndexToSelectIndex = getTableIndexToSelectIndex(intermediate);
 
     // Initialize our current row
     vector<string> currentRow(pq.selectObjects.size(), "");
-
     // Just to prevent duplicates in our final result
     unordered_set<string> uniqueResults;
 
@@ -109,11 +110,11 @@ void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>>& interm
         }
 
         // ".ProcName"
-        size_t dotPosition = intermediate[0][i].find(".ProcName");
+        size_t dotPosition = intermediate[0][i].find(".procName");
 
         if (dotPosition == -1) {
             // ".VarName"
-            dotPosition = intermediate[0][i].find(".VarName");
+            dotPosition = intermediate[0][i].find(".varName");
 
             if (dotPosition == -1) {
                 continue;
@@ -127,7 +128,7 @@ void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>>& interm
     // Add .ProcName or VarName to call/print/read synonyms if they are part of a select synonym
     for (string s : callPrintReadSynonym) {
         if (callReadPrintWithAltAttrName.find(s) != callReadPrintWithAltAttrName.end()) {
-            addProcName(intermediate, PqlToken(TokenType::SYNONYM, s));
+            addAttrName(intermediate, PqlToken(TokenType::SYNONYM, s));
         }
     }
     // With this we should have the final proper intermediate table to pull the selectObjects

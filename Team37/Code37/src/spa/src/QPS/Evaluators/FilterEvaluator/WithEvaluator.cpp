@@ -31,13 +31,13 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     }
 
     // Add procName for call, print, and read
-    bool isLeftDoubleAttr = WithEvaluator::addProcName(intermediate, leftArg);
+    bool isLeftDoubleAttr = WithEvaluator::addAttrName(intermediate, leftArg);
     string leftValue = isLeftDoubleAttr ? updatedColumnName(leftArg) : leftArg.value;
     finalResult.push_back(intermediate[0]);
 
     // Two Synonyms - s.procName() = v.procName()
     if (clause.rightAttr.type != TokenType::NONE) {        
-        bool isRightDoubleAttr = WithEvaluator::addProcName(intermediate, rightArg);
+        bool isRightDoubleAttr = WithEvaluator::addAttrName(intermediate, rightArg);
 
         // Insert Column headers
         int leftArgIndex = -1;

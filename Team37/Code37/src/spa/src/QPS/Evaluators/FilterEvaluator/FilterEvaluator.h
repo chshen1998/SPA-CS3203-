@@ -20,7 +20,7 @@ protected:
 
     vector<string> selectAll(const TokenType);
 
-    bool addProcName(vector<vector<string>>&, const PqlToken&);
+    bool addAttrName(vector<vector<string>>&, const PqlToken&);
 
     unordered_set<TokenType> doubleAttrTokens = {
         TokenType::CALL, TokenType::PRINT, TokenType::READ

@@ -13,15 +13,22 @@ using namespace TokenizerUtils;
 void WithTokenizer::tokenize() {
     TokenType currentToken;
     bool secondRef = false;
+    bool isCurrentSynonym = true;
 
     while (currentIndex < delimited_query.size()) {
-
-        // Can only be attrName, dot, equal
-        currentToken = (stringToTokenMap.find(delimited_query[currentIndex]) != stringToTokenMap.end())
-            ? stringToTokenMap[delimited_query[currentIndex]]
-            : checkWithTokenType(delimited_query[currentIndex]);
+        if (isCurrentSynonym && checkIfSynonym(delimited_query[currentIndex])) {
+            currentToken = TokenType::SYNONYM;
+            isCurrentSynonym = false;
+        }
+        else {
+            // Can only be attrName, dot, equal
+            currentToken = (stringToTokenMap.find(delimited_query[currentIndex]) != stringToTokenMap.end())
+                ? stringToTokenMap[delimited_query[currentIndex]]
+                : checkWithTokenType(delimited_query[currentIndex]);
+        }
 
         secondRef = currentToken == TokenType::EQUAL;
+        isCurrentSynonym = currentToken == TokenType::EQUAL;
 
         tokens.push_back(PqlToken(currentToken, delimited_query[currentIndex]));
         currentIndex += 1;

@@ -71,8 +71,6 @@ void QPS::evaluate(string query, list<string>& results) {
         return;
     }
 
-
-
     QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
     evaluator.evaluate();
 

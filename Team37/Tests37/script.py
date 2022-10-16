@@ -26,6 +26,9 @@ if "TestOutputs" in milestones:
 OUTPUT_FOLDER.mkdir()
 
 for milestone in milestones:
+    #if milestone == "TestOutputs":
+     #   continue
+
     if milestone != "TestCases-Milestone2":
         continue
 

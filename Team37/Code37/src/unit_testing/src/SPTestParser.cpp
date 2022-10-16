@@ -563,6 +563,251 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
     REQUIRE(statements[0]->getLineNum() == currStatementNumber);
 }
 
+TEST_CASE("parseSourceCode - Positive Case - HARD 1") {
+    string rawSourceCode = "procedure procedure {\n"
+                           "  while (while < while) {\n"
+                           "    if (if != if * (2 + 1)) then {\n"
+                           "      then = then + if;\n"
+                           "      while = procedure + 32432 + if + then;\n"
+                           "      else = while;\n"
+                           "    } else {\n"
+                           "      else = if + then + procedure;\n"
+                           "      while (5 > 0) {\n"
+                           "        if (then > (else - procedure) * (then / 9342) + while) then {\n"
+                           "          print print;\n"
+                           "        } else {\n"
+                           "          while (procedure >= then) {\n"
+                           "            print call;\n"
+                           "          }\n"
+                           "        }\n"
+                           "      }\n"
+                           "      while (procedure <= else + while) {\n"
+                           "        if ((x + 1) * (2 / 3) == 1 + 2 / 6 % 3 + 5 + 6 * 2 % 2) then {\n"
+                           "          if (read == print) then {\n"
+                           "            read x;\n"
+                           "          } else {\n"
+                           "            print x;\n"
+                           "          }\n"
+                           "          while (x < y) {\n"
+                           "            call doNothing;\n"
+                           "          }\n"
+                           "        } else {\n"
+                           "          while (else < if) {\n"
+                           "            call doNothing;\n"
+                           "          }\n"
+                           "        }\n"
+                           "      }\n"
+                           "    }\n"
+                           "  }\n"
+                           "}\n"
+                           "\n"
+                           "procedure doNothing {\n"
+                           "  while = 1 + doNothing % doSomething * ifThen - print + a9345934un34ubhr / 23423453;\n"
+                           "  ifThen = 2;\n"
+                           "  if = 3;\n"
+                           "  then = 4;\n"
+                           "  else = 5;\n"
+                           "}\n"
+                           "\n"
+                           "procedure doSomething {\n"
+                           "  call doNothing;\n"
+                           "  read doNothing;\n"
+                           "  read while;\n"
+                           "  print while;\n"
+                           "  read ifThen;\n"
+                           "  print ifThen;\n"
+                           "  read if;\n"
+                           "  print if;\n"
+                           "  read then;\n"
+                           "  print then;\n"
+                           "  read else;\n"
+                           "  print else;\n"
+                           "}";
+
+    shared_ptr<SourceCode> AST;
+    shared_ptr<Procedure> procedure;
+    shared_ptr<WhileStatement> whileStatement;
+    shared_ptr<IfStatement> ifStatement;
+    shared_ptr<AssignStatement> assignStatement;
+    shared_ptr<CallStatement> callStatement;
+    shared_ptr<PrintStatement> printStatement;
+    shared_ptr<ReadStatement> readStatement;
+    shared_ptr<RelationalExpression> relationalExpression;
+    shared_ptr<OperatedExpression> operatedExpression;
+    shared_ptr<NameExpression> nameExpression;
+    shared_ptr<ConstantExpression> constantExpression;
+
+
+    Statement::resetLineNumCount();
+    AST = Parser::parseSourceCode(rawSourceCode, "filename");
+    REQUIRE(AST->getNumOfStatements() == 37);
+
+    procedure = AST->getProcedures()[0];
+    REQUIRE(procedure->getProcedureName() == "procedure");
+    whileStatement = dynamic_pointer_cast<WhileStatement>(procedure->getStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::LESS_THAN);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "while");
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(nameExpression->getVarName() == "while");
+
+    ifStatement = dynamic_pointer_cast<IfStatement>(whileStatement->getStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::NOT_EQUALS);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "if");
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(operatedExpression->generateString() == "((if) * ((2) + (1)))");
+
+    assignStatement = dynamic_pointer_cast<AssignStatement>(ifStatement->getThenStatements()[0]);
+    REQUIRE(assignStatement->getVarName() == "then");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "((then) + (if))");
+
+    assignStatement = dynamic_pointer_cast<AssignStatement>(ifStatement->getThenStatements()[1]);
+    REQUIRE(assignStatement->getVarName() == "while");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "((((procedure) + (32432)) + (if)) + (then))");
+
+    assignStatement = dynamic_pointer_cast<AssignStatement>(ifStatement->getThenStatements()[2]);
+    REQUIRE(assignStatement->getVarName() == "else");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "(while)");
+
+    assignStatement = dynamic_pointer_cast<AssignStatement>(ifStatement->getElseStatements()[0]);
+    REQUIRE(assignStatement->getVarName() == "else");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "(((if) + (then)) + (procedure))");
+
+    shared_ptr<IfStatement> ifStatementSavePoint;
+
+    ifStatementSavePoint = ifStatement;
+
+    whileStatement = dynamic_pointer_cast<WhileStatement>(ifStatement->getElseStatements()[1]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN);
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(constantExpression->getValue() == 5);
+    constantExpression = dynamic_pointer_cast<ConstantExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(constantExpression->getValue() == 0);
+
+    ifStatement = dynamic_pointer_cast<IfStatement>(whileStatement->getStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "then");
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(operatedExpression->generateString() == "((((else) - (procedure)) * ((then) / (9342))) + (while))");
+
+    printStatement = dynamic_pointer_cast<PrintStatement>(ifStatement->getThenStatements()[0]);
+    REQUIRE(printStatement->getVariableName() == "print");
+
+    whileStatement = dynamic_pointer_cast<WhileStatement>(ifStatement->getElseStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "procedure");
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(nameExpression->getVarName() == "then");
+
+    whileStatement = dynamic_pointer_cast<WhileStatement>(ifStatementSavePoint->getElseStatements()[2]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "procedure");
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(operatedExpression->generateString() == "((else) + (while))");
+
+    ifStatement = dynamic_pointer_cast<IfStatement>(whileStatement->getStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::EQUALS);
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(operatedExpression->generateString() == "(((x) + (1)) * ((2) / (3)))");
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(operatedExpression->generateString() == "((((1) + (((2) / (6)) % (3))) + (5)) + (((6) * (2)) % (2)))");
+
+    ifStatementSavePoint = ifStatement;
+
+    ifStatement = dynamic_pointer_cast<IfStatement>(ifStatement->getThenStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::EQUALS);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "read");
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(nameExpression->getVarName() == "print");
+
+    readStatement = dynamic_pointer_cast<ReadStatement>(ifStatement->getThenStatements()[0]);
+    REQUIRE(readStatement->getVariableName() == "x");
+    printStatement = dynamic_pointer_cast<PrintStatement>(ifStatement->getElseStatements()[0]);
+    REQUIRE(printStatement->getVariableName() == "x");
+
+    whileStatement = dynamic_pointer_cast<WhileStatement>(ifStatementSavePoint->getThenStatements()[1]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::LESS_THAN);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "x");
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(nameExpression->getVarName() == "y");
+
+    callStatement = dynamic_pointer_cast<CallStatement>(whileStatement->getStatements()[0]);
+    REQUIRE(callStatement->getProcedureName() == "doNothing");
+
+    whileStatement = dynamic_pointer_cast<WhileStatement>(ifStatementSavePoint->getElseStatements()[0]);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::LESS_THAN);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "else");
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(nameExpression->getVarName() == "if");
+
+    callStatement = dynamic_pointer_cast<CallStatement>(whileStatement->getStatements()[0]);
+    REQUIRE(callStatement->getProcedureName() == "doNothing");
+
+
+    procedure = AST->getProcedures()[1];
+    REQUIRE(procedure->getProcedureName() == "doNothing");
+    assignStatement = dynamic_pointer_cast<AssignStatement>(procedure->getStatements()[0]);
+    REQUIRE(assignStatement->getVarName() == "while");
+    REQUIRE(assignStatement->getRelFactor()->generateString() ==
+            "((((1) + (((doNothing) % (doSomething)) * (ifThen))) - (print)) + ((a9345934un34ubhr) / (23423453)))");
+    assignStatement = dynamic_pointer_cast<AssignStatement>(procedure->getStatements()[1]);
+    REQUIRE(assignStatement->getVarName() == "ifThen");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "(2)");
+    assignStatement = dynamic_pointer_cast<AssignStatement>(procedure->getStatements()[2]);
+    REQUIRE(assignStatement->getVarName() == "if");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "(3)");
+    assignStatement = dynamic_pointer_cast<AssignStatement>(procedure->getStatements()[3]);
+    REQUIRE(assignStatement->getVarName() == "then");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "(4)");
+    assignStatement = dynamic_pointer_cast<AssignStatement>(procedure->getStatements()[4]);
+    REQUIRE(assignStatement->getVarName() == "else");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "(5)");
+
+
+    procedure = AST->getProcedures()[2];
+    callStatement = dynamic_pointer_cast<CallStatement>(procedure->getStatements()[0]);
+    REQUIRE(callStatement->getProcedureName() == "doNothing");
+    readStatement = dynamic_pointer_cast<ReadStatement>(procedure->getStatements()[1]);
+    REQUIRE(readStatement->getVariableName() == "doNothing");
+    readStatement = dynamic_pointer_cast<ReadStatement>(procedure->getStatements()[2]);
+    REQUIRE(readStatement->getVariableName() == "while");
+    printStatement = dynamic_pointer_cast<PrintStatement>(procedure->getStatements()[3]);
+    REQUIRE(printStatement->getVariableName() == "while");
+    readStatement = dynamic_pointer_cast<ReadStatement>(procedure->getStatements()[4]);
+    REQUIRE(readStatement->getVariableName() == "ifThen");
+    printStatement = dynamic_pointer_cast<PrintStatement>(procedure->getStatements()[5]);
+    REQUIRE(printStatement->getVariableName() == "ifThen");
+    readStatement = dynamic_pointer_cast<ReadStatement>(procedure->getStatements()[6]);
+    REQUIRE(readStatement->getVariableName() == "if");
+    printStatement = dynamic_pointer_cast<PrintStatement>(procedure->getStatements()[7]);
+    REQUIRE(printStatement->getVariableName() == "if");
+    readStatement = dynamic_pointer_cast<ReadStatement>(procedure->getStatements()[8]);
+    REQUIRE(readStatement->getVariableName() == "then");
+    printStatement = dynamic_pointer_cast<PrintStatement>(procedure->getStatements()[9]);
+    REQUIRE(printStatement->getVariableName() == "then");
+    readStatement = dynamic_pointer_cast<ReadStatement>(procedure->getStatements()[10]);
+    REQUIRE(readStatement->getVariableName() == "else");
+    printStatement = dynamic_pointer_cast<PrintStatement>(procedure->getStatements()[11]);
+    REQUIRE(printStatement->getVariableName() == "else");
+}
+
 TEST_CASE("parseProcedure - Positive Case") {
     string rawProcedure;
     shared_ptr<Procedure> procedure;
@@ -718,15 +963,13 @@ TEST_CASE("parseIfElse - Positive Case") {
 
 TEST_CASE("parseIfElse - Positive Case - Nested If statement") {
     string str = "if (x > 3) then {\n"
-                 "if (x > 3 )then {\n"
-                 "x=1;\n"
-                 "}\n"
-                 "else{\n"
-                 "x=1;\n"
-                 "}\n"
-                 "}\n"
-                 "else{\n"
-                 "x=1;\n"
+                 "  if (x > 3 )then {\n"
+                 "      x=1;\n"
+                 "  } else {\n"
+                 "      x=1;\n"
+                 "  }\n"
+                 "} else {\n"
+                 "  x=1;\n"
                  "}\n";
     shared_ptr<IfStatement> ifStatement = Parser::parseIfElse(str);
     REQUIRE_NOTHROW(Parser::parseIfElse(str));
@@ -757,6 +1000,51 @@ TEST_CASE("parseIfElse - Positive Case - Nested If statement") {
     REQUIRE(elseStatement->getVarName() == "x");
     constantExpression = dynamic_pointer_cast<ConstantExpression>(elseStatement->getRelFactor());
     REQUIRE(constantExpression->getValue() == 1);
+}
+
+TEST_CASE("parseIfElse - Positive Case - Keywords used a variable names") {
+    string rawIfStatement;
+    shared_ptr<IfStatement> ifStatement;
+    shared_ptr<RelationalExpression> relationalExpression;
+    shared_ptr<NameExpression> nameExpression;
+    shared_ptr<OperatedExpression> operatedExpression;
+    shared_ptr<PrintStatement> printStatement;
+
+    rawIfStatement = "if (then > else + if) then {\n"
+                     "          print if;\n"
+                     "          print then;\n"
+                     "          print else;\n"
+                     "        } else {\n"
+                     "          print if;\n"
+                     "          print then;\n"
+                     "          print else;\n"
+                     "        }";
+
+    ifStatement = Parser::parseIfElse(rawIfStatement);
+    relationalExpression = dynamic_pointer_cast<RelationalExpression>(ifStatement->getConditionalExpression());
+    REQUIRE(relationalExpression->getOperator() == RelationalOperator::GREATER_THAN);
+    nameExpression = dynamic_pointer_cast<NameExpression>(relationalExpression->getRelFactor1());
+    REQUIRE(nameExpression->getVarName() == "then");
+    operatedExpression = dynamic_pointer_cast<OperatedExpression>(relationalExpression->getRelFactor2());
+    REQUIRE(operatedExpression->getOperator() == Operator::ADD);
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression1());
+    REQUIRE(nameExpression->getVarName() == "else");
+    nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
+    REQUIRE(nameExpression->getVarName() == "if");
+
+    printStatement = dynamic_pointer_cast<PrintStatement>(ifStatement->getThenStatements()[0]);
+    REQUIRE(printStatement->getVariableName() == "if");
+    printStatement = dynamic_pointer_cast<PrintStatement>(ifStatement->getThenStatements()[1]);
+    REQUIRE(printStatement->getVariableName() == "then");
+    printStatement = dynamic_pointer_cast<PrintStatement>(ifStatement->getThenStatements()[2]);
+    REQUIRE(printStatement->getVariableName() == "else");
+
+    printStatement = dynamic_pointer_cast<PrintStatement>(ifStatement->getElseStatements()[0]);
+    REQUIRE(printStatement->getVariableName() == "if");
+    printStatement = dynamic_pointer_cast<PrintStatement>(ifStatement->getElseStatements()[1]);
+    REQUIRE(printStatement->getVariableName() == "then");
+    printStatement = dynamic_pointer_cast<PrintStatement>(ifStatement->getElseStatements()[2]);
+    REQUIRE(printStatement->getVariableName() == "else");
 }
 
 TEST_CASE("parseIfElse - Negative Case - if-else missing else block") {
@@ -808,6 +1096,79 @@ TEST_CASE("parseWhile - Positive Case - Bad styling") {
     REQUIRE(printStmt->getVariableName() == "longlonglonglonglongNAME");
     readStmt = dynamic_pointer_cast<ReadStatement>((whileStatement->getStatements())[1]);
     REQUIRE(readStmt->getVariableName() == "namewithNUMBERS123053");
+}
+
+TEST_CASE("parseWhile - Positive Case - Keywords used as variable name") {
+    string rawWhileStatement;
+    shared_ptr<RelationalExpression> relExpr;
+    shared_ptr<NameExpression> nameExpr;
+    shared_ptr<PrintStatement> printStmt;
+    shared_ptr<ReadStatement> readStmt;
+    shared_ptr<WhileStatement> whileStatement;
+    shared_ptr<AssignStatement> assignStatement;
+
+    rawWhileStatement = "while (while > while) {\n"
+                               "            print while;\n"
+                               "            read while;\n"
+                               "          }";
+
+    whileStatement = dynamic_pointer_cast<WhileStatement>(Parser::parseStatement(rawWhileStatement));
+    relExpr = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN);
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "while");
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor2());
+    REQUIRE(nameExpr->getVarName() == "while");
+    printStmt = dynamic_pointer_cast<PrintStatement>((whileStatement->getStatements())[0]);
+    REQUIRE(printStmt->getVariableName() == "while");
+    readStmt = dynamic_pointer_cast<ReadStatement>((whileStatement->getStatements())[1]);
+    REQUIRE(readStmt->getVariableName() == "while");
+
+
+    rawWhileStatement = "while (if > then) {\n"
+                        "            print if;\n"
+                        "            read else;\n"
+                        "            print then;\n"
+                        "          }";
+
+    whileStatement = dynamic_pointer_cast<WhileStatement>(Parser::parseStatement(rawWhileStatement));
+    relExpr = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN);
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "if");
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor2());
+    REQUIRE(nameExpr->getVarName() == "then");
+    printStmt = dynamic_pointer_cast<PrintStatement>((whileStatement->getStatements())[0]);
+    REQUIRE(printStmt->getVariableName() == "if");
+    readStmt = dynamic_pointer_cast<ReadStatement>((whileStatement->getStatements())[1]);
+    REQUIRE(readStmt->getVariableName() == "else");
+    printStmt = dynamic_pointer_cast<PrintStatement>((whileStatement->getStatements())[2]);
+    REQUIRE(printStmt->getVariableName() == "then");
+
+
+
+    rawWhileStatement = "while (procedure > stop) {\n"
+                        "            while = if + then;\n"
+                        "            if = while + then;\n"
+                        "            then = if + while;\n"
+                        "          }";
+
+    whileStatement = dynamic_pointer_cast<WhileStatement>(Parser::parseStatement(rawWhileStatement));
+    relExpr = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
+    REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN);
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
+    REQUIRE(nameExpr->getVarName() == "procedure");
+    nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor2());
+    REQUIRE(nameExpr->getVarName() == "stop");
+
+    assignStatement = dynamic_pointer_cast<AssignStatement>((whileStatement->getStatements())[0]);
+    REQUIRE(assignStatement->getVarName() == "while");
+
+    assignStatement = dynamic_pointer_cast<AssignStatement>((whileStatement->getStatements())[1]);
+    REQUIRE(assignStatement->getVarName() == "if");
+
+    assignStatement = dynamic_pointer_cast<AssignStatement>((whileStatement->getStatements())[2]);
+    REQUIRE(assignStatement->getVarName() == "then");
 }
 
 TEST_CASE("parseWhile - Negative Case - Missing semicolon") {
@@ -1176,6 +1537,14 @@ TEST_CASE("isAssignStatement - Negative Case") {
     rawAssignStatement = "while ((x > 2) || !(y <= 5)) {\n"
                          "\t\t\t\t\tbreadth = while;\n"
                          "\t\t\t\t}";
+    REQUIRE(!Parser::isAssignStatement(rawAssignStatement));
+
+
+    rawAssignStatement = "while (if > then) {\n"
+                         "            while = if + then;\n"
+                         "            if = while + then;\n"
+                         "            then = if + while;\n"
+                         "          }";
     REQUIRE(!Parser::isAssignStatement(rawAssignStatement));
 }
 

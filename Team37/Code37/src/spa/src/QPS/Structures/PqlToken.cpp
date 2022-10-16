@@ -10,7 +10,7 @@ using namespace std;
 #include "PqlToken.h"
 
 set<TokenType> suchThatStmtRefStmtRef = {
-    TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A
+    TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A, TokenType::NEXT, TokenType::NEXT_A
 };
 
 set<TokenType> suchThatStmtRefVarRef = {

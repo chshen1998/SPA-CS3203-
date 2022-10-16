@@ -5,7 +5,7 @@ from pathlib import Path
 
 AUTOTESTER_PATH = Path("../Code37/cmake-build-release/src/autotester/autotester")
 
-buildType = "Debug"
+buildType = "Release"
 
 if sys.platform == "win32":
     AUTOTESTER_PATH = Path("../Code37/out/build/x64-{}/src/autotester/autotester".format(buildType))
@@ -23,8 +23,10 @@ if "TestOutputs" in milestones:
 
 OUTPUT_FOLDER.mkdir()
 
+exception_milestone_folders = ["Sample SIMPLE Code", "TestOutputs"]
+
 for milestone in milestones:
-    if milestone == "TestOutputs" or milestone == "TestCases-Progress":
+    if milestone in exception_milestone_folders:
         continue
 
     Path(f"./TestOutputs/{milestone}").mkdir()

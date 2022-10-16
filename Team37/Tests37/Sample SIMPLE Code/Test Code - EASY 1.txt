@@ -1,0 +1,107 @@
+Styling: Good
+Syntax: Good
+Length: Short
+Complexity: Low
+
+
+procedure main {
+	print = x;
+	read x;
+	left = x;
+	right = left + 2;
+	read temp;
+	radius = x + left;
+	temp = temp + 2;
+	radius1 = x + left;
+}
+
+procedure somethingHmm {
+	while (iter <=  5) {
+		x = right + 3 + 2 + left;
+		temp = temp + 7;
+	}
+	if (iter != 1) then {
+		iter = iter + 1; 
+		length = radius * 10;
+		breadth = radius + 10;
+	} else {
+		while ((left + 1 > 2) || (radius + 1 > 2)) {
+			breadth = radius - 100;
+			length = left + right;
+		}
+	}
+}
+
+procedure nestedBlocks {
+	if (iter != 1) then {
+		iter = iter + 1; 
+		length = radius * 10;
+		breadth = radius + 10;
+	} else {
+		while ((left + 1 > 2) || (radius + 1 > 2)) {
+			breadth = radius - 100;
+			length = left + right;
+			if (1 > 2) then {
+				procedure  = 5;
+			} else {
+				length = no;
+				while ((x > 2) || !(y <= 5)) {
+					breadth = while;
+				}
+			}
+		}
+	}
+}
+
+*********************************************************************************************************
+******************************************** WITH LINE NUMBERS ***********************************************
+*********************************************************************************************************
+
+	procedure main {
+01	print = x;
+02	read x;
+03	left = x;
+04	right = left + 2;
+05	read temp;
+06	radius = x + left;
+07	temp = temp + 2;
+08	radius1 = x + left;
+	}
+
+	procedure somethingHmm {
+09	while (iter <=  5) {
+10		x = right + 3 + 2 + left;
+11		temp = temp + 7;
+		}
+12	if (iter != 1) then {
+13		iter = iter + 1; 
+14		length = radius * 10;
+15		breadth = radius + 10;
+		} else {
+16		while ((left + 1 > 2) || (radius + 1 > 2)) {
+17			breadth = radius - 100;
+18			length = left + right;
+			}
+		}
+	}
+
+	procedure nestedBlocks {
+19	if (iter != 1) then {
+20		iter = iter + 1; 
+21		length = radius * 10;
+22		breadth = radius + 10;
+		} else {
+23		while ((left + 1 > 2) || (radius + 1 > 2)) {
+24			breadth = radius - 100;
+25			length = left + right;
+26			if (1 > 2) then {
+27				procedure  = 5;
+				} else {
+28				length = no;
+29				while ((x > 2) || !(y <= 5)) {
+30					breadth = while;
+					}
+				}
+			}
+		}
+	}

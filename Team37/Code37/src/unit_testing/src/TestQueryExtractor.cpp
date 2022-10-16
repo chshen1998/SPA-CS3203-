@@ -70,6 +70,32 @@ TEST_CASE("Test Select clause")
 	REQUIRE(results.selectObjects == ans);
 }
 
+TEST_CASE("Test Select only no declarations")
+{
+	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };
+
+	QueryExtractor sut(valid_select_only);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(results.selectObjects == ans);
+}
+
+TEST_CASE("Test Calls wildcards")
+{
+	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };
+	vector<Clause> ans2 = { Clause(PqlToken(TokenType::CALLS, "Calls"),
+								  PqlToken(TokenType::WILDCARD, "_"),
+								  PqlToken(TokenType::WILDCARD, "_"),
+								  TokenType::SUCH_THAT) };
+
+	QueryExtractor sut(valid_calls_wildcards);
+	PqlQuery results = sut.extractSemantics();
+
+	REQUIRE(results.selectObjects == ans);
+	REQUIRE(results.clauses == ans2);
+}
+
+
 TEST_CASE("Test Select boolean")
 {
 	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };

@@ -832,6 +832,7 @@ set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     }
 
     // Check if current node is assign and modifes any var -> Add current node to output
+    // If childNode is null -> still at first step, dont add itself
     int lineNo = statement_node->getLineNum();
     shared_ptr<AssignStatement> assignNode = dynamic_pointer_cast<AssignStatement>(statement_node);
     if (assignNode != nullptr && childNode != nullptr) {

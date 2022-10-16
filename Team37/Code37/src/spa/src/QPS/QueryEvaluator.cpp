@@ -85,7 +85,12 @@ void QueryEvaluator::evaluate() {
         }
 
         else if (clause.category == TokenType::PATTERN) {
-            finalResult = assignEvaluator.evaluateClause(clause, finalResult);
+            TokenType patternType = pq.declarations[clause.clauseType.value];
+            if (patternType == TokenType::ASSIGN) {
+                finalResult = assignEvaluator.evaluateClause(clause, finalResult);
+            } else if (patternType == TokenType::WHILE) {
+                finalResult = whileEvaluator.evaluateClause(clause, finalResult);
+            }
         }
 
         else {

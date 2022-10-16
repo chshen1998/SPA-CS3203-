@@ -39,9 +39,6 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
     } else {
         // First argument is wildcard --> Eg. w (_,_)
         for (int line: allWhileStmtLines) {
-//            for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV)) {
-//                finalTable.push_back(vector<string>{to_string(line), v});
-//            }
             if (!servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV).empty()) {
                 finalTable.push_back(vector<string>{to_string(line)});
             }

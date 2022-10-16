@@ -1,0 +1,25 @@
+1 - pattern 1 wildcard
+while w;
+Select w pattern w ( _ , _ )
+5, 8, 10
+5000
+2 - pattern 2 variable name
+while w;
+Select w pattern w ( "x" , _ )
+5, 10
+5000
+3 - pattern 3 variable name
+while w;
+Select w pattern w ( "i" , _ )
+8
+5000
+4 - pattern 4 variable name
+while w;
+Select w pattern w ( "z" , _ )
+none
+5000
+5 - pattern 5 variable synonym
+while w; variable v;
+Select w pattern w ( v , _ )
+5, 8, 10
+5000

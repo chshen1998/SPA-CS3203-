@@ -168,6 +168,7 @@ add_library(spa ${srcs} ${headers}
         "src/AST/ASTVisitor/ExtractCallsASTVisitor.cpp"
         "src/AST/ASTVisitor/ExtractCallsASTVisitor.h"
         "src/SP/Utilities/CallLoopChecker.cpp"
+        "src/SP/Utilities/CallLoopChecker.h" src/QPS/Evaluators/PatternEvaluator/WhileEvaluator.cpp src/QPS/Evaluators/PatternEvaluator/WhileEvaluator.h src/QPS/Evaluators/PatternEvaluator/IfEvaluator.cpp src/QPS/Evaluators/PatternEvaluator/IfEvaluator.h)
         "src/SP/Utilities/CallLoopChecker.h" "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.h" "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.cpp")
 
 

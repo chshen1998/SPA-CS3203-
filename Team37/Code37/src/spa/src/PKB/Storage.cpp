@@ -537,17 +537,31 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
     vector<int> lstLineNum = {};
 
     switch (type) {
-        case (NEXT):
+        case (NEXT): {
             for (const auto &childNode: cfgNode->getChildren()) {
-                shared_ptr<TNode> TNode = childNode->getTNode();
-                if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
-                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
+                shared_ptr<TNode> tNode = childNode->getTNode();
+
+                // normal child node
+                if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
+                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
                     lstLineNum.push_back(stmt->getLineNum());
+
+                    // childNode is a dummy node
+                } else if (!childNode->getChildren().empty()) {
+                    for (const auto &storedChildNode: childNode->getChildren()) {
+                        shared_ptr<TNode> storedChildTNode = storedChildNode->getTNode();
+
+                        if (dynamic_pointer_cast<Statement>(storedChildTNode) != nullptr) {
+                            shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(storedChildTNode);
+                            lstLineNum.push_back(stmt->getLineNum());
+                        }
+                    }
                 }
             }
             return lstLineNum;
+        }
 
-        case (NEXTS):
+        case (NEXTS): {
             for (const auto &childNode: cfgNode->getChildren()) {
                 // add children stmt to list
                 shared_ptr<TNode> TNode = childNode->getTNode();
@@ -562,6 +576,7 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
                 lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
             }
             return lstLineNum;
+        }
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }

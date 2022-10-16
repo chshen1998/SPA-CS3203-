@@ -554,6 +554,7 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
                 if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
                     shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
                     int lineNum = stmt->getLineNum();
+                    visited->insert({lineNum, true});
 
                     lstLineNum.push_back(lineNum);
                 }
@@ -561,6 +562,8 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
                 vector<int> childrenLineNums = this->getNextStarForwardLineNum(childNode);
                 lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
             }
+            // reset visited map
+            this->visited = make_shared<map<int, bool >>();
             return lstLineNum;
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
@@ -574,8 +577,6 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
  */
 vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node) {
     vector<int> lstLineNum = {};
-    shared_ptr<map<int, bool >> visited = make_shared<map<int, bool >>();
-
     // add children
     for (const auto &childNode: node->getChildren()) {
         shared_ptr<TNode> TNode = childNode->getTNode();
@@ -628,6 +629,7 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
                 if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
                     shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
                     int lineNum = stmt->getLineNum();
+                    visited->insert({lineNum, true});
                     lstLineNum.push_back(lineNum);
                 }
 
@@ -635,6 +637,8 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
                 vector<int> parentLineNums = this->getNextStarBackwardLineNum(parentNode);
                 lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
             }
+            // reset visited map
+            this->visited = make_shared<map<int, bool >>();
 
             return lstLineNum;
         default:
@@ -649,7 +653,6 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
  */
 vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node) {
     vector<int> lstLineNum = {};
-    shared_ptr<map<int, bool >> visited = make_shared<map<int, bool >>();
 
     for (const auto &parentNode: node->getParents()) {
         shared_ptr<TNode> TNode = parentNode->getTNode();

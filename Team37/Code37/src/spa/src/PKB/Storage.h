@@ -45,6 +45,8 @@ private:
     set<ConstantExpression> constants = {};
     set<Procedure> procedures = {};
     set<shared_ptr<Statement>> statements = {};
+    shared_ptr<map<int, bool >> visited =
+            make_shared<map<int, bool >>();
 
     // RelationalStore<int, int> Follows = RelationalStore<int, int>();
     RelationStarStorage<int, int> Follows = RelationStarStorage<int, int>();

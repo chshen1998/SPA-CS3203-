@@ -1,0 +1,40 @@
+1 - next stmt
+stmt s;
+Select s such that Next(s,2)
+1
+5000
+2 - next else stmt
+stmt s;
+Select s such that Next(s,9)
+5
+5000
+3 - next after if else
+stmt s;
+Select s such that Next(s,10)
+8, 9
+5000
+4 - next while stmt
+stmt s;
+Select s such that Next(s,11)
+10, 15
+5000
+5 - next after while loop
+stmt s;
+Select s such that Next(s,16)
+11
+5000
+6 - next star last stmt
+stmt s;
+Select s such that Next*(s,16)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+7 - next star else stmt
+stmt s;
+Select s such that Next*(s,9)
+1, 2, 3, 4, 5
+5000
+8 - next star while stmt
+stmt s;
+Select s such that Next*(s,11)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15
+5000

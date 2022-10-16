@@ -1,0 +1,5 @@
+1 - next stmt
+stmt s;
+Select s such that Next(18, s)
+none
+5000

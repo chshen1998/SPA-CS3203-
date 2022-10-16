@@ -23,7 +23,7 @@ if "TestOutputs" in milestones:
 
 OUTPUT_FOLDER.mkdir()
 
-exception_milestone_folders = ["Sample SIMPLE Code", "TestOutputs"]
+exception_milestone_folders = ["Sample SIMPLE Code", "TestOutputs", "TestCases-Progress"]
 
 for milestone in milestones:
     if milestone in exception_milestone_folders:
@@ -37,6 +37,8 @@ for milestone in milestones:
     for testcase_folder in testcase_folders:
         Path(f"./TestOutputs/{milestone}/{testcase_folder}").mkdir()
 
+        if testcase_folder == ".DS_Store":
+            continue
         directory_path = Path("./{}/{}".format(milestone, testcase_folder))
         test_files = [f.name for f in directory_path.iterdir()]
 

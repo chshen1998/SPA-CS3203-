@@ -28,13 +28,13 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
 //            if (servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV).empty()) {
 //                printf("EMPTY!\n");
 //            }
-            for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV)) {
+            for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSVPREDICATE)) {
                 finalTable.push_back(vector<string>{to_string(line), v});
             }
         }
     } else if (leftArg.type == TokenType::STRING) {
         // First argument is variable name in quotes --> Eg. w ("x",_)
-        vector<int> allStmtsWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::USESSV);
+        vector<int> allStmtsWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::USESSVPREDICATE);
         getLineNumInteresection(finalResult, allStmtsWithLeftArg, allWhileStmtLines);
         for (int line: finalResult) {
             finalTable.push_back(vector<string>{to_string(line)});
@@ -45,7 +45,7 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
     } else {
         // First argument is wildcard --> Eg. w (_,_)
         for (int line: allWhileStmtLines) {
-            if (!servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV).empty()) {
+            if (!servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSVPREDICATE).empty()) {
 //                printf("NOT EMPTY\n");
                 finalTable.push_back(vector<string>{to_string(line)});
             }

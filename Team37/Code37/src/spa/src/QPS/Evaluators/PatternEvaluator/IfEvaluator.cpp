@@ -25,13 +25,15 @@ vector<vector<string>> IfEvaluator::evaluateClause(const Clause &clause, vector<
         // Add synonym column header
         finalTable[0].push_back(leftArg.value);
         for (int line: allIfStmtLines) {
-            for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV)) {
+//            printf("LINE: %d \n", line);
+            for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSVPREDICATE)) {
                 finalTable.push_back(vector<string>{to_string(line), v});
             }
         }
     } else if (leftArg.type == TokenType::STRING) {
         // First argument is variable name in quotes --> Eg. ifs ("x",_,_)
-        vector<int> allStmtsWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::USESSV);
+        vector<int> allStmtsWithLeftArg =
+                servicer->reverseRetrieveRelation(leftArg.value, StmtVarRelationType::USESSVPREDICATE);
         getLineNumInteresection(finalResult, allStmtsWithLeftArg, allIfStmtLines);
         for (int line: finalResult) {
             finalTable.push_back(vector<string>{to_string(line)});
@@ -39,7 +41,7 @@ vector<vector<string>> IfEvaluator::evaluateClause(const Clause &clause, vector<
     } else {
         // First argument is wildcard --> Eg. ifs (_,_,_)
         for (int line: allIfStmtLines) {
-            if (!servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV).empty()) {
+            if (!servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSVPREDICATE).empty()) {
                 finalTable.push_back(vector<string>{to_string(line)});
             }
         }

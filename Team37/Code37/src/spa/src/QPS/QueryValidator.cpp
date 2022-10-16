@@ -23,6 +23,7 @@ using namespace std;
 #include "Validators/UsesValidator.h"
 #include "Validators/ValidatorUtils.h"
 #include "Validators/WithValidator.h"
+#include <iostream>
 
 QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
     tokens = tokenVector;
@@ -214,7 +215,7 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
     return andToken;
 }
 
-
+ 
 shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
 {
     if (type == TokenType::USES) 

@@ -13,6 +13,8 @@ unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType =
     { TokenType::FOLLOWS_A, StmtStmtRelationType::FOLLOWSS },
     { TokenType::PARENT, StmtStmtRelationType::PARENT },
     { TokenType::PARENT_A, StmtStmtRelationType::PARENTS },
+    { TokenType::NEXT, StmtStmtRelationType::NEXT},
+    { TokenType::NEXT_A, StmtStmtRelationType::NEXTS}
 };
 
 bool StmtStmtEvaluator::evaluateBooleanClause(const Clause& clause) {
@@ -57,7 +59,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
     vector<vector<string>> finalTable;
     vector<int> finalResult;
     vector<int> intermediateStmtLines;
-    
+
     // Synonym-Synonym --> Eg. Follows(s1, s2) 
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string> { leftArg.value, rightArg.value});
@@ -72,7 +74,13 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         // Intersect possible s2 with all statements of type s2
         // Add combinations of (s1, s2) into table
         for (int leftSynonym : allLineNumOfLeftSynonym) {
-            intermediateStmtLines = servicer->forwardRetrieveRelation(leftSynonym, ss);
+            if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                intermediateStmtLines = servicer->forwardComputeRelation(leftSynonym, ss);
+            }
+            else {
+                intermediateStmtLines = servicer->forwardRetrieveRelation(leftSynonym, ss);
+            }
+
             finalResult.clear();
             getLineNumInteresection(finalResult, intermediateStmtLines, allLineNumOfRightSynonym);
 
@@ -88,11 +96,16 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         StatementType st = tokenTypeToStatementType[declarations[synonymValue]];
         vector<int> allLineNumOfSynonym = getAllLineNumOfStmtType(st);
 
-            
+
         // Synonym-WildCard --> Eg. Follows(s, _) 
         if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::WILDCARD) {
             for (int lines : allLineNumOfSynonym) {
-                if (!servicer->forwardRetrieveRelation(lines, ss).empty()) {
+                if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                    if (!servicer->forwardComputeRelation(lines, ss).empty()) {
+                        finalTable.push_back(vector<string>{ to_string(lines) });
+                    }
+                }
+                else if (!servicer->forwardRetrieveRelation(lines, ss).empty()) {
                     finalTable.push_back(vector<string>{ to_string(lines) });
                 }
             }
@@ -101,7 +114,12 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         // Wildcard-Synonym --> Eg. Follows(_, s) 
         else if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::SYNONYM) {
             for (int lines : allLineNumOfSynonym) {
-                if (!servicer->reverseRetrieveRelation(lines, ss).empty()) {
+                if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                    if (!servicer->backwardComputeRelation(lines, ss).empty()) {
+                        finalTable.push_back(vector<string>{ to_string(lines) });
+                    }
+                }
+                else if (!servicer->reverseRetrieveRelation(lines, ss).empty()) {
                     finalTable.push_back(vector<string>{ to_string(lines) });
                 }
             }
@@ -111,18 +129,28 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
 
             // Synonym-StmtNum --> Eg. Follows(s, 6) 
             if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STATEMENT_NUM) {
-                intermediateStmtLines = servicer->reverseRetrieveRelation(stoi(rightArg.value), ss);
+                if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                    intermediateStmtLines = servicer->backwardComputeRelation(stoi(rightArg.value), ss);
+                }
+                else {
+                    intermediateStmtLines = servicer->reverseRetrieveRelation(stoi(rightArg.value), ss);
+                }
             }
 
             // StmtNum-Synonym --> Eg. Follows(6, s) 
             else {
-                intermediateStmtLines = servicer->forwardRetrieveRelation(stoi(leftArg.value), ss);
+                if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                    intermediateStmtLines = servicer->forwardComputeRelation(stoi(leftArg.value), ss);
+                }
+                else {
+                    intermediateStmtLines = servicer->forwardRetrieveRelation(stoi(leftArg.value), ss);
+                }
             }
 
             getLineNumInteresection(finalResult, allLineNumOfSynonym, intermediateStmtLines);
 
             for (int line : finalResult) {
-                finalTable.push_back(vector<string> { to_string(line) } );
+                finalTable.push_back(vector<string> { to_string(line) });
             }
         }
     }

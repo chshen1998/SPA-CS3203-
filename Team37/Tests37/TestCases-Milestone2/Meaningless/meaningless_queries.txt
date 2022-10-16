@@ -1,0 +1,25 @@
+1 - Is value 12 = 12?
+
+Select BOOLEAN with 12 = 12
+TRUE
+5000
+2 - Is stmt 1 an assignment?
+assign a;
+Select BOOLEAN with a.stmt# = 1
+TRUE
+5000
+3 - If statement 1 is an assignment statement, find all the assignment statements
+assign a, a1;
+Select a1 with a.stmt# = 1
+TRUE
+5000
+4 - If there exist an assignment that modifies the variable "x", find all the combinations of two-procedures pair.
+procedure p, q; assign a;
+Select <p, q> such that Modifies (a, "x")
+a b, b a
+5000
+5 - Is there a procedure that calls some other procedure in the program
+
+Select BOOLEAN such that Calls (_,_)
+FALSE
+5000

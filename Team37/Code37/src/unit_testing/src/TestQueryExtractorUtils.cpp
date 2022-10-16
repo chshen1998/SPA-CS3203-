@@ -27,6 +27,30 @@ vector<PqlToken> basic_tokens = {
 	PqlToken(TokenType::SYNONYM, "v")
 };
 
+vector<PqlToken> valid_select_only = {
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::BOOLEAN, "BOOLEAN"),
+	PqlToken(TokenType::WITH, "with"),
+	PqlToken(TokenType::NUMBER, "12"),
+	PqlToken(TokenType::EQUAL, "="),
+	PqlToken(TokenType::NUMBER, "12")
+};
+
+vector<PqlToken> valid_calls_wildcards = {
+	PqlToken(TokenType::DECLARATION_END, ""),
+	PqlToken(TokenType::SELECT, "select"),
+	PqlToken(TokenType::BOOLEAN, "BOOLEAN"),
+	PqlToken(TokenType::SUCH, "such"),
+	PqlToken(TokenType::THAT, "that"),
+	PqlToken(TokenType::CALLS, "Calls"),
+	PqlToken(TokenType::OPEN_BRACKET, "("),
+	PqlToken(TokenType::WILDCARD, "_"),
+	PqlToken(TokenType::COMMA, ","),
+	PqlToken(TokenType::WILDCARD, "_"),
+	PqlToken(TokenType::CLOSED_BRACKET, ")")
+};
+
 vector<PqlToken> valid_select_boolean = {
 	PqlToken(TokenType::VARIABLE, "variable"),
 	PqlToken(TokenType::SYNONYM, "v"),

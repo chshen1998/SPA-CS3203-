@@ -10,6 +10,7 @@ using namespace std;
 #include "UsesValidator.h"
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
+#include <iostream>
 
 UsesValidator::UsesValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
 

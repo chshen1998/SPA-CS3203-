@@ -10,6 +10,11 @@ using namespace std;
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "SP/Parser.h"
 
+vector<int> printIntInVector(vector<int> vect) {
+    for (int num: vect) {
+        printf("%d", num);
+    }
+}
 
 TEST_CASE("QueryServicer - Variable") {
     // Storage Stub
@@ -198,7 +203,7 @@ TEST_CASE("QueryServicer - Next Backward") {
     REQUIRE(nextStatements.size() == 3);
 
     vector<int> nextStarStatements1 = pkb->getQueryServicer()->backwardComputeRelation(6, NEXTS);
-    // Contain lines 1,2
+//
     REQUIRE(nextStarStatements1.size() == 2);
 
     vector<int> nextStarStatements2 = pkb->getQueryServicer()->backwardComputeRelation(4, NEXTS);
@@ -238,7 +243,7 @@ TEST_CASE("QueryServicer - Next Backward While Statement") {
     REQUIRE(nextStatements.size() == 1);
 
     vector<int> nextStarStatements = pkb->getQueryServicer()->backwardComputeRelation(1, NEXTS);
-    REQUIRE(nextStarStatements.size() == 1);
+    REQUIRE(nextStarStatements.size() == 4);
 }
 
 TEST_CASE("FAILING TESTCASE") {

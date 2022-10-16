@@ -15,6 +15,7 @@ using namespace std;
 #include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
 #include "QPS/Evaluators/FilterEvaluator/WithEvaluator.h"
 #include "QPS/Evaluators/FilterEvaluator/FinalEvaluator.h"
@@ -39,6 +40,7 @@ void QueryEvaluator::evaluate() {
     StmtStmtEvaluator stmtStmtEvaluator = StmtStmtEvaluator(servicer, pq.declarations);
     StmtVarEvaluator stmtVarEvaluator = StmtVarEvaluator(servicer, pq.declarations);
     ProcVarEvaluator procVarEvaluator = ProcVarEvaluator(servicer, pq.declarations);
+    ProcProcEvaluator procProcEvaluator = ProcProcEvaluator(servicer, pq.declarations);
     AssignEvaluator assignEvaluator = AssignEvaluator(servicer, pq.declarations);
     WithEvaluator withEvaluator = WithEvaluator(servicer, pq.declarations);
 
@@ -61,8 +63,17 @@ void QueryEvaluator::evaluate() {
         else {
             TokenType suchThatType = clause.clauseType.type;
 
+            if (suchThatType == TokenType::CALLS) {
+                if (clause.checkIfBooleanClause()) {
+                    falseBooleanClause = !procProcEvaluator.evaluateBooleanClause(clause);
+                }
+                else {
+                    finalResult = procProcEvaluator.evaluateSynonymClause(clause, finalResult);
+                }
+            }
+
             // Follows, Parents, Next, Affects
-            if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
+            else if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
 
                 if (clause.checkIfBooleanClause()) {
                     falseBooleanClause = !stmtStmtEvaluator.evaluateBooleanClause(clause);

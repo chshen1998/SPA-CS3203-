@@ -635,7 +635,7 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
             // reset visited map
             this->visited = make_shared<map<int, bool >>();
             return lstLineNum;
-        case(AFFECTS):
+        case(AFFECTS): {
             // Check if both are affects
             shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
 
@@ -647,14 +647,13 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
             shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
 
             shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
-
-
             string var = stmtNode->getVarName();
 
             set<int> result = forwardAffectsHelper(cfgNode, nullptr, var, visited);
             vector<int> output = {};
             copy(result.begin(), result.end(), output.begin());
             return output;
+        }
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }
@@ -774,10 +773,89 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
             this->visited = make_shared<map<int, bool >>();
 
             return lstLineNum;
+        case (AFFECTS): {
+            // Check if statement is assign
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+
+            if (stmtNode == nullptr) {
+                return {};
+            }
+
+            // Check CFG path + variables
+            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+
+            shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
+
+            vector<string> temp = forwardRetrieveRelation(stmt, USESSV);
+            set<string> var = {};
+
+            for (auto x : temp) {
+                var.insert(x);
+            }
+
+            set<int> result = reverseAffectsHelper(cfgNode, nullptr, var, visited);
+            vector<int> output = {};
+            copy(result.begin(), result.end(), output.begin());
+            return output;
+        }
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }
 }
+
+/**
+Helper function for retrieve affects
+@param currNode Current node to check
+@param parentNode Parent node of the current node
+@param targetNode Target node to ccheck for
+@param var Variable to check for
+@param visited Visited set of (current, parent) to prevent infinite loops
+@returns Value of relation stored
+*/
+set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> childNode, set<string> varsUsed, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
+    set<int> result = {};
+
+    if (varsUsed.empty()) {
+        return result;
+    }
+
+    // Check if path visited before
+    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, childNode)) == visited->end()) {
+        return result;
+    }
+    visited->insert(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, childNode));
+
+    // If not statement, end
+    shared_ptr<Statement> statement_node = dynamic_pointer_cast<Statement>(currNode->getTNode());
+    if (statement_node == nullptr) {
+        return result;
+    }
+
+    // Check if current node is assign and modifes any var -> Add current node to output
+    int lineNo = statement_node->getLineNum();
+    shared_ptr<AssignStatement> assignNode = dynamic_pointer_cast<AssignStatement>(statement_node);
+    if (assignNode != nullptr && childNode != nullptr) {
+        string varModify = assignNode->getVarName();
+        if (varsUsed.find(varModify) != varsUsed.end()) {
+            result.insert(lineNo);
+        }
+    }
+
+    // If current statement modifies any vars used -> remove
+    vector<string> varsModified = forwardRetrieveRelation(lineNo, MODIFIESSV);
+    for (auto x : varsModified) {
+        varsUsed.erase(x);
+    }
+    
+
+    // Recurse to parent nodes
+    for (const auto& parentNode : currNode->getParents()) {
+        set<int> childResult = reverseAffectsHelper(parentNode, currNode, varsUsed, visited);
+        result.insert(childResult.begin(), childResult.end());
+    }
+    return result;
+}
+
 
 /**
  * helper function to recursively get all line numbers of parent nodes in CFGNode

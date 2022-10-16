@@ -234,14 +234,23 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
                 return false;
             }
 
-            return affectsHelper(cfgNode1, nullptr, cfgNode2, var, visited);
+            return retrieveAffectsHelper(cfgNode1, nullptr, cfgNode2, var, visited);
         }
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
     }
 }
 
-bool Storage::affectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, shared_ptr<CFGNode> targetNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
+/**
+Helper function for retrieve affects
+@param currNode Current node to check
+@param parentNode Parent node of the current node
+@param targetNode Target node to ccheck for
+@param var Variable to check for
+@param visited Visited set of (current, parent) to prevent infinite loops
+@returns Value of relation stored
+*/
+bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, shared_ptr<CFGNode> targetNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
     // Check if path visited before
     if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) == visited->end()) {
         return false;
@@ -267,7 +276,7 @@ bool Storage::affectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> pa
     bool result = false;
     // Recurse to child nodes
     for (const auto& childNode : currNode->getChildren()) {
-        result = result || affectsHelper(childNode, currNode, targetNode, var, visited);
+        result = result || retrieveAffectsHelper(childNode, currNode, targetNode, var, visited);
     }
     return result;
 }
@@ -627,10 +636,71 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
             this->visited = make_shared<map<int, bool >>();
             return lstLineNum;
         case(AFFECTS):
-            
+            // Check if both are affects
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+
+            if (stmtNode == nullptr) {
+                return {};
+            }
+
+            // Check CFG path + if variable 
+            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+
+            shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
+
+
+            string var = stmtNode->getVarName();
+
+            set<int> result = forwardAffectsHelper(cfgNode, nullptr, var, visited);
+            vector<int> output = {};
+            copy(result.begin(), result.end(), output.begin());
+            return output;
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }
+}
+
+/**
+Helper function for retrieve affects
+@param currNode Current node to check
+@param parentNode Parent node of the current node
+@param var Variable to check for
+@param visited Visited set of (current, parent) to prevent infinite loops
+@returns Value of relation stored
+*/
+set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
+    set<int> result = {};
+
+    // Check if path visited before
+    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) == visited->end()) {
+        return result;
+    }
+    visited->insert(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode));
+
+    // If not statement, end
+    shared_ptr<Statement> statement_node = dynamic_pointer_cast<Statement>(currNode->getTNode());
+    if (statement_node == nullptr) {
+        return result;
+    }
+
+    // Check if current node is assign and uses var -> Return current node
+    int lineNo = statement_node->getLineNum();
+    shared_ptr<AssignStatement> assign_node = dynamic_pointer_cast<AssignStatement>(statement_node);
+    if (assign_node != nullptr && retrieveRelation(lineNo, var, USESSV) && parentNode != nullptr) {
+        result.insert(lineNo);
+    }
+    
+    // If current statement modifies var -> end recursion
+    if (retrieveRelation(lineNo, var, MODIFIESSV)) {
+        return result;
+    }
+
+    // Recurse to child nodes
+    for (const auto& childNode : currNode->getChildren()) {
+        set<int> childResult = forwardAffectsHelper(childNode, currNode, var, visited);
+        result.insert(childResult.begin(), childResult.end());
+    }
+    return result;
 }
 
 /**
@@ -741,10 +811,3 @@ vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node) {
     }
     return lstLineNum;
 }
-
-/**
- * helper function to recursively get all line numbers of parent nodes in CFGNode
- * @param node
- * @return lines numbers of all parent nodes(recursively) where Next*(n1, n2)
- */
-StatementType checkStatementType(int);

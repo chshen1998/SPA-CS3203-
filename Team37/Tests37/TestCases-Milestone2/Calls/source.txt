@@ -34,6 +34,7 @@ procedure procedure {
     }
   }
 }
+
 procedure doNothing {
   while = 1;
   ifThen = 2;
@@ -41,6 +42,7 @@ procedure doNothing {
   then = 4;
   else = 5;
 }
+
 procedure doSomething {
   call doNothing;
   read doNothing;

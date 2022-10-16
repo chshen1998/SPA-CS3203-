@@ -109,11 +109,11 @@ void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>>& interm
             continue;
         }
 
-        // ".ProcName"
+        // ".procName"
         size_t dotPosition = intermediate[0][i].find(".procName");
 
         if (dotPosition == -1) {
-            // ".VarName"
+            // ".varName"
             dotPosition = intermediate[0][i].find(".varName");
 
             if (dotPosition == -1) {

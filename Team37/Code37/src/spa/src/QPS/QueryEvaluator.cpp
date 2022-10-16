@@ -17,6 +17,7 @@ using namespace std;
 #include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/WhileEvaluator.h"
+#include "QPS/Evaluators/PatternEvaluator/IfEvaluator.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Evaluators/WithEvaluator.h"
 
@@ -43,6 +44,7 @@ void QueryEvaluator::evaluate() {
     AssignEvaluator assignEvaluator = AssignEvaluator(servicer, pq.declarations);
     WithEvaluator withEvaluator = WithEvaluator(servicer, pq.declarations);
     WhileEvaluator whileEvaluator = WhileEvaluator(servicer, pq.declarations);
+    IfEvaluator ifEvaluator = IfEvaluator(servicer, pq.declarations);
 
     vector<vector<string>> finalResult;
     
@@ -90,6 +92,8 @@ void QueryEvaluator::evaluate() {
                 finalResult = assignEvaluator.evaluateClause(clause, finalResult);
             } else if (patternType == TokenType::WHILE) {
                 finalResult = whileEvaluator.evaluateClause(clause, finalResult);
+            } else if (patternType == TokenType::IF) {
+                finalResult = ifEvaluator.evaluateClause(clause, finalResult);
             }
         }
 

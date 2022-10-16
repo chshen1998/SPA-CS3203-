@@ -1,0 +1,5 @@
+1 - With Statement number
+procedure p;
+Select p such that Calls(p, "doNothing")
+procedure doSomething
+5000

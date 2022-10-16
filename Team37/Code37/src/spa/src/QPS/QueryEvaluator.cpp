@@ -15,9 +15,11 @@ using namespace std;
 #include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
+#include "QPS/Evaluators/FilterEvaluator/WithEvaluator.h"
+#include "QPS/Evaluators/FilterEvaluator/FinalEvaluator.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
-#include "QPS/Evaluators/WithEvaluator.h"
 
 #include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -31,14 +33,14 @@ QueryEvaluator::QueryEvaluator(PqlQuery& pqlQuery, shared_ptr<QueryServicer> s, 
     result(r), servicer(s), pq(pqlQuery) {}
 
 void QueryEvaluator::evaluate() {
-    // Hack fix: must urgently fix this in next PR
-    const string selectSynonym = pq.selectObjects[0].synonym;
-    const TokenType type = pq.declarations[selectSynonym];
- 
+    const bool isResultBoolean = pq.selectObjects[0].type == SelectType::BOOLEAN;
+    bool falseBooleanClause = false;
+
     // TODO: restructure this 
     StmtStmtEvaluator stmtStmtEvaluator = StmtStmtEvaluator(servicer, pq.declarations);
     StmtVarEvaluator stmtVarEvaluator = StmtVarEvaluator(servicer, pq.declarations);
     ProcVarEvaluator procVarEvaluator = ProcVarEvaluator(servicer, pq.declarations);
+    ProcProcEvaluator procProcEvaluator = ProcProcEvaluator(servicer, pq.declarations);
     AssignEvaluator assignEvaluator = AssignEvaluator(servicer, pq.declarations);
     WithEvaluator withEvaluator = WithEvaluator(servicer, pq.declarations);
 
@@ -47,37 +49,9 @@ void QueryEvaluator::evaluate() {
     for (Clause clause : pq.clauses) {
         if (clause.category == TokenType::WITH) {
             if (clause.leftAttr.type == TokenType::NONE) {
-                if (!withEvaluator.evaluateBooleanClause(clause)) {
-                    return;
-                }
+                falseBooleanClause = !withEvaluator.evaluateBooleanClause(clause);
             }
             else {
-                // If our initial table is empty, we need to populate with for WITH clause
-                // TODO: Shift this into WithEvaluator as temporarily here due to to SelectAll() in this file
-                if (finalResult.empty()) {
-                    finalResult.push_back(vector<string> { clause.left.value });
-
-                    list<string> intermediate;
-                    selectAll(pq.declarations[clause.left.value], intermediate);
-
-                    if (clause.right.type == TokenType::SYNONYM) {
-                        finalResult[0].push_back(clause.right.value);
-                        list<string> intermediateRight;
-                        selectAll(pq.declarations[clause.right.value], intermediateRight);
-
-                        for (string left : intermediate) {
-                            for (string right : intermediateRight) {
-                                finalResult.push_back(vector<string> { left, right });
-                            }
-                        }
-                    }
-                    else {
-                        for (string left : intermediate) {
-                            finalResult.push_back(vector<string> { left });
-                        }
-                    }
-                }
-
                 finalResult = withEvaluator.evaluateClause(clause, finalResult);
             }
         }
@@ -89,13 +63,20 @@ void QueryEvaluator::evaluate() {
         else {
             TokenType suchThatType = clause.clauseType.type;
 
+            if (suchThatType == TokenType::CALLS) {
+                if (clause.checkIfBooleanClause()) {
+                    falseBooleanClause = !procProcEvaluator.evaluateBooleanClause(clause);
+                }
+                else {
+                    finalResult = procProcEvaluator.evaluateSynonymClause(clause, finalResult);
+                }
+            }
+
             // Follows, Parents, Next, Affects
-            if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
+            else if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
 
                 if (clause.checkIfBooleanClause()) {
-                    if (!stmtStmtEvaluator.evaluateBooleanClause(clause)) {
-                        return;
-                    }
+                    falseBooleanClause = !stmtStmtEvaluator.evaluateBooleanClause(clause);
                 }
                 else {
                     finalResult = stmtStmtEvaluator.evaluateSynonymClause(clause, finalResult);
@@ -106,9 +87,7 @@ void QueryEvaluator::evaluate() {
             else if (clause.left.type == TokenType::STRING || pq.declarations[clause.left.value] == TokenType::PROCEDURE) {
 
                 if (clause.checkIfBooleanClause()) {
-                    if (!procVarEvaluator.evaluateBooleanClause(clause)) {
-                        return;
-                    }
+                    falseBooleanClause = !procVarEvaluator.evaluateBooleanClause(clause);
                 }
                 else {
                     finalResult = procVarEvaluator.evaluateSynonymClause(clause, finalResult);
@@ -117,80 +96,33 @@ void QueryEvaluator::evaluate() {
             // Uses_S, Modifies_S
             else  {
                 if (clause.checkIfBooleanClause()) {
-                    if (!stmtVarEvaluator.evaluateBooleanClause(clause)) {
-                        return;
-                    }
+                    falseBooleanClause = !stmtVarEvaluator.evaluateBooleanClause(clause);
                 }
                 else {
                     finalResult = stmtVarEvaluator.evaluateSynonymClause(clause, finalResult);
                 }
             }
         }
-    }
 
-    // If there are no clauses
-    if (finalResult.size() == 0) {
-        selectAll(type, result);
-        return;
-    }
-
-    getResultFromFinalTable(finalResult);
-}
-
-
-void QueryEvaluator::getResultFromFinalTable(const vector<vector<string>>& table) {
-    int index = 0;
-    // Find the column index where the synonym value == select synonym value
-    // TODO: Update to get tuples of elems and logic for attrRef
-    // - Tuples just get indexes of elements we need
-    // - Apart from call, print and read, any attrRef returns the default value
-    for (int i = 0; i < table[0].size(); i++) {
-        // TODO: update for attrRef
-        if (table[0][i] == pq.selectObjects[0].synonym) {
-            index = i;
+        if (falseBooleanClause) {
             break;
         }
     }
 
-    // Add the result values of that column into result
-    for (int j = 1; j < table.size(); j++) {
-        if (find(result.begin(), result.end(), table[j][index]) == result.end()) {
-            result.push_back(table[j][index]);
+    if (isResultBoolean) {
+        if (falseBooleanClause || finalResult.size() == 1) {
+            result.push_back("FALSE");
         }
+        else {
+            result.push_back("TRUE");
+        }
+        return;
     }
 
-    return;
+    if (falseBooleanClause) {
+        return;
+    }
+   
+    FinalEvaluator finalEvaluator = FinalEvaluator(servicer, pq.declarations, pq);
+    finalEvaluator.getFinalResult(result, finalResult);
 }
-
-
-void QueryEvaluator::selectAll(TokenType type, list<string>& result) {
-    if (type == TokenType::VARIABLE) {
-        for (NameExpression v : servicer->getAllVar()) {
-            result.push_back(v.getVarName());
-        }
-    }
-
-    else if (type == TokenType::CONSTANT) {
-        for (ConstantExpression c : servicer->getAllConst()) {
-            result.push_back(to_string(c.getValue()));
-        }
-    }
-
-    else if (type == TokenType::PROCEDURE) {
-        for (Procedure p : servicer->getAllProc()) {
-            result.push_back(p.getProcedureName());
-        }
-    }
-
-    else {
-        if (tokenTypeToStatementType.find(type) != tokenTypeToStatementType.end()) {
-            StatementType stmtType = tokenTypeToStatementType[type];
-            set<shared_ptr<Statement>> statements = servicer->getAllStmt(stmtType);
-            
-            for (shared_ptr<Statement> s : statements) {
-                result.push_back(to_string(s->getLineNum()));
-            }
-        }
-    }
-}
-

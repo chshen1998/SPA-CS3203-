@@ -23,8 +23,10 @@ if "TestOutputs" in milestones:
 
 OUTPUT_FOLDER.mkdir()
 
+exception_milestone_folders = ["Sample SIMPLE Code", "TestOutputs"]
+
 for milestone in milestones:
-    if milestone == "TestOutputs" or milestone == "TestCases-Progress":
+    if milestone in exception_milestone_folders:
         continue
 
     Path(f"./TestOutputs/{milestone}").mkdir()

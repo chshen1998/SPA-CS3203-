@@ -1,0 +1,125 @@
+Styling: Good
+Syntax: Good
+Length: Short
+Complexity: Low
+
+
+procedure main {
+	print = x;
+	read x;
+	left = x;
+	call somethingHmm;
+	right = left + 2;
+	read temp;
+	radius = x + left;
+	temp = temp + 2;
+	radius1 = x + left;
+	call anotherOne;
+}
+
+procedure somethingHmm {
+	while (iter <=  5) {
+		x = right + 3 + 2 + left;
+		temp = temp + 7;
+		call anotherOne;
+	}
+	x = 5;
+	if (iter != 1) then {
+		iter = iter + 1; 
+		length = radius * 10;
+		breadth = radius + 10;
+	} else {
+		while ((left + 1 > 2) || (radius + 1 > 2)) {
+			call nestedBlocks;
+			length = left + right;
+		}
+	}
+}
+
+procedure nestedBlocks {
+	if (iter != 1) then {
+		iter = iter + 1; 
+		length = radius * 10;
+		breadth = radius + 10;
+	} else {
+		while ((left + 1 > 2) || (radius + 1 > 2)) {
+			breadth = radius - 100;
+			length = left + right;
+			call anotherOne;
+			if (1 > 2) then {
+				procedure  = 5;
+			} else {
+				length = no;
+				while ((x > 2) || !(y <= 5)) {
+					call anotherOne;
+				}
+			}
+		}
+	}
+}
+
+procedure anotherOne {
+	print x;
+}
+
+*********************************************************************************************************
+******************************************** WITH LINE NUMBERS ***********************************************
+*********************************************************************************************************
+
+	procedure main {
+01	print = x;
+02	read x;
+03	left = x;
+04	call somethingHmm;
+05	right = left + 2;
+06	read temp;
+07	radius = x + left;
+08	temp = temp + 2;
+09	radius1 = x + left;
+10	call anotherOne;
+	}
+
+	procedure somethingHmm {
+11	while (iter <=  5) {
+12		x = right + 3 + 2 + left;
+13		temp = temp + 7;
+14		call anotherOne;
+		}
+15	x = 5;
+16	if (iter != 1) then {
+17		iter = iter + 1; 
+18		length = radius * 10;
+19		breadth = radius + 10;
+		} else {
+20		while ((left + 1 > 2) || (radius + 1 > 2)) {
+21			call nestedBlocks;
+22			length = left + right;
+			}
+		}
+	}
+
+	procedure nestedBlocks {
+23	if (iter != 1) then {
+24		iter = iter + 1; 
+25		length = radius * 10;
+26		breadth = radius + 10;
+		} else {
+27		while ((left + 1 > 2) || (radius + 1 > 2)) {
+28			breadth = radius - 100;
+29			length = left + right;
+30			call anotherOne;
+31			if (1 > 2) then {
+32				procedure  = 5;
+				} else {
+33				length = no;
+34				while ((x > 2) || !(y <= 5)) {
+35					call anotherOne;
+					}
+				}
+			}
+		}
+	}
+
+	procedure anotherOne {
+36	print x;
+	}

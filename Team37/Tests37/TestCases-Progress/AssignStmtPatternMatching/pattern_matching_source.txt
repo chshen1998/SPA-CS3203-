@@ -1,3 +1,0 @@
-procedure main {
-    x = v + x * y + z * t;
-}

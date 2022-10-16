@@ -25,7 +25,7 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
         // Add synonym column header
         finalTable[0].push_back(leftArg.value);
         for (int line: allWhileStmtLines) {
-            if (servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV).size() == 0) {
+            if (servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV).empty()) {
                 printf("EMPTY!\n");
             }
             for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV)) {
@@ -39,7 +39,7 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
         for (int line: finalResult) {
             finalTable.push_back(vector<string>{to_string(line)});
         }
-        if (allStmtsWithLeftArg.size() == 0) {
+        if (allStmtsWithLeftArg.empty()) {
             printf("EMPTY!!\n");
         }
     } else {

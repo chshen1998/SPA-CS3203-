@@ -27,14 +27,16 @@ void WithTokenizer::tokenize() {
                 : checkWithTokenType(delimited_query[currentIndex]);
         }
 
-        secondRef = currentToken == TokenType::EQUAL;
-        isCurrentSynonym = currentToken == TokenType::EQUAL;
-
+        if (currentToken == TokenType::EQUAL) {
+            secondRef = true;
+            isCurrentSynonym = true;
+        }
+       
         tokens.push_back(PqlToken(currentToken, delimited_query[currentIndex]));
         currentIndex += 1;
 
         if (secondRef && checkIfLastElement(delimited_query[currentIndex - 1])) {
-            if (currentIndex < delimited_query.size() && delimited_query[currentIndex] != "and") {
+            if (currentIndex < delimited_query.size() && delimited_query[currentIndex] == "and") {
                 tokens.push_back(PqlToken(TokenType::AND, delimited_query[currentIndex]));
                 currentIndex += 1;
                 secondRef = false;

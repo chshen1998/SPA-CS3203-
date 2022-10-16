@@ -17,7 +17,6 @@ inline string FilterEvaluator::updatedColumnName(const PqlToken& token) {
 
 
 bool FilterEvaluator::addAttrName(vector<vector<string>>& intermediate, const PqlToken& token) {
-    string updated = updatedColumnName(token);
     if (doubleAttrTokens.find(declarations[token.value]) != doubleAttrTokens.end() &&
         find(intermediate[0].begin(), intermediate[0].end(), token.value) != intermediate[0].end()) {
         int index = -1;
@@ -29,7 +28,7 @@ bool FilterEvaluator::addAttrName(vector<vector<string>>& intermediate, const Pq
             }
         }
 
-        intermediate[0].push_back(updated);
+        intermediate[0].push_back(updatedColumnName(token));
 
         if (token.type == TokenType::CALL) {
             for (int i = 1; i < intermediate.size(); i++) {

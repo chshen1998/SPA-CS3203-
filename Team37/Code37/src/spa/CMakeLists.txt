@@ -168,7 +168,7 @@ add_library(spa ${srcs} ${headers}
         "src/AST/ASTVisitor/ExtractCallsASTVisitor.cpp"
         "src/AST/ASTVisitor/ExtractCallsASTVisitor.h"
         "src/SP/Utilities/CallLoopChecker.cpp"
-        "src/SP/Utilities/CallLoopChecker.h")
+        "src/SP/Utilities/CallLoopChecker.h" "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.h" "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.cpp")
 
 
 # this makes the headers accessible for other projects which uses spa lib

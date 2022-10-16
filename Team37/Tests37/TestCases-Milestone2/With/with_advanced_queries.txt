@@ -3,4 +3,8 @@ print p; read r; while w;
 Select <p, r.varName> such that Parent(w, p) and Parent(w,r) with w.stmt# = 11
 13 flag
 5000
-
+2 - With and constants
+constant c; variable v;
+Select <c, v.varName> with c.value = 1 and v.varName = "flag"
+1 flag
+5000

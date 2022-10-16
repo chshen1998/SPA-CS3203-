@@ -20,7 +20,6 @@ procedure somethingHmm {
 		x = right + 3 + 2 + left;
 		temp = temp + 7;
 	}
-	x = 5;
 	if (iter != 1) then {
 		iter = iter + 1; 
 		length = radius * 10;

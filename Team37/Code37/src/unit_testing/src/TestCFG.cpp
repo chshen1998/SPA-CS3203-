@@ -30,22 +30,18 @@ TEST_CASE("Simple While statement") {
     whileStatement->addStatement(printStatement);
     vector<shared_ptr<CFGNode> > parents;
     shared_ptr<CFG> cfg = make_shared<CFG>(nullptr, "");
-    shared_ptr<CFGNode> dummyNode = whileStatement->buildCFG(parents, cfg);
+    shared_ptr<CFGNode> cfgNode1 = whileStatement->buildCFG(parents, cfg);
 
-    REQUIRE(dummyNode->getParents().size() == 2);
-    shared_ptr<CFGNode> cfgNode1 = dummyNode->getParents()[1];
     REQUIRE(cfgNode1->getTNode() == whileStatement);
     REQUIRE(cfgNode1->getParents().size() == 1);
-    REQUIRE(cfgNode1->getNumChildren() == 2);
+    REQUIRE(cfgNode1->getNumChildren() == 1);
     shared_ptr<CFGNode> cfgNode2 = cfgNode1->getChild(0);
     REQUIRE(cfgNode2->getTNode() == readStatement);
     REQUIRE(cfgNode2->getNumChildren() == 1);
     shared_ptr<CFGNode> cfgNode3 = cfgNode2->getChild(0);
     REQUIRE(cfgNode3->getTNode() == printStatement);
-    REQUIRE(cfgNode3->getNumChildren() == 2);
+    REQUIRE(cfgNode3->getNumChildren() == 1);
     REQUIRE(cfgNode3->getChild(0)->getTNode() == whileStatement);
-    REQUIRE(cfgNode3->getChild(1)->getTNode() == nullptr);
-    REQUIRE(dummyNode->getStoredStmt() == cfgNode1);
 }
 
 TEST_CASE("Nested While statement") {
@@ -66,13 +62,11 @@ TEST_CASE("Nested While statement") {
     whileStatement2->addStatement(printStatement);
     vector<shared_ptr<CFGNode> > parents;
     shared_ptr<CFG> cfg = make_shared<CFG>(nullptr, "");
-    shared_ptr<CFGNode> dummyNode2 = whileStatement->buildCFG(parents, cfg);
+    shared_ptr<CFGNode> cfgNode1 = whileStatement->buildCFG(parents, cfg);
 
-    REQUIRE(dummyNode2->getParents().size() == 2);
-    shared_ptr<CFGNode> cfgNode1 = dummyNode2->getParents()[1];
     REQUIRE(cfgNode1->getTNode() == whileStatement);
     REQUIRE(cfgNode1->getParents().size() == 1);
-    REQUIRE(cfgNode1->getNumChildren() == 2);
+    REQUIRE(cfgNode1->getNumChildren() == 1);
     shared_ptr<CFGNode> cfgNode2 = cfgNode1->getChild(0);
     REQUIRE(cfgNode2->getTNode() == readStatement);
     REQUIRE(cfgNode2->getParents().size() == 1);
@@ -84,13 +78,7 @@ TEST_CASE("Nested While statement") {
     shared_ptr<CFGNode> cfgNode4 = cfgNode3->getChild(0);
     REQUIRE(cfgNode4->getTNode() == printStatement);
     REQUIRE(cfgNode4->getChild(0)->getTNode() == whileStatement2);
-    shared_ptr<CFGNode> dummyNode1 = cfgNode4->getChild(1);
-    REQUIRE(dummyNode1->getTNode() == nullptr);
-    REQUIRE(cfgNode3->getChild(1)->getTNode() == nullptr);
-    dummyNode2 = dummyNode1->getChild(1);
-    REQUIRE(dummyNode2->getTNode() == nullptr);
-    REQUIRE(dummyNode1->getChild(0)->getTNode() == whileStatement);
-    REQUIRE(dummyNode2->getParents()[1]->getTNode() == whileStatement);
+    REQUIRE(cfgNode3->getChild(1)->getTNode() == whileStatement);
 }
 
 TEST_CASE("Simple If Statement") {
@@ -206,11 +194,11 @@ TEST_CASE("Procedure with while statement") {
     shared_ptr<CFGNode> cfgNode2 = cfgNode1->getChild(0);
     shared_ptr<PrintStatement> printStatement = dynamic_pointer_cast<PrintStatement>(cfgNode2->getTNode());
     REQUIRE(printStatement->getVariableName() == "flag");
-    shared_ptr<CFGNode> dummyNode = cfgNode1->getChild(1);
-    REQUIRE(dummyNode->getTNode() == nullptr);
-    REQUIRE(dummyNode->getStoredStmt() == cfgNode1);
-    REQUIRE(dummyNode->getNumChildren() == 1);
-    shared_ptr<CFGNode> cfgNode4 = dummyNode->getChild(0);
+//    shared_ptr<CFGNode> dummyNode = cfgNode1->getChild(1);
+//    REQUIRE(dummyNode->getTNode() == nullptr);
+//    REQUIRE(dummyNode->getStoredStmt() == cfgNode1);
+//    REQUIRE(dummyNode->getNumChildren() == 1);
+    shared_ptr<CFGNode> cfgNode4 = cfgNode1->getChild(1);
     shared_ptr<PrintStatement> printStatement2 = dynamic_pointer_cast<PrintStatement>(cfgNode4->getTNode());
     REQUIRE(printStatement2->getVariableName() == "x");
     REQUIRE(cfgNode2->getNumChildren() == 1);

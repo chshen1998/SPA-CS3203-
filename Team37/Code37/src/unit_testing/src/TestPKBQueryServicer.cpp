@@ -154,7 +154,7 @@ TEST_CASE("QueryServicer - Next Forward") {
     pkb->buildFromCFG(cfgMap);
 
     vector<int> nextStatements = pkb->getQueryServicer()->forwardComputeRelation(1, NEXT);
-    REQUIRE(nextStatements.size() == 1);
+    REQUIRE(nextStatements.size() == 2);
 
     vector<int> nextStarStatements = pkb->getQueryServicer()->forwardComputeRelation(1, NEXTS);
     REQUIRE(nextStarStatements.size() == 4);

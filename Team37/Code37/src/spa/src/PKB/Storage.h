@@ -57,6 +57,8 @@ private:
     RelationStorage<int, string> UsesSV = RelationStorage<int, string>();
     RelationStorage<int, string> ModifiesSV = RelationStorage<int, string>();
 
+    RelationStorage<int, string> UsesSVPredicate = RelationStorage<int, string>();
+
     RelationStorage<string, string> UsesPV = RelationStorage<string, string>();
     RelationStorage<string, string> ModifiesPV = RelationStorage<string, string>();
 

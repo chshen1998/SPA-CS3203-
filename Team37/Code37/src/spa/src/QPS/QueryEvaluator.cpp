@@ -19,6 +19,8 @@ using namespace std;
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
 #include "QPS/Evaluators/FilterEvaluator/WithEvaluator.h"
 #include "QPS/Evaluators/FilterEvaluator/FinalEvaluator.h"
+#include "QPS/Evaluators/PatternEvaluator/WhileEvaluator.h"
+#include "QPS/Evaluators/PatternEvaluator/IfEvaluator.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
 
 #include "AST/Expression/RelationalFactor/NameExpression.h"
@@ -43,6 +45,8 @@ void QueryEvaluator::evaluate() {
     ProcProcEvaluator procProcEvaluator = ProcProcEvaluator(servicer, pq.declarations);
     AssignEvaluator assignEvaluator = AssignEvaluator(servicer, pq.declarations);
     WithEvaluator withEvaluator = WithEvaluator(servicer, pq.declarations);
+    WhileEvaluator whileEvaluator = WhileEvaluator(servicer, pq.declarations);
+    IfEvaluator ifEvaluator = IfEvaluator(servicer, pq.declarations);
 
     vector<vector<string>> finalResult;
     
@@ -57,7 +61,14 @@ void QueryEvaluator::evaluate() {
         }
 
         else if (clause.category == TokenType::PATTERN) {
-            finalResult = assignEvaluator.evaluateClause(clause, finalResult);
+            TokenType patternType = pq.declarations[clause.clauseType.value];
+            if (patternType == TokenType::ASSIGN) {
+                finalResult = assignEvaluator.evaluateClause(clause, finalResult);
+            } else if (patternType == TokenType::WHILE) {
+                finalResult = whileEvaluator.evaluateClause(clause, finalResult);
+            } else if (patternType == TokenType::IF) {
+                finalResult = ifEvaluator.evaluateClause(clause, finalResult);
+            }
         }
 
         else {

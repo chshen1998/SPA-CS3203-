@@ -520,7 +520,14 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
     }
     relFactor1 = Tokenizer::tokenizeRelFactor(relFactorStr1);
     relFactor2 = Tokenizer::tokenizeRelFactor(relFactorStr2);
-    return make_shared<RelationalExpression>(nullptr, opr, relFactor1, relFactor2);
+
+    shared_ptr<RelationalExpression> relExpr =
+            make_shared<RelationalExpression>(nullptr, opr, relFactor1, relFactor2);
+
+    relFactor1->setParent(relExpr);
+    relFactor2->setParent(relExpr);
+
+    return relExpr;
 }
 
 shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {

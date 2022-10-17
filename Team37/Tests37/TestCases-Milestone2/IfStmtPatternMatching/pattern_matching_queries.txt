@@ -1,0 +1,20 @@
+1 - pattern 1 wildcard
+if ifs;
+Select ifs pattern ifs ( _ , _ , _ )
+6, 9
+5000
+2 - pattern 2 variable name
+if ifs;
+Select ifs pattern ifs ( "x" , _ , _ )
+6, 9
+5000
+3 - pattern 3 variable name
+if ifs;
+Select ifs pattern ifs ( "i" , _ , _ )
+6
+5000
+4 - pattern 4 variable synonym
+if ifs; variable v;
+Select ifs pattern ifs ( v , _ , _ )
+6,9
+5000

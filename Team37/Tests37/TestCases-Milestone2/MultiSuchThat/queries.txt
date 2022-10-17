@@ -6,7 +6,7 @@ flag, x
 2 - Next* and Modifies
 stmt s;
 Select s such that Next*(11,s) and Modifies(s, "flag")
-12, 14
+11, 12, 14
 5000
 3 - Parent and Next
 stmt s1, s2;

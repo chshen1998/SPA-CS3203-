@@ -1,0 +1,57 @@
+procedure main {
+	print = x;
+	read x;
+	left = x;
+	call somethingHmm;
+	right = left + 2;
+	read temp;
+	radius = x + left;
+	temp = temp + 2;
+	radius1 = x + left;
+	call anotherOne;
+}
+
+procedure somethingHmm {
+	while (iter <=  5) {
+		x = right + 3 + 2 + left;
+		temp = temp + 7;
+		call anotherOne;
+	}
+	x = 5;
+	if (iter != 1) then {
+		iter = iter + 1;
+		length = radius * 10;
+		breadth = radius + 10;
+	} else {
+		while ((left + 1 > 2) || (radius + 1 > 2)) {
+			call nestedBlocks;
+			length = left + right;
+		}
+	}
+}
+
+procedure nestedBlocks {
+	if (iter != 1) then {
+		iter = iter + 1;
+		length = radius * 10;
+		breadth = radius + 10;
+	} else {
+		while ((left + 1 > 2) || (radius + 1 > 2)) {
+			breadth = radius - 100;
+			length = left + right;
+			call anotherOne;
+			if (1 > 2) then {
+				procedure  = 5;
+			} else {
+				length = no;
+				while ((x > 2) || !(y <= 5)) {
+					call anotherOne;
+				}
+			}
+		}
+	}
+}
+
+procedure anotherOne {
+	print x;
+}

@@ -89,7 +89,11 @@ void ExtractUsesASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStm
         }
         // if procedure called has not been traversed yet, we add them to a queue
     } else {
-        string parentProcedureName = dynamic_pointer_cast<Procedure>(callStmt->getParent())->getProcedureName();
+        shared_ptr<TNode> node = callStmt;
+        while (dynamic_pointer_cast<Procedure>(node) == nullptr) {
+            node = node->getParent();
+        }
+        string parentProcedureName = dynamic_pointer_cast<Procedure>(node)->getProcedureName();
         tuple<int, string, string> lineNumProcedureTuple(lineNum, parentProcedureName, calledProcedureName);
         this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
     }

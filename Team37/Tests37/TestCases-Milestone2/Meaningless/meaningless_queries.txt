@@ -11,7 +11,7 @@ TRUE
 3 - If statement 1 is an assignment statement, find all the assignment statements
 assign a, a1;
 Select a1 with a.stmt# = 1
-TRUE
+1, 2, 4, 5
 5000
 4 - If there exist an assignment that modifies the variable "x", find all the combinations of two-procedures pair.
 procedure p, q; assign a;

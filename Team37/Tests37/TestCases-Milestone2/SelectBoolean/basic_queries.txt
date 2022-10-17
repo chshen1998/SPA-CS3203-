@@ -25,7 +25,7 @@ TRUE
 5000
 6 - Boolean Next
 
-Select BOOLEAN such that Next(5,5)
+Select BOOLEAN such that Next(5,6)
 TRUE
 5000
 7 - Boolean variable

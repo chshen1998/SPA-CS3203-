@@ -74,7 +74,7 @@ void QueryEvaluator::evaluate() {
         else {
             TokenType suchThatType = clause.clauseType.type;
 
-            if (suchThatType == TokenType::CALLS) {
+            if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
                 if (clause.checkIfBooleanClause()) {
                     falseBooleanClause = !procProcEvaluator.evaluateBooleanClause(clause);
                 }

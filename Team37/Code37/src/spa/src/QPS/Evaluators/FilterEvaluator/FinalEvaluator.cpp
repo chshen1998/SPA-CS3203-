@@ -25,8 +25,6 @@ void FinalEvaluator::getFinalResult(list<string>& result, vector<vector<string>>
     // in SelectObjects, we add them to our intermediate table
     updateFinalTableWithAttrName(intermediate);
 
-    printTable(intermediate);
-
     // Get the mapping of indexes from the intermediate table to the Select Object
     unordered_map<int, int> tableIndexToSelectIndex = getTableIndexToSelectIndex(intermediate);
 

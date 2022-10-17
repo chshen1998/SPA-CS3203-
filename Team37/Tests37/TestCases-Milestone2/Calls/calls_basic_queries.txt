@@ -31,5 +31,5 @@ main, doSomething, somethingHmm, nestedBlocks, anotherOne, doNothing
 6 - True Boolean Call* Statement
 
 Select BOOLEAN such that Calls*("main", "doNothing")
-True
+TRUE
 5000

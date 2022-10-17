@@ -21,6 +21,7 @@ bool ProcProcEvaluator ::evaluateBooleanClause(const Clause& clause) {
 
     // string-string --> Eg. Calls("procedure1", "procedure2") 
     if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::STRING) {
+        cout << leftArg.value << " " << rightArg.value << endl;
         return servicer->retrieveRelation(leftArg.value, rightArg.value, pp);
     }
 

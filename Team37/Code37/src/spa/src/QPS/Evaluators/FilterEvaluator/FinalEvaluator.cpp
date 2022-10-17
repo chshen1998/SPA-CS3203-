@@ -2,6 +2,7 @@ using namespace std;
 
 #include <unordered_set>
 #include <iostream>
+#include <list>
 
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
@@ -13,7 +14,7 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-void FinalEvaluator::getFinalResult(list<string>& result, vector<vector<string>>& intermediate) {
+void FinalEvaluator::getFinalResult(list<string> &result, vector<vector<string>> &intermediate) {
     // If there are no clauses (our table will not even have column headers) OR
     // If all of our select synonyms not appearing in clause
     if (intermediate.size() == 0 || !checkIfClauseContainsSelect()) {
@@ -60,7 +61,7 @@ void FinalEvaluator::getFinalResult(list<string>& result, vector<vector<string>>
 }
 
 
-unordered_map<int, int> FinalEvaluator::getTableIndexToSelectIndex(vector<vector<string>>& intermediate) {
+unordered_map<int, int> FinalEvaluator::getTableIndexToSelectIndex(vector<vector<string>> &intermediate) {
     unordered_map<string, int> selectSynonymToIndex;
     unordered_map<int, int> tableIndexToSelectIndex;
 
@@ -72,13 +73,13 @@ unordered_map<int, int> FinalEvaluator::getTableIndexToSelectIndex(vector<vector
             name += "." + pq.selectObjects[i].attrName.value;
         }
 
-        selectSynonymToIndex.insert({ name, i });
+        selectSynonymToIndex.insert({name, i});
     }
 
     // Get the mapping of select synonym index in intermediate table to index in tuple
     for (int j = 0; j < intermediate[0].size(); j++) {
         if (selectSynonymToIndex.find(intermediate[0][j]) != selectSynonymToIndex.end()) {
-            tableIndexToSelectIndex.insert({ j, selectSynonymToIndex[intermediate[0][j]] });
+            tableIndexToSelectIndex.insert({j, selectSynonymToIndex[intermediate[0][j]]});
         }
     }
 
@@ -86,13 +87,12 @@ unordered_map<int, int> FinalEvaluator::getTableIndexToSelectIndex(vector<vector
 }
 
 
-
-void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>>& intermediate) {
+void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>> &intermediate) {
     // In the Select Objects, We get all the:
     // Call AttrName types with ProcName
     // Read / Print AttrName types with VarName
     unordered_set<string> callReadPrintWithAltAttrName;
-    for (SelectObject s : pq.selectObjects) {
+    for (SelectObject s: pq.selectObjects) {
         if (checkIfSelectSynonymIsDoubleAttr(s)) {
             callReadPrintWithAltAttrName.insert(s.synonym);
         }
@@ -124,7 +124,7 @@ void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>>& interm
     }
 
     // Add .ProcName or VarName to call/print/read synonyms if they are part of a select synonym
-    for (string s : callPrintReadSynonym) {
+    for (string s: callPrintReadSynonym) {
         if (callReadPrintWithAltAttrName.find(s) != callReadPrintWithAltAttrName.end()) {
             addAttrName(intermediate, PqlToken(TokenType::SYNONYM, s));
         }
@@ -140,15 +140,14 @@ bool FinalEvaluator::checkIfClauseContainsSelect() {
 
     unordered_set<string> selectElements;
 
-    for (SelectObject s : pq.selectObjects) {
+    for (SelectObject s: pq.selectObjects) {
         selectElements.insert(s.synonym);
     }
 
-    for (Clause c : pq.clauses) {
+    for (Clause c: pq.clauses) {
         if (selectElements.find(c.left.value) != selectElements.end() ||
             selectElements.find(c.right.value) != selectElements.end() ||
-            selectElements.find(c.clauseType.value) != selectElements.end())
-        {
+            selectElements.find(c.clauseType.value) != selectElements.end()) {
             return true;
         }
     }
@@ -158,10 +157,10 @@ bool FinalEvaluator::checkIfClauseContainsSelect() {
 
 
 // In the case where we have no clauses, we get all combinations for tuples
-void FinalEvaluator::getAllCombinations(list<string>& result) {
+void FinalEvaluator::getAllCombinations(list<string> &result) {
     vector<vector<string>> finalResult;
 
-    for (SelectObject s : pq.selectObjects) {
+    for (SelectObject s: pq.selectObjects) {
         TokenType declarationType = pq.declarations[s.synonym];
 
         if (s.type == SelectType::ATTRNAME &&
@@ -206,12 +205,13 @@ void FinalEvaluator::getAllCombinations(list<string>& result) {
     }
 }
 
-bool FinalEvaluator::checkIfSelectSynonymIsDoubleAttr(const SelectObject& s) {
+bool FinalEvaluator::checkIfSelectSynonymIsDoubleAttr(const SelectObject &s) {
     if (s.type == SelectType::ATTRNAME) {
         TokenType synonymType = pq.declarations[s.synonym];
 
-        return ((synonymType == TokenType::CALL && s.attrName.type == TokenType::PROCNAME) || ((synonymType == TokenType::READ || synonymType == TokenType::PRINT) &&
-            s.attrName.type == TokenType::VARNAME));
+        return ((synonymType == TokenType::CALL && s.attrName.type == TokenType::PROCNAME) ||
+                ((synonymType == TokenType::READ || synonymType == TokenType::PRINT) &&
+                 s.attrName.type == TokenType::VARNAME));
     }
 
     return false;

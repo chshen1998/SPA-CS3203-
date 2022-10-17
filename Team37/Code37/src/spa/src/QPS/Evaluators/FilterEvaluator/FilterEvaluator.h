@@ -12,18 +12,18 @@ using namespace std;
 class FilterEvaluator : public GeneralEvaluator {
 
 public:
-    FilterEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
-        GeneralEvaluator(s, d) {};
+    FilterEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType> &d) :
+            GeneralEvaluator(s, d) {};
 
 protected:
     string updatedColumnName(const PqlToken&);
 
     vector<string> selectAll(const TokenType);
 
-    bool addAttrName(vector<vector<string>>&, const PqlToken&);
+    bool addAttrName(vector<vector<string>> &, const PqlToken &);
 
     unordered_set<TokenType> doubleAttrTokens = {
-        TokenType::CALL, TokenType::PRINT, TokenType::READ
+            TokenType::CALL, TokenType::PRINT, TokenType::READ
     };
 };
 

@@ -37,6 +37,8 @@ for milestone in milestones:
     testcase_folders = [folder.name for folder in Path('./').joinpath(milestone).iterdir()]
 
     for testcase_folder in testcase_folders:
+        if testcase_folder == ".DS_Store":
+            continue
         Path(f"./TestOutputs/{milestone}/{testcase_folder}").mkdir()
 
         if testcase_folder == ".DS_Store":

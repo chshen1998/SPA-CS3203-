@@ -48,6 +48,10 @@ void QPS::evaluate(string query, list<string>& results) {
         return;
     } 
 
+    for (PqlToken p : tokens) {
+        cout << p << endl;
+    }
+
     QueryValidator validator = QueryValidator(tokens);
     PqlError pe = validator.validateQuery();
 

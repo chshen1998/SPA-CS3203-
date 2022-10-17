@@ -16,7 +16,7 @@ public:
         GeneralEvaluator(s, d) {};
 
 protected:
-    inline string updatedColumnName(const PqlToken&);
+    string updatedColumnName(const PqlToken&);
 
     vector<string> selectAll(const TokenType);
 

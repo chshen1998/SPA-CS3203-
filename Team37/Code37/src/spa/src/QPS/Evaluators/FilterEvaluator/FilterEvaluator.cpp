@@ -11,7 +11,7 @@ using namespace std;
 using namespace EvaluatorUtils;
 
 
-inline string FilterEvaluator::updatedColumnName(const PqlToken& token) {
+string FilterEvaluator::updatedColumnName(const PqlToken& token) {
     return token.type == TokenType::CALL ? token.value + ".procName" : token.value + ".varName";
 }
 

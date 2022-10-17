@@ -28,21 +28,12 @@ TestWrapper::~TestWrapper() {
 // method for parsing the SIMPLE source
 void TestWrapper::parse(string filename) {
     try {
-        printf("%s\n", "Before Parse");
-
         shared_ptr<SourceCode> AST = SP::parse(filename);
-        printf("%s\n", "After Parse");
-
         vector<shared_ptr<CFG> > cfgLst = AST->getAllCFGs();
-
-        printf("%s\n", "After CFG");
-
         shared_ptr<map<int, shared_ptr<CFGNode> > > allCFGMaps = AST->getAllCFGMaps();
         knowledgeBase->buildFromAst(AST);
         knowledgeBase->buildFromCFG(allCFGMaps);
         queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
-
-        printf("%s\n", "After PKB");
 
     } catch (InvalidSyntaxException e) {
         printf("%s\n", e.what());
@@ -53,6 +44,5 @@ void TestWrapper::parse(string filename) {
 
 // method to evaluating a query
 void TestWrapper::evaluate(string query, list<string> &results) {
-    printf("%s\n", "Reached QPS");
     queryProcessor->evaluate(query, results);
 }

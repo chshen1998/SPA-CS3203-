@@ -95,8 +95,10 @@ TEST_CASE("Uses while statements") {
     storage->storeAST(sc);
 
     vector<string> usesVariables = storage->forwardRetrieveRelation(whileStmt->getLineNum(), USESSV);
-
     REQUIRE(usesVariables.size() == 1);
+
+    vector<string> usesPredicateVariables = storage->forwardRetrieveRelation(whileStmt->getLineNum(), USESSV);
+    REQUIRE(usesPredicateVariables.size() == 1);
 }
 
 TEST_CASE("Uses call statements") {

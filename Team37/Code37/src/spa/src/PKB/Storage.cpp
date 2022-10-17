@@ -294,6 +294,9 @@ void Storage::storeRelation(int stmt, string var, StmtVarRelationType type) {
         case (MODIFIESSV):
             ModifiesSV.store(stmt, var);
             break;
+        case (USESSVPREDICATE):
+            UsesSVPredicate.store(stmt, var);
+            break;
         default:
             throw invalid_argument("Not a Statement-Variable Relation");
     }
@@ -314,6 +317,9 @@ bool Storage::retrieveRelation(int stmt, string var, StmtVarRelationType type) {
         case (MODIFIESSV):
             return ModifiesSV.retrieve(stmt, var);
             break;
+        case (USESSVPREDICATE):
+            return UsesSVPredicate.retrieve(stmt, var);
+            break;
         default:
             throw invalid_argument("Not a Statement-Variable Realtion");
     }
@@ -333,6 +339,9 @@ vector<string> Storage::forwardRetrieveRelation(int stmt, StmtVarRelationType ty
         case (MODIFIESSV):
             return ModifiesSV.forwardRetrieve(stmt);
             break;
+        case (USESSVPREDICATE):
+            return UsesSVPredicate.forwardRetrieve(stmt);
+            break;
         default:
             throw invalid_argument("Not a Statement-Variable Relation");
     }
@@ -351,6 +360,9 @@ vector<int> Storage::reverseRetrieveRelation(string var, StmtVarRelationType typ
             break;
         case (MODIFIESSV):
             return ModifiesSV.reverseRetrieve(var);
+            break;
+        case (USESSVPREDICATE):
+            return UsesSVPredicate.reverseRetrieve(var);
             break;
         default:
             throw invalid_argument("Not a Statement-Variable Relation");

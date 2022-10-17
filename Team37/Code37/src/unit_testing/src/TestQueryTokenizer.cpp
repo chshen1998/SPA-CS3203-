@@ -102,6 +102,52 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
         REQUIRE(q.tokens == expectedTokens);
     }
 
+    SECTION("tuples in Select statement and with") {
+        inputQuery = R"(call c; print procName; read varName; 
+                        Select <c.procName, procName.stmt#, varName.varName> with varName.stmt# = 2)";
+        q.resetQueryString(inputQuery);
+
+        vector<string> expectedDelimited = { "call", "c", ";", "print", "procName", ";","read", "varName", ";", "Select", "<", "c",  ".",  "procName", ",", "procName",  ".",  "stmt#", ",", "varName",  ".",  "varName", ">", "with", "varName", ".", "stmt#", "=", "2" };
+
+        vector<PqlToken> expectedTokens = {
+                PqlToken(TokenType::CALL, "call"),
+                PqlToken(TokenType::SYNONYM, "c"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::PRINT, "print"),
+                PqlToken(TokenType::SYNONYM, "procName"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::READ, "read"),
+                PqlToken(TokenType::SYNONYM, "varName"),
+                PqlToken(TokenType::SEMICOLON, ";"),
+                PqlToken(TokenType::DECLARATION_END, ""),
+                PqlToken(TokenType::SELECT, "Select"),
+                PqlToken(TokenType::OPEN_ARROW, "<"),
+                PqlToken(TokenType::SYNONYM, "c"),
+                PqlToken(TokenType::DOT, "."),
+                PqlToken(TokenType::PROCNAME, "procName"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "procName"),
+                PqlToken(TokenType::DOT, "."),
+                PqlToken(TokenType::STMTLINE, "stmt#"),
+                PqlToken(TokenType::COMMA, ","),
+                PqlToken(TokenType::SYNONYM, "varName"),
+                PqlToken(TokenType::DOT, "."),
+                PqlToken(TokenType::VARNAME, "varName"),
+                PqlToken(TokenType::CLOSED_ARROW, ">"),
+                PqlToken(TokenType::WITH, "with"),
+                PqlToken(TokenType::SYNONYM, "varName"),
+                PqlToken(TokenType::DOT, "."),
+                PqlToken(TokenType::STMTLINE, "stmt#"),
+                PqlToken(TokenType::EQUAL, "="),
+                PqlToken(TokenType::NUMBER, "2"),
+        };
+
+        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE(q.delimited_query == expectedDelimited);
+        REQUIRE(q.tokens == expectedTokens);
+    }
+
+
     SECTION("tuples in Select statement and if pattern") {
         inputQuery = R"(if ifs; variable v; 
                         Select <ifs, v> pattern ifs(v, _, _))";

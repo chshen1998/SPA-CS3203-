@@ -8,6 +8,5 @@ unordered_map<TokenType, ClauseType> TokenizerUtils::tokenTypeToClauseTypeMap =
     {TokenType::USES, ClauseType::USE},
     {TokenType::MODIFIES, ClauseType::MODIFIES},
     {TokenType::CALLS, ClauseType::CALLS},
-    {TokenType::WHILE, ClauseType::WHILE},
-    {TokenType::IF, ClauseType::IF }
+    {TokenType::CALLS_A, ClauseType::CALLS},
 };

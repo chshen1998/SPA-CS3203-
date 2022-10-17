@@ -10,7 +10,7 @@ using namespace std;
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "SP/Parser.h"
 
-vector<int> printIntInVector(vector<int> vect) {
+void printIntInVector(vector<int> vect) {
     for (int num: vect) {
         printf("%d", num);
     }

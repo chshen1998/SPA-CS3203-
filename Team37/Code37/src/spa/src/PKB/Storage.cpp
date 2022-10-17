@@ -475,10 +475,10 @@ Retrieve Procedure-Procedure Relationship. For Relation(proc1, proc2)
 bool Storage::retrieveRelation(string proc1, string proc2, ProcProcRelationType type) {
     switch (type) {
         case (CALLS):
-            Calls.retrieve(proc1, proc2);
+            return Calls.retrieve(proc1, proc2);
             break;
         case (CALLSS):
-            CallsS.retrieve(proc1, proc2);
+            return CallsS.retrieve(proc1, proc2);
             break;
         default:
             throw invalid_argument("Not a Procedure-Procedure Realtion");

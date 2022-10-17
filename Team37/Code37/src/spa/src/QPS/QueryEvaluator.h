@@ -34,7 +34,7 @@ public:
 
 private:
     void getResultFromFinalTable(const vector<vector<string>> &);
-    void selectAll(TokenType, list<string>&);
+    
 };
 
 

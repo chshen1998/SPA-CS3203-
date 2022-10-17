@@ -19,7 +19,7 @@ public:
 		GeneralTokenizer(index, delimited, result) {};
 
 	void tokenize() override;
-	TokenType checkSelectTokenType(const string&, const ClauseType&);
+	TokenType checkSelectTokenType(const string& s, const bool);
 };
 
 #endif

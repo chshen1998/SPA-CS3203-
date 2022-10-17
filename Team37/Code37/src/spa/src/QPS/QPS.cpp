@@ -37,6 +37,7 @@ void QPS::evaluate(string query, list<string>& results) {
     
     QueryTokenizer tokenizer = QueryTokenizer(query);
     vector<PqlToken> tokens;
+
     try
     {
 	    tokens = tokenizer.Tokenize();
@@ -46,7 +47,12 @@ void QPS::evaluate(string query, list<string>& results) {
         //cout << pe.message;
         return;
     } 
-    
+
+    /*
+    for (PqlToken p : tokens) {
+        cout << p << endl;
+    }
+    */
 
     QueryValidator validator = QueryValidator(tokens);
     PqlError pe = validator.validateQuery();
@@ -70,8 +76,6 @@ void QPS::evaluate(string query, list<string>& results) {
         cout << pe.message;
         return;
     }
-
-
 
     QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
     evaluator.evaluate();

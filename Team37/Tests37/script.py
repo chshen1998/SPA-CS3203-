@@ -10,6 +10,8 @@ buildType = "Release"
 if sys.platform == "win32":
     AUTOTESTER_PATH = Path("../Code37/out/build/x64-{}/src/autotester/autotester".format(buildType))
 
+print(f"--- OS: {sys.platform}, Mode: {buildType} ---\n")
+
 OUTPUT_XML_PATH = Path("./out.xml")
 
 milestones = [milestone.name for milestone in Path(".").iterdir() if milestone.is_dir()]
@@ -31,7 +33,7 @@ for milestone in milestones:
 
     Path(f"./TestOutputs/{milestone}").mkdir()
 
-    print(f"Scanning {milestone}")
+    print(f"-- Scanning {milestone} -- ")
     testcase_folders = [folder.name for folder in Path('./').joinpath(milestone).iterdir()]
 
     for testcase_folder in testcase_folders:
@@ -53,7 +55,7 @@ for milestone in milestones:
                 source_file = test_file
             elif "queries" in test_file:
                 testcases.append(test_file)
-
+        
         for testcase in testcases:
             testcase_source_path = Path(f"./{milestone}/{testcase_folder}/{source_file}")
             testcase_path = Path(f"./{milestone}/{testcase_folder}/{testcase}")
@@ -63,7 +65,17 @@ for milestone in milestones:
             os.system(shell_cmd)
 
             with open(output_path) as f:
-                if 'Missing:' in f.read() or 'Additional:   ' in f.read():
-                    print("Testcase Failing: ", f"{milestone}/{testcase_folder}/{testcase}")
+                filetxt = f.read()
+                if 'Missing:' in filetxt or 'Additional:   ' in filetxt:
+                    print(f"Failed\t{testcase_folder}/{testcase}")
+
+                elif 'End of evaluating Query File.' not in filetxt:
+                    print(f"Not Completed\t{testcase_folder}/{testcase}")
+
+                else:
+                    print(f"Passed\t{testcase_folder}/{testcase}")
+
+    print("")
+
 
 print("Completed scanning all files")

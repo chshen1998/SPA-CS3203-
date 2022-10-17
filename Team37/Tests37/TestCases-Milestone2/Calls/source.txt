@@ -1,59 +1,26 @@
-procedure procedure {
-  while (while < while) {
-    if (if != if * (2 + 1)) then {
-      then = then + if;
-      while = procedure + 32432 + if + then;
-      else = while;
-    } else {
-      else = if + then + procedure;
-      while (5 > 0) {
-        if (then > else) then {
-          print x;
-        } else {
-          while (procedure > then) {
-            print x;
-          }
-        }
-      }
-      while (procedure <= else + while) {
-        if (x == 1 + 3 + 5) then {
-          if (read == print) then {
-            read x;
-          } else {
-            print x;
-          }
-          while (x < y) {
-            call doNothing;
-          }
-        } else {
-          while (else < if) {
-            call doNothing;
-          }
-        }
-      }
-    }
-  }
-}
-
-procedure doNothing {
-  while = 1;
-  ifThen = 2;
-  if = 3;
-  then = 4;
-  else = 5;
+procedure main {
+	call anotherOne;
+	call somethingHmm;
+	call doSomething;
 }
 
 procedure doSomething {
-  call doNothing;
-  read doNothing;
-  read while;
-  print while;
-  read ifThen;
-  print ifThen;
-  read if;
-  print if;
-  read then;
-  print then;
-  read else;
-  print else;
+	call somethingHmm;
+}
+
+procedure somethingHmm {
+	call nestedBlocks;
+}
+
+procedure nestedBlocks {
+	call anotherOne;
+	call doNothing;
+}
+
+procedure anotherOne {
+	call doNothing;
+}
+
+procedure doNothing {
+	print x;
 }

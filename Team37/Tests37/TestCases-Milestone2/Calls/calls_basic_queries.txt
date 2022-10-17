@@ -1,5 +1,9 @@
-1 - With Statement number
+1 - Basic Call Statement
 procedure p;
-Select p such that Calls(p, "doNothing")
-procedure doSomething
+Select p such that Calls(p, "somethingHmm")
+main, doSomething
+5000
+2 - Boolean Call Statement
+Select BOOLEAN such that Calls(_, _)
+main, doSomething
 5000

@@ -3,7 +3,7 @@ variable v; stmt s1, s2;
 Select v such that Uses(s1, v) and Modifies(s2, v)
 flag, x
 5000
-2 - Next and Modifies
+2 - Next* and Modifies
 stmt s;
 Select s such that Next*(11,s) and Modifies(s, "flag")
 12, 14

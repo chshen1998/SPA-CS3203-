@@ -1,0 +1,25 @@
+1 - Assign and Assign
+variable v; assign a1, a2;
+Select v pattern a1 (v, _"0"_) and a2 (v, _"2"_) 
+x
+5000
+2 - Assign and If
+variable v; assign a; if ifs;
+Select v pattern a (v, _"0"_) and ifs (v, _, _)
+flag
+5000
+3 - Assign and While
+variable v; assign a; while w;
+Select v pattern a (v, _"0"_) and w (v, _)
+flag
+5000
+4 - If and While
+variable v; if ifs; while w;
+Select v pattern ifs (v, _, _) and w (v, _)
+flag
+5000
+5 - If and If
+variable v; if ifs;
+Select ifs pattern ifs (v, _, _) and ifs (_, _, _)
+5
+5000

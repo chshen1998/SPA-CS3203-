@@ -11,11 +11,11 @@ procedure main {
         flag = x + 1 + 0 + flag;
     }
     i = 100;
-    while(i == 0) {
+    while(i == 11) {
         flag = 0;
         print flag;
         read flag;
         x = x + 2 + 0 + flag;
     }
-    i = 200;
+    i = 16;
 }

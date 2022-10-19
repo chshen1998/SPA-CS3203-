@@ -495,7 +495,6 @@ vector<string> Storage::forwardRetrieveRelation(string proc1, ProcProcRelationTy
     switch (type) {
         case (CALLS):
             return Calls.forwardRetrieve(proc1);
-            break;
         case (CALLSS):
             return CallsS.forwardRetrieve(proc1);
             break;
@@ -577,19 +576,9 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
             // reset visited
             this->visited = make_shared<map<int, bool >>();
 
-            for (const auto &childNode: cfgNode->getChildren()) {
-                // add children stmt to list
-                shared_ptr<TNode> TNode = childNode->getTNode();
-                if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
-                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
-                    int lineNum = stmt->getLineNum();
+            vector<int> childrenLineNums = this->getNextStarForwardLineNum(cfgNode);
+            lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
 
-                    lstLineNum.push_back(lineNum);
-                }
-                // recursively compute all transitively Next*(stmt, _)
-                vector<int> childrenLineNums = this->getNextStarForwardLineNum(childNode);
-                lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
-            }
             return lstLineNum;
         }
         default:
@@ -604,19 +593,20 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
  */
 vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node) {
     vector<int> lstLineNum = {};
-
+    
     // add children
     for (const auto &childNode: node->getChildren()) {
         shared_ptr<TNode> TNode = childNode->getTNode();
+
         if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
             shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(TNode);
             int lineNum = stmt->getLineNum();
 
-            //check if node has been visited(while loop)
+            // IF FOUND
             if (this->visited->find(lineNum) != this->visited->end()) {
                 continue;
             } else {
-                // add children stmt to1 list
+                // add children stmt to list
                 this->visited->insert({lineNum, true});
                 lstLineNum.push_back(lineNum);
 
@@ -624,6 +614,10 @@ vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node) {
                 vector<int> childrenLineNums = getNextStarForwardLineNum(childNode);
                 lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
             }
+        } else if (childNode->getTNode() == nullptr && !childNode->getChildren().empty()) {
+            //recursively get children nodes
+            vector<int> childrenLineNums = getNextStarForwardLineNum(childNode);
+            lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
         }
     }
     return lstLineNum;
@@ -693,6 +687,7 @@ vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node) {
         if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
             shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
             int lineNum = stmt->getLineNum();
+
             // IF FOUND
             if (this->visited->find(lineNum) != this->visited->end()) {
                 continue;

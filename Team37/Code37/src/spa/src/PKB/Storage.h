@@ -45,6 +45,8 @@ private:
     set<ConstantExpression> constants = {};
     set<Procedure> procedures = {};
     set<shared_ptr<Statement>> statements = {};
+
+    // Utils
     shared_ptr<map<int, bool >> visited = make_shared<map<int, bool >>();
 
     // RelationalStore<int, int> Follows = RelationalStore<int, int>();
@@ -71,6 +73,9 @@ public:
     // Queue helper for AST traversal
     // tuple triplet of (line number,container procedure name,called procedure name)
     vector<tuple<int, std::string, std::string>> callStmtProcedureQueue = {};
+
+    // utility mapping for Call Stmt - Procedure
+    map<int, string> callStmtProcMapping = map<int, string>();
 
     // AST
     void storeAST(shared_ptr<SourceCode>);

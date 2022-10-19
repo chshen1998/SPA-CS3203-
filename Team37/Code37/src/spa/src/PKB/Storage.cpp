@@ -593,7 +593,7 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
  */
 vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node) {
     vector<int> lstLineNum = {};
-    
+
     // add children
     for (const auto &childNode: node->getChildren()) {
         shared_ptr<TNode> TNode = childNode->getTNode();
@@ -614,7 +614,7 @@ vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node) {
                 vector<int> childrenLineNums = getNextStarForwardLineNum(childNode);
                 lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
             }
-        } else if (childNode->getTNode() == nullptr && !childNode->getChildren().empty()) {
+        } else if (TNode == nullptr && !childNode->getChildren().empty()) {
             //recursively get children nodes
             vector<int> childrenLineNums = getNextStarForwardLineNum(childNode);
             lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());

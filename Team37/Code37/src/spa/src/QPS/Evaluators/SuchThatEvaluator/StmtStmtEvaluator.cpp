@@ -141,12 +141,6 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
             else {
                 if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
                     intermediateStmtLines = servicer->forwardComputeRelation(stoi(leftArg.value), ss);
-
-                    cout << "HERE" << endl;
-
-                    for (int line : intermediateStmtLines) {
-                        cout << to_string(line) << endl;
-                    }
                 }
                 else {
                     intermediateStmtLines = servicer->forwardRetrieveRelation(stoi(leftArg.value), ss);

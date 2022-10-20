@@ -48,8 +48,6 @@ void QueryEvaluator::evaluate() {
     WhileEvaluator whileEvaluator = WhileEvaluator(servicer, pq.declarations);
     IfEvaluator ifEvaluator = IfEvaluator(servicer, pq.declarations);
 
-    vector<vector<string>> finalResult;
-
     // Solve the boolean clauses
     for (Clause booleanClause : pq.booleanClauses) {
         if (booleanClause.category == TokenType::WITH) {
@@ -88,46 +86,75 @@ void QueryEvaluator::evaluate() {
         }
         return;
     }
-    
+
+    vector<vector<vector<string>>> listOfIntermediateTables;
+    listOfIntermediateTables.reserve(pq.clauses.size());
+
     // Solve the Synonym Clauses
-    for (Clause clause : pq.clauses[0]) {
-        if (clause.category == TokenType::WITH) {
-             finalResult = withEvaluator.evaluateClause(clause, finalResult);
-        }
-        else if (clause.category == TokenType::PATTERN) {
-            TokenType patternType = pq.declarations[clause.clauseType.value];
+    for (vector<Clause> clauseGroup : pq.clauses) {
+        vector<vector<string>> intermediateTable;
 
-            if (patternType == TokenType::ASSIGN) {
-                finalResult = assignEvaluator.evaluateClause(clause, finalResult);
-            } else if (patternType == TokenType::WHILE) {
-                finalResult = whileEvaluator.evaluateClause(clause, finalResult);
-            } else if (patternType == TokenType::IF) {
-                finalResult = ifEvaluator.evaluateClause(clause, finalResult);
+        for (Clause clause : clauseGroup) {
+            if (clause.category == TokenType::WITH) {
+                intermediateTable = withEvaluator.evaluateClause(clause, intermediateTable);
+            }
+            else if (clause.category == TokenType::PATTERN) {
+                TokenType patternType = pq.declarations[clause.clauseType.value];
+
+                if (patternType == TokenType::ASSIGN) {
+                    intermediateTable = assignEvaluator.evaluateClause(clause, intermediateTable);
+                }
+                else if (patternType == TokenType::WHILE) {
+                    intermediateTable = whileEvaluator.evaluateClause(clause, intermediateTable);
+                }
+                else if (patternType == TokenType::IF) {
+                    intermediateTable = ifEvaluator.evaluateClause(clause, intermediateTable);
+                }
+            }
+
+            else {
+                TokenType suchThatType = clause.clauseType.type;
+
+                if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
+                    intermediateTable = procProcEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                }
+
+                // Follows, Parents, Next, Affects
+                else if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
+                    intermediateTable = stmtStmtEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                }
+
+                // Uses_P, Modifies_P
+                else if (clause.left.type == TokenType::STRING || pq.declarations[clause.left.value] == TokenType::PROCEDURE) {
+                    intermediateTable = procVarEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                }
+                // Uses_S, Modifies_S
+                else {
+                    intermediateTable = stmtVarEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                }
             }
         }
 
-        else {
-            TokenType suchThatType = clause.clauseType.type;
-
-            if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
-                finalResult = procProcEvaluator.evaluateSynonymClause(clause, finalResult);
+        // We can quickly terminate if any intermediate table is empty
+        if (isResultBoolean) {
+            if (intermediateTable.size() == 1) {
+                result.push_back("FALSE");
             }
-
-            // Follows, Parents, Next, Affects
-            else if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
-                finalResult = stmtStmtEvaluator.evaluateSynonymClause(clause, finalResult);
+            else {
+                result.push_back("TRUE");
             }
-
-            // Uses_P, Modifies_P
-            else if (clause.left.type == TokenType::STRING || pq.declarations[clause.left.value] == TokenType::PROCEDURE) {
-                finalResult = procVarEvaluator.evaluateSynonymClause(clause, finalResult);
-            }
-            // Uses_S, Modifies_S
-            else  {
-                finalResult = stmtVarEvaluator.evaluateSynonymClause(clause, finalResult);
-            }
+            return;
         }
+
+        listOfIntermediateTables.push_back(intermediateTable);
     }
+
+    vector<vector<string>> finalResult;
+    // Combine the smaller intermediate tables
+    for (vector<vector<string>> table : listOfIntermediateTables) {
+        finalResult = EvaluatorUtils::JoinTable(finalResult, table);
+    }
+
 
     if (isResultBoolean) {
         if (finalResult.size() == 1) {

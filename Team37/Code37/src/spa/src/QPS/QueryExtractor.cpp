@@ -1,10 +1,10 @@
 #include <iso646.h>
 
-#include "Validators/ValidatorUtils.h"
 using namespace std;
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include "QueryExtractor.h"
 #include "./Structures/PqlError.h"
@@ -12,6 +12,7 @@ using namespace std;
 #include "./Structures/PqlQuery.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
+#include "Validators/ValidatorUtils.h"
 
 QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector)
 {
@@ -92,6 +93,11 @@ PqlToken QueryExtractor::extractSelectObject(PqlToken curr) {
 
 void QueryExtractor::extractClauses(PqlToken nextToken)
 {
+    pq.clauses.push_back(vector<Clause>{});
+    if (pq.clauses.size() == 0) {
+        throw SyntaxError("");
+    }
+
     while (nextToken.type != TokenType::END)
     {
 	    if (nextToken.type == TokenType::PATTERN)
@@ -126,7 +132,7 @@ PqlToken QueryExtractor::extractPatternClause()
         getNextToken(); // CLOSE BRACKET or COMMA for IF pattern
 
         // For WHILE and IF pattern, only left arg matters since mid/right args must be wildcard 
-        pq.clauses.push_back(Clause(pattern, left, right, TokenType::PATTERN));
+        pq.clauses[0].push_back(Clause(pattern, left, right, TokenType::PATTERN));
 
         if (pq.declarations[pattern.value] == TokenType::IF) {
             getNextToken(); // right arg
@@ -168,7 +174,7 @@ PqlToken QueryExtractor::extractWithClause()
             next = getNextToken(); // Either "and" or next clause type
         }
 
-        pq.clauses.push_back(Clause(PqlToken(TokenType::NONE, ""), left, right, TokenType::WITH, leftAttr, rightAttr));
+        pq.clauses[0].push_back(Clause(PqlToken(TokenType::NONE, ""), left, right, TokenType::WITH, leftAttr, rightAttr));
     }
 
     return next;
@@ -192,7 +198,7 @@ PqlToken QueryExtractor::extractSuchThatClause()
 	    getNextToken(); // COMMA
 	    right = extractString(getNextToken());
 	    getNextToken(); // CLOSE BRACKET
-	    pq.clauses.push_back(Clause(suchThatClause, left, right, TokenType::SUCH_THAT));
+        pq.clauses[0].push_back(Clause(suchThatClause, left, right, TokenType::SUCH_THAT));
         next = getNextToken();
     }
 

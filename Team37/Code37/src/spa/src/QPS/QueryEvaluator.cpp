@@ -50,7 +50,7 @@ void QueryEvaluator::evaluate() {
 
     vector<vector<string>> finalResult;
     
-    for (Clause clause : pq.clauses) {
+    for (Clause clause : pq.clauses[0]) {
         if (clause.category == TokenType::WITH) {
             if (clause.leftAttr.type == TokenType::NONE) {
                 falseBooleanClause = !withEvaluator.evaluateBooleanClause(clause);

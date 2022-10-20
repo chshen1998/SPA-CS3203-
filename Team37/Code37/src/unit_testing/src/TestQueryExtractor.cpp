@@ -92,7 +92,7 @@ TEST_CASE("Test Calls wildcards")
 	PqlQuery results = sut.extractSemantics();
 
 	REQUIRE(results.selectObjects == ans);
-	REQUIRE(results.clauses == ans2);
+	REQUIRE(results.clauses[0] == ans2);
 }
 
 
@@ -150,7 +150,7 @@ TEST_CASE("Test Pattern clause assign")
 	QueryExtractor sut(valid_pattern_assign);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause while")
@@ -163,7 +163,7 @@ TEST_CASE("Test Pattern clause while")
 	QueryExtractor sut(valid_pattern_while);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause if")
@@ -176,7 +176,7 @@ TEST_CASE("Test Pattern clause if")
 	QueryExtractor sut(valid_pattern_if);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause multi")
@@ -195,7 +195,7 @@ TEST_CASE("Test Pattern clause multi")
 	QueryExtractor sut(valid_pattern_multi);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 
@@ -209,7 +209,7 @@ TEST_CASE("Test Pattern clause with String")
 	QueryExtractor sut(valid_pattern_with_string);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause with String and whitespace")
@@ -222,7 +222,7 @@ TEST_CASE("Test Pattern clause with String and whitespace")
 	QueryExtractor sut(valid_pattern_with_string_and_whitespace);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause with Wildcard String")
@@ -235,7 +235,7 @@ TEST_CASE("Test Pattern clause with Wildcard String")
 	QueryExtractor sut(valid_pattern_with_wildcard_string);
 	PqlQuery results = sut.extractSemantics();
 	//REQUIRE("x+y" == results.clauses[0].right.value);
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 
@@ -252,7 +252,7 @@ TEST_CASE("Test With clause")
 	QueryExtractor sut(valid_with);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Mulitple With clause")
@@ -275,7 +275,7 @@ TEST_CASE("Test Mulitple With clause")
 	QueryExtractor sut(valid_multi_with);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Uses clause")
@@ -288,7 +288,7 @@ TEST_CASE("Test Uses clause")
 	QueryExtractor sut(valid_uses);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Modifies clause")
@@ -301,7 +301,7 @@ TEST_CASE("Test Modifies clause")
 	QueryExtractor sut(valid_modifies);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Follows clause")
@@ -314,7 +314,7 @@ TEST_CASE("Test Follows clause")
 	QueryExtractor sut(valid_follows);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Follows* clause")
@@ -327,7 +327,7 @@ TEST_CASE("Test Follows* clause")
 	QueryExtractor sut(valid_follows_a);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Parent clause")
@@ -340,7 +340,7 @@ TEST_CASE("Test Parent clause")
 	QueryExtractor sut(valid_parent);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Parent* clause")
@@ -353,7 +353,7 @@ TEST_CASE("Test Parent* clause")
 	QueryExtractor sut(valid_parent_a);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Calls clause")
@@ -366,7 +366,7 @@ TEST_CASE("Test Calls clause")
 	QueryExtractor sut(valid_calls);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Calls* clause")
@@ -379,7 +379,7 @@ TEST_CASE("Test Calls* clause")
 	QueryExtractor sut(valid_calls_a);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Pattern then Such That clause")
@@ -396,7 +396,7 @@ TEST_CASE("Test Pattern then Such That clause")
 	QueryExtractor sut(valid_pattern_then_such_that);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Such That then Pattern clause")
@@ -413,7 +413,7 @@ TEST_CASE("Test Such That then Pattern clause")
 	QueryExtractor sut(valid_such_that_then_pattern);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 
@@ -439,7 +439,7 @@ TEST_CASE("Test Mulitple Pattern and Such That clauses")
 	QueryExtractor sut(valid_multi_pattern_then_multi_such_that);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }
 
 TEST_CASE("Test Mulitple Pattern, With and Such That clauses")
@@ -477,5 +477,5 @@ TEST_CASE("Test Mulitple Pattern, With and Such That clauses")
 	QueryExtractor sut(valid_multi_pattern_with_such_that);
 	PqlQuery results = sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses));
+	REQUIRE(isSameClauses(ans, results.clauses[0]));
 }

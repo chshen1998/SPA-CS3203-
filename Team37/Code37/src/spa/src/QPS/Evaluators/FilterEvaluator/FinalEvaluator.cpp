@@ -144,7 +144,7 @@ bool FinalEvaluator::checkIfClauseContainsSelect() {
         selectElements.insert(s.synonym);
     }
 
-    for (Clause c: pq.clauses) {
+    for (Clause c: pq.clauses[0]) {
         if (selectElements.find(c.left.value) != selectElements.end() ||
             selectElements.find(c.right.value) != selectElements.end() ||
             selectElements.find(c.clauseType.value) != selectElements.end()) {

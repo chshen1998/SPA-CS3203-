@@ -73,9 +73,9 @@ public:
  */
 struct PqlQuery {
     unordered_map<string, TokenType> declarations = {};
-    string select;
     vector<SelectObject> selectObjects;
-    vector<Clause> clauses;
+    vector<Clause> booleanClauses;
+    vector<vector<Clause>> clauses;
 };
 
 #endif 

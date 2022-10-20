@@ -12,6 +12,7 @@ using namespace std;
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
 #include "QueryValidator.h"
+#include "QueryOptimizer.h"
 #include "./Structures/PqlError.h"
 #include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
@@ -34,50 +35,38 @@ void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
 * Takes in query string input from user, parses the query string then return result from PKB
 */
 void QPS::evaluate(string query, list<string>& results) {
-    
-    QueryTokenizer tokenizer = QueryTokenizer(query);
-    vector<PqlToken> tokens;
 
-    try
-    {
-	    tokens = tokenizer.Tokenize();
-    } catch (SyntaxError pe)
-    {
-        results.push_back("Syntax Error");
-        //cout << pe.message;
-        return;
-    } 
+    try {
+        QueryTokenizer tokenizer = QueryTokenizer(query);
+        vector<PqlToken> tokens = tokenizer.Tokenize();
 
-    /*
-    for (PqlToken p : tokens) {
-        cout << p << endl;
+        QueryValidator validator = QueryValidator(tokens);
+        PqlError pe = validator.validateQuery();
+
+        if (pe.errorType != ErrorType::NONE)
+        {
+            results.push_back(errorTypeToStringMap[pe.errorType]);
+            cout << pe.message;
+            return;
+        }
+
+        QueryExtractor extractor = QueryExtractor(tokens);
+        PqlQuery pq = extractor.extractSemantics();
+
+        QueryOptimizer optimizer = QueryOptimizer(pq);
+        optimizer.optimize();
+
+        QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+        evaluator.evaluate();
     }
-    */
-
-    QueryValidator validator = QueryValidator(tokens);
-    PqlError pe = validator.validateQuery();
-
-    if (pe.errorType != ErrorType::NONE)
-    {
-        results.push_back(errorTypeToStringMap[pe.errorType]);
+    catch (SyntaxError pe) {
+        results.push_back("Syntax Error");
         cout << pe.message;
         return;
     }
-
-    QueryExtractor extractor(tokens);
-    PqlQuery pq;
-    try
-    {
-        pq = extractor.extractSemantics();
-    }
-    catch (SemanticError pe)
-    {
+    catch (SemanticError pe) {
         results.push_back("Semantic Error");
         cout << pe.message;
         return;
     }
-
-    QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
-    evaluator.evaluate();
-
 }

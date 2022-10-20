@@ -495,6 +495,7 @@ vector<string> Storage::forwardRetrieveRelation(string proc1, ProcProcRelationTy
     switch (type) {
         case (CALLS):
             return Calls.forwardRetrieve(proc1);
+            break;
         case (CALLSS):
             return CallsS.forwardRetrieve(proc1);
             break;

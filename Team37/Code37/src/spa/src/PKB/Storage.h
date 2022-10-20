@@ -45,7 +45,6 @@ private:
     set<ConstantExpression> constants = {};
     set<Procedure> procedures = {};
     set<shared_ptr<Statement>> statements = {};
-    shared_ptr<map<int, bool >> visited = make_shared<map<int, bool >>();
 
     // RelationalStore<int, int> Follows = RelationalStore<int, int>();
     RelationStarStorage<int, int> Follows = RelationStarStorage<int, int>();
@@ -147,9 +146,9 @@ public:
 
     vector<int> backwardComputeRelation(int, StmtStmtRelationType);
 
-    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>);
+    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
 
-    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>);
+    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
 
 };
 

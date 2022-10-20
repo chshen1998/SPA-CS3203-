@@ -40,7 +40,8 @@ public:
     TokenType category;
 
     inline bool checkIfBooleanClause() {
-        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM;
+        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM &&
+            category != TokenType::PATTERN;
     };
 };
 

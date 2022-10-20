@@ -176,7 +176,10 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Evaluators/PatternEvaluator/IfEvaluator.cpp 
         src/QPS/Evaluators/PatternEvaluator/IfEvaluator.h
         "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.h" 
-        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.cpp" "src/QPS/QueryOptimizer.h" "src/QPS/QueryOptimizer.cpp")
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.cpp" 
+        "src/QPS/QueryOptimizer.h" 
+        "src/QPS/QueryOptimizer.cpp"
+)
 
 
 # this makes the headers accessible for other projects which uses spa lib

@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 
 #include "./Structures/PqlError.h"
 #include "./Structures/PqlToken.h"
@@ -16,6 +17,7 @@
 class QueryOptimizer {
 public:
     PqlQuery pq;
+    vector<set<string>> synonymSets;
 
     QueryOptimizer(PqlQuery& pq);
 
@@ -25,6 +27,8 @@ private:
     vector<Clause> clauses;
 
     void groupClauses();
+
+    void sortGroupOrder();
 };
 
 

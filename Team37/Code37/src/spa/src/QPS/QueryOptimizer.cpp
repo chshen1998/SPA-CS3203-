@@ -17,20 +17,25 @@ using namespace std;
 QueryOptimizer::QueryOptimizer(PqlQuery& queryObj) 
 {
 	pq = queryObj;
+    synonymSets = {};
     clauses = pq.clauses[0];
 }
 
 void QueryOptimizer::optimize() 
 {
-    pq.clauses = vector<vector<Clause>>{};
+    pq.clauses.clear();
 
     groupClauses();
+
+    sortGroupOrder();
 }
 
+/* Divide the clauses into multiple groups
+*  1. Clauses without synonyms (Boolean clauses) should be 1 group
+*  2. Clauses with common synonyms should be in same group
+*/
 void QueryOptimizer::groupClauses() 
 {
-    vector<set<string>> synonymSets;
-
     // Divide clauses into separate groups
     for (Clause clause : clauses) {
         // 1. Boolean clauses (Clauses without synonyms)
@@ -65,4 +70,20 @@ void QueryOptimizer::groupClauses()
             synonymSets[index].insert(clause.right.value);
         }
     }
+}
+
+void QueryOptimizer::sortGroupOrder()
+{
+    vector<string> selectSynonyms;
+    for (SelectObject obj : pq.selectObjects) {
+        if (obj.type != SelectType::BOOLEAN) {
+            selectSynonyms.push_back(obj.synonym);
+        }
+    }
+
+    int left = 0;
+    int right = pq.clauses.size();
+    //while (left < right) {
+    //
+    //}
 }

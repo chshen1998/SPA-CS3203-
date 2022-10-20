@@ -1,0 +1,35 @@
+1 - Basic Call Statement
+procedure p;
+Select p such that Calls(p, "somethingHmm")
+main, doSomething
+5000
+2 - Wildcard-Wildcard Boolean Call Statement
+
+Select BOOLEAN such that Calls(_, _)
+TRUE
+5000
+3 - Wildcard-StringFalse Boolean Call Statement
+
+Select BOOLEAN such that Calls(_, "main")
+FALSE
+5000
+3 - False Boolean Call Statement
+
+Select BOOLEAN such that Calls(_, "main")
+FALSE
+5000
+4 - Negative Call Statement
+procedure p;
+Select p such that Calls(p, "main")
+none
+5000
+5 - Get all Procuderes Call Statement
+procedure p;
+Select p such that Calls("doSomething", "somethingHmm")
+main, doSomething, somethingHmm, nestedBlocks, anotherOne, doNothing
+5000
+6 - True Boolean Call* Statement
+
+Select BOOLEAN such that Calls*("main", "doNothing")
+TRUE
+5000

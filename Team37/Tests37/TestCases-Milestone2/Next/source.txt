@@ -3,22 +3,22 @@ procedure main {
     print flag;
     read flag;
     x = test;
-    if (flag == 0) then {
+    if (flag == 5) then {
         flag = 0;
         print flag;
         read flag;
-        while (flag == 0) {
-            flag = 0;
+        while (flag == 9) {
+            flag = 10;
         }
     } else {
-        flag = x + 1 + 0 + flag;
+        flag = x + 1 + 11 + flag;
     }
-    i = 100;
-    while(i == 0) {
-        flag = 0;
+    i = 12;
+    while(i == 13) {
+        flag = 14;
         print flag;
         read flag;
-        x = x + 2 + 0 + flag;
+        x = x + 17 + 0 + flag;
     }
     i = 200;
 }

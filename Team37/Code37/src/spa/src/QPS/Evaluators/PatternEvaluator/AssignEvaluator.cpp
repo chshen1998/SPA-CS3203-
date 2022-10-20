@@ -8,6 +8,11 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
+// { "a", "s" },
+// { "1", "2" },
+
+
+
 vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
@@ -36,7 +41,7 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vec
                 }
             }
         }
-            // Synonym - WildCard
+            // Synonym - WildCard -->  pattern a (s, _) --> Modifies(_, s)
         else {
             for (int lines: allAssignStmtLines) {
                 for (string v: servicer->forwardRetrieveRelation(lines, StmtVarRelationType::MODIFIESSV)) {
@@ -57,18 +62,23 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vec
             getLineNumInteresection(finalResult, allStmtWithRightArgV, allStmtWithLeftArg);
         }
 
-            // String - WildCard (Essentially a modifies statement)
+        // String - WildCard (Essentially a modifies statement)
         else if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::WILDCARD) {
             vector<int> allStmtWithLeftArg = servicer->reverseRetrieveRelation(leftArg.value,
                                                                                StmtVarRelationType::MODIFIESSV);
             getLineNumInteresection(finalResult, allStmtWithLeftArg, allAssignStmtLines);
         }
 
-            // Wildcard- WildCardString/String
-        else {
+        // Wildcard- WildCardString/String
+        else if (leftArg.type == TokenType::WILDCARD && checkWildCardStringOrString(rightArg.type)) {
             set<int> allStmtWithRightArg = servicer->reverseRetrievePatternMatch(rightArg.value,
                                                                                  rightArgWildCardString);
             finalResult = vector(allStmtWithRightArg.begin(), allStmtWithRightArg.end());
+        }
+
+        // Wildcard - wildcard
+        else {
+            finalResult = allAssignStmtLines;
         }
 
         for (int line: finalResult) {

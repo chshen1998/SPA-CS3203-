@@ -1,0 +1,15 @@
+1 - Uses and Modifies
+variable v; stmt s1, s2;
+Select v such that Uses(s1, v) and Modifies(s2, v)
+flag, x
+5000
+2 - Next* and Modifies
+stmt s;
+Select s such that Next*(11,s) and Modifies(s, "flag")
+11, 12, 14
+5000
+3 - Parent and Next
+stmt s1, s2;
+Select s1 such that Next(s1, s2) and Parent(s2, s1)
+15
+5000

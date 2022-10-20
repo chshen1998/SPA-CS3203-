@@ -3,6 +3,7 @@
 #define SPA_STMT_VAR_RELATION_TYPE_H
 enum StmtVarRelationType {
 	USESSV,
-	MODIFIESSV
+	MODIFIESSV,
+	USESSVPREDICATE
 };
 #endif

@@ -1,0 +1,26 @@
+procedure main {
+	call anotherOne;
+	call somethingHmm;
+	call doSomething;
+}
+
+procedure doSomething {
+	call somethingHmm;
+}
+
+procedure somethingHmm {
+	call nestedBlocks;
+}
+
+procedure nestedBlocks {
+	call anotherOne;
+	call doNothing;
+}
+
+procedure anotherOne {
+	call doNothing;
+}
+
+procedure doNothing {
+	print x;
+}

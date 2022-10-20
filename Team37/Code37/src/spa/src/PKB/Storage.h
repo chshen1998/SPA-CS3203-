@@ -60,6 +60,8 @@ private:
     RelationStorage<int, string> UsesSV = RelationStorage<int, string>();
     RelationStorage<int, string> ModifiesSV = RelationStorage<int, string>();
 
+    RelationStorage<int, string> UsesSVPredicate = RelationStorage<int, string>();
+
     RelationStorage<string, string> UsesPV = RelationStorage<string, string>();
     RelationStorage<string, string> ModifiesPV = RelationStorage<string, string>();
 
@@ -154,9 +156,9 @@ public:
 
     vector<int> backwardComputeRelation(int, StmtStmtRelationType);
 
-    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>);
+    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
 
-    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>);
+    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
 
     // Check statement type
     StatementType checkStatementType(int);

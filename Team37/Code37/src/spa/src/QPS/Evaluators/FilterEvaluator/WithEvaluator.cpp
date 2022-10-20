@@ -6,13 +6,9 @@ using namespace std;
 #include "WithEvaluator.h"
 #include "PKB/Types/StatementType.h"
 #include "PKB/Types/StmtVarRelationType.h"
-#include "EvaluatorUtils.h"
+#include "QPS/Evaluators/EvaluatorUtils.h"
 
 using namespace EvaluatorUtils;
-
-set<TokenType> doubleAttrTokens = {
-    TokenType::CALL, TokenType::PRINT, TokenType::READ
-};
 
 vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vector<vector<string>> intermediate)
 {
@@ -20,14 +16,28 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     PqlToken rightArg = clause.right;
     vector<vector<string>> finalResult;
 
+    // If initial table is empty
+    // Eg. Query only consists of one WITH clause
+    if (intermediate.empty()) {
+        fillInitialTable(clause, intermediate);
+    }
+
+    // Check if current table does not consists of with arguments
+    if (find(intermediate[0].begin(), intermediate[0].end(), leftArg.value) == intermediate[0].end()) {
+        vector<vector<string>> temp;
+        fillInitialTable(clause, temp);
+
+        intermediate = JoinTable(intermediate, temp);
+    }
+
     // Add procName for call, print, and read
-    bool isLeftDoubleAttr = WithEvaluator::addProcName(intermediate, leftArg);
+    bool isLeftDoubleAttr = WithEvaluator::addAttrName(intermediate, leftArg);
     string leftValue = isLeftDoubleAttr ? updatedColumnName(leftArg) : leftArg.value;
     finalResult.push_back(intermediate[0]);
 
     // Two Synonyms - s.procName() = v.procName()
     if (clause.rightAttr.type != TokenType::NONE) {        
-        bool isRightDoubleAttr = WithEvaluator::addProcName(intermediate, rightArg);
+        bool isRightDoubleAttr = WithEvaluator::addAttrName(intermediate, rightArg);
 
         // Insert Column headers
         int leftArgIndex = -1;
@@ -80,43 +90,22 @@ bool WithEvaluator::evaluateBooleanClause(const Clause& clause) {
     return clause.left == clause.right;
 }
 
-bool WithEvaluator::addProcName(vector<vector<string>>& intermediate, const PqlToken& token) {
-    string updated = updatedColumnName(token);
-    if (doubleAttrTokens.find(declarations[token.value]) != doubleAttrTokens.end() &&
-        find(intermediate[0].begin(), intermediate[0].end(), token.value) != intermediate[0].end()) {
-        int index = -1;
 
-        // Get the column index of the synonym
-        for (int i = 0; i < intermediate[0].size(); i++) {
-            if (intermediate[0][i] == token.value) {
-                index = i;
+void WithEvaluator::fillInitialTable(const Clause& clause, vector<vector<string>>& intermediate) {
+    intermediate.push_back(vector<string> { clause.left.value });
+
+    if (clause.right.type == TokenType::SYNONYM) {
+        intermediate[0].push_back(clause.right.value);
+
+        for (string left : selectAll(declarations[clause.left.value])) {
+            for (string right : selectAll(declarations[clause.right.value])) {
+                intermediate.push_back(vector<string> { left, right });
             }
         }
-
-        intermediate[0].push_back(updated);
-
-        if (token.type == TokenType::CALL) {
-            for (int i = 1; i < intermediate.size(); i++) {
-                // insert to get procedure name for each call statement
-            }
-        }
-        else {
-            StmtVarRelationType sv = declarations[token.value] == TokenType::READ ? StmtVarRelationType::MODIFIESSV : StmtVarRelationType::USESSV;
-
-            for (int i = 1; i < intermediate.size(); i++) {
-                // We should only get one variable for Call, Print, Read
-                intermediate[i].push_back(servicer->forwardRetrieveRelation(stoi(intermediate[i][index]), sv)[0]);
-            }
-        }
-
-        return true;
     }
-
-    return false;
+    else {
+        for (string left : selectAll(declarations[clause.left.value])) {
+            intermediate.push_back(vector<string> { left });
+        }
+    }
 }
-
-inline string WithEvaluator::updatedColumnName(const PqlToken& token) {
-    return token.type == TokenType::CALL ? token.value + ".ProcName" : token.value + ".VarName";
-}
-
-

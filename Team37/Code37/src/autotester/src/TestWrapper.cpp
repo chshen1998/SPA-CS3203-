@@ -34,10 +34,12 @@ void TestWrapper::parse(string filename) {
         knowledgeBase->buildFromAst(AST);
         knowledgeBase->buildFromCFG(allCFGMaps);
         queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
+
     } catch (InvalidSyntaxException e) {
         printf("%s\n", e.what());
         exit(0);
     }
+    
 }
 
 // method to evaluating a query

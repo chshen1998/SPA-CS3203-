@@ -89,7 +89,11 @@ void ExtractUsesASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStm
         }
         // if procedure called has not been traversed yet, we add them to a queue
     } else {
-        string parentProcedureName = dynamic_pointer_cast<Procedure>(callStmt->getParent())->getProcedureName();
+        shared_ptr<TNode> node = callStmt;
+        while (dynamic_pointer_cast<Procedure>(node) == nullptr) {
+            node = node->getParent();
+        }
+        string parentProcedureName = dynamic_pointer_cast<Procedure>(node)->getProcedureName();
         tuple<int, string, string> lineNumProcedureTuple(lineNum, parentProcedureName, calledProcedureName);
         this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
     }
@@ -239,6 +243,22 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
         if (dynamic_pointer_cast<WhileStatement>(node) != nullptr) {
             shared_ptr<WhileStatement> whileStmt = dynamic_pointer_cast<WhileStatement>(node);
             this->storage->storeRelation(whileStmt->getLineNum(), variable, USESSV);
+        }
+
+        if (dynamic_pointer_cast<ConditionalExpression>(node) != nullptr) {
+            shared_ptr<ConditionalExpression> condExpr = dynamic_pointer_cast<ConditionalExpression>(node);
+
+            // Store Uses SV Predicate for while stmt
+            if (dynamic_pointer_cast<WhileStatement>(node->getParent()) != nullptr) {
+                shared_ptr<WhileStatement> whileParent = dynamic_pointer_cast<WhileStatement>(node->getParent());
+                this->storage->storeRelation(whileParent->getLineNum(), variable, USESSVPREDICATE);
+            }
+            // Store Uses SV Predicate for if stmt
+            if (dynamic_pointer_cast<IfStatement>(node->getParent()) != nullptr) {
+                shared_ptr<IfStatement> ifParent = dynamic_pointer_cast<IfStatement>(node->getParent());
+                this->storage->storeRelation(ifParent->getLineNum(), variable, USESSVPREDICATE);
+            }
+
         }
 
         if (dynamic_pointer_cast<Procedure>(node) != nullptr) {

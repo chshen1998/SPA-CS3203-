@@ -147,6 +147,7 @@ vector<string> QueryServicer::forwardRetrieveRelation(int stmt, StmtVarRelationT
     return storage->forwardRetrieveRelation(stmt, type);
 }
 
+
 /*
 Retrieve Reverse Relation Stored. For Relation(stmt, var)
 @param var

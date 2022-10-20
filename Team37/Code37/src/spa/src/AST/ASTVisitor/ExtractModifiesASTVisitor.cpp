@@ -90,7 +90,11 @@ void ExtractModifiesASTVisitor::visitCallStatement(shared_ptr<CallStatement> cal
         }
         // if procedure called has not been traversed yet, we add them to a queue
     } else {
-        string parentProcedureName = dynamic_pointer_cast<Procedure>(callStmt->getParent())->getProcedureName();
+        shared_ptr<TNode> node = callStmt;
+        while (dynamic_pointer_cast<Procedure>(node) == nullptr) {
+            node = node->getParent();
+        }
+        string parentProcedureName = dynamic_pointer_cast<Procedure>(node)->getProcedureName();
         tuple<int, string, string> lineNumProcedureTuple(lineNum, parentProcedureName, calledProcedureName);
         this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
     }
@@ -167,8 +171,6 @@ void ExtractModifiesASTVisitor::visitConstantExpression(shared_ptr<ConstantExpre
  * @param operatedExpr
  */
 void ExtractModifiesASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpression> operatedExpr) {
-    operatedExpr->getExpression1()->accept(shared_from_this());
-    operatedExpr->getExpression2()->accept(shared_from_this());
 
 }
 
@@ -188,8 +190,6 @@ void ExtractModifiesASTVisitor::visitRelationalExpression(shared_ptr<RelationalE
  * @param notCondition
  */
 void ExtractModifiesASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCondition) {
-    // iterate into conditional expressions
-    notCondition->getConditionalExpression()->accept(shared_from_this());
 }
 
 /**
@@ -197,9 +197,6 @@ void ExtractModifiesASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCo
  * @param andCondition
  */
 void ExtractModifiesASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCondition) {
-    // iterate into conditional expressions
-    andCondition->getConditionalExpression1()->accept(shared_from_this());
-    andCondition->getConditionalExpression2()->accept(shared_from_this());
 
 }
 
@@ -208,9 +205,6 @@ void ExtractModifiesASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCo
  * @param orCondition
  */
 void ExtractModifiesASTVisitor::visitOrCondition(shared_ptr<OrCondition> orCondition) {
-    // iterate into conditional expressions
-    orCondition->getConditionalExpression1()->accept(shared_from_this());
-    orCondition->getConditionalExpression2()->accept(shared_from_this());
 }
 
 /**

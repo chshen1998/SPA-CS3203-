@@ -26,5 +26,5 @@ Select s such that Uses(s, v)
 6 - uses statement-variable
 stmt s; variable v;
 Select v such that Uses(s, v)
-flag, x
+flag, x, i
 5000

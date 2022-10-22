@@ -1338,49 +1338,10 @@ TEST_CASE("parseSourceCode - Positive Case - HARD 2") {
     REQUIRE(AST->getNumOfStatements() == 1001);
 }
 
-TEST_CASE("parseSourceCode - Negative Case") {
+TEST_CASE("parseSourceCode - Negative Case - Extra Semicolons") {
     string rawSourceCode;
 
-    // Extra semicolon at the end
-    rawSourceCode = "procedure add {\n"
-                    "  read arg1;\n"
-                    "  read arg2;\n"
-                    "  x = arg1;\n"
-                    "  y = arg2;\n"
-                    "  result = x + y;\n"
-                    "  print result;\n"
-                    "}\n"
-                    "\n"
-                    "procedure multiply {\n"
-                    "  read arg1;\n"
-                    "  read arg2;\n"
-                    "  x = arg1;\n"
-                    "  y = arg2;\n"
-                    "  result = x * y;\n"
-                    "  print result;\n"
-                    "}\n"
-                    "\n"
-                    "procedure modulo {\n"
-                    "  read arg1;\n"
-                    "  read arg2;\n"
-                    "  x = arg1;\n"
-                    "  y = arg2;\n"
-                    "  result = x % y;\n"
-                    "  print result;\n"
-                    "}\n"
-                    "\n"
-                    "procedure factorial {\n"
-                    "  read arg1;\n"
-                    "  x = arg1;\n"
-                    "  result = 1;\n"
-                    "  while (x > 1) {\n"
-                    "    result = result * x;\n"
-                    "    x = x - 1;\n"
-                    "  }\n"
-                    "  print result;\n"
-                    "}\n"
-                    "\n"
-                    "procedure affecting {\n"
+    rawSourceCode = "procedure affecting {\n"
                     "  a = a + b + c;\n"
                     "  b = f + g;\n"
                     "  c = a + 5;\n"
@@ -1407,6 +1368,78 @@ TEST_CASE("parseSourceCode - Negative Case") {
                     "  while (x > 1) {\n"
                     "    result = result * x;\n"
                     "    x = x - 1;;\n"
+                    "  }\n"
+                    "  print result;\n"
+                    "}";
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+
+    rawSourceCode = ";procedure factorial {\n"
+                    "  read arg1;\n"
+                    "  x = arg1;\n"
+                    "  result = 1;\n"
+                    "  while (x > 1) {\n"
+                    "    result = result * x;\n"
+                    "    x = x - 1;\n"
+                    "  }\n"
+                    "  print result;\n"
+                    "}";
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+}
+
+TEST_CASE("parseSourceCode - Negative Case - Extra Brackets") {
+    string rawSourceCode;
+
+    rawSourceCode = "procedure affecting {\n"
+                    "  a = a + b + c;\n"
+                    "  b = f + g;\n"
+                    "  c = a + 5;\n"
+                    "  d = a + d;\n"
+                    "  e = c - 9;\n"
+                    "  f = e + b + c;\n"
+                    "  g = a;\n"
+                    "  h = d + e;\n"
+                    "  while (qwe >= another) {\n"
+                    "    A = A + 123;\n"
+                    "    B = B + 543;\n"
+                    "    B = B - 234;\n"
+                    "    C = A + 2;\n"
+                    "    D = B + A;\n"
+                    "  }\n"
+                    "}}";
+
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+
+    rawSourceCode = "procedure factorial {\n"
+                    "  read arg1;\n"
+                    "  x = arg1;\n"
+                    "  result = 1;\n"
+                    "  while (x > 1) {\n"
+                    "    result = result * x;\n"
+                    "    x = x - 1;\n"
+                    "  }}\n"
+                    "  print result;\n"
+                    "}";
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+
+    rawSourceCode = "procedure factorial {\n"
+                    "  read arg1;\n"
+                    "  x = arg1;\n"
+                    "  result = 1;\n"
+                    "  while (x > 1) {{\n"
+                    "    result = result * x;\n"
+                    "    x = x - 1;\n"
+                    "  }\n"
+                    "  print result;\n"
+                    "}";
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+
+    rawSourceCode = "procedure factorial {{\n"
+                    "  read arg1;\n"
+                    "  x = arg1;\n"
+                    "  result = 1;\n"
+                    "  while (x > 1) {\n"
+                    "    result = result * x;\n"
+                    "    x = x - 1;\n"
                     "  }\n"
                     "  print result;\n"
                     "}";

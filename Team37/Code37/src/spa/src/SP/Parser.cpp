@@ -331,11 +331,12 @@ shared_ptr<Statement> Parser::parseStatement(string statement) {
         statementNode = Parser::parseIfElse(statement);
     } else if (statement.substr(0, 5) == "while") {
         statementNode = Parser::parseWhile(statement);
-    } else { }
+    } else {
+        throw InvalidSyntaxException((char *) "Not a valid statement");
+    }
     return statementNode;
 }
 
-// TODO: check logic
 shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     string ifStmt;
     string ifBlock;

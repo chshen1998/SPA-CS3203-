@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 #include "catch.hpp"
 #include "QPS/Validators/ValidatorUtils.h"
@@ -54,30 +55,33 @@ TEST_CASE("Test declartions")
 		{"a", TokenType::ASSIGN}
 	};
 
-	QueryExtractor sut(basic_tokens);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(basic_tokens, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameMap(ans, results.declarations));
+	REQUIRE(isSameMap(ans, ptr->declarations));
 }
 
 TEST_CASE("Test Select clause")
 {
 	vector<SelectObject> ans = { SelectObject(SelectType::SYNONYM, "v") };
 
-	QueryExtractor sut(basic_tokens);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(basic_tokens, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(results.selectObjects == ans);
+	REQUIRE(ptr->selectObjects == ans);
 }
 
 TEST_CASE("Test Select only no declarations")
 {
 	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };
 
-	QueryExtractor sut(valid_select_only);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_select_only, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(results.selectObjects == ans);
+	REQUIRE(ptr->selectObjects == ans);
 }
 
 TEST_CASE("Test Calls wildcards")
@@ -88,11 +92,12 @@ TEST_CASE("Test Calls wildcards")
 								  PqlToken(TokenType::WILDCARD, "_"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_calls_wildcards);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_calls_wildcards, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(results.selectObjects == ans);
-	REQUIRE(results.clauses[0] == ans2);
+	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(ptr->clauses[0] == ans2);
 }
 
 
@@ -100,30 +105,33 @@ TEST_CASE("Test Select boolean")
 {
 	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };
 
-	QueryExtractor sut(valid_select_boolean);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_select_boolean, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(results.selectObjects == ans);
+	REQUIRE(ptr->selectObjects == ans);
 }
 
 TEST_CASE("Test Select declared boolean")
 {
 	vector<SelectObject> ans = { SelectObject(SelectType::SYNONYM, "BOOLEAN")};
 
-	QueryExtractor sut(valid_select_declared_boolean);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_select_declared_boolean, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(results.selectObjects == ans);
+	REQUIRE(ptr->selectObjects == ans);
 }
 
 TEST_CASE("Test Select attrName")
 {
 	vector<SelectObject> ans = { SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#"))};
 
-	QueryExtractor sut(valid_select_attrname);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_select_attrname, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(results.selectObjects == ans);
+	REQUIRE(ptr->selectObjects == ans);
 }
 
 TEST_CASE("Test Select tuple")
@@ -133,10 +141,11 @@ TEST_CASE("Test Select tuple")
 		SelectObject(SelectType::SYNONYM, "v")
 	};
 
-	QueryExtractor sut(valid_select_tuple);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_select_tuple, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(results.selectObjects == ans);
+	REQUIRE(ptr->selectObjects == ans);
 }
 
 
@@ -147,10 +156,11 @@ TEST_CASE("Test Pattern clause assign")
 								  PqlToken(TokenType::WILDCARD, "_"),
 								  TokenType::PATTERN)};
 
-	QueryExtractor sut(valid_pattern_assign);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_pattern_assign, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause while")
@@ -160,10 +170,11 @@ TEST_CASE("Test Pattern clause while")
 								  PqlToken(TokenType::WILDCARD, "_"),
 								  TokenType::PATTERN) };
 
-	QueryExtractor sut(valid_pattern_while);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_pattern_while, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause if")
@@ -173,10 +184,11 @@ TEST_CASE("Test Pattern clause if")
 								  PqlToken(TokenType::WILDCARD, "_"),
 								  TokenType::PATTERN) };
 
-	QueryExtractor sut(valid_pattern_if);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_pattern_if, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause multi")
@@ -192,10 +204,11 @@ TEST_CASE("Test Pattern clause multi")
 								  TokenType::PATTERN)
 	};
 
-	QueryExtractor sut(valid_pattern_multi);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_pattern_multi, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 
@@ -206,10 +219,11 @@ TEST_CASE("Test Pattern clause with String")
 								  PqlToken(TokenType::STRING, "x+y"),
 								  TokenType::PATTERN) };
 
-	QueryExtractor sut(valid_pattern_with_string);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_pattern_with_string, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause with String and whitespace")
@@ -219,10 +233,11 @@ TEST_CASE("Test Pattern clause with String and whitespace")
 								  PqlToken(TokenType::STRING, "x+y"),
 								  TokenType::PATTERN) };
 
-	QueryExtractor sut(valid_pattern_with_string_and_whitespace);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_pattern_with_string_and_whitespace, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Pattern clause with Wildcard String")
@@ -232,12 +247,12 @@ TEST_CASE("Test Pattern clause with Wildcard String")
 								  PqlToken(TokenType::WILDCARD_STRING, "x+y"),
 								  TokenType::PATTERN) };
 
-	QueryExtractor sut(valid_pattern_with_wildcard_string);
-	PqlQuery results = sut.extractSemantics();
-	//REQUIRE("x+y" == results.clauses[0].right.value);
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
-}
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_pattern_with_wildcard_string, ptr);
+	sut.extractSemantics();
 
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
+}
 
 TEST_CASE("Test With clause")
 {
@@ -249,10 +264,11 @@ TEST_CASE("Test With clause")
 								  PqlToken(TokenType::NONE, "")
 		)};
 
-	QueryExtractor sut(valid_with);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_with, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Mulitple With clause")
@@ -272,10 +288,11 @@ TEST_CASE("Test Mulitple With clause")
 								  PqlToken(TokenType::PROCNAME, "procName")
 		) };
 
-	QueryExtractor sut(valid_multi_with);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_multi_with, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Uses clause")
@@ -285,10 +302,11 @@ TEST_CASE("Test Uses clause")
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_uses);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_uses, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Modifies clause")
@@ -298,10 +316,11 @@ TEST_CASE("Test Modifies clause")
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_modifies);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_modifies, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Follows clause")
@@ -311,10 +330,11 @@ TEST_CASE("Test Follows clause")
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_follows);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_follows, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Follows* clause")
@@ -324,10 +344,11 @@ TEST_CASE("Test Follows* clause")
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_follows_a);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_follows_a, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Parent clause")
@@ -337,10 +358,11 @@ TEST_CASE("Test Parent clause")
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_parent);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_parent, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Parent* clause")
@@ -350,10 +372,11 @@ TEST_CASE("Test Parent* clause")
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_parent_a);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_parent_a, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Calls clause")
@@ -363,10 +386,11 @@ TEST_CASE("Test Calls clause")
 								  PqlToken(TokenType::WILDCARD, "_"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_calls);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_calls, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Calls* clause")
@@ -376,10 +400,11 @@ TEST_CASE("Test Calls* clause")
 								  PqlToken(TokenType::WILDCARD, "_"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_calls_a);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_calls_a, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Pattern then Such That clause")
@@ -393,10 +418,11 @@ TEST_CASE("Test Pattern then Such That clause")
 									PqlToken(TokenType::SYNONYM, "v"),
 								  TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_pattern_then_such_that);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_pattern_then_such_that, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Such That then Pattern clause")
@@ -410,10 +436,11 @@ TEST_CASE("Test Such That then Pattern clause")
 									PqlToken(TokenType::WILDCARD, "_"),
 								  TokenType::PATTERN)};
 
-	QueryExtractor sut(valid_such_that_then_pattern);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_such_that_then_pattern, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 
@@ -436,10 +463,11 @@ TEST_CASE("Test Mulitple Pattern and Such That clauses")
 								PqlToken(TokenType::SYNONYM, "v"),
 								TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_multi_pattern_then_multi_such_that);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_multi_pattern_then_multi_such_that, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }
 
 TEST_CASE("Test Mulitple Pattern, With and Such That clauses")
@@ -474,8 +502,9 @@ TEST_CASE("Test Mulitple Pattern, With and Such That clauses")
 								PqlToken(TokenType::SYNONYM, "v"),
 								TokenType::SUCH_THAT) };
 
-	QueryExtractor sut(valid_multi_pattern_with_such_that);
-	PqlQuery results = sut.extractSemantics();
+	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
+	QueryExtractor sut(valid_multi_pattern_with_such_that, ptr);
+	sut.extractSemantics();
 
-	REQUIRE(isSameClauses(ans, results.clauses[0]));
+	REQUIRE(isSameClauses(ans, ptr->clauses[0]));
 }

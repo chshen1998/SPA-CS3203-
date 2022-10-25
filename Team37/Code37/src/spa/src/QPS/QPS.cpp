@@ -2,6 +2,7 @@ using namespace std;
 
 #include <stdio.h>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 #include <set>
@@ -49,13 +50,15 @@ void QPS::evaluate(string query, list<string>& results) {
             return;
         }
 
-        QueryExtractor extractor = QueryExtractor(tokens);
-        PqlQuery pq = extractor.extractSemantics();
+        shared_ptr<PqlQuery> pq_pointer = make_shared<PqlQuery>();
 
-        QueryOptimizer optimizer = QueryOptimizer(pq);
+        QueryExtractor extractor = QueryExtractor(tokens, pq_pointer);
+        extractor.extractSemantics();
+
+        QueryOptimizer optimizer = QueryOptimizer(pq_pointer);
         optimizer.optimize();
 
-        QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+        QueryEvaluator evaluator = QueryEvaluator(*pq_pointer.get(), servicer, results);
         evaluator.evaluate();
     }
     catch (SyntaxError pe) {

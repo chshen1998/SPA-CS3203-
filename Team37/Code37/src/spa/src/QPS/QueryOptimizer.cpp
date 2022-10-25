@@ -5,6 +5,7 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <set>
+#include <memory>
 
 #include "QueryOptimizer.h"
 #include "./Structures/PqlError.h"
@@ -14,22 +15,28 @@ using namespace std;
 #include "./Types/TokenType.h"
 #include "Validators/ValidatorUtils.h"
 
-QueryOptimizer::QueryOptimizer(PqlQuery& queryObj) 
+set<TokenType> designAbstractionsA = {
+    TokenType::AFFECTS,
+    TokenType::AFFECTS_A,
+    TokenType::NEXT_A,
+    TokenType::CALLS_A,
+    TokenType::FOLLOWS_A,
+    TokenType::PARENT_A
+};
+
+QueryOptimizer::QueryOptimizer(shared_ptr<PqlQuery> pq_pointer)
 {
-	pq = queryObj;
+	pq = pq_pointer;
     synonymSets = {};
-    clauses = pq.clauses[0];
 }
 
 void QueryOptimizer::optimize() 
 {
-    pq.clauses.clear();
-
     groupClauses();
 
     sortGroupOrder();
 
-    sortGroupClauses();
+    //sortGroupClauses();
 }
 
 /*  Divide the clauses into multiple groups
@@ -38,38 +45,48 @@ void QueryOptimizer::optimize()
 */
 void QueryOptimizer::groupClauses() 
 {
+    synonymSets.push_back({});
+
     // Divide clauses into separate groups
-    for (Clause clause : clauses) {
+    int i = 0;
+    int size = pq->clauses[0].size();
+    while (i < size) {
         // 1. Boolean clauses (Clauses without synonyms)
-        if (clause.checkIfBooleanClause()) {
-            pq.booleanClauses.push_back(clause);
+        if (pq->clauses[0][i].checkIfBooleanClause()) {
+            pq->booleanClauses.push_back(pq->clauses[0][i]);
+            pq->clauses[0].erase(pq->clauses[0].begin() + i);
+            size--;
             continue;
         }
-
+        
         // 2. Clauses with connected synonyms should be in the same group
-        int index = 0;
+        int setNum = 0;
         for (set<string> synonymSet : synonymSets) {
-            if (clause.left.type == TokenType::SYNONYM && synonymSet.find(clause.left.value) != synonymSet.end()) {
+            if (pq->clauses[0][i].left.type == TokenType::SYNONYM && synonymSet.find(pq->clauses[0][i].left.value) != synonymSet.end() ||
+                pq->clauses[0][i].right.type == TokenType::SYNONYM && synonymSet.find(pq->clauses[0][i].right.value) != synonymSet.end()) {
                 break;
             }
-            if (clause.right.type == TokenType::SYNONYM && synonymSet.find(clause.right.value) != synonymSet.end()) {
-                break;
-            }
-            index++;
+            setNum++;
         }
 
-        if (index == pq.clauses.size()) {
-            pq.clauses.push_back(vector<Clause>{});
+        if (setNum == pq->clauses.size()) {
+            pq->clauses.push_back(vector<Clause>{});
             synonymSets.push_back(set<string>{});
-
         }
 
-        pq.clauses[index].push_back(clause);
-        if (clause.left.type == TokenType::SYNONYM) {
-            synonymSets[index].insert(clause.left.value);
+        if (pq->clauses[0][i].left.type == TokenType::SYNONYM) {
+            synonymSets[setNum].insert(pq->clauses[0][i].left.value);
         }
-        if (clause.right.type == TokenType::SYNONYM) {
-            synonymSets[index].insert(clause.right.value);
+
+        if (pq->clauses[0][i].right.type == TokenType::SYNONYM) {
+            synonymSets[setNum].insert(pq->clauses[0][i].right.value);
+        }
+
+        if (setNum == 0) {
+            i++;
+        } else {
+            pq->clauses[setNum].push_back(pq->clauses[0][i]);
+            size--;
         }
     }
 }
@@ -82,14 +99,14 @@ void QueryOptimizer::groupClauses()
 void QueryOptimizer::sortGroupOrder()
 {
     vector<string> selectSynonyms;
-    for (SelectObject obj : pq.selectObjects) {
+    for (SelectObject obj : pq->selectObjects) {
         if (obj.type != SelectType::BOOLEAN) {
             selectSynonyms.push_back(obj.synonym);
         }
     }
 
     int left = 0;
-    int right = pq.clauses.size();
+    int right = pq->clauses.size()-1;
     while (left < right) {
         bool containsSelect = false;
         for (string synonym : selectSynonyms) {
@@ -101,9 +118,7 @@ void QueryOptimizer::sortGroupOrder()
         }
         
         if (containsSelect) {
-            vector<Clause> temp = pq.clauses[left];
-            pq.clauses[left] = pq.clauses[right];
-            pq.clauses[right] = temp;
+            swap(pq->clauses[left], pq->clauses[right]);
             right--;
         }
         else {
@@ -120,7 +135,17 @@ void QueryOptimizer::sortGroupOrder()
 *   4. Push Affects clauses and *-clauses to the last positions in a group
 */
 void QueryOptimizer::sortGroupClauses() {
-    for (vector<Clause> group : pq.clauses) {
-
+    for (vector<Clause> group : pq->clauses) {
+        int left = 0;
+        int right = group.size() - 1;
+        while (left < right) {
+            if (designAbstractionsA.find(group[left].clauseType.type) != designAbstractionsA.end()) {
+                swap(group[left], group[right]);
+                right--;
+            }
+            else {
+                left++;
+            }
+        }
     }
 }

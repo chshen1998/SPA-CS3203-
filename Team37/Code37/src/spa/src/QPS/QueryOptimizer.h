@@ -14,18 +14,18 @@
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 
+extern set<TokenType> designAbstractionsA;
+
 class QueryOptimizer {
 public:
-    PqlQuery pq;
+    shared_ptr<PqlQuery> pq;
     vector<set<string>> synonymSets;
 
-    QueryOptimizer(PqlQuery& pq);
+    QueryOptimizer(shared_ptr<PqlQuery> pq);
 
     void optimize();
 
 private:
-    vector<Clause> clauses;
-
     void groupClauses();
 
     void sortGroupOrder();

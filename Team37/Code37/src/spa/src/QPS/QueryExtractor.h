@@ -21,11 +21,11 @@ public:
     int size;
     int next;
     bool booleanIsSynonym;
-    PqlQuery pq;
+    shared_ptr<PqlQuery> pq;
 
-    QueryExtractor(vector<PqlToken> tokenVector);
+    QueryExtractor(vector<PqlToken> tokenVector, shared_ptr<PqlQuery> pq);
 
-    PqlQuery extractSemantics();
+    void extractSemantics();
 
 private:
     void extractDeclarations();

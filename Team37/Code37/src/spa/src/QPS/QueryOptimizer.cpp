@@ -28,11 +28,13 @@ void QueryOptimizer::optimize()
     groupClauses();
 
     sortGroupOrder();
+
+    sortGroupClauses();
 }
 
-/* Divide the clauses into multiple groups
-*  1. Clauses without synonyms (Boolean clauses) should be 1 group
-*  2. Clauses with common synonyms should be in same group
+/*  Divide the clauses into multiple groups
+*   1. Clauses without synonyms (Boolean clauses) should be 1 group
+*   2. Clauses with common synonyms should be in same group
 */
 void QueryOptimizer::groupClauses() 
 {
@@ -72,6 +74,11 @@ void QueryOptimizer::groupClauses()
     }
 }
 
+
+/*  Sort groups for evaluation
+*   1. Start with clauses without synonyms (Boolean clauses)
+*   2. Prioritize groups that do not invlove synonyms in Select to be evaluated first
+*/
 void QueryOptimizer::sortGroupOrder()
 {
     vector<string> selectSynonyms;
@@ -83,7 +90,37 @@ void QueryOptimizer::sortGroupOrder()
 
     int left = 0;
     int right = pq.clauses.size();
-    //while (left < right) {
-    //
-    //}
+    while (left < right) {
+        bool containsSelect = false;
+        for (string synonym : selectSynonyms) {
+            // If clause group involves select synonyms then move it to the back
+            if (synonymSets[left].find(synonym) != synonymSets[left].end()) {
+                containsSelect = true;
+                break;
+            }
+        }
+        
+        if (containsSelect) {
+            vector<Clause> temp = pq.clauses[left];
+            pq.clauses[left] = pq.clauses[right];
+            pq.clauses[right] = temp;
+            right--;
+        }
+        else {
+            left++;
+        }
+    }
+}
+
+
+/*  Sort clauses inside each group 
+*   1. Prioritize clauses with one constant and one synonym
+*   2. Prioritize clauses with less number of results: Follows, Modifies, etc.
+*   3. Prioritize with-clauses – more restrictive than such that clauses
+*   4. Push Affects clauses and *-clauses to the last positions in a group
+*/
+void QueryOptimizer::sortGroupClauses() {
+    for (vector<Clause> group : pq.clauses) {
+
+    }
 }

@@ -29,6 +29,8 @@ private:
     void groupClauses();
 
     void sortGroupOrder();
+
+    void sortGroupClauses();
 };
 
 

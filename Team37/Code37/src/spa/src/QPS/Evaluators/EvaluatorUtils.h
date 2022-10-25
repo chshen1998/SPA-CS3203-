@@ -19,11 +19,9 @@ namespace EvaluatorUtils {
             back_inserter(intersection));
     }
 
-    vector<vector<string>> JoinTable(const vector<vector<string>>&,
-        const vector<vector<string>>&);
+    vector<vector<string>> JoinTable(const vector<vector<string>>&, const vector<vector<string>>&);
 
-    unordered_map<int, int> findCommonColumnIndex(const vector<vector<string>>&,
-        const vector<vector<string>>&);
+    unordered_map<int, int> findCommonColumnIndex(const vector<vector<string>>&, const vector<vector<string>>&);
     
     vector<vector<string>> JoinToIntermediateTable(const vector<vector<string>>&, const vector<vector<string>>&, unordered_map<int, int>&);
 
@@ -32,9 +30,9 @@ namespace EvaluatorUtils {
     }
 
     inline void printTable(const vector<vector<string>>& table) {
-        for (vector<string> v : table) {
+        for (auto const& v : table) {
             string result = "";
-            for (string s : v) {
+            for (auto const& s : v) {
                 result += s;
                 result += "\t\t";
             }

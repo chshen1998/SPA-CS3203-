@@ -53,3 +53,18 @@ read r; variable v;
 Select r such that Uses(r,v)
 SemanticError
 5000
+12 - Calls statement
+stmt s1, s2;
+Select s1 such that Calls(s1, s2)
+SemanticError
+5000
+13 - Calls read
+procedure p; read r;
+Select p such that Calls(p, r)
+SemanticError
+5000
+14 - Calls if
+procedure p; if ifs;
+Select p such that Calls(p, ifs)
+SemanticError
+5000

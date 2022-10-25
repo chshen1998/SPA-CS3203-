@@ -7,6 +7,6 @@ using namespace std;
 
 
 unordered_map<ErrorType, string> errorTypeToStringMap = {
-    {ErrorType::SEMANTIC_ERROR, "Semantic Error"},
-    {ErrorType::SYNTAX_ERROR, "Syntax Error"}
+    {ErrorType::SEMANTIC_ERROR, "SemanticError"},
+    {ErrorType::SYNTAX_ERROR, "SyntaxError"}
 };

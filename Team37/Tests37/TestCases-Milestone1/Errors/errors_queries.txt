@@ -1,45 +1,55 @@
 1 - No semicolon after declarations
 variable v
 Select v
-Syntax Error 
+SyntaxError 
 5000
 2 - Variable not declared
 
 Select v
-Semantic Error 
+SemanticError 
 5000
 3 - Invalid trailing character
 variable v;
 Select v;
-Syntax Error 
+SyntaxError 
 5000
 4 - Mispelt Select 
 variable v;
 select v
-Syntax Error
+SyntaxError
 5000
 5 - Missing such that 
 stmt s;
 select s Uses(s, "x")
-Syntax Error 
+SyntaxError 
 5000
 6 - Invalid pattern assign 
 stmt s;
 Select s pattern s(_, _)
-Semantic Error 
+SemanticError 
 5000
 7 - Invalid uses parameters 
 variable v;
 Select v such that Uses(_, v)
-Semantic Error 
+SemanticError 
 5000
 8 - Missing Select
 variable v; assign a;
 pattern a (v, "x")
-Syntax Error
+SyntaxError
 5000
 9 - Invalid parameter "+x"
 variable v; assign a;
 Select v pattern a (v, "+x")
-Semantic Error
+SyntaxError
+5000
+10 - Modifies print
+print p; variable v;
+Select p such that Modifies(p,v)
+SemanticError
+5000
+11 - Uses read
+read r; variable v;
+Select r such that Uses(r,v)
+SemanticError
 5000

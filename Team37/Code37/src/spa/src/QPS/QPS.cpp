@@ -43,7 +43,7 @@ void QPS::evaluate(string query, list<string>& results) {
 	    tokens = tokenizer.Tokenize();
     } catch (SyntaxError pe)
     {
-        results.push_back("Syntax Error");
+        results.push_back("SyntaxError");
         //cout << pe.message;
         return;
     } 
@@ -70,9 +70,9 @@ void QPS::evaluate(string query, list<string>& results) {
     {
         pq = extractor.extractSemantics();
     }
-    catch (SemanticError pe)
+    catch (SyntaxError pe)
     {
-        results.push_back("Semantic Error");
+        results.push_back("SyntaxError");
         cout << pe.message;
         return;
     }

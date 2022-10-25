@@ -13,6 +13,8 @@
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 
+extern set<char> validOperators;
+
 class QueryExtractor {
 public:
     vector<PqlToken> tokens;

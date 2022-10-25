@@ -24,18 +24,18 @@ vector<vector<string>> EvaluatorUtils::JoinTable(const vector<vector<string>>& v
 }
 
 
-unordered_map<int, int> EvaluatorUtils::findCommonColumnIndex(const  vector<vector<string>>& v1,
+unordered_map<int, int> EvaluatorUtils::findCommonColumnIndex(const vector<vector<string>>& v1,
     const vector<vector<string>>& v2) {
     unordered_map<int, int> commonColumnIndexes;
     unordered_map<string, int> v1Columns;
 
     for (int i = 0; i < v1[0].size(); i++) {
-        v1Columns.insert(pair(v1[0][i], i));
+        v1Columns.insert({ v1[0][i], i });
     }
 
     for (int j = 0; j < v2[0].size(); j++) {
         if (v1Columns.find(v2[0][j]) != v1Columns.end()) {
-            commonColumnIndexes.insert(pair(v1Columns[v2[0][j]], j));
+            commonColumnIndexes.insert({ v1Columns[v2[0][j]], j });
         }
     }
 
@@ -51,7 +51,7 @@ vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vect
 
     columns.reserve(v1[0].size() + v2[0].size() - columnIndexes.size());
 
-    for (string s : v1[0]) {
+    for (auto const& s : v1[0]) {
         columns.push_back(s);
         commonColumn.insert(s);
     }
@@ -88,7 +88,7 @@ vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vect
                 vector<string> temp;
                 temp.reserve(result[0].size());
 
-                for (string s1 : v1[i]) {
+                for (auto const& s1 : v1[i]) {
                     temp.push_back(s1);
                 }
 

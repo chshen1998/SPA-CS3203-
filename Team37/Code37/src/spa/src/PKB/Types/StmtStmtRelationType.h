@@ -7,6 +7,8 @@ enum StmtStmtRelationType {
     PARENT,
     PARENTS,
     NEXT,
-    NEXTS
+    NEXTS,
+    AFFECTS,
+    AFFECTSS
 };
 #endif

@@ -32,9 +32,6 @@ shared_ptr<TNode> CFGNode::getTNode() {
     return tNode;
 }
 
-void CFGNode::setAsVisited() {
-    visited = 1;
-}
 
 void CFGNode::setStmtToStore(shared_ptr<CFGNode> stmt) {
     stmtToStore = stmt;

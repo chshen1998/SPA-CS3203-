@@ -3,7 +3,7 @@ procedure main {
     print flag;
     read flag;
     x = test;
-    if (flag == 0) then {
+    if (flag == 5) then {
         flag = 0;
         print flag;
         read flag;

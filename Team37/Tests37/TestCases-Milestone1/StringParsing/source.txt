@@ -3,7 +3,7 @@ procedure main {
     print flag;
     read flag;
     x = test;
-    if (flag == 5) then {
+    if (flag == 0) then {
         flag = 0;
         print flag;
         read flag;
@@ -11,11 +11,10 @@ procedure main {
         flag = x + 1 + 0 + flag;
     }
     i = 100;
-    while(i == 11) {
+    while(i == 0) {
         flag = 0;
         print flag;
         read flag;
         x = x + 2 + 0 + flag;
     }
-    i = 16;
 }

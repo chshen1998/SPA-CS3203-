@@ -1,0 +1,5 @@
+1 - affects 1
+variable v;
+Select v such that Affects(1, 11)
+none
+5000

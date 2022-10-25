@@ -85,6 +85,14 @@ void ExtractGeneralASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> pr
 void ExtractGeneralASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt) {
     // store itself in statements
     this->storage->storeStmt(callStmt);
+
+    shared_ptr<TNode> node = callStmt;
+
+    while (dynamic_pointer_cast<Procedure>(node) == nullptr) {
+        node = node->getParent();
+    }
+    shared_ptr<Procedure> procedure = dynamic_pointer_cast<Procedure>(node);
+    this->storage->callStmtProcMapping.insert({callStmt->getLineNum(), procedure->getProcedureName()});
 }
 
 /**

@@ -1,0 +1,65 @@
+Styling: Good
+Syntax: Good
+Length: Short
+Complexity: Low
+
+
+procedure add {
+  read arg1;
+  read arg2;
+  x = arg1;
+  y = arg2;
+  result = x + y;
+  print result;
+}
+
+procedure multiply {
+  read arg1;
+  read arg2;
+  x = arg1;
+  y = arg2;
+  result = x * y;
+  print result;
+}
+
+procedure modulo {
+  read arg1;
+  read arg2;
+  x = arg1;
+  y = arg2;
+  result = x % y;
+  print result;
+}
+
+procedure factorial {
+  read arg1;
+  x = arg1;
+  result = 1;
+  while (x > 1) {
+    result = result * x;
+    x = x - 1;
+  }
+  print result;
+}
+
+procedure affecting {
+  a = a + b + c;
+  b = f + g;
+  c = a + 5;
+  d = a + d;
+  e = c - 9;
+  f = e + b + c;
+  g = a;
+  h = d + e;
+  while (qwe >= another) {
+    A = A + 123;
+    B = B + 543;
+    B = B - 234;
+    C = A + 2;
+    D = B + A;
+  }
+}
+
+*********************************************************************************************************
+******************************************** WITH LINE NUMBERS ***********************************************
+*********************************************************************************************************

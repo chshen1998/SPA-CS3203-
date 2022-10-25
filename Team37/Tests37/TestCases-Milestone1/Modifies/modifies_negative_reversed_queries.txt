@@ -18,8 +18,3 @@ if ifs;
 Select ifs such that Modifies(ifs,"random")
 none
 5000
-5 - Modifies print
-print p;
-Select p such that Modifies(p,"flag")
-none
-5000

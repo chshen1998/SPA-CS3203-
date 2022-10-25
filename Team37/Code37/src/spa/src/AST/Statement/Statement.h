@@ -55,11 +55,5 @@ public:
      virtual shared_ptr<CFGNode> buildCFG(
              vector<shared_ptr<CFGNode>> parents, shared_ptr<CFG> cfg) = 0;
 
-//    /**
-//     * Builds on to the CFG by adding the statement to the CFG as a CFGNode
-//     * @param parents parent CFGNodes of the statement
-//     * @return CFGNode for the statement
-//     */
-//    virtual shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode>> parents) = 0;
 };
 #endif //TEAM37_STATEMENT_H

@@ -86,6 +86,11 @@ public:
     vector<int> forwardComputeRelation(int, StmtStmtRelationType);
 
     vector<int> backwardComputeRelation(int, StmtStmtRelationType);
+
+    // Utils
+
+    // utility mapping for Call Stmt - Procedure
+    map<int, string> retrieveCallStmtProcMapping();
 };
 
 #endif

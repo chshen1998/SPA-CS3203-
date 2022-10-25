@@ -162,7 +162,7 @@ TEST_CASE("QueryServicer - Next Forward") {
     REQUIRE(nextStatements.size() == 2);
 
     vector<int> nextStarStatements = pkb->getQueryServicer()->forwardComputeRelation(1, NEXTS);
-    REQUIRE(nextStarStatements.size() == 4);
+    REQUIRE(nextStarStatements.size() == 6);
 
     bool checkRetrieveRelation1 = pkb->getQueryServicer()->retrieveRelation(1, 2, NEXT);
     REQUIRE(checkRetrieveRelation1 == true);
@@ -204,11 +204,11 @@ TEST_CASE("QueryServicer - Next Backward") {
 
     vector<int> nextStarStatements1 = pkb->getQueryServicer()->backwardComputeRelation(6, NEXTS);
 //
-    REQUIRE(nextStarStatements1.size() == 2);
+    REQUIRE(nextStarStatements1.size() == 5);
 
     vector<int> nextStarStatements2 = pkb->getQueryServicer()->backwardComputeRelation(4, NEXTS);
 
-    REQUIRE(nextStarStatements2.size() == 3);
+    REQUIRE(nextStarStatements2.size() == 5);
 }
 
 TEST_CASE("QueryServicer - Next Backward While Statement") {
@@ -243,7 +243,7 @@ TEST_CASE("QueryServicer - Next Backward While Statement") {
     REQUIRE(nextStatements.size() == 1);
 
     vector<int> nextStarStatements = pkb->getQueryServicer()->backwardComputeRelation(1, NEXTS);
-    REQUIRE(nextStarStatements.size() == 4);
+    REQUIRE(nextStarStatements.size() == 5);
 }
 
 TEST_CASE("FAILING TESTCASE") {

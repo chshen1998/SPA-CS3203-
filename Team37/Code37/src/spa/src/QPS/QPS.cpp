@@ -35,7 +35,6 @@ void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
 * Takes in query string input from user, parses the query string then return result from PKB
 */
 void QPS::evaluate(string query, list<string>& results) {
-
     try {
         QueryTokenizer tokenizer = QueryTokenizer(query);
         vector<PqlToken> tokens = tokenizer.Tokenize();
@@ -60,12 +59,7 @@ void QPS::evaluate(string query, list<string>& results) {
         evaluator.evaluate();
     }
     catch (SyntaxError pe) {
-        results.push_back("Syntax Error");
-        cout << pe.message;
-        return;
-    }
-    catch (SemanticError pe) {
-        results.push_back("Semantic Error");
+        results.push_back("SyntaxError");
         cout << pe.message;
         return;
     }

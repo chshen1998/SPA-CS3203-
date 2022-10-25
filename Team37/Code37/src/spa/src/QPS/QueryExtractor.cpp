@@ -14,6 +14,10 @@ using namespace std;
 #include "./Types/TokenType.h"
 #include "Validators/ValidatorUtils.h"
 
+set<char> validOperators = {
+    '+', '*', '-', '/'
+};
+
 QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector)
 {
     tokens = tokenVector;
@@ -207,44 +211,38 @@ PqlToken QueryExtractor::extractSuchThatClause()
 
 PqlToken QueryExtractor::extractString(PqlToken token)
 {
-    string newS = "";
-	if (token.type == TokenType::STRING)
-	{
-        string s = token.value;
-        //string newS = "";
-        for (int i=1; i<s.length()-1; i++)
-        {
-	        if (!(s[i] == ' '))
-	        {
-                newS.push_back(s[i]);
-	        }
-        }
-        //string newS = s.substr(1, s.size()-2);
-        //return PqlToken(TokenType::STRING, newS);
-	}
-    else if (token.type == TokenType::WILDCARD_STRING)
-    {
-        string s = token.value;
-        //string newS = "";
-        for (int i = 2; i < s.length() - 2; i++)
-        {
-            if (!(s[i] == ' '))
-            {
-                newS.push_back(s[i]);
-            }
-        }
-       //string newS = s.substr(2, s.size() - 4);
-        //return PqlToken(TokenType::WILDCARD_STRING, newS);
-    }
-    else
-    {
+    if (token.type != TokenType::STRING && token.type != TokenType::WILDCARD_STRING) {
         return token;
     }
 
-    if (newS.length() > 0 && newS[0] == '+')
-    {
-        throw SemanticError("Invalid parameter: " + token.value);
+    string newS = "";
+    string s = token.value;
+
+    int edge = 1;
+    if (token.type == TokenType::WILDCARD_STRING) {
+        edge = 2;
     }
+
+    bool prevIsOp = true;
+    for (int i = edge; i < s.length() - edge; i++) {
+        if (s[i] == ' ' || s[i] == '\t' || s[i] == '\v') {
+            continue;
+        }
+
+        if (validOperators.find(s[i]) != validOperators.end())
+        {
+            if (prevIsOp || i == s.length() - edge - 1) {
+                throw SyntaxError("Invalid parameter: " + token.value);
+            }
+            newS.push_back(s[i]);
+            prevIsOp = true;
+        }
+        else {
+            newS.push_back(s[i]);
+            prevIsOp = false;
+        }
+    }
+
     return PqlToken(token.type, newS);
 }
 

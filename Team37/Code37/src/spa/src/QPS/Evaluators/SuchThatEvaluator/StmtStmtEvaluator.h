@@ -17,6 +17,14 @@ public:
 
     bool evaluateBooleanClause(const Clause&) override;
     vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) override;
+
+private:
+    inline bool checkIfComputeRelation(StmtStmtRelationType ss) {
+        return ss == StmtStmtRelationType::AFFECTS ||
+            ss == StmtStmtRelationType::AFFECTSS ||
+            ss == StmtStmtRelationType::NEXT ||
+            ss == StmtStmtRelationType::NEXTS;
+    }
 };
 
 

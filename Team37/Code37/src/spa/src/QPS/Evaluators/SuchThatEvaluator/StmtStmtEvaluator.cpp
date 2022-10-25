@@ -74,7 +74,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         // Intersect possible s2 with all statements of type s2
         // Add combinations of (s1, s2) into table
         for (int leftSynonym : allLineNumOfLeftSynonym) {
-            if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+            if (checkIfComputeRelation(ss)) {
                 intermediateStmtLines = servicer->forwardComputeRelation(leftSynonym, ss);
             }
             else {
@@ -100,7 +100,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         // Synonym-WildCard --> Eg. Follows(s, _) 
         if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::WILDCARD) {
             for (int lines : allLineNumOfSynonym) {
-                if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                if (checkIfComputeRelation(ss)) {
                     if (!servicer->forwardComputeRelation(lines, ss).empty()) {
                         finalTable.push_back(vector<string>{ to_string(lines) });
                     }
@@ -129,7 +129,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
 
             // Synonym-StmtNum --> Eg. Follows(s, 6) 
             if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STATEMENT_NUM) {
-                if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                if (checkIfComputeRelation(ss)) {
                     intermediateStmtLines = servicer->backwardComputeRelation(stoi(rightArg.value), ss);
                 }
                 else {

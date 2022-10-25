@@ -4,7 +4,7 @@ procedure main {
 		y = 1;
 	}
 	read y;
-	if (y == 0) {
+	if (y == 0) then {
 		x = 1;
 	} else {
 		z = 1;
@@ -12,7 +12,7 @@ procedure main {
 
 	test = x;
 	test = y;
-	test = z
+	test = z;
 
 }
 

@@ -21,6 +21,20 @@ SemanticError::SemanticError(string msg) : exception()
     message = msg;
 }
 
+set<TokenType> statementTypes = {
+    TokenType::STATEMENT,
+    TokenType::READ,
+    TokenType::PRINT,
+    TokenType::ASSIGN,
+    TokenType::CALL,
+    TokenType::WHILE,
+    TokenType::IF
+};
+
+set<TokenType> entityTypes = {
+    TokenType::VARIABLE
+};
+
 /*
  * Set of valid declaration types
  */

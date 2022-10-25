@@ -49,7 +49,7 @@ void ClauseValidator::validateParameters(PqlToken left, PqlToken right, set<Toke
 	}
 }
 
-void ClauseValidator::validateEntityRef(PqlToken token, string clauseType)
+void ClauseValidator::validateEntityRef(PqlToken token, string clauseType, set<TokenType> validParamTypes)
 {
 	if (validEntityRef.find(token.type) == validEntityRef.end())
 	{
@@ -59,9 +59,13 @@ void ClauseValidator::validateEntityRef(PqlToken token, string clauseType)
 	{
 		throw SemanticError(token.value + " is undeclared parameter for " + clauseType + " clause");
 	} 
+	else if (token.type == TokenType::SYNONYM && validParamTypes.find(declarations[token.value]) == validParamTypes.end())
+	{
+		throw SemanticError(token.value + " is invalid parameter type for " + clauseType + " clause");
+	}
 }
 
-void ClauseValidator::validateStatementRef(PqlToken token, string clauseType)
+void ClauseValidator::validateStatementRef(PqlToken token, string clauseType, set<TokenType> validParamTypes)
 {
 	if (validStatementRef.find(token.type) == validStatementRef.end())
 	{
@@ -70,6 +74,10 @@ void ClauseValidator::validateStatementRef(PqlToken token, string clauseType)
 	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
 	{
 		throw SemanticError(token.value + " is undeclared parameter for " + clauseType + " clause");
+	}
+	else if (token.type == TokenType::SYNONYM && validParamTypes.find(declarations[token.value]) == validParamTypes.end())
+	{
+		throw SemanticError(token.value + " is invalid parameter type for " + clauseType + " clause");
 	}
 }
 

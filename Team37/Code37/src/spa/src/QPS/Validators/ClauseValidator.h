@@ -29,8 +29,8 @@ protected:
 	ClauseValidator(unordered_map<string, TokenType> declarationsMap, TokenType token);
 
 	void validateParameters(PqlToken left, PqlToken right, set<TokenType> validLeftTypes, set<TokenType> validRightTypes, string clauseType);
-	void validateEntityRef(PqlToken token, string clauseType);
-	void validateStatementRef(PqlToken token, string clauseType);
+	void validateEntityRef(PqlToken token, string clauseType, set<TokenType> validParamTypes);
+	void validateStatementRef(PqlToken token, string clauseType, set<TokenType> validParamTypes);
 	bool isDeclared(PqlToken synonym);
 
 	unordered_map<string, TokenType> declarations;

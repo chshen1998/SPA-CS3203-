@@ -204,15 +204,19 @@ set<int> QueryServicer::reverseRetrievePatternMatch(string queryString, bool has
             string generatedString = assignStmt->getRelFactor()->generateString();
             // if (_,_queryString_) we do substring match
             if (hasWildcard) {
-                deque<string> parsedRelationalFactors = parseRelationalFactorString(generatedString);
-                for (const string &parsedFactor: parsedRelationalFactors) {
-                    if (sanitizeString(parsedFactor) == sanitizeString(queryString)) {
-                        matchingLineNum.insert(currLineNum);
-                    }
+                // some dummy stmt to generate string to match
+                shared_ptr<Statement> dummyStmt = Parser::parseStatement("x = " + queryString);
+                shared_ptr<AssignStatement> dummyAssignStmt = dynamic_pointer_cast<AssignStatement>(dummyStmt);
+                string strToMatch = dummyAssignStmt->getRelFactor()->generateString();
+                if (generatedString.find(strToMatch) != string::npos) {
+                    matchingLineNum.insert(currLineNum);
                 }
                 // if (_,queryString) we do exact string match
             } else {
-                if (sanitizeString(generatedString) == sanitizeString(queryString)) {
+                shared_ptr<Statement> dummyStmt = Parser::parseStatement("x = " + queryString);
+                shared_ptr<AssignStatement> dummyAssignStmt = dynamic_pointer_cast<AssignStatement>(dummyStmt);
+                string strToMatch = dummyAssignStmt->getRelFactor()->generateString();
+                if (generatedString == strToMatch) {
                     matchingLineNum.insert(currLineNum);
                 }
             }

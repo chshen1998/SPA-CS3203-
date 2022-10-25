@@ -26,6 +26,9 @@ public:
 	string message;
 };
 
+extern set<TokenType> statementTypes;
+
+extern set<TokenType> entityTypes;
 
 extern set<TokenType> validDesignEntities;
 

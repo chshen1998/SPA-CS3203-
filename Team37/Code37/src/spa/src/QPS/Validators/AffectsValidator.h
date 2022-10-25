@@ -16,7 +16,6 @@
 #ifndef TEAM37_AFFECTSVALIDATOR_H
 #define TEAM37_AFFECTSVALIDATOR_H
 
-
 class AffectsValidator : public ClauseValidator {
 public:
 	AffectsValidator(unordered_map<string, TokenType> declarations, TokenType token);

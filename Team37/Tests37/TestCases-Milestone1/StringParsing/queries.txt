@@ -1,0 +1,10 @@
+1 - Whitespace
+assign a; 
+Select a pattern a (_, _"flag "_)
+9, 15
+5000
+2 - Tab
+assign a; 
+Select a pattern a (_, _"flag	"_)
+9, 15
+5000

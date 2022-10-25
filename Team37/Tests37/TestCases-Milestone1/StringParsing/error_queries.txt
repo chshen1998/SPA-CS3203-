@@ -1,0 +1,15 @@
+1 - Extra operators at start
+variable v; assign a;
+Select v pattern a (v, "+x")
+SyntaxError
+5000
+2 - Extra operators in middle
+variable v; assign a;
+Select v pattern a (v, "x+*y")
+SyntaxError
+5000
+3 - Extra operators at end
+variable v; assign a;
+Select v pattern a (v, "y-")
+SyntaxError
+5000

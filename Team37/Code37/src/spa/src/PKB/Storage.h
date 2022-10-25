@@ -71,7 +71,7 @@ private:
     // Helper functions
     bool retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, shared_ptr<CFGNode> targetNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>);
     set<int> forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited);
-    set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> childNode, set<string> var_used, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited);
+    set<int> reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> childNode, set<string> var_used, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited);
     vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
     vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
 
@@ -82,6 +82,9 @@ public:
     // Queue helper for AST traversal
     // tuple triplet of (line number,container procedure name,called procedure name)
     vector<tuple<int, std::string, std::string>> callStmtProcedureQueue = {};
+
+    // utility mapping for Call Stmt - Procedure
+    map<int, string> callStmtProcMapping = map<int, string>();
 
     // AST
     void storeAST(shared_ptr<SourceCode>);
@@ -157,6 +160,10 @@ public:
     vector<int> forwardComputeRelation(int, StmtStmtRelationType);
 
     vector<int> backwardComputeRelation(int, StmtStmtRelationType);
+
+    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>);
+
+    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>);
 
 };
 

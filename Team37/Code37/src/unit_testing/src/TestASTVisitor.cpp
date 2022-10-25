@@ -123,3 +123,30 @@ TEST_CASE("Statements") {
 
     REQUIRE(storage->getAllStmt().size() == 6);
 }
+
+TEST_CASE("Call Stmt Proc Mapping") {
+    shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
+    shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sc, "Test Procedure 1");
+    shared_ptr<Procedure> procedure2 = make_shared<Procedure>(sc, "Test Procedure 2");
+    shared_ptr<Procedure> procedure3 = make_shared<Procedure>(sc, "Test Procedure 3");
+
+    shared_ptr<Storage> storage = make_shared<Storage>();
+    shared_ptr<CallStatement> callStmt1 = make_shared<CallStatement>(procedure1, "Test Call 1");
+    shared_ptr<CallStatement> callStmt2 = make_shared<CallStatement>(procedure2, "Test Call 2");
+    shared_ptr<CallStatement> callStmt3 = make_shared<CallStatement>(procedure3, "Test Call 3");
+
+    procedure1->addStatement(callStmt1);
+    procedure2->addStatement(callStmt2);
+    procedure3->addStatement(callStmt3);
+
+    sc->addProcedure(procedure1);
+    sc->addProcedure(procedure2);
+    sc->addProcedure(procedure3);
+
+    // We start by traversing the AST
+    storage->storeAST(sc);
+
+    REQUIRE(storage->callStmtProcMapping[callStmt1->getLineNum()] == "Test Procedure 1");
+    REQUIRE(storage->callStmtProcMapping[callStmt2->getLineNum()] == "Test Procedure 2");
+    REQUIRE(storage->callStmtProcMapping[callStmt3->getLineNum()] == "Test Procedure 3");
+}

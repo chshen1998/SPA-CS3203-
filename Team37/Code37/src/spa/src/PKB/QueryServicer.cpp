@@ -301,3 +301,8 @@ vector<int> QueryServicer::forwardComputeRelation(int stmt, StmtStmtRelationType
 vector<int> QueryServicer::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
     return storage->backwardComputeRelation(stmt, type);
 }
+
+// Utils
+map<int, string> QueryServicer::retrieveCallStmtProcMapping() {
+    return storage->callStmtProcMapping;
+}

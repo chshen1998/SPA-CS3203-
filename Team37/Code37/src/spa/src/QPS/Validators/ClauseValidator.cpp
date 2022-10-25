@@ -34,21 +34,6 @@ void ClauseValidator::validateComma(PqlToken token) {
 	}
 }
 
-void ClauseValidator::validateParameters(PqlToken left, PqlToken right, set<TokenType> validLeftTypes, set<TokenType> validRightTypes, string clauseType)
-{
-	if (!(validLeftTypes.find(left.type) != validLeftTypes.end()) || !(validRightTypes.find(right.type) != validRightTypes.end()))
-	{
-		throw SemanticError("Invalid parameters for " + clauseType + " clause");
-	} else if (left.type == TokenType::SYNONYM && !isDeclared(left))
-	{
-		throw SemanticError(left.value + " is undeclared parameter for " + clauseType + " clause");
-	}
-	else if (right.type == TokenType::SYNONYM && !isDeclared(right))
-	{
-		throw SemanticError(right.value + " is undeclared parameter for " + clauseType + " clause");
-	}
-}
-
 void ClauseValidator::validateEntityRef(PqlToken token, string clauseType, set<TokenType> validParamTypes)
 {
 	if (validEntityRef.find(token.type) == validEntityRef.end())

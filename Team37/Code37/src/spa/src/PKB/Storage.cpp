@@ -235,6 +235,24 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             }
 
             return retrieveAffectsHelper(cfgNode1, nullptr, cfgNode2, var, visited);
+        } case (AFFECTSS): {
+            // Check if both are affects
+            shared_ptr<AssignStatement> stmtNode1 = dynamic_pointer_cast<AssignStatement>(statements[stmt1]);
+            shared_ptr<AssignStatement> stmtNode2 = dynamic_pointer_cast<AssignStatement>(statements[stmt2]);
+
+            if (stmtNode1 == nullptr || stmtNode2 == nullptr || stmt1 == stmt2) {
+                return false;
+            }
+
+            vector<int> forwardResult = forwardComputeRelation(stmt1, AFFECTS);
+
+            for (auto x : forwardResult) {
+                if (x == stmt2) {
+                    return true;
+                }
+            }
+            return false;
+            
         }
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");

@@ -12,6 +12,7 @@
 #include <memory>
 #include <tuple>
 #include <unordered_map>
+#include <queue>
 
 #include "../AST/TNode.h"
 #include "../AST/Procedure.h"

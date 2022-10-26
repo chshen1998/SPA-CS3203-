@@ -671,6 +671,49 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
             copy(result.begin(), result.end(), output.begin());
             return output;
         }
+        case(AFFECTSS): {
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+
+            // Check if current statement is assign
+            if (stmtNode == nullptr) {
+                return {};
+            }
+
+
+            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+
+            unordered_map<int, bool> visited = {};
+            queue<int> nodeQueue;
+            nodeQueue.push(stmt);
+
+            vector<int> output = {};
+
+            while (!nodeQueue.empty()) {
+                // Get next item in queue
+                int currStmt = nodeQueue.front();
+                nodeQueue.pop();
+
+                // Skip if visited before
+                if (visited[currStmt]) {
+                    continue;
+                }
+
+                // Mark as visited and add to result
+                visited[currStmt] = true;
+                output.push_back(currStmt);
+
+                // Get all statement that this affects
+                vector<int> nextResult = forwardComputeRelation(currStmt, AFFECTS);
+
+                // Add all next result into queue
+                for (int x : nextResult) {
+                    nodeQueue.push(x);
+                }
+
+            }
+
+            return output;
+        }
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }

@@ -19,12 +19,14 @@ public:
     vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) override;
 
 private:
-    inline bool checkIfComputeRelation(StmtStmtRelationType ss) {
+    inline bool checkIfComputeRelation(const StmtStmtRelationType ss) {
         return ss == StmtStmtRelationType::AFFECTS ||
             ss == StmtStmtRelationType::AFFECTSS ||
             ss == StmtStmtRelationType::NEXT ||
             ss == StmtStmtRelationType::NEXTS;
     }
+
+    bool precheck(const PqlToken, const PqlToken, const StmtStmtRelationType);
 };
 
 

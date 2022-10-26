@@ -56,6 +56,10 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
     PqlToken rightArg = clause.right;
     StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause.clauseType.type];
 
+    if (!precheck(leftArg, rightArg, ss)) {
+        return vector<vector<string>> {};
+    }
+
     vector<vector<string>> finalTable;
     vector<int> finalResult;
     vector<int> intermediateStmtLines;
@@ -157,4 +161,24 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
 
     // Join With Intermediate table
     return JoinTable(intermediate, finalTable);
+}
+
+bool StmtStmtEvaluator::precheck(const PqlToken leftArg, const PqlToken rightArg, const StmtStmtRelationType ss) {
+
+    // Follows/Follows*/Parent/Parent* cannot have same left/right arg
+    if (ss == StmtStmtRelationType::FOLLOWS || ss == StmtStmtRelationType::FOLLOWSS ||
+        ss == StmtStmtRelationType::PARENT || ss == StmtStmtRelationType::PARENTS) 
+    {
+        if (leftArg == rightArg) {
+            return false;
+        }
+    }
+
+    if (ss == StmtStmtRelationType::PARENT || ss == StmtStmtRelationType::PARENTS) {
+        if (declarations[leftArg.value] == TokenType::ASSIGN) {
+            return false;
+        }
+    }
+
+    return true;
 }

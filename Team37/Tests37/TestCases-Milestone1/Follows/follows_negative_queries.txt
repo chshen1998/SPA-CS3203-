@@ -58,4 +58,14 @@ print p;
 Select p such that Follows*(2,p)
 none
 5000
+13 - follows same synonym
+stmt s;
+Select s such that Follows(s,s)
+none
+5000
+14 - follows* same synonym
+stmt s;
+Select s such that Follows*(s,s)
+none
+5000
 

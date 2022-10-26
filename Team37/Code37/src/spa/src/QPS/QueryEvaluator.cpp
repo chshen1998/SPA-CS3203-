@@ -76,15 +76,11 @@ void QueryEvaluator::evaluate() {
         }
 
         if (falseBooleanClause) {
-            break;
+            if (isResultBoolean) {
+                result.push_back("FALSE");
+            }
+            return;
         }
-    }
-
-    if (falseBooleanClause) {
-        if (isResultBoolean) {
-            result.push_back("FALSE");
-        }
-        return;
     }
 
     vector<vector<vector<string>>> listOfIntermediateTables;
@@ -133,17 +129,14 @@ void QueryEvaluator::evaluate() {
                     intermediateTable = stmtVarEvaluator.evaluateSynonymClause(clause, intermediateTable);
                 }
             }
-        }
 
-        // We can quickly terminate if any intermediate table is empty
-        if (isResultBoolean) {
-            if (intermediateTable.size() == 1) {
-                result.push_back("FALSE");
+            // Terminate early if any clause is invalid or empty
+            if (intermediateTable.size() <= 1) {
+                if (isResultBoolean) {
+                    result.push_back("FALSE");
+                }
+                return;
             }
-            else {
-                result.push_back("TRUE");
-            }
-            return;
         }
 
         listOfIntermediateTables.push_back(intermediateTable);
@@ -153,19 +146,20 @@ void QueryEvaluator::evaluate() {
     // Combine the smaller intermediate tables
     for (vector<vector<string>> table : listOfIntermediateTables) {
         finalResult = EvaluatorUtils::JoinTable(finalResult, table);
-    }
 
+        if (finalResult.size() <= 1) {
+            if (isResultBoolean) {
+                result.push_back("FALSE");
+            }  
+            return;
+        }
+    }
 
     if (isResultBoolean) {
-        if (finalResult.size() == 1) {
-            result.push_back("FALSE");
-        }
-        else {
-            result.push_back("TRUE");
-        }
+        result.push_back("TRUE");
         return;
     }
-   
+
     FinalEvaluator finalEvaluator = FinalEvaluator(servicer, pq.declarations, pq);
     finalEvaluator.getFinalResult(result, finalResult);
 }

@@ -28,3 +28,18 @@ stmt s;
 Select s such that Parent*(15,s)
 none
 5000
+7 - parent same synonym
+stmt s;
+Select s such that Parent(s,s)
+none
+5000
+8 - parent* same synonym
+stmt s;
+Select s such that Parent*(s,s)
+none
+5000
+9 - parent assign synonym
+assign a;
+Select a such that Parent(a, 2)
+none
+5000

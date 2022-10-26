@@ -202,17 +202,19 @@ set<int> QueryServicer::reverseRetrievePatternMatch(string queryString, bool has
             shared_ptr<AssignStatement> assignStmt = dynamic_pointer_cast<AssignStatement>(stmt);
             int currLineNum = assignStmt->getLineNum();
             string generatedString = assignStmt->getRelFactor()->generateString();
+            shared_ptr<RelationalFactor> relationalFactor = Tokenizer::tokenizeRelFactor(queryString);
+
             // if (_,_queryString_) we do substring match
             if (hasWildcard) {
-                deque<string> parsedRelationalFactors = parseRelationalFactorString(generatedString);
-                for (const string &parsedFactor: parsedRelationalFactors) {
-                    if (sanitizeString(parsedFactor) == sanitizeString(queryString)) {
-                        matchingLineNum.insert(currLineNum);
-                    }
+                // some dummy stmt to generate string to match
+                string strToMatch = relationalFactor->generateString();
+                if (generatedString.find(strToMatch) != string::npos) {
+                    matchingLineNum.insert(currLineNum);
                 }
                 // if (_,queryString) we do exact string match
             } else {
-                if (sanitizeString(generatedString) == sanitizeString(queryString)) {
+                string strToMatch = relationalFactor->generateString();
+                if (generatedString == strToMatch) {
                     matchingLineNum.insert(currLineNum);
                 }
             }

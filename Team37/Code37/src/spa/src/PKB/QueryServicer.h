@@ -14,6 +14,7 @@
 using namespace std;
 
 #include "Storage.h"
+#include "../SP/Tokenizer.h"
 #include "Types/StatementType.h"
 #include "Types/StmtStmtRelationType.h"
 #include "Types/StmtVarRelationType.h"

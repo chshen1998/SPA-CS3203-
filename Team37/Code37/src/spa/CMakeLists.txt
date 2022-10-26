@@ -58,6 +58,7 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryExtractor.h
         src/QPS/QueryEvaluator.h
         src/QPS/QueryTokenizer.h
+        
         src/QPS/Tokenizers/GeneralTokenizer.h
         src/QPS/Tokenizers/DeclarationTokenizer.h
         src/QPS/Tokenizers/SelectTokenizer.h
@@ -89,6 +90,7 @@ add_library(spa ${srcs} ${headers}
         src/QPS/QueryEvaluator.cpp
         src/QPS/QueryTokenizer.cpp
         src/QPS/QueryValidator.cpp
+        
 
         src/QPS/Tokenizers/DeclarationTokenizer.cpp
         src/QPS/Tokenizers/SelectTokenizer.cpp
@@ -174,7 +176,10 @@ add_library(spa ${srcs} ${headers}
         src/QPS/Evaluators/PatternEvaluator/IfEvaluator.cpp 
         src/QPS/Evaluators/PatternEvaluator/IfEvaluator.h
         "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.h" 
-        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.cpp")
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.cpp" 
+        "src/QPS/QueryOptimizer.h" 
+        "src/QPS/QueryOptimizer.cpp"
+)
 
 
 # this makes the headers accessible for other projects which uses spa lib

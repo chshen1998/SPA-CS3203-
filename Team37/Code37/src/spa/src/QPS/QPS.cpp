@@ -2,6 +2,7 @@ using namespace std;
 
 #include <stdio.h>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 #include <set>
@@ -12,6 +13,7 @@ using namespace std;
 #include "QueryEvaluator.h"
 #include "QueryTokenizer.h"
 #include "QueryValidator.h"
+#include "QueryOptimizer.h"
 #include "./Structures/PqlError.h"
 #include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
@@ -40,7 +42,7 @@ void QPS::evaluate(string query, list<string>& results) {
 
         QueryValidator validator = QueryValidator(tokens);
         PqlError pe = validator.validateQuery();
-        
+
         if (pe.errorType != ErrorType::NONE)
         {
             results.push_back(errorTypeToStringMap[pe.errorType]);
@@ -48,10 +50,15 @@ void QPS::evaluate(string query, list<string>& results) {
             return;
         }
 
-        QueryExtractor extractor(tokens);
-        PqlQuery pq = extractor.extractSemantics();
+        shared_ptr<PqlQuery> pq_pointer = make_shared<PqlQuery>();
 
-        QueryEvaluator evaluator = QueryEvaluator(pq, servicer, results);
+        QueryExtractor extractor = QueryExtractor(tokens, pq_pointer);
+        extractor.extractSemantics();
+
+        QueryOptimizer optimizer = QueryOptimizer(pq_pointer);
+        optimizer.optimize();
+
+        QueryEvaluator evaluator = QueryEvaluator(*pq_pointer.get(), servicer, results);
         evaluator.evaluate();
     }
     catch (SyntaxError pe) {

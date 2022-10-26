@@ -40,7 +40,8 @@ public:
     TokenType category;
 
     inline bool checkIfBooleanClause() {
-        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM;
+        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM &&
+            category != TokenType::PATTERN;
     };
 };
 
@@ -73,9 +74,9 @@ public:
  */
 struct PqlQuery {
     unordered_map<string, TokenType> declarations = {};
-    string select;
     vector<SelectObject> selectObjects;
-    vector<Clause> clauses;
+    vector<Clause> booleanClauses;
+    vector<vector<Clause>> clauses = {};
 };
 
 #endif 

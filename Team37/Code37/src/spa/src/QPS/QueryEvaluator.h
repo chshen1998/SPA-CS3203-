@@ -31,10 +31,6 @@ public:
     QueryEvaluator(PqlQuery &pqlQuery, shared_ptr<QueryServicer> s, list<string> &r);
 
     void evaluate();
-
-private:
-    void getResultFromFinalTable(const vector<vector<string>> &);
-    
 };
 
 

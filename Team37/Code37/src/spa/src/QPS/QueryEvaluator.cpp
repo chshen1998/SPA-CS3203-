@@ -48,92 +48,121 @@ void QueryEvaluator::evaluate() {
     WhileEvaluator whileEvaluator = WhileEvaluator(servicer, pq.declarations);
     IfEvaluator ifEvaluator = IfEvaluator(servicer, pq.declarations);
 
-    vector<vector<string>> finalResult;
-    
-    for (Clause clause : pq.clauses) {
-        if (clause.category == TokenType::WITH) {
-            if (clause.leftAttr.type == TokenType::NONE) {
-                falseBooleanClause = !withEvaluator.evaluateBooleanClause(clause);
-            }
-            else {
-                finalResult = withEvaluator.evaluateClause(clause, finalResult);
-            }
+    // Solve the boolean clauses
+    for (Clause booleanClause : pq.booleanClauses) {
+        if (booleanClause.category == TokenType::WITH) {
+            falseBooleanClause = !withEvaluator.evaluateBooleanClause(booleanClause);
         }
-
-        else if (clause.category == TokenType::PATTERN) {
-            TokenType patternType = pq.declarations[clause.clauseType.value];
-            if (patternType == TokenType::ASSIGN) {
-                finalResult = assignEvaluator.evaluateClause(clause, finalResult);
-            } else if (patternType == TokenType::WHILE) {
-                finalResult = whileEvaluator.evaluateClause(clause, finalResult);
-            } else if (patternType == TokenType::IF) {
-                finalResult = ifEvaluator.evaluateClause(clause, finalResult);
-            }
-        }
-
         else {
-            TokenType suchThatType = clause.clauseType.type;
+            TokenType suchThatType = booleanClause.clauseType.type;
 
             if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
-                if (clause.checkIfBooleanClause()) {
-                    falseBooleanClause = !procProcEvaluator.evaluateBooleanClause(clause);
-                }
-                else {
-                    finalResult = procProcEvaluator.evaluateSynonymClause(clause, finalResult);
-                }
+                falseBooleanClause = !procProcEvaluator.evaluateBooleanClause(booleanClause);
             }
 
-            // Follows, Parents, Next, Affects
             else if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
-
-                if (clause.checkIfBooleanClause()) {
-                    falseBooleanClause = !stmtStmtEvaluator.evaluateBooleanClause(clause);
-                }
-                else {
-                    finalResult = stmtStmtEvaluator.evaluateSynonymClause(clause, finalResult);
-                }
+                falseBooleanClause = !stmtStmtEvaluator.evaluateBooleanClause(booleanClause);
             }
 
-            // Uses_P, Modifies_P, Calls
-            else if (clause.left.type == TokenType::STRING || pq.declarations[clause.left.value] == TokenType::PROCEDURE) {
-
-                if (clause.checkIfBooleanClause()) {
-                    falseBooleanClause = !procVarEvaluator.evaluateBooleanClause(clause);
-                }
-                else {
-                    finalResult = procVarEvaluator.evaluateSynonymClause(clause, finalResult);
-                }
+            // Uses_P, Modifies_P
+            else if (booleanClause.left.type == TokenType::STRING || pq.declarations[booleanClause.left.value] == TokenType::PROCEDURE) {
+                falseBooleanClause = !procVarEvaluator.evaluateBooleanClause(booleanClause);
             }
+
             // Uses_S, Modifies_S
-            else  {
-                if (clause.checkIfBooleanClause()) {
-                    falseBooleanClause = !stmtVarEvaluator.evaluateBooleanClause(clause);
-                }
-                else {
-                    finalResult = stmtVarEvaluator.evaluateSynonymClause(clause, finalResult);
-                }
+            else {
+                falseBooleanClause = !stmtVarEvaluator.evaluateBooleanClause(booleanClause);
             }
         }
 
         if (falseBooleanClause) {
-            break;
+            if (isResultBoolean) {
+                result.push_back("FALSE");
+            }
+            return;
+        }
+    }
+
+    vector<vector<vector<string>>> listOfIntermediateTables;
+    listOfIntermediateTables.reserve(pq.clauses.size());
+
+    // Solve the Synonym Clauses
+    for (vector<Clause> clauseGroup : pq.clauses) {
+        vector<vector<string>> intermediateTable;
+
+        for (Clause clause : clauseGroup) {
+            if (clause.category == TokenType::WITH) {
+                intermediateTable = withEvaluator.evaluateClause(clause, intermediateTable);
+            }
+            else if (clause.category == TokenType::PATTERN) {
+                TokenType patternType = pq.declarations[clause.clauseType.value];
+
+                if (patternType == TokenType::ASSIGN) {
+                    intermediateTable = assignEvaluator.evaluateClause(clause, intermediateTable);
+                }
+                else if (patternType == TokenType::WHILE) {
+                    intermediateTable = whileEvaluator.evaluateClause(clause, intermediateTable);
+                }
+                else if (patternType == TokenType::IF) {
+                    intermediateTable = ifEvaluator.evaluateClause(clause, intermediateTable);
+                }
+            }
+
+            else {
+                TokenType suchThatType = clause.clauseType.type;
+
+                if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
+                    intermediateTable = procProcEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                }
+
+                // Follows, Parents, Next, Affects
+                else if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
+                    intermediateTable = stmtStmtEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                }
+
+                // Uses_P, Modifies_P
+                else if (clause.left.type == TokenType::STRING || pq.declarations[clause.left.value] == TokenType::PROCEDURE) {
+                    intermediateTable = procVarEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                }
+                // Uses_S, Modifies_S
+                else {
+                    intermediateTable = stmtVarEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                }
+            }
+
+            // Terminate early if any clause is invalid or empty
+            if (intermediateTable.size() <= 1) {
+                if (isResultBoolean) {
+                    result.push_back("FALSE");
+                }
+                return;
+            }
+        }
+
+        listOfIntermediateTables.push_back(intermediateTable);
+    }
+
+    vector<vector<string>> finalResult;
+    // Combine the smaller intermediate tables
+    for (vector<vector<string>> table : listOfIntermediateTables) {
+        finalResult = EvaluatorUtils::JoinTable(finalResult, table);
+
+        if (finalResult.size() <= 1) {
+            if (isResultBoolean) {
+                result.push_back("FALSE");
+            }  
+            return;
         }
     }
 
     if (isResultBoolean) {
-        if (falseBooleanClause || finalResult.size() == 1) {
-            result.push_back("FALSE");
-        }
-        else {
-            result.push_back("TRUE");
-        }
+        result.push_back("TRUE");
         return;
     }
 
-    if (falseBooleanClause) {
-        return;
-    }
-   
     FinalEvaluator finalEvaluator = FinalEvaluator(servicer, pq.declarations, pq);
     finalEvaluator.getFinalResult(result, finalResult);
 }
+
+
+

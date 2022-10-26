@@ -34,6 +34,12 @@ void QueryOptimizer::optimize()
 {
     groupClauses();
 
+    // If no synonym clauses then optimization is complete
+    if (pq->clauses[0].size() == 0) {
+        pq->clauses.clear();
+        return;
+    }
+
     sortGroupOrder();
 
     //sortGroupClauses();
@@ -130,21 +136,41 @@ void QueryOptimizer::sortGroupOrder()
 
 /*  Sort clauses inside each group 
 *   1. Prioritize clauses with one constant and one synonym
-*   2. Prioritize clauses with less number of results: Follows, Modifies, etc.
-*   3. Prioritize with-clauses – more restrictive than such that clauses
-*   4. Push Affects clauses and *-clauses to the last positions in a group
+*   2. Prioritize with-clauses – more restrictive than such that clauses
+*   3. Push Affects clauses and *-clauses to the last positions in a group
 */
 void QueryOptimizer::sortGroupClauses() {
     for (vector<Clause> group : pq->clauses) {
-        int left = 0;
-        int right = group.size() - 1;
-        while (left < right) {
-            if (designAbstractionsA.find(group[left].clauseType.type) != designAbstractionsA.end()) {
-                swap(group[left], group[right]);
-                right--;
+        vector<int> priorityScores(group.size());
+        int currScore;
+
+        for (int i = 0; i < group.size(); i++) {
+            currScore = 0;
+
+            // Mark Affects and *-clauses with priority of -1
+            if (designAbstractionsA.find(group[i].clauseType.type) != designAbstractionsA.end()) {
+                priorityScores[i] = -1;
+                continue;
             }
-            else {
-                left++;
+
+            // Increase priority if clause contains a constant
+            if (group[i].left.type != TokenType::SYNONYM || group[i].right.type != TokenType::SYNONYM) {
+                priorityScores[i]++;
+            }
+
+            // Increase priority if clauses 
+            if (group[i].category == TokenType::WITH) {
+                priorityScores[i]++;
+            }
+        }
+
+        // Bubble sort
+        for (int i = group.size() - 1; i >= 0; i--) {
+            for (int j = 0; j < i; j++) {
+                if (priorityScores[j] > priorityScores[j + 1]) {
+                    swap(group[j], group[j + 1]);
+                    swap(priorityScores[j], priorityScores[j + 1]);
+                }
             }
         }
     }

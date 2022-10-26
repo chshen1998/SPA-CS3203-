@@ -804,7 +804,7 @@ vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node, shared_
 }
 
 /*
-Compute Backward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
+Compute Reverse Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @param stmt lineNum
 @param type Type of relation
 @returns All stmt1 such that Relation(stmt1, stmt) is True
@@ -839,7 +839,7 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
             // reset visited
             shared_ptr<map<int, bool >> visited = make_shared<map<int, bool >>();
 
-            vector<int> parentLineNums = this->getNextStarBackwardLineNum(cfgNode, visited);
+            vector<int> parentLineNums = this->getNextStarReverseLineNum(cfgNode, visited);
             lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
 
             return lstLineNum;
@@ -979,7 +979,7 @@ set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
  * @param node
  * @return lines numbers of all parent nodes(recursively) where Next*(n1, n2)
  */
-vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node, shared_ptr<map<int, bool >> visited) {
+vector<int> Storage::getNextStarReverseLineNum(shared_ptr<CFGNode> node, shared_ptr<map<int, bool >> visited) {
     vector<int> lstLineNum = {};
 
     if (dynamic_pointer_cast<Statement>(node->getTNode()) != nullptr) {
@@ -1003,13 +1003,13 @@ vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node, shared
                 lstLineNum.push_back(lineNum);
 
                 //recursively get parent nodes
-                vector<int> parentLineNums = getNextStarBackwardLineNum(parentNode, visited);
+                vector<int> parentLineNums = getNextStarReverseLineNum(parentNode, visited);
                 lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
             }
             // node is dummy node
         } else if (tNode == nullptr && !parentNode->getParents().empty()) {
             //recursively get parent nodes
-            vector<int> parentLineNums = getNextStarBackwardLineNum(parentNode, visited);
+            vector<int> parentLineNums = getNextStarReverseLineNum(parentNode, visited);
             lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
         }
     }

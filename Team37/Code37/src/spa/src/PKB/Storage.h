@@ -74,7 +74,7 @@ private:
     set<int> forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited);
     set<int> reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> childNode, set<string> var_used, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited);
     vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
-    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
+    vector<int> getNextStarReverseLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
 
 public:
     // Constructor
@@ -164,7 +164,7 @@ public:
 
     vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>);
 
-    vector<int> getNextStarBackwardLineNum(shared_ptr<CFGNode>);
+    vector<int> getNextStarReverseLineNum(shared_ptr<CFGNode>);
 
 };
 

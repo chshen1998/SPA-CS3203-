@@ -160,7 +160,7 @@ public:
     // Process Relations(Next/Affects)
     vector<int> forwardComputeRelation(int, StmtStmtRelationType);
 
-    vector<int> backwardComputeRelation(int, StmtStmtRelationType);
+    vector<int> reverseComputeRelation(int, StmtStmtRelationType);
 
     vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>);
 

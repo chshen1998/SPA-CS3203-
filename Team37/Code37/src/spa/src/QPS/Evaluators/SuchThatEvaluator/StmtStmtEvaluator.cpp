@@ -119,7 +119,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         else if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::SYNONYM) {
             for (int lines : allLineNumOfSynonym) {
                 if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
-                    if (!servicer->backwardComputeRelation(lines, ss).empty()) {
+                    if (!servicer->reverseComputeRelation(lines, ss).empty()) {
                         finalTable.push_back(vector<string>{ to_string(lines) });
                     }
                 }
@@ -134,7 +134,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
             // Synonym-StmtNum --> Eg. Follows(s, 6) 
             if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STATEMENT_NUM) {
                 if (checkIfComputeRelation(ss)) {
-                    intermediateStmtLines = servicer->backwardComputeRelation(stoi(rightArg.value), ss);
+                    intermediateStmtLines = servicer->reverseComputeRelation(stoi(rightArg.value), ss);
                 }
                 else {
                     intermediateStmtLines = servicer->reverseRetrieveRelation(stoi(rightArg.value), ss);

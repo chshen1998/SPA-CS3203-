@@ -809,7 +809,7 @@ Compute Backward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @param type Type of relation
 @returns All stmt1 such that Relation(stmt1, stmt) is True
 */
-vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
+vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type) {
     shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
     vector<int> lstLineNum = {};
     switch (type) {
@@ -867,6 +867,48 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
             set<int> result = reverseAffectsHelper(cfgNode, nullptr, var, visited);
             vector<int> output = {};
             copy(result.begin(), result.end(), output.begin());
+            return output;
+        } case (AFFECTSS): {
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+
+            // Check if current statement is assign
+            if (stmtNode == nullptr) {
+                return {};
+            }
+
+
+            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+
+            unordered_map<int, bool> visited = {};
+            queue<int> nodeQueue;
+            nodeQueue.push(stmt);
+
+            vector<int> output = {};
+
+            while (!nodeQueue.empty()) {
+                // Get next item in queue
+                int currStmt = nodeQueue.front();
+                nodeQueue.pop();
+
+                // Skip if visited before
+                if (visited[currStmt]) {
+                    continue;
+                }
+
+                // Mark as visited and add to result
+                visited[currStmt] = true;
+                output.push_back(currStmt);
+
+                // Get all statement that this affects
+                vector<int> nextResult = reverseComputeRelation(currStmt, AFFECTS);
+
+                // Add all next result into queue
+                for (int x : nextResult) {
+                    nodeQueue.push(x);
+                }
+
+            }
+
             return output;
         }
         default:

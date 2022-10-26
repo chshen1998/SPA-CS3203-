@@ -198,15 +198,15 @@ TEST_CASE("QueryServicer - Next Backward") {
     shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
     pkb->buildFromCFG(cfgMap);
 
-    vector<int> nextStatements = pkb->getQueryServicer()->backwardComputeRelation(2, NEXT);
+    vector<int> nextStatements = pkb->getQueryServicer()->reverseComputeRelation(2, NEXT);
     // Contain lines 4,5,6
     REQUIRE(nextStatements.size() == 3);
 
-    vector<int> nextStarStatements1 = pkb->getQueryServicer()->backwardComputeRelation(6, NEXTS);
+    vector<int> nextStarStatements1 = pkb->getQueryServicer()->reverseComputeRelation(6, NEXTS);
 //
     REQUIRE(nextStarStatements1.size() == 5);
 
-    vector<int> nextStarStatements2 = pkb->getQueryServicer()->backwardComputeRelation(4, NEXTS);
+    vector<int> nextStarStatements2 = pkb->getQueryServicer()->reverseComputeRelation(4, NEXTS);
 
     REQUIRE(nextStarStatements2.size() == 5);
 }
@@ -239,10 +239,10 @@ TEST_CASE("QueryServicer - Next Backward While Statement") {
     shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
     pkb->buildFromCFG(cfgMap);
 
-    vector<int> nextStatements = pkb->getQueryServicer()->backwardComputeRelation(1, NEXT);
+    vector<int> nextStatements = pkb->getQueryServicer()->reverseComputeRelation(1, NEXT);
     REQUIRE(nextStatements.size() == 1);
 
-    vector<int> nextStarStatements = pkb->getQueryServicer()->backwardComputeRelation(1, NEXTS);
+    vector<int> nextStarStatements = pkb->getQueryServicer()->reverseComputeRelation(1, NEXTS);
     REQUIRE(nextStarStatements.size() == 5);
 }
 

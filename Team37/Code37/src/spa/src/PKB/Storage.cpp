@@ -235,6 +235,24 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             }
 
             return retrieveAffectsHelper(cfgNode1, nullptr, cfgNode2, var, visited);
+        } case (AFFECTSS): {
+            // Check if both are affects
+            shared_ptr<AssignStatement> stmtNode1 = dynamic_pointer_cast<AssignStatement>(statements[stmt1]);
+            shared_ptr<AssignStatement> stmtNode2 = dynamic_pointer_cast<AssignStatement>(statements[stmt2]);
+
+            if (stmtNode1 == nullptr || stmtNode2 == nullptr || stmt1 == stmt2) {
+                return false;
+            }
+
+            vector<int> forwardResult = forwardComputeRelation(stmt1, AFFECTS);
+
+            for (auto x : forwardResult) {
+                if (x == stmt2) {
+                    return true;
+                }
+            }
+            return false;
+            
         }
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
@@ -671,6 +689,49 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
             copy(result.begin(), result.end(), output.begin());
             return output;
         }
+        case(AFFECTSS): {
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+
+            // Check if current statement is assign
+            if (stmtNode == nullptr) {
+                return {};
+            }
+
+
+            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+
+            unordered_map<int, bool> visited = {};
+            queue<int> nodeQueue;
+            nodeQueue.push(stmt);
+
+            vector<int> output = {};
+
+            while (!nodeQueue.empty()) {
+                // Get next item in queue
+                int currStmt = nodeQueue.front();
+                nodeQueue.pop();
+
+                // Skip if visited before
+                if (visited[currStmt]) {
+                    continue;
+                }
+
+                // Mark as visited and add to result
+                visited[currStmt] = true;
+                output.push_back(currStmt);
+
+                // Get all statement that this affects
+                vector<int> nextResult = forwardComputeRelation(currStmt, AFFECTS);
+
+                // Add all next result into queue
+                for (int x : nextResult) {
+                    nodeQueue.push(x);
+                }
+
+            }
+
+            return output;
+        }
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }
@@ -761,12 +822,12 @@ vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node, shared_
 }
 
 /*
-Compute Backward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
+Compute Reverse Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @param stmt lineNum
 @param type Type of relation
 @returns All stmt1 such that Relation(stmt1, stmt) is True
 */
-vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
+vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type) {
     shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
     vector<int> lstLineNum = {};
     switch (type) {
@@ -796,7 +857,7 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
             // reset visited
             shared_ptr<map<int, bool >> visited = make_shared<map<int, bool >>();
 
-            vector<int> parentLineNums = this->getNextStarBackwardLineNum(cfgNode, visited);
+            vector<int> parentLineNums = this->getNextStarReverseLineNum(cfgNode, visited);
             lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
 
             return lstLineNum;
@@ -824,6 +885,48 @@ vector<int> Storage::backwardComputeRelation(int stmt, StmtStmtRelationType type
             set<int> result = reverseAffectsHelper(cfgNode, nullptr, var, visited);
             vector<int> output = {};
             copy(result.begin(), result.end(), output.begin());
+            return output;
+        } case (AFFECTSS): {
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+
+            // Check if current statement is assign
+            if (stmtNode == nullptr) {
+                return {};
+            }
+
+
+            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+
+            unordered_map<int, bool> visited = {};
+            queue<int> nodeQueue;
+            nodeQueue.push(stmt);
+
+            vector<int> output = {};
+
+            while (!nodeQueue.empty()) {
+                // Get next item in queue
+                int currStmt = nodeQueue.front();
+                nodeQueue.pop();
+
+                // Skip if visited before
+                if (visited[currStmt]) {
+                    continue;
+                }
+
+                // Mark as visited and add to result
+                visited[currStmt] = true;
+                output.push_back(currStmt);
+
+                // Get all statement that this affects
+                vector<int> nextResult = reverseComputeRelation(currStmt, AFFECTS);
+
+                // Add all next result into queue
+                for (int x : nextResult) {
+                    nodeQueue.push(x);
+                }
+
+            }
+
             return output;
         }
         default:
@@ -894,7 +997,7 @@ set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
  * @param node
  * @return lines numbers of all parent nodes(recursively) where Next*(n1, n2)
  */
-vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node, shared_ptr<map<int, bool >> visited) {
+vector<int> Storage::getNextStarReverseLineNum(shared_ptr<CFGNode> node, shared_ptr<map<int, bool >> visited) {
     vector<int> lstLineNum = {};
 
     if (dynamic_pointer_cast<Statement>(node->getTNode()) != nullptr) {
@@ -918,13 +1021,13 @@ vector<int> Storage::getNextStarBackwardLineNum(shared_ptr<CFGNode> node, shared
                 lstLineNum.push_back(lineNum);
 
                 //recursively get parent nodes
-                vector<int> parentLineNums = getNextStarBackwardLineNum(parentNode, visited);
+                vector<int> parentLineNums = getNextStarReverseLineNum(parentNode, visited);
                 lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
             }
             // node is dummy node
         } else if (tNode == nullptr && !parentNode->getParents().empty()) {
             //recursively get parent nodes
-            vector<int> parentLineNums = getNextStarBackwardLineNum(parentNode, visited);
+            vector<int> parentLineNums = getNextStarReverseLineNum(parentNode, visited);
             lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
         }
     }

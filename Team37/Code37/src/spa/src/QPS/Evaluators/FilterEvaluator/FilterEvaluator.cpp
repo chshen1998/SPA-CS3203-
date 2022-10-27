@@ -31,12 +31,14 @@ bool FilterEvaluator::addAttrName(vector<vector<string>> &intermediate, const Pq
         intermediate[0].push_back(updatedColumnName(token));
 
         if (token.type == TokenType::CALL) {
+            map<int, string> ProcedureStmtNumToName = servicer->retrieveCallStmtProcMapping();
+
             for (int i = 1; i < intermediate.size(); i++) {
                 // insert to get procedure name for each call statement
+                intermediate[i].push_back(ProcedureStmtNumToName[stoi(intermediate[i][index])]);
             }
         } else {
-            StmtVarRelationType sv = declarations[token.value] == TokenType::READ ? StmtVarRelationType::MODIFIESSV
-                                                                                  : StmtVarRelationType::USESSV;
+            StmtVarRelationType sv = declarations[token.value] == TokenType::READ ? StmtVarRelationType::MODIFIESSV : StmtVarRelationType::USESSV;
 
             for (int i = 1; i < intermediate.size(); i++) {
                 // We should only get one variable for Call, Print, Read

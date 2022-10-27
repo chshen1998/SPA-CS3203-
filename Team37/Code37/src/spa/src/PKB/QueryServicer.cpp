@@ -300,8 +300,8 @@ vector<int> QueryServicer::forwardComputeRelation(int stmt, StmtStmtRelationType
     return storage->forwardComputeRelation(stmt, type);
 }
 
-vector<int> QueryServicer::backwardComputeRelation(int stmt, StmtStmtRelationType type) {
-    return storage->backwardComputeRelation(stmt, type);
+vector<int> QueryServicer::reverseComputeRelation(int stmt, StmtStmtRelationType type) {
+    return storage->reverseComputeRelation(stmt, type);
 }
 
 // Utils

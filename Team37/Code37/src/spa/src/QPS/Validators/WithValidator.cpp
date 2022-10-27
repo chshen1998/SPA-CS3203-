@@ -13,12 +13,12 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-WithValidator::WithValidator(unordered_map<string, TokenType> declarationsMap, vector<PqlToken> withTokens)
+WithValidator::WithValidator(unordered_map<string, TokenType> *declarationsMap, vector<PqlToken> *withTokens)
 {
 	declarations = declarationsMap;
 	tokens = withTokens;
 	next = 0;
-	size = tokens.size();
+	size = tokens->size();
 }
 
 void WithValidator::validate()
@@ -71,7 +71,7 @@ TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
         {
             throw SemanticError("Invalid With clause parameters 2");
         }
-        if (declarations.find(synonym.value) == declarations.end())
+        if (declarations->find(synonym.value) == declarations->end())
         {
             throw SemanticError("Undeclared parameter in With clause");
         }
@@ -88,7 +88,7 @@ TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
             throw SemanticError("Invalid With clause parameters 4");
         }
 
-        TokenType t = declarations[synonym.value];
+        TokenType t = declarations->at(synonym.value);
         if (validSynonymToAttrMap[t].find(attrName.type) == validSynonymToAttrMap[t].end()) {
             throw SemanticError("Invalid attrName for attrRef synonym");
         }
@@ -113,7 +113,7 @@ PqlToken WithValidator::getNextToken() {
     {
         return PqlToken(TokenType::END, "");
     }
-    PqlToken token = tokens[next];
+    PqlToken token = tokens->at(next);
     next = next + 1;
     return token;
 

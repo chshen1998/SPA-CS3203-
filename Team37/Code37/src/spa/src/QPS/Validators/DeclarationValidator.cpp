@@ -13,10 +13,10 @@ using namespace std;
 #include "DeclarationValidator.h"
 #include "ValidatorUtils.h"
 
-DeclarationValidator::DeclarationValidator(vector<PqlToken> declarationTokens) {
+DeclarationValidator::DeclarationValidator(vector<PqlToken> *declarationTokens) {
     tokens = declarationTokens;
     next = 0;
-    size = tokens.size();
+    size = tokens->size();
 }
 
 unordered_map<string, TokenType> DeclarationValidator::validate() {
@@ -70,7 +70,7 @@ PqlToken DeclarationValidator::getNextToken() {
     {
         return PqlToken(TokenType::END, "");
     }
-    PqlToken token = tokens[next];
+    PqlToken token = tokens->at(next);
     next = next + 1;
     return token;
 

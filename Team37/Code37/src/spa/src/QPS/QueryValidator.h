@@ -19,13 +19,13 @@
 
 class QueryValidator {
 public:
-    vector<PqlToken> tokens;
+    vector<PqlToken> *tokens;
     int size;
     int next;
     bool booleanIsSynonym;
     unordered_map<string, TokenType> declarations;
 
-    QueryValidator(vector<PqlToken> tokens);
+    QueryValidator(vector<PqlToken> *tokens);
 
     PqlError validateQuery();
 

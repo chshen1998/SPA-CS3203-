@@ -25,9 +25,9 @@ using namespace std;
 #include "Validators/WithValidator.h"
 #include <iostream>
 
-QueryValidator::QueryValidator(vector<PqlToken> tokenVector) {
+QueryValidator::QueryValidator(vector<PqlToken> *tokenVector) {
     tokens = tokenVector;
-    size = tokens.size();
+    size = tokens->size();
     next = 0;
     booleanIsSynonym = false;
 }
@@ -64,14 +64,14 @@ unordered_map<string, TokenType> QueryValidator::validateDeclarations()
         curr = getNextToken();
     }
 
-    DeclarationValidator validator = DeclarationValidator(declarationTokens);
+    DeclarationValidator validator = DeclarationValidator(&declarationTokens);
     unordered_map<string, TokenType> declarations = validator.validate();
     return declarations;
 }
 
 PqlToken QueryValidator::validateSelect()
 {
-    SelectValidator validator = SelectValidator(declarations);
+    SelectValidator validator = SelectValidator(&declarations);
 
     validator.validateSelect(getNextToken()); // Select token
 
@@ -86,7 +86,7 @@ PqlToken QueryValidator::validateSelect()
             curr = getNextToken();
         }
         tokens.push_back(curr);
-        validator.validateMultiple(tokens);
+        validator.validateMultiple(&tokens);
 
         curr = getNextToken(); // Get Token after closed arros
     }
@@ -136,7 +136,7 @@ void QueryValidator::validateClauses(PqlToken curr)
 
 PqlToken QueryValidator::validatePattern()
 {
-    PatternValidator validator = PatternValidator(declarations, TokenType::PATTERN);
+    PatternValidator validator = PatternValidator(&declarations);
 
     PqlToken andToken = PqlToken(TokenType::AND, "and");
     while (andToken.type == TokenType::AND)
@@ -186,7 +186,7 @@ PqlToken QueryValidator::validateWith()
         next = getNextToken();
     }
 
-    WithValidator validator = WithValidator(declarations, withTokens);
+    WithValidator validator = WithValidator(&declarations, &withTokens);
     validator.validate();
 
     return next;
@@ -220,30 +220,30 @@ shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type
 {
     if (type == TokenType::USES) 
     {
-        return shared_ptr<UsesValidator>(new UsesValidator(declarations, type));
+        return shared_ptr<UsesValidator>(new UsesValidator(&declarations, type));
     }  else if (type == TokenType::MODIFIES)
     {
-        return shared_ptr<ModifiesValidator>(new ModifiesValidator(declarations, type));
+        return shared_ptr<ModifiesValidator>(new ModifiesValidator(&declarations, type));
     }
     else if (type == TokenType::FOLLOWS || type == TokenType::FOLLOWS_A)
     {
-        return shared_ptr<FollowsValidator>(new FollowsValidator(declarations, type));
+        return shared_ptr<FollowsValidator>(new FollowsValidator(&declarations, type));
     }
     else if (type == TokenType::PARENT || type == TokenType::PARENT_A)
     {
-        return shared_ptr<ParentValidator>(new ParentValidator(declarations, type));
+        return shared_ptr<ParentValidator>(new ParentValidator(&declarations, type));
     }
     else if (type == TokenType::CALLS || type == TokenType::CALLS_A)
     {
-        return shared_ptr<CallsValidator>(new CallsValidator(declarations, type));
+        return shared_ptr<CallsValidator>(new CallsValidator(&declarations, type));
     }
     else if (type == TokenType::NEXT || type == TokenType::NEXT_A)
     {
-        return shared_ptr<NextValidator>(new NextValidator(declarations, type));
+        return shared_ptr<NextValidator>(new NextValidator(&declarations, type));
     }
     else if (type == TokenType::AFFECTS || type == TokenType::AFFECTS_A)
     {
-        return shared_ptr<AffectsValidator>(new AffectsValidator(declarations, type));
+        return shared_ptr<AffectsValidator>(new AffectsValidator(&declarations, type));
     }
     else
     {
@@ -257,7 +257,7 @@ PqlToken QueryValidator::getNextToken() {
     {   
         return PqlToken(TokenType::END, "");
     }
-    PqlToken token = tokens[next];
+    PqlToken token = tokens->at(next);
     next = next + 1;
     if (token.type == TokenType::BOOLEAN && booleanIsSynonym) {
         token.type = TokenType::SYNONYM;

@@ -21,7 +21,7 @@ set<TokenType> validModifiesStmtParamTypes = {
 	TokenType::PROCEDURE
 };
 
-ModifiesValidator::ModifiesValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
+ModifiesValidator::ModifiesValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void ModifiesValidator::validate(PqlToken left, PqlToken right)
 {
@@ -31,11 +31,11 @@ void ModifiesValidator::validate(PqlToken left, PqlToken right)
 
 	if (validStatementRef.find(left.type) != validStatementRef.end())
 	{
-		validateStatementRef(left, "modifies", validModifiesStmtParamTypes);
+		validateStatementRef(left, validModifiesStmtParamTypes);
 	}
 	else
 	{
-		validateEntityRef(left, "modifies", entityTypes);
+		validateEntityRef(left, entityTypes);
 	}
-	validateEntityRef(right, "modifies", entityTypes);
+	validateEntityRef(right, entityTypes);
 }

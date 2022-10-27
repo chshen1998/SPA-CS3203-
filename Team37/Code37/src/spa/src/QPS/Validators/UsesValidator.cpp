@@ -22,7 +22,7 @@ set<TokenType> validUsesStmtParamTypes = {
 	TokenType::PROCEDURE
 };
 
-UsesValidator::UsesValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
+UsesValidator::UsesValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void UsesValidator::validate(PqlToken left, PqlToken right)
 {
@@ -32,11 +32,11 @@ void UsesValidator::validate(PqlToken left, PqlToken right)
 
 	if (validStatementRef.find(left.type) != validStatementRef.end())
 	{
-		validateStatementRef(left, "uses", validUsesStmtParamTypes);
+		validateStatementRef(left, validUsesStmtParamTypes);
 	}
 	else
 	{
-		validateEntityRef(left, "uses", entityTypes);
+		validateEntityRef(left, entityTypes);
 	}
-	validateEntityRef(right, "uses", entityTypes);
+	validateEntityRef(right, entityTypes);
 }

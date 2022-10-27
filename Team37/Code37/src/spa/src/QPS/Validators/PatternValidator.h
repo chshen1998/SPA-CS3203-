@@ -18,7 +18,7 @@
 
 class PatternValidator : public ClauseValidator {
 public:
-	PatternValidator(unordered_map<string, TokenType> declarations, TokenType token);
+	PatternValidator(unordered_map<string, TokenType> *declarations);
 	void validatePattern(PqlToken assign);
 	void validate(PqlToken left, PqlToken right);
 	void validateWhile(PqlToken left, PqlToken right);

@@ -12,7 +12,7 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-SelectValidator::SelectValidator(unordered_map<string, TokenType> declarationMap)
+SelectValidator::SelectValidator(unordered_map<string, TokenType> *declarationMap)
 {
 	declarations = declarationMap;
 }
@@ -25,11 +25,11 @@ void SelectValidator::validateSelect(PqlToken select)
 	}
 }
 
-void SelectValidator::validateMultiple(vector<PqlToken> tokenVector) 
+void SelectValidator::validateMultiple(vector<PqlToken> *tokenVector) 
 {
 	tokens = tokenVector;
 	next = 0;
-	size = tokenVector.size();
+	size = tokenVector->size();
 
 	PqlToken curr = getNextToken();
 	int start = 0;
@@ -52,13 +52,13 @@ void SelectValidator::validateMultiple(vector<PqlToken> tokenVector)
 
 void SelectValidator::validateSingle(int start, int end) {
 	if (end-start == 1) {
-		if (tokens[start].type != TokenType::BOOLEAN) {
-			validateSynonym(tokens[start]);
+		if (tokens->at(start).type != TokenType::BOOLEAN) {
+			validateSynonym(tokens->at(start));
 		}
 	}
 	else if (end - start == 3) {
-		validateSynonym(tokens[start]);
-		validateAttrName(tokens[start+1], tokens[start+2]);
+		validateSynonym(tokens->at(start));
+		validateAttrName(tokens->at(start+1), tokens->at(start+2));
 	}
 	else {
 		throw SemanticError("Invalid Select clause parameter");
@@ -85,8 +85,8 @@ void SelectValidator::validateAttrName(PqlToken dot, PqlToken attrName) {
 
 bool SelectValidator::isDeclared(PqlToken synonym)
 {
-	auto findit = declarations.find(synonym.value);
-	return (findit != declarations.end());
+	auto findit = declarations->find(synonym.value);
+	return (findit != declarations->end());
 }
 
 PqlToken SelectValidator::getNextToken() {
@@ -94,7 +94,7 @@ PqlToken SelectValidator::getNextToken() {
 	{
 		return PqlToken(TokenType::END, "");
 	}
-	PqlToken token = tokens[next];
+	PqlToken token = tokens->at(next);
 	next = next + 1;
 	return token;
 

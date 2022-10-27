@@ -40,7 +40,7 @@ void QPS::evaluate(string query, list<string>& results) {
         QueryTokenizer tokenizer = QueryTokenizer(query);
         vector<PqlToken> tokens = tokenizer.Tokenize();
 
-        QueryValidator validator = QueryValidator(tokens);
+        QueryValidator validator = QueryValidator(&tokens);
         PqlError pe = validator.validateQuery();
 
         if (pe.errorType != ErrorType::NONE)
@@ -52,7 +52,7 @@ void QPS::evaluate(string query, list<string>& results) {
 
         shared_ptr<PqlQuery> pq_pointer = make_shared<PqlQuery>();
 
-        QueryExtractor extractor = QueryExtractor(tokens, pq_pointer);
+        QueryExtractor extractor = QueryExtractor(&tokens, pq_pointer);
         extractor.extractSemantics();
 
         QueryOptimizer optimizer = QueryOptimizer(pq_pointer);

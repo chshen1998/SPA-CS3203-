@@ -20,7 +20,7 @@ extern set<TokenType> validCallsParamTypes;
 
 class CallsValidator : public ClauseValidator {
 public:
-	CallsValidator(unordered_map<string, TokenType> declarations, TokenType token);
+	CallsValidator(unordered_map<string, TokenType> *declarations, TokenType token);
 	void validate(PqlToken left, PqlToken right);
 };
 

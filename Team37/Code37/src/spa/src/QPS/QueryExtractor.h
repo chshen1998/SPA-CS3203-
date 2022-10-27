@@ -17,13 +17,13 @@ extern set<char> validOperators;
 
 class QueryExtractor {
 public:
-    vector<PqlToken> tokens;
+    vector<PqlToken> *tokens;
     int size;
     int next;
     bool booleanIsSynonym;
     shared_ptr<PqlQuery> pq;
 
-    QueryExtractor(vector<PqlToken> tokenVector, shared_ptr<PqlQuery> pq);
+    QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq);
 
     void extractSemantics();
 

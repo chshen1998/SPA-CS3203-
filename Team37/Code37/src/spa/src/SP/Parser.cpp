@@ -481,6 +481,11 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     string stmtsBlock = Parser::removeProcedureWrapper(whileBlock);
     vector<string> stmts;
     stmts = Parser::extractStatements(stmtsBlock, stmts);
+
+    if (stmts.empty()) {
+        throw InvalidSyntaxException((char *) "While blocks must have a statement");
+    }
+
     for (string s:stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s);
         whileStatement->addStatement(statement);

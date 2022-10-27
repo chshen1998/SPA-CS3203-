@@ -1508,6 +1508,24 @@ TEST_CASE("parseSourceCode - Negative Case - Empty blocks") {
     // No statements in procedure
     rawSourceCode = "procedure main {}";
     REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+
+    // No statements in if-then block
+    rawSourceCode = "procedure main {\n"
+                    "\tif (iter != 1) then {\n"
+                    "\t} else {\n"
+                    "\t\tbreadth = radius - 100;\n"
+                    "\t}\n"
+                    "}";
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+
+    // No statements in if-then block
+    rawSourceCode = "procedure main {\n"
+                    "\tif (iter != 1) then {\n"
+                    "\t\tbreadth = radius - 100;\n"
+                    "\t} else {\n"
+                    "\t}\n"
+                    "}";
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
 }
 
 TEST_CASE("parseProcedure - Positive Case") {

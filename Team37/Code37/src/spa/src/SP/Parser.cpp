@@ -451,6 +451,10 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     ifStmtLst = Parser::extractStatements(ifBlock, ifStmtLst);
     elseStmtLst = Parser::extractStatements(elseBlock, elseStmtLst);
 
+    if (ifStmtLst.empty() || elseStmtLst.empty()) {
+        throw InvalidSyntaxException((char *) "If and Else statement blocks cannot be empty");
+    }
+
     for (string s: ifStmtLst) {
         shared_ptr<Statement> statement = Parser::parseStatement(s);
         ifNode->addThenStatement(statement);

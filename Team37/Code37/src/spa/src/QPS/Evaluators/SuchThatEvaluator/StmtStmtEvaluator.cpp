@@ -14,7 +14,9 @@ unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType =
     { TokenType::PARENT, StmtStmtRelationType::PARENT },
     { TokenType::PARENT_A, StmtStmtRelationType::PARENTS },
     { TokenType::NEXT, StmtStmtRelationType::NEXT},
-    { TokenType::NEXT_A, StmtStmtRelationType::NEXTS}
+    { TokenType::NEXT_A, StmtStmtRelationType::NEXTS},
+    { TokenType::AFFECTS, StmtStmtRelationType::AFFECTS},
+    { TokenType::AFFECTS_A, StmtStmtRelationType::AFFECTSS},
 };
 
 bool StmtStmtEvaluator::evaluateBooleanClause(const Clause& clause) {
@@ -118,7 +120,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
         // Wildcard-Synonym --> Eg. Follows(_, s) 
         else if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::SYNONYM) {
             for (int lines : allLineNumOfSynonym) {
-                if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                if (checkIfComputeRelation(ss)) {
                     if (!servicer->reverseComputeRelation(lines, ss).empty()) {
                         finalTable.push_back(vector<string>{ to_string(lines) });
                     }
@@ -143,7 +145,7 @@ vector<vector<string>> StmtStmtEvaluator::evaluateSynonymClause(const Clause& cl
 
             // StmtNum-Synonym --> Eg. Follows(6, s) 
             else {
-                if (ss == StmtStmtRelationType::NEXT || ss == StmtStmtRelationType::NEXTS) {
+                if (checkIfComputeRelation(ss)) {
                     intermediateStmtLines = servicer->forwardComputeRelation(stoi(leftArg.value), ss);
                 }
                 else {
@@ -167,7 +169,8 @@ bool StmtStmtEvaluator::precheck(const PqlToken leftArg, const PqlToken rightArg
 
     // Follows/Follows*/Parent/Parent* cannot have same left/right arg
     if (ss == StmtStmtRelationType::FOLLOWS || ss == StmtStmtRelationType::FOLLOWSS ||
-        ss == StmtStmtRelationType::PARENT || ss == StmtStmtRelationType::PARENTS) 
+        ss == StmtStmtRelationType::PARENT || ss == StmtStmtRelationType::PARENTS ||
+        ss == StmtStmtRelationType::NEXT) 
     {
         if (leftArg == rightArg) {
             return false;
@@ -176,6 +179,14 @@ bool StmtStmtEvaluator::precheck(const PqlToken leftArg, const PqlToken rightArg
 
     if (ss == StmtStmtRelationType::PARENT || ss == StmtStmtRelationType::PARENTS) {
         if (declarations[leftArg.value] == TokenType::ASSIGN) {
+            return false;
+        }
+    }
+
+    if (ss == StmtStmtRelationType::AFFECTS || ss == StmtStmtRelationType::AFFECTSS) {
+        if (declarations[leftArg.value] != TokenType::ASSIGN ||
+            declarations[rightArg.value] != TokenType::ASSIGN) 
+        {
             return false;
         }
     }

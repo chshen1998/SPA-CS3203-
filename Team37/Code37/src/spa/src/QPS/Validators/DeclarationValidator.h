@@ -19,7 +19,7 @@
 
 class DeclarationValidator {
 public:
-	DeclarationValidator(vector<PqlToken> tokens);
+	DeclarationValidator(vector<PqlToken> *tokens);
 	unordered_map<string, TokenType> validate();
 
 private:
@@ -30,7 +30,7 @@ private:
 
 	int next;
 	int size;
-	vector<PqlToken> tokens;
+	vector<PqlToken> *tokens;
 };
 
 

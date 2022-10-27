@@ -30,7 +30,7 @@ void FinalEvaluator::getFinalResult(list<string> &result, vector<vector<string>>
     unordered_map<int, int> tableIndexToSelectIndex = getTableIndexToSelectIndex(intermediate);
 
     // Initialize our current row
-    vector<string> currentRow(pq.selectObjects.size(), "");
+    vector<string> currentRow(pq->selectObjects.size(), "");
     // Just to prevent duplicates in our final result
     unordered_set<string> uniqueResults;
 
@@ -66,11 +66,11 @@ unordered_map<int, int> FinalEvaluator::getTableIndexToSelectIndex(vector<vector
     unordered_map<int, int> tableIndexToSelectIndex;
 
     // Get the index of all the tuple elems
-    for (int i = 0; i < pq.selectObjects.size(); i++) {
-        string name = pq.selectObjects[i].synonym;
+    for (int i = 0; i < pq->selectObjects.size(); i++) {
+        string name = pq->selectObjects[i].synonym;
 
-        if (checkIfSelectSynonymIsDoubleAttr(pq.selectObjects[i])) {
-            name += "." + pq.selectObjects[i].attrName.value;
+        if (checkIfSelectSynonymIsDoubleAttr(pq->selectObjects[i])) {
+            name += "." + pq->selectObjects[i].attrName.value;
         }
 
         selectSynonymToIndex.insert({name, i});
@@ -92,7 +92,7 @@ void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>> &interm
     // Call AttrName types with ProcName
     // Read / Print AttrName types with VarName
     unordered_set<string> callReadPrintWithAltAttrName;
-    for (SelectObject s: pq.selectObjects) {
+    for (SelectObject s: pq->selectObjects) {
         if (checkIfSelectSynonymIsDoubleAttr(s)) {
             callReadPrintWithAltAttrName.insert(s.synonym);
         }
@@ -134,17 +134,17 @@ void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>> &interm
 
 
 bool FinalEvaluator::checkIfClauseContainsSelect() {
-    if (pq.selectObjects[0].type == SelectType::BOOLEAN) {
+    if (pq->selectObjects[0].type == SelectType::BOOLEAN) {
         return false;
     }
 
     unordered_set<string> selectElements;
 
-    for (SelectObject s: pq.selectObjects) {
+    for (SelectObject s: pq->selectObjects) {
         selectElements.insert(s.synonym);
     }
 
-    for (Clause c: pq.clauses[0]) {
+    for (Clause c: pq->clauses[0]) {
         if (selectElements.find(c.left.value) != selectElements.end() ||
             selectElements.find(c.right.value) != selectElements.end() ||
             selectElements.find(c.clauseType.value) != selectElements.end()) {
@@ -160,8 +160,8 @@ bool FinalEvaluator::checkIfClauseContainsSelect() {
 void FinalEvaluator::getAllCombinations(list<string> &result) {
     vector<vector<string>> finalResult;
 
-    for (SelectObject s: pq.selectObjects) {
-        TokenType declarationType = pq.declarations[s.synonym];
+    for (SelectObject s: pq->selectObjects) {
+        TokenType declarationType = pq->declarations[s.synonym];
 
         if (s.type == SelectType::ATTRNAME &&
             attrNameToTokenType.find(s.attrName.type) != attrNameToTokenType.end()) {
@@ -207,7 +207,7 @@ void FinalEvaluator::getAllCombinations(list<string> &result) {
 
 bool FinalEvaluator::checkIfSelectSynonymIsDoubleAttr(const SelectObject &s) {
     if (s.type == SelectType::ATTRNAME) {
-        TokenType synonymType = pq.declarations[s.synonym];
+        TokenType synonymType = pq->declarations[s.synonym];
 
         return ((synonymType == TokenType::CALL && s.attrName.type == TokenType::PROCNAME) ||
                 ((synonymType == TokenType::READ || synonymType == TokenType::PRINT) &&

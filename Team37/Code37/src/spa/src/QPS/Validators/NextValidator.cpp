@@ -11,10 +11,10 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-NextValidator::NextValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
+NextValidator::NextValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void NextValidator::validate(PqlToken left, PqlToken right)
 {
-	validateStatementRef(left, "next", statementTypes);
-	validateStatementRef(right, "next", statementTypes);
+	validateStatementRef(left, statementTypes);
+	validateStatementRef(right, statementTypes);
 }

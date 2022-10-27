@@ -20,19 +20,19 @@
 
 class SelectValidator {
 public:
-	SelectValidator(unordered_map<string, TokenType> declarations);
+	SelectValidator(unordered_map<string, TokenType> *declarations);
 	void validateSelect(PqlToken select);
 	void validateSynonym(PqlToken token);
 	void validateAttrName(PqlToken dot, PqlToken attrName);
-	void validateMultiple(vector<PqlToken> tokens);
+	void validateMultiple(vector<PqlToken> *tokens);
 
 private:
 	void validateSingle(int start, int end);
 	bool isDeclared(PqlToken token);
 	PqlToken getNextToken();
 
-	unordered_map<string, TokenType> declarations;
-	vector<PqlToken> tokens;
+	unordered_map<string, TokenType> *declarations;
+	vector<PqlToken> *tokens;
 	int next;
 	int size;
 };

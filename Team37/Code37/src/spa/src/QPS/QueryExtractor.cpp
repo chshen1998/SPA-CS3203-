@@ -18,10 +18,10 @@ set<char> validOperators = {
     '+', '*', '-', '/'
 };
 
-QueryExtractor::QueryExtractor(vector<PqlToken> tokenVector, shared_ptr<PqlQuery> pq_pointer)
+QueryExtractor::QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq_pointer)
 {
     tokens = tokenVector;
-    size = tokens.size();
+    size = tokens->size();
     next = 0;
     booleanIsSynonym = false;
     pq = pq_pointer;
@@ -250,7 +250,7 @@ PqlToken QueryExtractor::getNextToken()
     {
         return PqlToken(TokenType::END, "");
     }
-    PqlToken token = tokens[next];
+    PqlToken token = tokens->at(next);
     next = next +1;
 
     if (token.type == TokenType::BOOLEAN && booleanIsSynonym == true) {

@@ -16,10 +16,10 @@ set<TokenType> validCallsParamTypes = {
 	TokenType::PROCEDURE
 };
 
-CallsValidator::CallsValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
+CallsValidator::CallsValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void CallsValidator::validate(PqlToken left, PqlToken right)
 {
-	validateEntityRef(left, "calls", validCallsParamTypes);
-	validateEntityRef(right, "calls", validCallsParamTypes);
+	validateEntityRef(left, validCallsParamTypes);
+	validateEntityRef(right, validCallsParamTypes);
 }

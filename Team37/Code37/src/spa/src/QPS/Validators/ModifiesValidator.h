@@ -20,7 +20,7 @@ extern set<TokenType> validModifiesStmtParamTypes;
 
 class ModifiesValidator : public ClauseValidator {
 public:
-	ModifiesValidator(unordered_map<string, TokenType> declarations, TokenType token);
+	ModifiesValidator(unordered_map<string, TokenType> *declarations, TokenType token);
 	void validate(PqlToken left, PqlToken right);
 };
 

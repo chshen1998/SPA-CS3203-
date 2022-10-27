@@ -24,11 +24,11 @@ extern set<TokenType> suchThatStmtRefStmtRef;
 
 class QueryEvaluator {
 public:
-    PqlQuery pq;
+    shared_ptr<PqlQuery> pq;
     shared_ptr<QueryServicer> servicer;
     list<string> &result;
 
-    QueryEvaluator(PqlQuery &pqlQuery, shared_ptr<QueryServicer> s, list<string> &r);
+    QueryEvaluator(shared_ptr<PqlQuery> pqlQuery, shared_ptr<QueryServicer> s, list<string> &r);
 
     void evaluate();
 };

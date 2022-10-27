@@ -11,11 +11,11 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-PatternValidator::PatternValidator(unordered_map<string, TokenType> declarations, TokenType token) : ClauseValidator(declarations, token) {}
+PatternValidator::PatternValidator(unordered_map<string, TokenType> *declarations) : ClauseValidator(declarations, TokenType::PATTERN) {}
 
 void PatternValidator::validatePattern(PqlToken pattern)
 {
-	if (pattern.type != TokenType::SYNONYM || !isDeclared(pattern) || validPatternType.find(declarations[pattern.value]) == validPatternType.end())
+	if (pattern.type != TokenType::SYNONYM || !isDeclared(pattern) || validPatternType.find(declarations->at(pattern.value)) == validPatternType.end())
 	{
 		throw SemanticError("Invalid pattern: " + pattern.value);
 	}
@@ -23,17 +23,17 @@ void PatternValidator::validatePattern(PqlToken pattern)
 
 void PatternValidator::validate(PqlToken left, PqlToken right)
 {
-	validateEntityRef(left, "pattern", entityTypes);
+	validateEntityRef(left, entityTypes);
 	validateExpressionSpec(right);
 }
 
 void PatternValidator::validateWhile(PqlToken left, PqlToken right) {
-	validateEntityRef(left, "pattern", entityTypes);
+	validateEntityRef(left, entityTypes);
 	validateWildcard(right);
 }
 
 void PatternValidator::validateIf(PqlToken left, PqlToken mid, PqlToken right) {
-	validateEntityRef(left, "pattern", entityTypes);
+	validateEntityRef(left, entityTypes);
 	validateWildcard(mid);
 	validateWildcard(right);
 }

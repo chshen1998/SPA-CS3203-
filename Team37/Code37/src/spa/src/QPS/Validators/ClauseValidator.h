@@ -26,13 +26,13 @@ public:
 	virtual void validate(PqlToken left, PqlToken right) = 0;
 
 protected:
-	ClauseValidator(unordered_map<string, TokenType> declarationsMap, TokenType token);
+	ClauseValidator(unordered_map<string, TokenType> *declarationsMap, TokenType token);
 
-	void validateEntityRef(PqlToken token, string clauseType, set<TokenType> validParamTypes);
-	void validateStatementRef(PqlToken token, string clauseType, set<TokenType> validParamTypes);
+	void validateEntityRef(PqlToken token, set<TokenType> validParamTypes);
+	void validateStatementRef(PqlToken token, set<TokenType> validParamTypes);
 	bool isDeclared(PqlToken synonym);
 
-	unordered_map<string, TokenType> declarations;
+	unordered_map<string, TokenType> *declarations;
 	TokenType validatorType;
 };
 

@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#include <memory>
+
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Types/TokenType.h"
 #include "FilterEvaluator.h"
@@ -13,13 +15,13 @@ using namespace std;
 class FinalEvaluator : public FilterEvaluator {
 
 public:
-    FinalEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d, PqlQuery& p) :
+    FinalEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d, shared_ptr<PqlQuery> p) :
         FilterEvaluator(s, d), pq(p) {};
 
     void getFinalResult(list<string>&, vector<vector<string>>&);
 
 private:
-    PqlQuery& pq;
+    shared_ptr<PqlQuery> pq;
 
     void getAllCombinations(list<string>&);
 

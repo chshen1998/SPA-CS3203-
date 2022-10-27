@@ -58,7 +58,7 @@ void QPS::evaluate(string query, list<string>& results) {
         QueryOptimizer optimizer = QueryOptimizer(pq_pointer);
         optimizer.optimize();
 
-        QueryEvaluator evaluator = QueryEvaluator(*pq_pointer.get(), servicer, results);
+        QueryEvaluator evaluator = QueryEvaluator(pq_pointer, servicer, results);
         evaluator.evaluate();
     }
     catch (SyntaxError pe) {

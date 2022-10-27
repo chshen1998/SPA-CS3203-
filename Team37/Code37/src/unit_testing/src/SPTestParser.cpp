@@ -1498,6 +1498,18 @@ TEST_CASE("parseSourceCode - Negative Case - Wrong Round Brackets") {
     REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
 }
 
+TEST_CASE("parseSourceCode - Negative Case - Empty blocks") {
+    string rawSourceCode;
+
+    // No procedures
+    rawSourceCode = "";
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+
+    // No statements in procedure
+    rawSourceCode = "procedure main {}";
+    REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
+}
+
 TEST_CASE("parseProcedure - Positive Case") {
     string rawProcedure;
     shared_ptr<Procedure> procedure;

@@ -10,7 +10,8 @@ using namespace std;
 #include "PqlToken.h"
 
 set<TokenType> suchThatStmtRefStmtRef = {
-    TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A, TokenType::NEXT, TokenType::NEXT_A
+    TokenType::FOLLOWS, TokenType::FOLLOWS_A, TokenType::PARENT, TokenType::PARENT_A, TokenType::NEXT, TokenType::NEXT_A,
+    TokenType::AFFECTS, TokenType::AFFECTS_A
 };
 
 std::ostream& operator<< (std::ostream& os, const PqlToken& token) {

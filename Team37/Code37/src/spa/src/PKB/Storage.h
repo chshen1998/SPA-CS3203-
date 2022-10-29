@@ -19,6 +19,8 @@
 #include "../AST/SourceCode.h"
 #include "../AST/Statement/Statement.h"
 #include "../AST/Statement/AssignStatement.h"
+#include "../AST/Statement/ReadStatement.h"
+#include "../AST/Statement/CallStatement.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/ASTVisitor/ExtractGeneralASTVisitor.h"

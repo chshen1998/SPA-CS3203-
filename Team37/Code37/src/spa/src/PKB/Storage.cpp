@@ -217,23 +217,22 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             shared_ptr<AssignStatement> stmtNode1 = dynamic_pointer_cast<AssignStatement>(statements[stmt1]);
             shared_ptr<AssignStatement> stmtNode2 = dynamic_pointer_cast<AssignStatement>(statements[stmt2]);
 
-            if (stmtNode1 == nullptr || stmtNode2 == nullptr || stmt1 == stmt2) {
+            if (stmtNode1 == nullptr || stmtNode2 == nullptr) {
                 return false;
             }
-
             // Check CFG path + if variable 
             shared_ptr<CFGNode> cfgNode1 = this->CFGMap->at(stmt1);
             shared_ptr<CFGNode> cfgNode2 = this->CFGMap->at(stmt2);
 
             shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
-            
+
             // Check if statement 1 modifies a variable used in statement 2
             string var = stmtNode1->getVarName();
 
             if (!retrieveRelation(stmt2, var, USESSV)) {
                 return false;
             }
-
+            
             return retrieveAffectsHelper(cfgNode1, nullptr, cfgNode2, var, visited);
         } case (AFFECTSS): {
             // Check if both are affects
@@ -270,7 +269,7 @@ Helper function for retrieve affects
 */
 bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, shared_ptr<CFGNode> targetNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
     // Check if path visited before
-    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) == visited->end()) {
+    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) != visited->end()) {
         return false;
     }
     visited->insert(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode));
@@ -279,24 +278,42 @@ bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFG
     if (currNode == targetNode) {
         return true;
     }
-
-    // Check if intermediate node modifies variable
+    
+    // If current node is dummy node, recurse into child nodes
     shared_ptr<Statement> tnode = dynamic_pointer_cast<Statement>(currNode->getTNode());
     if (tnode == nullptr) {
+        // Recurse to child nodes
+        for (const auto& childNode : currNode->getChildren()) {
+            if (retrieveAffectsHelper(childNode, currNode, targetNode, var, visited)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
+    // Check if intermediate node modifies variable
+    // Only if assignment, read or call
+    bool isAssignment = dynamic_pointer_cast<AssignStatement>(tnode) != nullptr;
+    bool isRead = dynamic_pointer_cast<ReadStatement>(tnode) != nullptr;
+    bool isCall = dynamic_pointer_cast<CallStatement>(tnode) != nullptr;
+    
     int lineNo = tnode->getLineNum();
-    if (retrieveRelation(lineNo, var, MODIFIESSV)) {
-        return false;
+
+    if (parentNode != nullptr && (isAssignment || isRead || isCall)) {
+        if (parentNode != nullptr && retrieveRelation(lineNo, var, MODIFIESSV)) {
+            return false;
+        }
     }
 
-    bool result = false;
     // Recurse to child nodes
+    bool result = false;
     for (const auto& childNode : currNode->getChildren()) {
-        result = result || retrieveAffectsHelper(childNode, currNode, targetNode, var, visited);
+        if (retrieveAffectsHelper(childNode, currNode, targetNode, var, visited)) {
+            return true;
+        }
     }
-    return result;
+    return false;
 }
 
 /*
@@ -749,7 +766,7 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     set<int> result = {};
 
     // Check if path visited before
-    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) == visited->end()) {
+    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) != visited->end()) {
         return result;
     }
     visited->insert(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode));
@@ -951,7 +968,7 @@ set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     }
 
     // Check if path visited before
-    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, childNode)) == visited->end()) {
+    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, childNode)) != visited->end()) {
         return result;
     }
     visited->insert(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, childNode));

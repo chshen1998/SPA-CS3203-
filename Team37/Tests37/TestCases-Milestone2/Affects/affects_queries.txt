@@ -1,5 +1,110 @@
 1 - affects 1
-variable v;
-Select v such that Affects(1, 11)
-none
+
+Select BOOLEAN such that Affects (2, 6)
+TRUE
+5000
+2 - affects 2
+
+Select BOOLEAN such that Affects (4, 8)
+TRUE
+5000
+3 - affects 3
+
+Select BOOLEAN such that Affects (4, 10)
+TRUE
+5000
+4 - affects 4
+
+Select BOOLEAN such that Affects (6, 6)
+TRUE
+5000
+5 - affects 5
+
+Select BOOLEAN such that Affects (1, 4)
+TRUE
+5000
+6 - affects 6
+
+Select BOOLEAN such that Affects (1, 8)
+TRUE
+5000
+7 - affects 7
+
+Select BOOLEAN such that Affects (1, 10)
+TRUE
+5000
+8 - affects 8
+
+Select BOOLEAN such that Affects (1, 12)
+TRUE
+5000
+9 - affects 9
+
+Select BOOLEAN such that Affects (2, 10)
+TRUE
+5000
+10 - affects 10
+
+Select BOOLEAN such that Affects (9, 10)
+TRUE
+5000
+11 - affects 11
+
+Select BOOLEAN such that Affects (9, 11)
+FALSE
+5000
+10 - affects 10
+
+Select BOOLEAN such that Affects (9, 12)
+FALSE
+5000
+10 - affects 10
+
+Select BOOLEAN such that Affects (2, 3)
+FALSE
+5000
+11 - affects 11
+
+Select BOOLEAN such that Affects (9, 6)
+FALSE
+5000
+12 - affects 12
+assign a;
+Select a such that Affects (2, a)
+6, 10
+5000
+13 - affects 13
+assign a;
+Select a such that Affects (1, a)
+4, 8, 10, 12
+5000
+14 - affects 14
+assign a;
+Select a such that Affects (4, a)
+4, 8, 10, 12
+5000
+15 - affects 15
+assign a;
+Select a such that Affects (9, a)
+10
+5000
+16 - affects 16
+assign a;
+Select a such that Affects (a, 6)
+2, 6
+5000
+17 - affects 17
+assign a;
+Select a such that Affects (a, 10)
+1, 2, 4, 6, 8, 9
+5000
+18 - affects 18
+assign a;
+Select a such that Affects (a, 12)
+1, 10, 11, 8, 4
+5000
+19 - affects 19
+assign a;
+Select a such that Affects (a, 4)
+1, 4
 5000

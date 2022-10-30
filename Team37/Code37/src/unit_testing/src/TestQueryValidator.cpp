@@ -370,7 +370,7 @@ TEST_CASE("Invalid With clause parameter type")
     QueryValidator sut = QueryValidator(&invalid_with_parameter_type);
     PqlError results = sut.validateQuery();
 
-    REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
+    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
 }
 
 TEST_CASE("Invalid With clause undeclared parameters")

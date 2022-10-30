@@ -15,8 +15,14 @@ PatternValidator::PatternValidator(unordered_map<string, TokenType> *declaration
 
 void PatternValidator::validatePattern(PqlToken pattern)
 {
-	if (pattern.type != TokenType::SYNONYM || !isDeclared(pattern) || validPatternType.find(declarations->at(pattern.value)) == validPatternType.end())
+	if (pattern.type != TokenType::SYNONYM)
 	{
+		throw SyntaxError("Invalid pattern: " + pattern.value);
+	}
+	else if (!isDeclared(pattern)) {
+		throw SemanticError("Undeclared pattern: " + pattern.value);
+	}
+	else if (validPatternType.find(declarations->at(pattern.value)) == validPatternType.end()) {
 		throw SyntaxError("Invalid pattern: " + pattern.value);
 	}
 }

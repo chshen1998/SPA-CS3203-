@@ -84,7 +84,7 @@ Select p with p.absd = 1
 SyntaxError
 5000
 18 - With mismatch synonym and attrName
-procedure p;
+procedure p; 
 Select p with p.varName = 1
 SemanticError
 5000

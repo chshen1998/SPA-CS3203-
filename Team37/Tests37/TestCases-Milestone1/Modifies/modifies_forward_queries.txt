@@ -11,5 +11,5 @@ x
 3 - Modifies while
 variable v;
 Select v such that Modifies(11,v)
-x, flag, i
+x, flag
 5000

@@ -193,8 +193,8 @@ bool StmtStmtEvaluator::precheck(const PqlToken leftArg, const PqlToken rightArg
     }
 
     if (ss == StmtStmtRelationType::AFFECTS || ss == StmtStmtRelationType::AFFECTSS) {
-        if (declarations[leftArg.value] != TokenType::ASSIGN ||
-            declarations[rightArg.value] != TokenType::ASSIGN) {
+        if ((leftArg.type == TokenType::SYNONYM && declarations[leftArg.value] != TokenType::ASSIGN) || (rightArg.type == TokenType::SYNONYM &&
+            declarations[rightArg.value] != TokenType::ASSIGN)) {
             return false;
         }
     }

@@ -181,8 +181,7 @@ void ExtractModifiesASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpre
  * @param relationalExpr
  */
 void ExtractModifiesASTVisitor::visitRelationalExpression(shared_ptr<RelationalExpression> relationalExpr) {
-    relationalExpr->getRelFactor1()->accept(shared_from_this());
-    relationalExpr->getRelFactor2()->accept(shared_from_this());
+   
 }
 
 /**

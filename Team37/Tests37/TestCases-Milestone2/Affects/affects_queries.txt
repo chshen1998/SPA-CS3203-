@@ -68,3 +68,43 @@ FALSE
 Select BOOLEAN such that Affects (9, 6)
 FALSE
 5000
+12 - affects 12
+assign a;
+Select a such that Affects (2, a)
+6, 10
+5000
+13 - affects 13
+assign a;
+Select a such that Affects (1, a)
+4, 8, 10, 12
+5000
+14 - affects 14
+assign a;
+Select a such that Affects (4, a)
+4, 8, 10, 12
+5000
+15 - affects 15
+assign a;
+Select a such that Affects (9, a)
+10
+5000
+16 - affects 16
+assign a;
+Select a such that Affects (a, 6)
+
+5000
+17 - affects 17
+assign a;
+Select a such that Affects (a, 10)
+
+5000
+18 - affects 18
+assign a;
+Select a such that Affects (a, 12)
+
+5000
+19 - affects 19
+assign a;
+Select a such that Affects (a, 4)
+
+5000

@@ -703,7 +703,9 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
             set<int> result = forwardAffectsHelper(cfgNode, nullptr, var, visited);
             vector<int> output = {};
-            copy(result.begin(), result.end(), output.begin());
+            for (auto x : result) {
+                output.push_back(x);
+            }
             return output;
         }
         case(AFFECTSS): {
@@ -772,8 +774,8 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     visited->insert(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode));
 
     // If blank node, recurse into childNodes
-    shared_ptr<Statement> statement_node = dynamic_pointer_cast<Statement>(currNode->getTNode());
-    if (statement_node == nullptr) {
+    shared_ptr<Statement> statementNode = dynamic_pointer_cast<Statement>(currNode->getTNode());
+    if (statementNode == nullptr) {
         for (const auto& childNode : currNode->getChildren()) {
             set<int> childResult = forwardAffectsHelper(childNode, currNode, var, visited);
             result.insert(childResult.begin(), childResult.end());
@@ -782,14 +784,17 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     }
 
     // Check if current node is assign and uses var -> Add current node
-    int lineNo = statement_node->getLineNum();
-    shared_ptr<AssignStatement> assign_node = dynamic_pointer_cast<AssignStatement>(statement_node);
+    int lineNo = statementNode->getLineNum();
+    shared_ptr<AssignStatement> assign_node = dynamic_pointer_cast<AssignStatement>(statementNode);
     if (assign_node != nullptr && retrieveRelation(lineNo, var, USESSV) && parentNode != nullptr) {
         result.insert(lineNo);
     }
-    
-    // If current statement modifies var -> end recursion
-    if (retrieveRelation(lineNo, var, MODIFIESSV)) {
+
+    // If current statement is assignment, read or call and modifies var -> end recursion
+    bool isAssignment = dynamic_pointer_cast<AssignStatement>(statementNode) != nullptr;
+    bool isRead = dynamic_pointer_cast<ReadStatement>(statementNode) != nullptr;
+    bool isCall = dynamic_pointer_cast<CallStatement>(statementNode) != nullptr;
+    if ((isAssignment || isRead || isCall) && parentNode != nullptr && retrieveRelation(lineNo, var, MODIFIESSV)) {
         return result;
     }
 

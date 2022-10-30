@@ -15,6 +15,6 @@ ParentValidator::ParentValidator(unordered_map<string, TokenType> *declarations,
 
 void ParentValidator::validate(PqlToken left, PqlToken right)
 {
-	validateStatementRef(left, statementTypes);
-	validateStatementRef(right, statementTypes);
+	validateStatementRef(left);
+	validateStatementRef(right);
 }

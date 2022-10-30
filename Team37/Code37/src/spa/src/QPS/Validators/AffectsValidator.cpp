@@ -15,6 +15,6 @@ AffectsValidator::AffectsValidator(unordered_map<string, TokenType> *declaration
 
 void AffectsValidator::validate(PqlToken left, PqlToken right)
 {
-	validateStatementRef(left, statementTypes);
-	validateStatementRef(right, statementTypes);
+	validateStatementRef(left);
+	validateStatementRef(right);
 }

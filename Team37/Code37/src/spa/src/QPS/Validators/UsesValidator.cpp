@@ -12,16 +12,6 @@ using namespace std;
 #include "ValidatorUtils.h"
 #include <iostream>
 
-set<TokenType> validUsesStmtParamTypes = {
-	TokenType::ASSIGN,
-	TokenType::PRINT,
-	TokenType::STATEMENT,
-	TokenType::IF,
-	TokenType::WHILE,
-	TokenType::CALL,
-	TokenType::PROCEDURE
-};
-
 UsesValidator::UsesValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void UsesValidator::validate(PqlToken left, PqlToken right)
@@ -32,11 +22,11 @@ void UsesValidator::validate(PqlToken left, PqlToken right)
 
 	if (validStatementRef.find(left.type) != validStatementRef.end())
 	{
-		validateStatementRef(left, validUsesStmtParamTypes);
+		validateStatementRef(left);
 	}
 	else
 	{
-		validateEntityRef(left, entityTypes);
+		validateEntityRef(left);
 	}
-	validateEntityRef(right, entityTypes);
+	validateEntityRef(right);
 }

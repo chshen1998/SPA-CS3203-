@@ -31,10 +31,6 @@ set<TokenType> statementTypes = {
     TokenType::IF
 };
 
-set<TokenType> entityTypes = {
-    TokenType::VARIABLE
-};
-
 /*
  * Set of valid declaration types
  */
@@ -122,7 +118,8 @@ unordered_map<TokenType, string> relationshipToStringMap = {
     {TokenType::NEXT, "Next"},
     {TokenType::NEXT_A, "Next*"},
     {TokenType::AFFECTS, "Affects"},
-    {TokenType::AFFECTS_A, "Affects*"}
+    {TokenType::AFFECTS_A, "Affects*"},
+    {TokenType::PATTERN, "Pattern"}
 };
 
 unordered_map<TokenType, set<TokenType>> validSynonymToAttrMap = {

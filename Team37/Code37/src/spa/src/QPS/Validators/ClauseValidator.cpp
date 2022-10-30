@@ -38,7 +38,7 @@ void ClauseValidator::validateEntityRef(PqlToken token, set<TokenType> validPara
 {
 	if (validEntityRef.find(token.type) == validEntityRef.end())
 	{
-		throw SemanticError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
+		throw SyntaxError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
 	}
 	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
 	{
@@ -54,7 +54,7 @@ void ClauseValidator::validateStatementRef(PqlToken token, set<TokenType> validP
 {
 	if (validStatementRef.find(token.type) == validStatementRef.end())
 	{
-		throw SemanticError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
+		throw SyntaxError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
 	}
 	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
 	{

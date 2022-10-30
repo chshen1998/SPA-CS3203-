@@ -26,7 +26,7 @@ SyntaxError
 6 - Invalid pattern assign 
 stmt s;
 Select s pattern s(_, _)
-SemanticError 
+SyntaxError 
 5000
 7 - Invalid uses parameters 
 variable v;
@@ -71,5 +71,25 @@ SemanticError
 15 - Uses constant
 assign a; constant c;
 Select a such that Uses(a,c)
+SemanticError
+5000
+16 - Uses constant
+constant c; assign a; variable v;
+Select c such that Uses (a, v) pattern a (_,  c)
+SyntaxError
+5000
+17 - With fake attrName
+procedure p;
+Select p with p.absd = 1
+SyntaxError
+5000
+18 - With mismatch synonym and attrName
+procedure p;
+Select p with p.varName = 1
+SemanticError
+5000
+19 - With mismatch attrName and ref type
+procedure p;
+Select p with p.procName = 1
 SemanticError
 5000

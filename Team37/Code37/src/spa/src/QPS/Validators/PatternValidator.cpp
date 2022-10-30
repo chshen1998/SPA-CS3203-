@@ -17,7 +17,7 @@ void PatternValidator::validatePattern(PqlToken pattern)
 {
 	if (pattern.type != TokenType::SYNONYM || !isDeclared(pattern) || validPatternType.find(declarations->at(pattern.value)) == validPatternType.end())
 	{
-		throw SemanticError("Invalid pattern: " + pattern.value);
+		throw SyntaxError("Invalid pattern: " + pattern.value);
 	}
 }
 
@@ -42,19 +42,19 @@ void PatternValidator::validateExpressionSpec(PqlToken token)
 {
 	if (validExpressionSpec.find(token.type) == validExpressionSpec.end())
 	{
-		throw SemanticError("Invalid parameters for pattern clause");
+		throw SyntaxError("Invalid parameters for pattern clause");
 	}
 	else if (token.type == TokenType::WILDCARD_STRING)
 	{
 		int tokenLen = token.value.size();
 		if (token.value[0] != '_' || token.value[tokenLen - 1] != '_') {
-			throw SemanticError(token.value + " is invalid wildcard matching");
+			throw SyntaxError("Invalid parameters for pattern clause");
 		}
 	}
 }
 
 void PatternValidator::validateWildcard(PqlToken token) {
 	if (token.type != TokenType::WILDCARD) {
-		throw SemanticError("Invalid parameters for pattern clause");
+		throw SyntaxError("Invalid parameters for pattern clause");
 	}
 }

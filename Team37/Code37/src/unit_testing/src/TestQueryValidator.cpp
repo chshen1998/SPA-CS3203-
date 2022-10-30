@@ -132,7 +132,7 @@ TEST_CASE("Error: Missing Select Clause")
     QueryValidator sut = QueryValidator(&missing_select);
     PqlError results = sut.validateQuery();
 
-    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+    REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
 
 
@@ -190,23 +190,6 @@ TEST_CASE("Valid multi-pattern")
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-TEST_CASE("Error: Invalid Pattern wildcard string")
-{
-    QueryValidator sut = QueryValidator(&invalid_pattern_wildcard_string);
-    PqlError results = sut.validateQuery();
-
-    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
-}
-
-
-TEST_CASE("Error: Invalid Pattern while parameter type")
-{
-    QueryValidator sut = QueryValidator(&invalid_pattern_while_parameters);
-    PqlError results = sut.validateQuery();
-
-    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
-}
-
 TEST_CASE("Error: Invalid Pattern if missing argument")
 {
     QueryValidator sut = QueryValidator(&invalid_pattern_if_parameters);
@@ -236,7 +219,7 @@ TEST_CASE("Error: Invalid Pattern assign parameter type")
     QueryValidator sut = QueryValidator(&invalid_pattern_parameter);
     PqlError results = sut.validateQuery();
 
-    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+    REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
 
 TEST_CASE("Error: Missing open bracket")
@@ -387,7 +370,7 @@ TEST_CASE("Invalid With clause parameter type")
     QueryValidator sut = QueryValidator(&invalid_with_parameter_type);
     PqlError results = sut.validateQuery();
 
-    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+    REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
 
 TEST_CASE("Invalid With clause undeclared parameters")
@@ -403,7 +386,7 @@ TEST_CASE("Invalid With clause synonym attrname")
     QueryValidator sut = QueryValidator(&invalid_with_synonym_attrname);
     PqlError results = sut.validateQuery();
 
-    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+    REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
 
 TEST_CASE("Invalid With clause missing dot between synonym and attrName")
@@ -411,15 +394,6 @@ TEST_CASE("Invalid With clause missing dot between synonym and attrName")
     QueryValidator sut = QueryValidator(&invalid_with_missing_dot);
     PqlError results = sut.validateQuery();
 
-    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
+    REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
-
-TEST_CASE("Invalid With clause parameters extra tokens")
-{
-    QueryValidator sut = QueryValidator(&invalid_with_parameter_extra_tokens);
-    PqlError results = sut.validateQuery();
-
-    REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
-}
-
 

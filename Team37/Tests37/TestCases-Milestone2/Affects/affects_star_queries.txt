@@ -1,0 +1,25 @@
+1 - affects* 1
+
+Select BOOLEAN such that Affects* (1, 4)
+TRUE
+5000
+2 - affects* 2
+
+Select BOOLEAN such that Affects* (1, 10)
+TRUE
+5000
+3 - affects* 3
+
+Select BOOLEAN such that Affects* (1, 11)
+TRUE
+5000
+4 - affects* 4
+
+Select BOOLEAN such that Affects* (1, 12)
+TRUE
+5000
+4 - affects* 4
+
+Select BOOLEAN such that Affects* (1, 2)
+FALSE
+5000

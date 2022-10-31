@@ -34,7 +34,7 @@ void ClauseValidator::validateComma(PqlToken token) {
 	}
 }
 
-void ClauseValidator::validateEntityRef(PqlToken token)
+void ClauseValidator::validateEntityRef(PqlToken token, TokenType entityType)
 {
 	if (validEntityRef.find(token.type) == validEntityRef.end())
 	{
@@ -44,7 +44,7 @@ void ClauseValidator::validateEntityRef(PqlToken token)
 	{
 		throw SemanticError(token.value + " is undeclared parameter for " + relationshipToStringMap[validatorType] + " clause");
 	} 
-	else if (token.type == TokenType::SYNONYM && declarations->at(token.value) != TokenType::VARIABLE)
+	else if (token.type == TokenType::SYNONYM && declarations->at(token.value) != entityType)
 	{
 		throw SemanticError(token.value + " is invalid parameter type for " + relationshipToStringMap[validatorType] + " clause");
 	}

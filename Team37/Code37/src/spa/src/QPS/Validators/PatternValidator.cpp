@@ -29,17 +29,17 @@ void PatternValidator::validatePattern(PqlToken pattern)
 
 void PatternValidator::validate(PqlToken left, PqlToken right)
 {
-	validateEntityRef(left);
+	validateEntityRef(left, TokenType::VARIABLE);
 	validateExpressionSpec(right);
 }
 
 void PatternValidator::validateWhile(PqlToken left, PqlToken right) {
-	validateEntityRef(left);
+	validateEntityRef(left, TokenType::VARIABLE);
 	validateWildcard(right);
 }
 
 void PatternValidator::validateIf(PqlToken left, PqlToken mid, PqlToken right) {
-	validateEntityRef(left);
+	validateEntityRef(left, TokenType::VARIABLE);
 	validateWildcard(mid);
 	validateWildcard(right);
 }

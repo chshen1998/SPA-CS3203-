@@ -16,6 +16,6 @@ CallsValidator::CallsValidator(unordered_map<string, TokenType> *declarations, T
 
 void CallsValidator::validate(PqlToken left, PqlToken right)
 {
-	validateEntityRef(left);
-	validateEntityRef(right);
+	validateEntityRef(left, TokenType::PROCEDURE);
+	validateEntityRef(right, TokenType::PROCEDURE);
 }

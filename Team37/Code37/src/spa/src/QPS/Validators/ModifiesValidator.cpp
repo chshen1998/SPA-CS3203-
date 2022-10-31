@@ -25,7 +25,7 @@ void ModifiesValidator::validate(PqlToken left, PqlToken right)
 	}
 	else
 	{
-		validateEntityRef(left);
+		validateEntityRef(left, TokenType::VARIABLE);
 	}
-	validateEntityRef(right);
+	validateEntityRef(right, TokenType::VARIABLE);
 }

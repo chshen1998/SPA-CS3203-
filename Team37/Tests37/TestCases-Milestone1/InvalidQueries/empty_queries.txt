@@ -1,0 +1,25 @@
+1 - Modifies print
+print p; variable v;
+Select p such that Modifies(p,v)
+
+5000
+2 - Uses read
+read r; variable v;
+Select r such that Uses(r,v)
+
+5000
+3 - Affects stmt
+stmt s1, s2;
+Select s1 such that Affects(s1, s2)
+
+5000
+4 - Affects read & print
+read r; print p;
+Select r such that Affects(r, p)
+
+5000
+4 - Affects assign 
+assign a1, a2;
+Select a1 such that Affects(a1, a2)
+
+5000

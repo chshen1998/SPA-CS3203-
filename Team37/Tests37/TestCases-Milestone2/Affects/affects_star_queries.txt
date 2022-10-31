@@ -23,3 +23,13 @@ TRUE
 Select BOOLEAN such that Affects* (1, 2)
 FALSE
 5000
+5 - affects* 5
+assign a;
+Select a such that Affects* (1, a)
+4, 8, 10, 11, 12
+5000
+5 - affects* 5
+assign a;
+Select a such that Affects* (a, 8)
+
+5000

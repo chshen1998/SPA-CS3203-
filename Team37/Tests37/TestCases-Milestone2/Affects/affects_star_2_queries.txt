@@ -1,0 +1,65 @@
+1 - affects 1
+
+Select BOOLEAN such that Affects (1, 2)
+TRUE
+5000
+2 - affects 2
+
+Select BOOLEAN such that Affects (2, 3)
+TRUE
+5000
+3 - affects 3
+
+Select BOOLEAN such that Affects (1, 3)
+FALSE
+5000
+4 - affects 4
+assign a;
+Select a such that Affects (1, a)
+2
+5000
+5 - affects 5
+assign a;
+Select a such that Affects (2, a)
+3
+5000
+6 - affects 6
+assign a;
+Select a such that Affects (3, a)
+
+5000
+7 - affects 7
+assign a;
+Select a such that Affects (a, 1)
+
+5000
+8 - affects 8
+assign a;
+Select a such that Affects (a, 2)
+1
+5000
+9 - affects 9
+assign a;
+Select a such that Affects (a, 3)
+2
+5000
+10 - affects* 1
+
+Select BOOLEAN such that Affects* (1, 2)
+TRUE
+5000
+11 - affects* 2
+
+Select BOOLEAN such that Affects* (1, 3)
+TRUE
+5000
+12 - affects* 3
+assign a;
+Select a such that Affects* (1, a)
+2, 3
+5000
+12 - affects* 4
+assign a;
+Select a such that Affects* (a, 3)
+1, 2
+5000

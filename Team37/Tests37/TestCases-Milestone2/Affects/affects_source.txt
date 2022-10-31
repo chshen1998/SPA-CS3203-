@@ -7,7 +7,7 @@ procedure Second {
         i = i - 1; }
     if (x==1) then {
         x = x+1; }
-    else { z = 1; }
+    else { x = 1; }
     z = z + x + i;
     y = z + 2;
     x = x * y + z; }

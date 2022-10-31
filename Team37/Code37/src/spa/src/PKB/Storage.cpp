@@ -759,14 +759,16 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
                 // Mark as visited and add to result
                 visited[currStmt] = true;
-                output.push_back(currStmt);
+                
 
                 // Get all statement that this affects
                 vector<int> nextResult = forwardComputeRelation(currStmt, AFFECTS);
 
                 // Add all next result into queue
+
                 for (int x : nextResult) {
                     nodeQueue.push(x);
+                    output.push_back(x);
                 }
 
             }
@@ -959,13 +961,14 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
 
                 // Mark as visited and add to result
                 visited[currStmt] = true;
-                output.push_back(currStmt);
+                
 
                 // Get all statement that this affects
                 vector<int> nextResult = reverseComputeRelation(currStmt, AFFECTS);
 
                 // Add all next result into queue
                 for (int x : nextResult) {
+                    output.push_back(x);
                     nodeQueue.push(x);
                 }
 

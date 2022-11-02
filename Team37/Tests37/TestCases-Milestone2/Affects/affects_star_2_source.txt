@@ -1,0 +1,4 @@
+procedure p {
+ x = a;
+ v = x;
+ z = v; }

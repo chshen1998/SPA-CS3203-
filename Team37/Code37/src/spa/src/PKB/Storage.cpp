@@ -239,17 +239,39 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             shared_ptr<AssignStatement> stmtNode1 = dynamic_pointer_cast<AssignStatement>(statements[stmt1]);
             shared_ptr<AssignStatement> stmtNode2 = dynamic_pointer_cast<AssignStatement>(statements[stmt2]);
 
-            if (stmtNode1 == nullptr || stmtNode2 == nullptr || stmt1 == stmt2) {
+            if (stmtNode1 == nullptr || stmtNode2 == nullptr) {
                 return false;
             }
 
-            vector<int> forwardResult = forwardComputeRelation(stmt1, AFFECTS);
+            
 
-            for (auto x : forwardResult) {
-                if (x == stmt2) {
-                    return true;
+            unordered_map<int, bool> visited = {};
+            queue<int> q = {};
+
+            q.push(stmt1);
+
+
+            while (!q.empty()) {
+                int nextStmt = q.front();
+                q.pop();
+                
+
+                if (visited[nextStmt]) {
+                    continue;
+                }
+                else {
+                    visited[nextStmt] = true;
+                }
+
+                vector<int> forwardResult = forwardComputeRelation(nextStmt, AFFECTS);
+                for (auto x : forwardResult) {
+                    q.push(x);
+                    if (x == stmt2) {
+                        return true;
+                    }
                 }
             }
+
             return false;
             
         }
@@ -737,14 +759,16 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
                 // Mark as visited and add to result
                 visited[currStmt] = true;
-                output.push_back(currStmt);
+                
 
                 // Get all statement that this affects
                 vector<int> nextResult = forwardComputeRelation(currStmt, AFFECTS);
 
                 // Add all next result into queue
+
                 for (int x : nextResult) {
                     nodeQueue.push(x);
+                    output.push_back(x);
                 }
 
             }
@@ -937,13 +961,14 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
 
                 // Mark as visited and add to result
                 visited[currStmt] = true;
-                output.push_back(currStmt);
+                
 
                 // Get all statement that this affects
                 vector<int> nextResult = reverseComputeRelation(currStmt, AFFECTS);
 
                 // Add all next result into queue
                 for (int x : nextResult) {
+                    output.push_back(x);
                     nodeQueue.push(x);
                 }
 

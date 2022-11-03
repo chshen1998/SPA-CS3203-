@@ -10,6 +10,10 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
 
+defaults:
+  run:
+    shell: bash
+    
 jobs:
   build:
     runs-on: windows-latest
@@ -19,6 +23,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+        
       - name: Build Project
         shell: bash
         run: |
@@ -30,4 +40,13 @@ jobs:
           cmake --build . --target integration_testing --config Release
           cmake --build . --target autotester --config Release
           cd ../..
+      
+      - name: Run unit tests
+        run: ./Team37/Code37/src/unit_testing/${{ matrix.build-type }}/unit_testing.exe
+      
+      - name: Run integration tests
+        run: |
+          cd Team24/Tests24
+          python script.py
+      
       

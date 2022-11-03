@@ -10,6 +10,7 @@ using namespace std;
 #include "QueryExtractor.h"
 #include "./Extractors/BaseExtractor.h"
 #include "./Extractors/DeclarationExtractor.h"
+#include "./Extractors/SelectExtractor.h"
 #include "./Structures/PqlError.h"
 #include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
@@ -35,8 +36,8 @@ QueryExtractor::QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuer
 void QueryExtractor::extractSemantics()
 {
     extractDeclarations();
-    PqlToken curr = extractSelect();
-    extractClauses(curr);
+    extractSelect();
+    extractClauses();
 }
 
 void QueryExtractor::extractDeclarations()
@@ -51,48 +52,21 @@ void QueryExtractor::extractDeclarations()
     next += 1;
 }
 
-PqlToken QueryExtractor::extractSelect()
+void QueryExtractor::extractSelect()
 {
-
-
-    getNextToken(); // Select token
-
-    PqlToken token = getNextToken();
-    if (token.type == TokenType::OPEN_ARROW) {
-        PqlToken comma = PqlToken(TokenType::COMMA, ",");
-
-        // While loop ends when closed arrow is reached
-        while (comma.type == TokenType::COMMA) {
-            token = getNextToken(); // Get token after open arrow/comma
-            comma = extractSelectObject(token); // Returns either comma or closed arrow
-        }
-        return getNextToken(); // Get token after closed arrow
+    int start = next;
+    while (tokens->at(next).type != TokenType::PATTERN && tokens->at(next).type != TokenType::SUCH && tokens->at(next).type != TokenType::WITH) {
+        next += 1;
     }
-    else {
-        token = extractSelectObject(token);
-        return token; 
-    }
+
+    shared_ptr<BaseExtractor> extractor = shared_ptr<BaseExtractor>(new SelectExtractor(pq, tokens));
+    extractor->extract(start, next);
 }
 
-PqlToken QueryExtractor::extractSelectObject(PqlToken curr) {
-    PqlToken nextToken = getNextToken();
-    if (nextToken.type == TokenType::DOT) {
-        nextToken = getNextToken();
-        pq->selectObjects.push_back(SelectObject(SelectType::ATTRNAME, curr.value, nextToken));
-        nextToken = getNextToken();
-    }
-    else if (curr.type == TokenType::BOOLEAN) {
-        pq->selectObjects.push_back(SelectObject(SelectType::BOOLEAN));
-    }
-    else {
-        pq->selectObjects.push_back(SelectObject(SelectType::SYNONYM, curr.value));
-    }
-
-    return nextToken;
-}
-
-void QueryExtractor::extractClauses(PqlToken nextToken)
-{
+void QueryExtractor::extractClauses()
+{   
+    PqlToken nextToken = tokens->at(next);
+    next += 1;
     pq->clauses.push_back(vector<Clause>{});
     if (pq->clauses.size() == 0) {
         throw SyntaxError("");

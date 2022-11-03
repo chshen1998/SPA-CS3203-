@@ -25,7 +25,6 @@ PqlToken BaseExtractor::getNextToken()
         return PqlToken(TokenType::END, "");
     }
     PqlToken token = tokens->at(next);
-    cout << token.value;
     next = next + 1;
     return token;
 }

@@ -30,11 +30,9 @@ public:
 private:
     void extractDeclarations();
     
-    PqlToken extractSelect();
+    void extractSelect();
 
-    PqlToken extractSelectObject(PqlToken curr);
-
-    void extractClauses(PqlToken curr);
+    void extractClauses();
 
     PqlToken extractPatternClause();
 

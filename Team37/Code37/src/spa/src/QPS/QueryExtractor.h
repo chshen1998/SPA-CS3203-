@@ -44,6 +44,8 @@ private:
 
     PqlToken extractString(PqlToken token);
 
+    string removeWhitespace(string value);
+
     PqlToken getNextToken();
 };
 

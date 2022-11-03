@@ -31,13 +31,7 @@ QueryExtractor::QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuer
 void QueryExtractor::extractSemantics()
 {
     extractDeclarations();
-
-    if (pq->declarations.find("BOOLEAN") != pq->declarations.end()) {
-        booleanIsSynonym = true;
-    }
-
     PqlToken curr = extractSelect();
-
     extractClauses(curr);
 }
 
@@ -48,6 +42,10 @@ void QueryExtractor::extractDeclarations()
         PqlToken synonym = getNextToken();
         PqlToken symbol = getNextToken();
         pq->declarations[synonym.value] = declaration.type;
+
+        if (synonym.value == "BOOLEAN") {
+            booleanIsSynonym = true;
+        }
 
         if (symbol.type == TokenType::SEMICOLON) {
             declaration = getNextToken();
@@ -102,17 +100,16 @@ void QueryExtractor::extractClauses(PqlToken nextToken)
 
     while (nextToken.type != TokenType::END)
     {
-	    if (nextToken.type == TokenType::PATTERN)
-	    {
+        switch (nextToken.type) {
+        case TokenType::PATTERN:
             nextToken = extractPatternClause();
-	    }
-        else if (nextToken.type == TokenType::WITH)
-        {
+            break;
+        case TokenType::WITH:
             nextToken = extractWithClause();
-        }
-        else
-        {
+            break;
+        default:
             nextToken = extractSuchThatClause();
+            break;
         }
     }
 }
@@ -209,39 +206,35 @@ PqlToken QueryExtractor::extractSuchThatClause()
 
 PqlToken QueryExtractor::extractString(PqlToken token)
 {
-    if (token.type != TokenType::STRING && token.type != TokenType::WILDCARD_STRING) {
+    int size = token.value.length();
+    string s = "";
+    if (token.type == TokenType::STRING) {
+        s = token.value.substr(1, size - 2);
+    }
+    else if (token.type == TokenType::WILDCARD_STRING) {
+        s = token.value.substr(2, size - 4);
+    }
+    else {
         return token;
     }
 
+    token.value = removeWhitespace(s);
+    return token;
+}
+
+string QueryExtractor::removeWhitespace(string s) {
     string newS = "";
-    string s = token.value;
-
-    int edge = 1;
-    if (token.type == TokenType::WILDCARD_STRING) {
-        edge = 2;
-    }
-
-    bool prevIsOp = true;
-    for (int i = edge; i < s.length() - edge; i++) {
+    for (int i = 0; i < s.length(); i++) {
         if (s[i] == ' ' || s[i] == '\t' || s[i] == '\v') {
             continue;
         }
-
-        if (validOperators.find(s[i]) != validOperators.end())
-        {
-            if (prevIsOp || i == s.length() - edge - 1) {
-                throw SyntaxError("Invalid parameter: " + token.value);
-            }
-            newS.push_back(s[i]);
-            prevIsOp = true;
-        }
-        else {
-            newS.push_back(s[i]);
-            prevIsOp = false;
-        }
+        newS.push_back(s[i]);
     }
 
-    return PqlToken(token.type, newS);
+    if (validOperators.find(newS[0]) != validOperators.end() || validOperators.find(newS[newS.length() - 1]) != validOperators.end()) {
+        throw SyntaxError("Invalid parameters");
+    }
+    return newS;
 }
 
 PqlToken QueryExtractor::getNextToken()

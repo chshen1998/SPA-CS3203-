@@ -97,6 +97,8 @@ void ExtractUsesASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStm
         tuple<int, string, string> lineNumProcedureTuple(lineNum, parentProcedureName, calledProcedureName);
         this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
     }
+
+    visitParentAndStoreCalls(callStmt, "", calledProcedureName);
 }
 
 /**
@@ -271,3 +273,44 @@ void ExtractUsesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string v
     }
 
 }
+
+void ExtractUsesASTVisitor::visitParentAndStoreCalls(shared_ptr<TNode> node, string parentProcedureName,
+                                                     string calledProcedureName) {
+    while (node != nullptr) {
+        // Assign Statement: Uses(a, v)
+        if (dynamic_pointer_cast<AssignStatement>(node) != nullptr) {
+            shared_ptr<AssignStatement> assignStmt = dynamic_pointer_cast<AssignStatement>(node);
+            tuple<int, string, string> lineNumProcedureTuple(assignStmt->getLineNum(), parentProcedureName,
+                                                             calledProcedureName);
+            this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
+        }
+
+        // Read Statement: Uses(re, v)
+        // JUST A SAFETY NET: shouldn't be called as Read Stmts have no children
+        if (dynamic_pointer_cast<ReadStatement>(node) != nullptr) {
+            shared_ptr<ReadStatement> readStmt = dynamic_pointer_cast<ReadStatement>(node);
+            tuple<int, string, string> lineNumProcedureTuple(readStmt->getLineNum(), parentProcedureName,
+                                                             calledProcedureName);
+            this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
+        }
+
+        // If Statement: Uses(s, v)
+        if (dynamic_pointer_cast<IfStatement>(node) != nullptr) {
+            shared_ptr<IfStatement> ifStmt = dynamic_pointer_cast<IfStatement>(node);
+            tuple<int, string, string> lineNumProcedureTuple(ifStmt->getLineNum(), parentProcedureName,
+                                                             calledProcedureName);
+            this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
+        }
+
+        // While Statement: Uses(s, v)
+        if (dynamic_pointer_cast<WhileStatement>(node) != nullptr) {
+            shared_ptr<WhileStatement> whileStmt = dynamic_pointer_cast<WhileStatement>(node);
+            tuple<int, string, string> lineNumProcedureTuple(whileStmt->getLineNum(), parentProcedureName,
+                                                             calledProcedureName);
+            this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
+        }
+
+        // traverse upwards
+        node = node->getParent();
+    }
+};

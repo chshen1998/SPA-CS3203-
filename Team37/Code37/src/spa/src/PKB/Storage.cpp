@@ -124,7 +124,7 @@ Retrieve all stored statements
 set<shared_ptr<Statement>> Storage::getAllStmt() {
     set<shared_ptr<Statement>> output = {};
 
-    for (auto kv : statements) {
+    for (auto kv: statements) {
         output.insert(kv.second);
     }
 
@@ -151,11 +151,13 @@ void Storage::storeCallStmtProcedure(ProcVarRelationType relationProcType, StmtV
         vector<string> storedVariablesInProcedure = this->forwardRetrieveRelation(calledProcedureName,
                                                                                   relationProcType);
         for (const auto &variable: storedVariablesInProcedure) {
-
             // store Relation(c,v)
             this->storeRelation(lineNum, variable, relationStmtType);
-            // store Relation(p,v)
-            this->storeRelation(parentProcedureName, variable, relationProcType);
+            if (!parentProcedureName.empty()) {
+                // store Relation(p,v)
+                this->storeRelation(parentProcedureName, variable, relationProcType);
+            }
+
         }
     }
 
@@ -232,9 +234,10 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             if (!retrieveRelation(stmt2, var, USESSV)) {
                 return false;
             }
-            
+
             return retrieveAffectsHelper(cfgNode1, nullptr, cfgNode2, var, visited);
-        } case (AFFECTSS): {
+        }
+        case (AFFECTSS): {
             // Check if both are affects
             shared_ptr<AssignStatement> stmtNode1 = dynamic_pointer_cast<AssignStatement>(statements[stmt1]);
             shared_ptr<AssignStatement> stmtNode2 = dynamic_pointer_cast<AssignStatement>(statements[stmt2]);
@@ -243,7 +246,6 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
                 return false;
             }
 
-            
 
             unordered_map<int, bool> visited = {};
             queue<int> q = {};
@@ -254,17 +256,16 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             while (!q.empty()) {
                 int nextStmt = q.front();
                 q.pop();
-                
+
 
                 if (visited[nextStmt]) {
                     continue;
-                }
-                else {
+                } else {
                     visited[nextStmt] = true;
                 }
 
                 vector<int> forwardResult = forwardComputeRelation(nextStmt, AFFECTS);
-                for (auto x : forwardResult) {
+                for (auto x: forwardResult) {
                     q.push(x);
                     if (x == stmt2) {
                         return true;
@@ -273,7 +274,7 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             }
 
             return false;
-            
+
         }
         default:
             throw invalid_argument("Not a Statement-Statement Realtion");
@@ -289,7 +290,9 @@ Helper function for retrieve affects
 @param visited Visited set of (current, parent) to prevent infinite loops
 @returns Value of relation stored
 */
-bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, shared_ptr<CFGNode> targetNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
+bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode,
+                                    shared_ptr<CFGNode> targetNode, string var,
+                                    shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
     // Check if path visited before
     if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) != visited->end()) {
         return false;
@@ -300,12 +303,12 @@ bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFG
     if (currNode == targetNode) {
         return true;
     }
-    
+
     // If current node is dummy node, recurse into child nodes
     shared_ptr<Statement> tnode = dynamic_pointer_cast<Statement>(currNode->getTNode());
     if (tnode == nullptr) {
         // Recurse to child nodes
-        for (const auto& childNode : currNode->getChildren()) {
+        for (const auto &childNode: currNode->getChildren()) {
             if (retrieveAffectsHelper(childNode, currNode, targetNode, var, visited)) {
                 return true;
             }
@@ -319,7 +322,7 @@ bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFG
     bool isAssignment = dynamic_pointer_cast<AssignStatement>(tnode) != nullptr;
     bool isRead = dynamic_pointer_cast<ReadStatement>(tnode) != nullptr;
     bool isCall = dynamic_pointer_cast<CallStatement>(tnode) != nullptr;
-    
+
     int lineNo = tnode->getLineNum();
 
     if (parentNode != nullptr && (isAssignment || isRead || isCall)) {
@@ -330,7 +333,7 @@ bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFG
 
     // Recurse to child nodes
     bool result = false;
-    for (const auto& childNode : currNode->getChildren()) {
+    for (const auto &childNode: currNode->getChildren()) {
         if (retrieveAffectsHelper(childNode, currNode, targetNode, var, visited)) {
             return true;
         }
@@ -709,7 +712,7 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
             return lstLineNum;
         }
-        case(AFFECTS): {
+        case (AFFECTS): {
             // Check if both are affects
             shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
 
@@ -725,12 +728,12 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
             set<int> result = forwardAffectsHelper(cfgNode, nullptr, var, visited);
             vector<int> output = {};
-            for (auto x : result) {
+            for (auto x: result) {
                 output.push_back(x);
             }
             return output;
         }
-        case(AFFECTSS): {
+        case (AFFECTSS): {
             shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
 
             // Check if current statement is assign
@@ -759,14 +762,14 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
                 // Mark as visited and add to result
                 visited[currStmt] = true;
-                
+
 
                 // Get all statement that this affects
                 vector<int> nextResult = forwardComputeRelation(currStmt, AFFECTS);
 
                 // Add all next result into queue
 
-                for (int x : nextResult) {
+                for (int x: nextResult) {
                     nodeQueue.push(x);
                     output.push_back(x);
                 }
@@ -788,7 +791,8 @@ Helper function for retrieve affects
 @param visited Visited set of (current, parent) to prevent infinite loops
 @returns Value of relation stored
 */
-set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, string var, shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
+set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, string var,
+                                       shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
     set<int> result = {};
 
     // Check if path visited before
@@ -800,7 +804,7 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     // If blank node, recurse into childNodes
     shared_ptr<Statement> statementNode = dynamic_pointer_cast<Statement>(currNode->getTNode());
     if (statementNode == nullptr) {
-        for (const auto& childNode : currNode->getChildren()) {
+        for (const auto &childNode: currNode->getChildren()) {
             set<int> childResult = forwardAffectsHelper(childNode, currNode, var, visited);
             result.insert(childResult.begin(), childResult.end());
         }
@@ -823,7 +827,7 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     }
 
     // Recurse to child nodes
-    for (const auto& childNode : currNode->getChildren()) {
+    for (const auto &childNode: currNode->getChildren()) {
         set<int> childResult = forwardAffectsHelper(childNode, currNode, var, visited);
         result.insert(childResult.begin(), childResult.end());
     }
@@ -878,16 +882,15 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
     vector<int> lstLineNum = {};
     switch (type) {
         case (NEXT): {
-            for (const auto& parentNode : cfgNode->getParents()) {
+            for (const auto &parentNode: cfgNode->getParents()) {
                 shared_ptr<TNode> tNode = parentNode->getTNode();
 
                 if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
                     shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
                     lstLineNum.push_back(stmt->getLineNum());
 
-                }
-                else if (parentNode->getTNode() == nullptr && !parentNode->getParents().empty()) {
-                    for (const auto& storedParentNode : parentNode->getParents()) {
+                } else if (parentNode->getTNode() == nullptr && !parentNode->getParents().empty()) {
+                    for (const auto &storedParentNode: parentNode->getParents()) {
                         shared_ptr<TNode> storedParentTNode = storedParentNode->getTNode();
 
                         if (dynamic_pointer_cast<Statement>(storedParentTNode) != nullptr) {
@@ -922,17 +925,18 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
             // Get all variables used
             vector<string> temp = forwardRetrieveRelation(stmt, USESSV);
             set<string> varUsed = {};
-            for (auto x : temp) {
+            for (auto x: temp) {
                 varUsed.insert(x);
             }
 
             set<int> result = reverseAffectsHelper(cfgNode, nullptr, varUsed, visited);
             vector<int> output = {};
-            for (auto x : result) {
+            for (auto x: result) {
                 output.push_back(x);
             }
             return output;
-        } case (AFFECTSS): {
+        }
+        case (AFFECTSS): {
             shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
 
             // Check if current statement is assign
@@ -961,13 +965,13 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
 
                 // Mark as visited and add to result
                 visited[currStmt] = true;
-                
+
 
                 // Get all statement that this affects
                 vector<int> nextResult = reverseComputeRelation(currStmt, AFFECTS);
 
                 // Add all next result into queue
-                for (int x : nextResult) {
+                for (int x: nextResult) {
                     output.push_back(x);
                     nodeQueue.push(x);
                 }
@@ -990,7 +994,9 @@ Helper function for retrieve affects
 @param visited Visited set of (current, parent) to prevent infinite loops
 @returns Value of relation stored
 */
-set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> childNode, set<string> varsUsed, shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited) {
+set<int>
+Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> childNode, set<string> varsUsed,
+                              shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited) {
     set<int> result = {};
 
     if (varsUsed.empty()) {
@@ -998,15 +1004,21 @@ set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     }
 
     // Check if path visited before
-    if (visited->find(pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>(currNode, pair<shared_ptr<CFGNode>, set<string>>(childNode, varsUsed))) != visited->end()) {
+    if (visited->find(pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>(currNode,
+                                                                                        pair<shared_ptr<CFGNode>, set<string>>(
+                                                                                                childNode,
+                                                                                                varsUsed))) !=
+        visited->end()) {
         return result;
     }
-    visited->insert(pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>(currNode, pair<shared_ptr<CFGNode>, set<string>>(childNode, varsUsed)));
+    visited->insert(pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>(currNode,
+                                                                                      pair<shared_ptr<CFGNode>, set<string>>(
+                                                                                              childNode, varsUsed)));
 
     // If blank node, recurse into parentNodes
     shared_ptr<Statement> statementNode = dynamic_pointer_cast<Statement>(currNode->getTNode());
     if (statementNode == nullptr) {
-        for (const auto& parentNode : currNode->getParents()) {
+        for (const auto &parentNode: currNode->getParents()) {
             set<int> childResult = reverseAffectsHelper(parentNode, currNode, varsUsed, visited);
             result.insert(childResult.begin(), childResult.end());
         }
@@ -1031,15 +1043,15 @@ set<int> Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     bool isCall = dynamic_pointer_cast<CallStatement>(statementNode) != nullptr;
     if ((isAssignment || isRead || isCall) && childNode != nullptr) {
         vector<string> varsModified = forwardRetrieveRelation(lineNo, MODIFIESSV);
-           
-        for (auto x : varsModified) {
+
+        for (auto x: varsModified) {
             varsUsed.erase(x);
         }
     }
-    
+
 
     // Recurse to parent nodes
-    for (const auto& parentNode : currNode->getParents()) {
+    for (const auto &parentNode: currNode->getParents()) {
         set<int> childResult = reverseAffectsHelper(parentNode, currNode, varsUsed, visited);
         result.insert(childResult.begin(), childResult.end());
     }

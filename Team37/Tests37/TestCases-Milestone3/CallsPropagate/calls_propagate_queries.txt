@@ -1,0 +1,5 @@
+1 - select variables in while-calls
+variable v;
+Select v such that Uses (1, v)
+x, incre, bottom, decrement, top, z, dx, marking, s
+10000

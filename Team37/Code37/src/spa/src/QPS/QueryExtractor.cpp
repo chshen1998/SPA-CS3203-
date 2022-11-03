@@ -24,6 +24,7 @@ QueryExtractor::QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuer
 {
     tokens = tokenVector;
     next = 0;
+    size = tokenVector->size();
     pq = pq_pointer;
  
 }
@@ -50,7 +51,8 @@ void QueryExtractor::extractDeclarations()
 void QueryExtractor::extractSelect()
 {
     int start = next;
-    while (tokens->at(next).type != TokenType::PATTERN 
+    while (next < size
+        && tokens->at(next).type != TokenType::PATTERN 
         && tokens->at(next).type != TokenType::SUCH 
         && tokens->at(next).type != TokenType::WITH) {
         next += 1;
@@ -63,5 +65,5 @@ void QueryExtractor::extractSelect()
 void QueryExtractor::extractClauses()
 {   
     shared_ptr<BaseExtractor> extractor = shared_ptr<BaseExtractor>(new ClauseExtractor(pq, tokens));
-    extractor->extract(next, tokens->size());
+    extractor->extract(next, size);
 }

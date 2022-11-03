@@ -17,6 +17,7 @@ class QueryExtractor {
 public:
     vector<PqlToken> *tokens;
     int next;
+    int size;
     shared_ptr<PqlQuery> pq;
 
     QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq);

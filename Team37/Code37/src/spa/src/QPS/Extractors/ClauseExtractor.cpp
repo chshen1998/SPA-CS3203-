@@ -18,7 +18,6 @@ set<char> validOperators = {
     '+', '*', '-', '/'
 };
 
-
 ClauseExtractor::ClauseExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector) : BaseExtractor(pq_ptr, tokenVector) {}
 
 void ClauseExtractor::extract(int start, int last) {
@@ -27,23 +26,24 @@ void ClauseExtractor::extract(int start, int last) {
 
     pq->clauses.push_back(vector<Clause>{});
     
-    while (tokens->at(next).type != TokenType::END)
+    PqlToken token = getNextToken();
+    while (token.type != TokenType::END)
     {
-        switch (tokens->at(next).type) {
+        switch (token.type) {
         case TokenType::PATTERN:
-            extractPatternClause();
+            token = extractPatternClause();
             break;
         case TokenType::WITH:
-            extractWithClause();
+            token = extractWithClause();
             break;
         default:
-            extractSuchThatClause();
+            token = extractSuchThatClause();
             break;
         }
     }
 }
 
-void ClauseExtractor::extractPatternClause()
+PqlToken ClauseExtractor::extractPatternClause()
 {
     PqlToken pattern;
     PqlToken left;
@@ -69,9 +69,10 @@ void ClauseExtractor::extractPatternClause()
 
         next = getNextToken();
     }
+    return next;
 }
 
-void ClauseExtractor::extractWithClause()
+PqlToken ClauseExtractor::extractWithClause()
 {
     PqlToken left;
     PqlToken leftAttr;
@@ -103,31 +104,34 @@ void ClauseExtractor::extractWithClause()
 
         pq->clauses[0].push_back(Clause(PqlToken(TokenType::NONE, ""), left, right, TokenType::WITH, leftAttr, rightAttr));
     }
+
+    return next;
 }
 
 
-void ClauseExtractor::extractSuchThatClause()
+PqlToken ClauseExtractor::extractSuchThatClause()
 {
-    getNextToken(); // THAT
+	getNextToken(); // THAT
 
     PqlToken suchThatClause;
     PqlToken left;
     PqlToken right;
 
     PqlToken next = PqlToken(TokenType::AND, "and");
-    while (next.type == TokenType::AND)
+    while (next.type == TokenType::AND) 
     {
-        suchThatClause = getNextToken();
-        getNextToken(); // OPEN BRACKET
-        left = extractString(getNextToken());
-        getNextToken(); // COMMA
-        right = extractString(getNextToken());
-        getNextToken(); // CLOSE BRACKET
+	    suchThatClause = getNextToken();
+	    getNextToken(); // OPEN BRACKET
+	    left = extractString(getNextToken());
+	    getNextToken(); // COMMA
+	    right = extractString(getNextToken());
+	    getNextToken(); // CLOSE BRACKET
         pq->clauses[0].push_back(Clause(suchThatClause, left, right, TokenType::SUCH_THAT));
         next = getNextToken();
     }
-}
 
+    return next;
+}
 
 PqlToken ClauseExtractor::extractString(PqlToken token)
 {

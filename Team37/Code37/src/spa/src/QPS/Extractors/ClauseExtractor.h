@@ -24,11 +24,11 @@ public:
 	void extract(int start, int last);
 
 private:
-	void extractPatternClause();
+	PqlToken extractPatternClause();
 
-	void extractWithClause();
+	PqlToken extractWithClause();
 
-	void extractSuchThatClause();
+	PqlToken extractSuchThatClause();
 
 	PqlToken extractString(PqlToken token);
 

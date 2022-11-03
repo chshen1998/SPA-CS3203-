@@ -15,20 +15,15 @@
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
 #include "ClauseValidator.h"
+#include "BaseValidator.h"
 
-class WithValidator {
+class WithValidator : public BaseValidator {
 public:
 	WithValidator(unordered_map<string, TokenType> *declarationsMap, vector<PqlToken> *withTokens);
 	void validate();
 
 private:
 	TokenType validateRef(vector<PqlToken> refTokens);
-	PqlToken getNextToken();
-
-	unordered_map<string, TokenType> *declarations;
-	vector<PqlToken> *tokens;
-	int next;
-	int size;
 };
 
 

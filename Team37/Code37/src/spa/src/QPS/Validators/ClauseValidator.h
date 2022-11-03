@@ -15,9 +15,10 @@
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
 #include "ValidatorUtils.h"
+#include "BaseValidator.h"
 
 
-class ClauseValidator
+class ClauseValidator : public BaseValidator
 {
 public:
 	void validateOpen(PqlToken token);
@@ -30,9 +31,7 @@ protected:
 
 	void validateEntityRef(PqlToken token, TokenType entityType);
 	void validateStatementRef(PqlToken token);
-	bool isDeclared(PqlToken synonym);
 
-	unordered_map<string, TokenType> *declarations;
 	TokenType validatorType;
 };
 

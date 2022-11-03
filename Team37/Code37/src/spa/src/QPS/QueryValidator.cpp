@@ -115,20 +115,17 @@ void QueryValidator::validateClauses(PqlToken curr)
 {
     while (curr.type != TokenType::END)
     {
-	    if (curr.type == TokenType::PATTERN)
-	    {
+        switch (curr.type) {
+        case TokenType::PATTERN:
             curr = validatePattern();
-	    }
-    	else if (curr.type == TokenType::WITH)
-	    {
+            break;
+        case TokenType::WITH:
             curr = validateWith();
-	    }
-        else if (curr.type == TokenType::SUCH)
-        {
+            break;
+        case TokenType::SUCH:
             curr = validateSuchThat(curr);
-        }
-        else
-        {
+            break;
+        default:
             throw SyntaxError("Invalid clauses");
         }
     }
@@ -203,7 +200,7 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
 	PqlToken andToken = PqlToken(TokenType::AND, "and");
     while (andToken.type == TokenType::AND)
     {
-        shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
+        shared_ptr<ClauseValidator> validator = ClauseValidator.create
         validator->validateOpen(getNextToken()); // Open bracket
         PqlToken left = getNextToken();
         validator->validateComma(getNextToken()); // Comma
@@ -214,43 +211,6 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
     }
     return andToken;
 }
-
- 
-shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
-{
-    if (type == TokenType::USES) 
-    {
-        return shared_ptr<UsesValidator>(new UsesValidator(&declarations, type));
-    }  else if (type == TokenType::MODIFIES)
-    {
-        return shared_ptr<ModifiesValidator>(new ModifiesValidator(&declarations, type));
-    }
-    else if (type == TokenType::FOLLOWS || type == TokenType::FOLLOWS_A)
-    {
-        return shared_ptr<FollowsValidator>(new FollowsValidator(&declarations, type));
-    }
-    else if (type == TokenType::PARENT || type == TokenType::PARENT_A)
-    {
-        return shared_ptr<ParentValidator>(new ParentValidator(&declarations, type));
-    }
-    else if (type == TokenType::CALLS || type == TokenType::CALLS_A)
-    {
-        return shared_ptr<CallsValidator>(new CallsValidator(&declarations, type));
-    }
-    else if (type == TokenType::NEXT || type == TokenType::NEXT_A)
-    {
-        return shared_ptr<NextValidator>(new NextValidator(&declarations, type));
-    }
-    else if (type == TokenType::AFFECTS || type == TokenType::AFFECTS_A)
-    {
-        return shared_ptr<AffectsValidator>(new AffectsValidator(&declarations, type));
-    }
-    else
-    {
-        throw SemanticError("Invalid relationship type");
-    }
-}
-
 
 PqlToken QueryValidator::getNextToken() {
     if (next == size)

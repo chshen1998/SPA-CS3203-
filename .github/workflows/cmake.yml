@@ -12,7 +12,7 @@ env:
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-latest
     timeout-minutes: 5
     strategy:
       fail-fast: true
@@ -37,7 +37,7 @@ jobs:
           cd ../..
       
       - name: Run unit tests
-        run: ./Team37/Code37/src/unit_testing/${{ matrix.build-type }}/unit_testing.exe
+        run: ./Team37/Code37/src/unit_testing/x64-Release/unit_testing.exe
       
       - name: Run integration tests
         run: |

@@ -60,7 +60,7 @@ TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
         TokenType type = refTokens[0].type;
 	    if (type != TokenType::STRING && type != TokenType::NUMBER)
 	    {
-            throw SemanticError("Invalid With clause parameters 1");
+            throw SyntaxError("Invalid With clause parameters");
 	    }
         return type;
     }
@@ -69,7 +69,7 @@ TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
         PqlToken synonym = refTokens[0];
         if (synonym.type != TokenType::SYNONYM)
         {
-            throw SemanticError("Invalid With clause parameters 2");
+            throw SyntaxError("Invalid With clause parameters");
         }
         if (declarations->find(synonym.value) == declarations->end())
         {
@@ -79,13 +79,13 @@ TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
         PqlToken dot = refTokens[1];
         if (dot.type != TokenType::DOT)
         {
-            throw SemanticError("Invalid With clause parameters 3");
+            throw SyntaxError("Invalid With clause parameters");
         }
         
         PqlToken attrName = refTokens[2];
         if (validAttrName.find(attrName.type) == validAttrName.end())
         {
-            throw SemanticError("Invalid With clause parameters 4");
+            throw SyntaxError("Invalid With clause parameters");
         }
 
         TokenType t = declarations->at(synonym.value);
@@ -103,7 +103,7 @@ TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
 
     } else
     {
-        throw SemanticError("Invalid With Clause");
+        throw SyntaxError("Invalid With Clause");
         return TokenType::NONE;
     }
 }

@@ -34,33 +34,33 @@ void ClauseValidator::validateComma(PqlToken token) {
 	}
 }
 
-void ClauseValidator::validateEntityRef(PqlToken token, set<TokenType> validParamTypes)
+void ClauseValidator::validateEntityRef(PqlToken token, TokenType entityType)
 {
 	if (validEntityRef.find(token.type) == validEntityRef.end())
 	{
-		throw SemanticError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
+		throw SyntaxError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
 	}
 	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
 	{
 		throw SemanticError(token.value + " is undeclared parameter for " + relationshipToStringMap[validatorType] + " clause");
 	} 
-	else if (token.type == TokenType::SYNONYM && validParamTypes.find(declarations->at(token.value)) == validParamTypes.end())
+	else if (token.type == TokenType::SYNONYM && declarations->at(token.value) != entityType)
 	{
 		throw SemanticError(token.value + " is invalid parameter type for " + relationshipToStringMap[validatorType] + " clause");
 	}
 }
 
-void ClauseValidator::validateStatementRef(PqlToken token, set<TokenType> validParamTypes)
+void ClauseValidator::validateStatementRef(PqlToken token)
 {
 	if (validStatementRef.find(token.type) == validStatementRef.end())
 	{
-		throw SemanticError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
+		throw SyntaxError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
 	}
 	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
 	{
 		throw SemanticError(token.value + " is undeclared parameter for " + relationshipToStringMap[validatorType] + " clause");
 	}
-	else if (token.type == TokenType::SYNONYM && validParamTypes.find(declarations->at(token.value)) == validParamTypes.end())
+	else if (token.type == TokenType::SYNONYM && statementTypes.find(declarations->at(token.value)) == statementTypes.end())
 	{
 		throw SemanticError(token.value + " is invalid parameter type for " + relationshipToStringMap[validatorType] + " clause");
 	}

@@ -28,8 +28,8 @@ public:
 protected:
 	ClauseValidator(unordered_map<string, TokenType> *declarationsMap, TokenType token);
 
-	void validateEntityRef(PqlToken token, set<TokenType> validParamTypes);
-	void validateStatementRef(PqlToken token, set<TokenType> validParamTypes);
+	void validateEntityRef(PqlToken token, TokenType entityType);
+	void validateStatementRef(PqlToken token);
 	bool isDeclared(PqlToken synonym);
 
 	unordered_map<string, TokenType> *declarations;

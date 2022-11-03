@@ -21,7 +21,7 @@ void SelectValidator::validateSelect(PqlToken select)
 {
 	if (select.type != TokenType::SELECT)
 	{
-		throw SemanticError("Select clause must come after declarations");
+		throw SyntaxError("Select clause must come after declarations");
 	}
 }
 
@@ -59,15 +59,16 @@ void SelectValidator::validateSingle(int start, int end) {
 	else if (end - start == 3) {
 		validateSynonym(tokens->at(start));
 		validateAttrName(tokens->at(start+1), tokens->at(start+2));
+		validateAttrNameMatch(tokens->at(start), tokens->at(start + 2));
 	}
 	else {
-		throw SemanticError("Invalid Select clause parameter");
+		throw SyntaxError("Invalid Select clause parameter");
 	}
 }
 
 void SelectValidator::validateSynonym(PqlToken token) {
 	if (token.type != TokenType::SYNONYM) {
-		throw SemanticError("Invalid Select clause parameter");
+		throw SyntaxError("Invalid Select clause parameter");
 	}
 	else if (!isDeclared(token)) {
 		throw SemanticError("Undeclared synonym in Select clause");
@@ -76,10 +77,17 @@ void SelectValidator::validateSynonym(PqlToken token) {
 
 void SelectValidator::validateAttrName(PqlToken dot, PqlToken attrName) {
 	if (dot.type != TokenType::DOT) {
-		throw SemanticError("Invalid Select clause parameter - Synonym and AttrName must be seperated by '.'");
+		throw SyntaxError("Invalid Select clause parameter - Synonym and AttrName must be seperated by '.'");
 	} 
 	else if (validAttrName.find(attrName.type) == validAttrName.end()) {
-		throw SemanticError("Invalid Select clause parameter - Invalid AttrName");
+		throw SyntaxError("Invalid Select clause parameter - Invalid AttrName");
+	}
+}
+
+void SelectValidator::validateAttrNameMatch(PqlToken synonym, PqlToken attrName) {
+	TokenType t = declarations->at(synonym.value);
+	if (validSynonymToAttrMap[t].find(attrName.type) == validSynonymToAttrMap[t].end()) {
+		throw SemanticError("Invalid attrName for attrRef synonym");
 	}
 }
 

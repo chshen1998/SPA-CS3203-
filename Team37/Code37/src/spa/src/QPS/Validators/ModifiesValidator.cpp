@@ -11,16 +11,6 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-set<TokenType> validModifiesStmtParamTypes = {
-	TokenType::ASSIGN,
-	TokenType::READ,
-	TokenType::STATEMENT,
-	TokenType::IF,
-	TokenType::WHILE,
-	TokenType::CALL,
-	TokenType::PROCEDURE
-};
-
 ModifiesValidator::ModifiesValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void ModifiesValidator::validate(PqlToken left, PqlToken right)
@@ -31,11 +21,11 @@ void ModifiesValidator::validate(PqlToken left, PqlToken right)
 
 	if (validStatementRef.find(left.type) != validStatementRef.end())
 	{
-		validateStatementRef(left, validModifiesStmtParamTypes);
+		validateStatementRef(left);
 	}
 	else
 	{
-		validateEntityRef(left, entityTypes);
+		validateEntityRef(left, TokenType::VARIABLE);
 	}
-	validateEntityRef(right, entityTypes);
+	validateEntityRef(right, TokenType::VARIABLE);
 }

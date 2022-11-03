@@ -16,8 +16,6 @@
 #include "../Types/TokenType.h"
 #include "ClauseValidator.h"
 
-extern set<TokenType> validModifiesStmtParamTypes;
-
 class ModifiesValidator : public ClauseValidator {
 public:
 	ModifiesValidator(unordered_map<string, TokenType> *declarations, TokenType token);

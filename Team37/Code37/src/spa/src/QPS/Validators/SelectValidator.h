@@ -28,6 +28,7 @@ public:
 
 private:
 	void validateSingle(int start, int end);
+	void validateAttrNameMatch(PqlToken synonym, PqlToken attrName);
 	bool isDeclared(PqlToken token);
 	PqlToken getNextToken();
 

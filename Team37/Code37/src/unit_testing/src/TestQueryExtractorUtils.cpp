@@ -226,25 +226,6 @@ vector<PqlToken> valid_pattern_if = {
 	PqlToken(TokenType::CLOSED_BRACKET, ")")
 };
 
-vector<PqlToken> invalid_pattern_while_parameters = {
-	PqlToken(TokenType::VARIABLE, "variable"),
-	PqlToken(TokenType::SYNONYM, "v"),
-	PqlToken(TokenType::SEMICOLON, ";"),
-	PqlToken(TokenType::WHILE, "while"),
-	PqlToken(TokenType::SYNONYM, "w"),
-	PqlToken(TokenType::SEMICOLON, ";"),
-	PqlToken(TokenType::DECLARATION_END, ""),
-	PqlToken(TokenType::SELECT, "select"),
-	PqlToken(TokenType::SYNONYM, "w"),
-	PqlToken(TokenType::PATTERN, "pattern"),
-	PqlToken(TokenType::SYNONYM, "w"),
-	PqlToken(TokenType::OPEN_BRACKET, "("),
-	PqlToken(TokenType::SYNONYM, "v"),
-	PqlToken(TokenType::COMMA, ","),
-	PqlToken(TokenType::WILDCARD_STRING, "_\"x\"_"),
-	PqlToken(TokenType::CLOSED_BRACKET, ")")
-};
-
 vector<PqlToken> invalid_pattern_if_parameters = {
 	PqlToken(TokenType::VARIABLE, "variable"),
 	PqlToken(TokenType::SYNONYM, "v"),
@@ -372,26 +353,6 @@ vector<PqlToken> valid_pattern_with_wildcard_string = {
 	PqlToken(TokenType::WILDCARD_STRING, "_\"x+y\"_"),
 	PqlToken(TokenType::CLOSED_BRACKET, ")")
 };
-
-vector<PqlToken> invalid_pattern_wildcard_string = {
-	PqlToken(TokenType::VARIABLE, "variable"),
-	PqlToken(TokenType::SYNONYM, "v"),
-	PqlToken(TokenType::SEMICOLON, ";"),
-	PqlToken(TokenType::ASSIGN, "assign"),
-	PqlToken(TokenType::SYNONYM, "a"),
-	PqlToken(TokenType::SEMICOLON, ";"),
-	PqlToken(TokenType::DECLARATION_END, ""),
-	PqlToken(TokenType::SELECT, "select"),
-	PqlToken(TokenType::SYNONYM, "v"),
-	PqlToken(TokenType::PATTERN, "pattern"),
-	PqlToken(TokenType::SYNONYM, "a"),
-	PqlToken(TokenType::OPEN_BRACKET, "("),
-	PqlToken(TokenType::SYNONYM, "v"),
-	PqlToken(TokenType::COMMA, ","),
-	PqlToken(TokenType::WILDCARD_STRING, "\"x+y\"_"),
-	PqlToken(TokenType::CLOSED_BRACKET, ")")
-};
-
 
 vector<PqlToken> valid_follows_double_wildcard = {
 	PqlToken(TokenType::VARIABLE, "variable"),
@@ -1060,19 +1021,3 @@ vector<PqlToken> invalid_with_missing_dot = {
 	PqlToken(TokenType::STRING, "answer")
 };
 
-vector<PqlToken> invalid_with_parameter_extra_tokens = {
-	PqlToken(TokenType::PROCEDURE, "procedure"),
-	PqlToken(TokenType::SYNONYM, "p"),
-	PqlToken(TokenType::SEMICOLON, ";"),
-	PqlToken(TokenType::DECLARATION_END, ""),
-	PqlToken(TokenType::SELECT, "select"),
-	PqlToken(TokenType::SYNONYM, "p"),
-	PqlToken(TokenType::WITH, "with"),
-	PqlToken(TokenType::SYNONYM, "p"),
-	PqlToken(TokenType::DOT, "."),
-	PqlToken(TokenType::VARNAME, "var"),
-	PqlToken(TokenType::VARNAME, "var"),
-	PqlToken(TokenType::VARNAME, "var"),
-	PqlToken(TokenType::EQUAL, "="),
-	PqlToken(TokenType::STRING, "answer")
-};

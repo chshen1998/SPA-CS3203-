@@ -1,0 +1,100 @@
+1 - Invalid pattern assign 
+stmt s;
+Select s pattern s(_, _)
+SyntaxError 
+5000
+2 - Invalid parameter "+x"
+variable v; assign a;
+Select v pattern a (v, "+x")
+SyntaxError
+5000
+3 - With fake attrName
+procedure p;
+Select p with p.absd = 1
+SyntaxError
+5000
+4 - Uses constant
+constant c; assign a;
+Select a such that Uses (a, c) 
+SemanticError 
+5000
+5 - Modifies constant
+constant c; assign a;
+Select a such that Modifies (a, c) 
+SemanticError 
+5000
+6 - Pattern constant
+constant c; assign a;
+Select a pattern a (c, _) 
+SemanticError 
+5000
+7 - Pattern constant 2
+constant c; assign a; variable v;
+Select a pattern a (v, c) 
+SyntaxError 
+5000
+8 - Follows variable
+assign a; variable v;
+Select a such that Follows (a, v) 
+SemanticError 
+5000
+9 - Affects variable
+assign a; variable v;
+Select a such that Affects (a, v) 
+SemanticError 
+5000
+10 - Pattern undeclared pattern
+variable v;
+Select v pattern a (v, _) 
+SemanticError
+5000
+11 - Pattern undeclared variable
+assign a;
+Select a pattern a (v, _) 
+SemanticError
+5000
+12 - Pattern invalid pattern
+stmt s; variable v;
+Select v pattern s (v,_);
+SyntaxError
+5000
+13 - Select undeclared variable
+assign a;
+Select v
+SemanticError
+5000
+14 - Follows undeclared variable
+stmt s1;
+Select s1 such that Follows(s1, s2) 
+SemanticError
+5000
+15 - With attrName mismatch
+procedure p;
+Select p with p.varName = "name"
+SemanticError
+5000
+16 - With left and right datatype mismatch
+procedure p;
+Select p with p.procName = 1
+SemanticError
+5000
+17 - Uses wildcard 
+variable v;
+Select v such that Uses(_, v)
+SemanticError 
+5000
+18 - Modifies wildcard 
+variable v;
+Select v such that Modifies(_, v)
+SemanticError 
+5000
+19 - Calls statement ref
+stmt s1, s2;
+Select s1 such that Calls(s1, s2)
+SemanticError
+5000
+20 - Uses statement ref
+stmt s1, s2;
+Select s1 such that Uses(s1, s2)
+SemanticError
+5000

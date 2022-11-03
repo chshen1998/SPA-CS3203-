@@ -12,14 +12,10 @@ using namespace std;
 #include "ValidatorUtils.h"
 #include <iostream>
 
-set<TokenType> validCallsParamTypes = {
-	TokenType::PROCEDURE
-};
-
 CallsValidator::CallsValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
 void CallsValidator::validate(PqlToken left, PqlToken right)
 {
-	validateEntityRef(left, validCallsParamTypes);
-	validateEntityRef(right, validCallsParamTypes);
+	validateEntityRef(left, TokenType::PROCEDURE);
+	validateEntityRef(right, TokenType::PROCEDURE);
 }

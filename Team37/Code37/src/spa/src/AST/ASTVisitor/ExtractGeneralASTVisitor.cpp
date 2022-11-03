@@ -140,7 +140,6 @@ void ExtractGeneralASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) 
 void ExtractGeneralASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
     NameExpression expression = NameExpression(assignStmt,
                                                assignStmt->getVarName());
-
     // store itself in statements
     this->storage->storeStmt(assignStmt);
     // store the variable
@@ -152,6 +151,7 @@ void ExtractGeneralASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> 
 // RelationalFactor
 
 void ExtractGeneralASTVisitor::visitNameExpression(shared_ptr<NameExpression> nameExpr) {
+    this->storage->storeVar(*nameExpr);
 }
 
 /**

@@ -1,7 +1,7 @@
 1 - variable
 variable v;
 Select v
-flag, x, i
+flag, x, i, test
 5000
 2 - assign
 assign a;

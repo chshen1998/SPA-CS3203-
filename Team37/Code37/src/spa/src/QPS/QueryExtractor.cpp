@@ -5,12 +5,16 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <set>
+#include <memory>
 
 #include "QueryExtractor.h"
+#include "./Extractors/BaseExtractor.h"
+#include "./Extractors/DeclarationExtractor.h"
 #include "./Structures/PqlError.h"
 #include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
 #include "./Types/ErrorType.h"
+#include <iostream>
 #include "./Types/TokenType.h"
 #include "Validators/ValidatorUtils.h"
 
@@ -36,25 +40,21 @@ void QueryExtractor::extractSemantics()
 }
 
 void QueryExtractor::extractDeclarations()
-{
-    PqlToken declaration = getNextToken();
-    while (declaration.type != TokenType::DECLARATION_END) {
-        PqlToken synonym = getNextToken();
-        PqlToken symbol = getNextToken();
-        pq->declarations[synonym.value] = declaration.type;
-
-        if (synonym.value == "BOOLEAN") {
-            booleanIsSynonym = true;
-        }
-
-        if (symbol.type == TokenType::SEMICOLON) {
-            declaration = getNextToken();
-        }
+{   
+    int start = next;
+    while (tokens->at(next).type != TokenType::DECLARATION_END) {
+        next += 1;
     }
+
+    shared_ptr<BaseExtractor> extractor = shared_ptr<BaseExtractor>(new DeclarationExtractor(pq, tokens));
+    extractor->extract(start, next);
+    next += 1;
 }
 
 PqlToken QueryExtractor::extractSelect()
 {
+
+
     getNextToken(); // Select token
 
     PqlToken token = getNextToken();

@@ -45,7 +45,7 @@ jobs:
       
       - name: Run integration tests
         run: |
-          cd Team24/Tests24
+          cd Team37/Tests37
           python script.py
       
       

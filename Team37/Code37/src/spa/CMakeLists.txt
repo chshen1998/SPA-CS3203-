@@ -180,7 +180,7 @@ add_library(spa ${srcs} ${headers}
         "src/QPS/QueryOptimizer.h" 
         "src/QPS/QueryOptimizer.cpp"
          "src/QPS/Validators/BaseValidator.h"
- "src/QPS/Validators/BaseValidator.cpp" "src/QPS/Extractors/DeclarationExtractor.h" "src/QPS/Extractors/DeclarationExtractor.cpp" "src/QPS/Extractors/BaseExtractor.h" "src/QPS/Extractors/BaseExtractor.cpp" "src/QPS/Extractors/SelectExtractor.h" "src/QPS/Extractors/SelectExtractor.cpp")
+ "src/QPS/Validators/BaseValidator.cpp" "src/QPS/Extractors/DeclarationExtractor.h" "src/QPS/Extractors/DeclarationExtractor.cpp" "src/QPS/Extractors/BaseExtractor.h" "src/QPS/Extractors/BaseExtractor.cpp" "src/QPS/Extractors/SelectExtractor.h" "src/QPS/Extractors/SelectExtractor.cpp" "src/QPS/Extractors/ClauseExtractor.h" "src/QPS/Extractors/ClauseExtractor.cpp")
 
 
 # this makes the headers accessible for other projects which uses spa lib

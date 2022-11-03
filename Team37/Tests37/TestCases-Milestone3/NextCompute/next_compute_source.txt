@@ -1,0 +1,14 @@
+procedure a {
+    while (difference==1) {
+        if(x == 2) then {
+            t = 3;
+            if (y == 4) then{
+                t = 5;
+            } else {
+                t = 6;
+            }
+        } else {
+            t = 7;
+        }
+    }
+}

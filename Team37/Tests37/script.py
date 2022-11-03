@@ -71,7 +71,7 @@ for milestone in milestones:
 
             with open(output_path) as f:
                 filetxt = f.read()
-                if 'Missing:' in filetxt or 'Additional:   ' in filetxt or "TIMEOUT" in filetxt:
+                if 'Missing' in filetxt or 'Additional:   ' in filetxt or "TIMEOUT" in filetxt:
                     failed_testcases.append(f"Failed\t{testcase_folder}/{testcase}")
 
                 elif 'End of evaluating Query File.' not in filetxt:

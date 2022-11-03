@@ -21,4 +21,5 @@ SyntaxError
 5 - Missing such that 
 stmt s;
 select s Uses(s, "x")
-SyntaxError 
+SyntaxError
+5000

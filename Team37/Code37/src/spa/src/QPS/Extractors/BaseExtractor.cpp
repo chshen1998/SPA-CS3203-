@@ -13,9 +13,10 @@ using namespace std;
 #include ".././Types/TokenType.h"
 #include "BaseExtractor.h"
 
-BaseExtractor::BaseExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector) {
+BaseExtractor::BaseExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector, bool boolean) {
 	pq = pq_ptr;
 	tokens = tokenVector;
+    booleanIsSynonym = boolean;
 }
 
 PqlToken BaseExtractor::getNextToken()
@@ -26,5 +27,9 @@ PqlToken BaseExtractor::getNextToken()
     }
     PqlToken token = tokens->at(next);
     next = next + 1;
+
+    if (token.type == TokenType::BOOLEAN && booleanIsSynonym == true) {
+        token.type = TokenType::SYNONYM;
+    }
     return token;
 }

@@ -18,6 +18,7 @@ public:
     vector<PqlToken> *tokens;
     int next;
     int size;
+    bool booleanIsSynonym;
     shared_ptr<PqlQuery> pq;
 
     QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq);
@@ -30,6 +31,8 @@ private:
     void extractSelect();
 
     void extractClauses();
+
+    void checkBooleanSynonym();
 };
 
 

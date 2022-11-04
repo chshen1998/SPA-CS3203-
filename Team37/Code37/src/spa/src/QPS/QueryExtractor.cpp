@@ -26,13 +26,17 @@ QueryExtractor::QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuer
     next = 0;
     size = tokenVector->size();
     pq = pq_pointer;
- 
+    booleanIsSynonym = false;
 }
 
 void QueryExtractor::extractSemantics()
 {
     extractDeclarations();
+
+    checkBooleanSynonym();
+
     extractSelect();
+
     extractClauses();
 }
 
@@ -58,12 +62,19 @@ void QueryExtractor::extractSelect()
         next += 1;
     }
 
-    shared_ptr<BaseExtractor> extractor = shared_ptr<BaseExtractor>(new SelectExtractor(pq, tokens));
+    shared_ptr<BaseExtractor> extractor = shared_ptr<BaseExtractor>(new SelectExtractor(pq, tokens, booleanIsSynonym));
     extractor->extract(start, next);
 }
 
 void QueryExtractor::extractClauses()
 {   
-    shared_ptr<BaseExtractor> extractor = shared_ptr<BaseExtractor>(new ClauseExtractor(pq, tokens));
+    shared_ptr<BaseExtractor> extractor = shared_ptr<BaseExtractor>(new ClauseExtractor(pq, tokens, booleanIsSynonym));
     extractor->extract(next, size);
+}
+
+void QueryExtractor::checkBooleanSynonym()
+{
+    if (pq->declarations.find("BOOLEAN") != pq->declarations.end()) {
+        booleanIsSynonym = true;
+    }
 }

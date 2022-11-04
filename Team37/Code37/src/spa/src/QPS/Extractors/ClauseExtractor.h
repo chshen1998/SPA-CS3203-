@@ -20,7 +20,7 @@
 class ClauseExtractor : public BaseExtractor
 {
 public:
-	ClauseExtractor(shared_ptr<PqlQuery> pq, vector<PqlToken>* tokens);
+	ClauseExtractor(shared_ptr<PqlQuery> pq, vector<PqlToken>* tokens, bool booleanIsSynonym);
 	void extract(int start, int last);
 
 private:

@@ -22,7 +22,7 @@ public:
 	virtual void extract(int start, int last) = 0;
 
 protected:
-	BaseExtractor(shared_ptr<PqlQuery> pq, vector<PqlToken>* tokens);
+	BaseExtractor(shared_ptr<PqlQuery> pq, vector<PqlToken>* tokens, bool booleanIsSynonym);
 
 	PqlToken getNextToken();
 
@@ -30,7 +30,7 @@ protected:
 	vector<PqlToken>* tokens;
 	int next;
 	int end;
-	bool booleanIsSynonym = false;
+	bool booleanIsSynonym;
 };
 
 #endif //TEAM37_BASEEXTRACTOR_H

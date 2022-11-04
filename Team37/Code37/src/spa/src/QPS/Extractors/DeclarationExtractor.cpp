@@ -13,7 +13,7 @@ using namespace std;
 #include "BaseExtractor.h"
 #include "DeclarationExtractor.h"
 
-DeclarationExtractor::DeclarationExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector) : BaseExtractor(pq_ptr, tokenVector) {}
+DeclarationExtractor::DeclarationExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector) : BaseExtractor(pq_ptr, tokenVector, false) {}
 
 void DeclarationExtractor::extract(int start, int last) {
     next = start;

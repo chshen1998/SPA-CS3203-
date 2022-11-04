@@ -20,7 +20,7 @@
 class SelectExtractor : public BaseExtractor
 {
 public:
-	SelectExtractor(shared_ptr<PqlQuery> pq, vector<PqlToken>* tokens);
+	SelectExtractor(shared_ptr<PqlQuery> pq, vector<PqlToken>* tokens, bool booleanIsSynonym);
 	void extract(int start, int last);
 
 private:

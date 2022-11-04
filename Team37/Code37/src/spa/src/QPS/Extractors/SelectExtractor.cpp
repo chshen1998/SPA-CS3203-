@@ -13,7 +13,7 @@ using namespace std;
 #include "BaseExtractor.h"
 #include "SelectExtractor.h"
 
-SelectExtractor::SelectExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector) : BaseExtractor(pq_ptr, tokenVector) {}
+SelectExtractor::SelectExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector, bool boolean) : BaseExtractor(pq_ptr, tokenVector, boolean) {}
 
 void SelectExtractor::extract(int start, int last) {
     next = start;

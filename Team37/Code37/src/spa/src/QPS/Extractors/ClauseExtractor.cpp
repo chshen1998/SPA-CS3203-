@@ -18,7 +18,7 @@ set<char> validOperators = {
     '+', '*', '-', '/'
 };
 
-ClauseExtractor::ClauseExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector) : BaseExtractor(pq_ptr, tokenVector) {}
+ClauseExtractor::ClauseExtractor(shared_ptr<PqlQuery> pq_ptr, vector<PqlToken>* tokenVector, bool boolean) : BaseExtractor(pq_ptr, tokenVector, boolean) {}
 
 void ClauseExtractor::extract(int start, int last) {
     next = start;

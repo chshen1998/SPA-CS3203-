@@ -288,6 +288,10 @@ string Parser::removeProcedureWrapper(string procedure) {
 }
 
 shared_ptr<SourceCode> Parser::parseSourceCode(string srcCode, string filename) {
+    srcCode = Utils::trim(srcCode);
+    if (srcCode.empty()) {
+        throw InvalidSyntaxException((char *) "Source code must contain at least 1 procedure");
+    }
     shared_ptr<SourceCode> sourceCodeNode = make_shared<SourceCode>(filename);
     vector<string> procedureList;
     procedureList = Parser::extractProcedures(Utils::trim(srcCode), procedureList);
@@ -307,6 +311,9 @@ shared_ptr<Procedure> Parser::parseProcedure(string procedure) {
 
     vector<string> statementList;
     statementList = Parser::extractStatements(removeProcedureWrapper(procedure), statementList);
+    if (statementList.empty()) {
+        throw InvalidSyntaxException((char *) "Procedures need to contain at least 1 statement");
+    }
     for (string statement : statementList) {
         shared_ptr<Statement> statementNode = Parser::parseStatement(statement);
         procedureNode->addStatement(statementNode);
@@ -444,6 +451,10 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     ifStmtLst = Parser::extractStatements(ifBlock, ifStmtLst);
     elseStmtLst = Parser::extractStatements(elseBlock, elseStmtLst);
 
+    if (ifStmtLst.empty() || elseStmtLst.empty()) {
+        throw InvalidSyntaxException((char *) "If and Else statement blocks cannot be empty");
+    }
+
     for (string s: ifStmtLst) {
         shared_ptr<Statement> statement = Parser::parseStatement(s);
         ifNode->addThenStatement(statement);
@@ -470,6 +481,11 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     string stmtsBlock = Parser::removeProcedureWrapper(whileBlock);
     vector<string> stmts;
     stmts = Parser::extractStatements(stmtsBlock, stmts);
+
+    if (stmts.empty()) {
+        throw InvalidSyntaxException((char *) "While blocks must have a statement");
+    }
+
     for (string s:stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s);
         whileStatement->addStatement(statement);

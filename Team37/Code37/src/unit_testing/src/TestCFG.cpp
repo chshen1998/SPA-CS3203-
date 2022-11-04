@@ -652,43 +652,6 @@ TEST_CASE("Get all maps from complex source code") {
     REQUIRE(cfg4->getMap()->size() == 1);
 }
 
-TEST_CASE("Corner case - empty procedures") {
-    string srcCode = "procedure main {\n"
-                     "\n"
-                     "}\n"
-                     "\n"
-                     "procedure somethingHmm {\n"
-                     "\t"
-                     " }\n"
-                     "\n"
-                     "procedure nestedBlocks {\n"
-                     "}\n"
-                     "\n"
-                     "procedure anotherOne {\n"
-                     "}";
-    Statement::resetLineNumCount();
-    shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
-    vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
-    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
-
-    shared_ptr<CFG> cfg1 = cfgLst[0];
-    shared_ptr<CFG> cfg2 = cfgLst[1];
-    shared_ptr<CFG> cfg3 = cfgLst[2];
-    shared_ptr<CFG> cfg4 = cfgLst[3];
-
-    REQUIRE(cfg1->getName() == "main");
-    REQUIRE(cfg1->getStartNode() == nullptr);
-
-    REQUIRE(cfg2->getName() == "somethingHmm");
-    REQUIRE(cfg2->getStartNode() == nullptr);
-
-    REQUIRE(cfg3->getName() == "nestedBlocks");
-    REQUIRE(cfg3->getStartNode() == nullptr);
-
-    REQUIRE(cfg4->getName() == "anotherOne");
-    REQUIRE(cfg4->getStartNode() == nullptr);
-}
-
 TEST_CASE("Procedure with while statement and double nested if statement") {
     string proc = "procedure a {\n"
                   "    while (difference==1) {\n"

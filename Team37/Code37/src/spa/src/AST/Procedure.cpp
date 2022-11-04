@@ -25,12 +25,6 @@ void Procedure::buildCFG(string procName) {
     // set first statement as start node of CFG
     vector<shared_ptr<Statement> > stmtLst = this->getStatements();
 
-    // if procedure has no statements
-    if (stmtLst.empty()) {
-        this->cfg = make_shared<CFG>(nullptr, procName);
-        return;
-    }
-
     shared_ptr<CFGNode> firstNode = stmtLst[0]->buildCFG(parents, this->getCFG());
     shared_ptr<CFGNode> startNode;
 

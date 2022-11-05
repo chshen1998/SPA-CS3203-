@@ -115,20 +115,17 @@ void QueryValidator::validateClauses(PqlToken curr)
 {
     while (curr.type != TokenType::END)
     {
-	    if (curr.type == TokenType::PATTERN)
-	    {
+        switch (curr.type) {
+        case TokenType::PATTERN:
             curr = validatePattern();
-	    }
-    	else if (curr.type == TokenType::WITH)
-	    {
+            break;
+        case TokenType::WITH:
             curr = validateWith();
-	    }
-        else if (curr.type == TokenType::SUCH)
-        {
+            break;
+        case TokenType::SUCH:
             curr = validateSuchThat(curr);
-        }
-        else
-        {
+            break;
+        default:
             throw SyntaxError("Invalid clauses");
         }
     }

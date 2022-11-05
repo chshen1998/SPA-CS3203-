@@ -3,6 +3,7 @@ using namespace std;
 #include <string>
 
 #include "ClauseValidator.h"
+#include "BaseValidator.h"
 #include "ValidatorUtils.h"
 #include "../Structures/PqlError.h"
 #include "../Structures/PqlToken.h"
@@ -10,7 +11,7 @@ using namespace std;
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
 
-ClauseValidator::ClauseValidator(unordered_map<string, TokenType> *declarationsMap, TokenType token)
+ClauseValidator::ClauseValidator(unordered_map<string, TokenType>* declarationsMap, TokenType token) : BaseValidator{}
 {
 	declarations = declarationsMap;
 	validatorType = token;
@@ -65,10 +66,3 @@ void ClauseValidator::validateStatementRef(PqlToken token)
 		throw SemanticError(token.value + " is invalid parameter type for " + relationshipToStringMap[validatorType] + " clause");
 	}
 }
-
-bool ClauseValidator::isDeclared(PqlToken synonym)
-{
-	auto findit = declarations->find(synonym.value);
-	return (findit != declarations->end());
-}
-

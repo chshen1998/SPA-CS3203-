@@ -25,7 +25,6 @@ vector<vector<string>> IfEvaluator::evaluateClause(const Clause &clause, vector<
         // Add synonym column header
         finalTable[0].push_back(leftArg.value);
         for (int line: allIfStmtLines) {
-//            printf("LINE: %d \n", line);
             for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSVPREDICATE)) {
                 finalTable.push_back(vector<string>{to_string(line), v});
             }

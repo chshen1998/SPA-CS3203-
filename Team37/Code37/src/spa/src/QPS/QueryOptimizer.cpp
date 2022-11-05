@@ -164,14 +164,29 @@ void QueryOptimizer::sortGroupClauses() {
             }
         }
 
-        // Bubble sort
-        for (int i = group.size() - 1; i >= 0; i--) {
-            for (int j = 0; j < i; j++) {
-                if (priorityScores[j] > priorityScores[j + 1]) {
-                    swap(group[j], group[j + 1]);
-                    swap(priorityScores[j], priorityScores[j + 1]);
-                }
-            }
+        quickSort(&group, &priorityScores, 0, group.size() - 1);
+    }
+}
+
+void QueryOptimizer::quickSort(vector<Clause>* group, vector<int>* scores, int left, int right) {
+    if (left < right) {
+        int p = partition(group, scores, left, right);
+        quickSort(group, scores, left, p - 1);
+        quickSort(group, scores, right, p + 1);
+    }
+}
+
+int QueryOptimizer::partition(vector<Clause>* group, vector<int>* scores, int left, int right) {
+    int pivot = scores->at(right);
+    int i = left - 1;
+    for (int j = left; j < right; j++) {
+        if (scores->at(j) <= pivot) {
+            i += 1;
+            swap(scores[i], scores[j]);
+            swap(group[i], group[j]);
         }
     }
+    swap(scores[i + 1], scores[right]);
+    swap(group[i + 1], group[right]);
+    return i + 1;
 }

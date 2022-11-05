@@ -20,21 +20,19 @@ DeclarationValidator::DeclarationValidator(vector<PqlToken> *declarationTokens) 
 }
 
 unordered_map<string, TokenType> DeclarationValidator::validate() {
-    unordered_map<string, TokenType> declarations;
-
     PqlToken declarationType = getNextToken();
     while (declarationType.type != TokenType::END)
     {
         isValidDesignEntity(declarationType);
         PqlToken synonym = getNextToken();
-        isSynonym(synonym);
+        isValidSynonym(synonym);
         PqlToken sign = getNextToken();
         isSemicolonOrComma(sign);
 
         while (sign.type == TokenType::COMMA) {
             declarations[synonym.value] = declarationType.type;
             synonym = getNextToken();
-            isSynonym(synonym);
+            isValidSynonym(synonym);
             sign = getNextToken();
             isSemicolonOrComma(sign);
         }
@@ -53,9 +51,12 @@ void DeclarationValidator::isValidDesignEntity(PqlToken token)
     }
 }
 
-void DeclarationValidator::isSynonym(PqlToken token) {
+void DeclarationValidator::isValidSynonym(PqlToken token) {
     if (token.type != TokenType::SYNONYM) {
         throw SyntaxError("Declarations must be a synonym");
+    }
+    else if (declarations.find(token.value) != declarations.end()) {
+        throw SemanticError("Synonym name can only be declared once");
     }
 }
 

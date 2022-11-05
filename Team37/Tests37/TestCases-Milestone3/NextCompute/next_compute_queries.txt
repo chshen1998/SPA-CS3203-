@@ -1,0 +1,5 @@
+Next relation nested if in while -
+stmt n;
+Select n such that Next (n, 1)
+5, 6, 7
+10000

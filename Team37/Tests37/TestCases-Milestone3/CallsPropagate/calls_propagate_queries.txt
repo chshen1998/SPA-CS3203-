@@ -1,0 +1,10 @@
+1 - select Uses variables in while-calls
+variable v;
+Select v such that Uses (1, v)
+x, incre, bottom, decrement, top, z, dx, marking, s
+10000
+2 - select Modifies variables in while-calls
+variable v;
+Select v such that Modifies (1, v)
+dy, left, right, p1
+10000

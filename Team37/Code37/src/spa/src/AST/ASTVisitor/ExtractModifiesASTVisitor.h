@@ -50,6 +50,8 @@ public:
 
     void visitParentAndStore(shared_ptr<TNode> node, string variable);
 
+    void visitParentAndStoreCalls(shared_ptr<TNode> node, string parentProcedureName, string calledProcedureName);
+
 };
 
 

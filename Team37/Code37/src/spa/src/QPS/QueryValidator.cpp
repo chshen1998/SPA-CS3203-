@@ -35,13 +35,13 @@ QueryValidator::QueryValidator(vector<PqlToken> *tokenVector) {
 PqlError QueryValidator::validateQuery()
 {
     try {
-        declarations = validateDeclarations();
+        validateDeclarations();
 
         if (declarations.find("BOOLEAN") != declarations.end()) {
             booleanIsSynonym = true;
         }
     
-        PqlToken curr = validateSelect();
+        PqlToken* curr = validateSelect();
 
 	    validateClauses(curr);
 
@@ -55,7 +55,7 @@ PqlError QueryValidator::validateQuery()
     }
 }
 
-unordered_map<string, TokenType> QueryValidator::validateDeclarations()
+void QueryValidator::validateDeclarations()
 {
     vector<PqlToken> declarationTokens;
     PqlToken curr = getNextToken();
@@ -64,12 +64,11 @@ unordered_map<string, TokenType> QueryValidator::validateDeclarations()
         curr = getNextToken();
     }
 
-    DeclarationValidator validator = DeclarationValidator(&declarationTokens);
-    unordered_map<string, TokenType> declarations = validator.validate();
-    return declarations;
+    DeclarationValidator validator = DeclarationValidator(&declarationTokens, &declarations);
+    validator.validate();
 }
 
-PqlToken QueryValidator::validateSelect()
+PqlToken* QueryValidator::validateSelect()
 {
     SelectValidator validator = SelectValidator(&declarations);
 
@@ -108,22 +107,22 @@ PqlToken QueryValidator::validateSelect()
         }
     }
 
-    return curr;
+    return &curr;
 }
 
-void QueryValidator::validateClauses(PqlToken curr)
+void QueryValidator::validateClauses(PqlToken* curr)
 {
-    while (curr.type != TokenType::END)
+    while (curr->type != TokenType::END)
     {
-	    if (curr.type == TokenType::PATTERN)
+	    if (curr->type == TokenType::PATTERN)
 	    {
             curr = validatePattern();
 	    }
-    	else if (curr.type == TokenType::WITH)
+    	else if (curr->type == TokenType::WITH)
 	    {
             curr = validateWith();
 	    }
-        else if (curr.type == TokenType::SUCH)
+        else if (curr->type == TokenType::SUCH)
         {
             curr = validateSuchThat(curr);
         }
@@ -134,7 +133,7 @@ void QueryValidator::validateClauses(PqlToken curr)
     }
 }
 
-PqlToken QueryValidator::validatePattern()
+PqlToken* QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(&declarations);
 
@@ -172,10 +171,10 @@ PqlToken QueryValidator::validatePattern()
         }
         andToken = getNextToken();
     }
-    return andToken;
+    return &andToken;
 }
 
-PqlToken QueryValidator::validateWith()
+PqlToken* QueryValidator::validateWith()
 {
     vector<PqlToken> withTokens;
 
@@ -189,13 +188,13 @@ PqlToken QueryValidator::validateWith()
     WithValidator validator = WithValidator(&declarations, &withTokens);
     validator.validate();
 
-    return next;
+    return &next;
 }
 
-PqlToken QueryValidator::validateSuchThat(PqlToken such)
+PqlToken* QueryValidator::validateSuchThat(PqlToken* such)
 {
     PqlToken that = getNextToken();
-    if (such.type != TokenType::SUCH || that.type != TokenType::THAT)
+    if (such->type != TokenType::SUCH || that.type != TokenType::THAT)
     {
         throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
     }
@@ -212,7 +211,7 @@ PqlToken QueryValidator::validateSuchThat(PqlToken such)
 	    validator->validate(left, right);
         andToken = getNextToken();
     }
-    return andToken;
+    return &andToken;
 }
 
  

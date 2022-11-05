@@ -13,13 +13,14 @@ using namespace std;
 #include "DeclarationValidator.h"
 #include "ValidatorUtils.h"
 
-DeclarationValidator::DeclarationValidator(vector<PqlToken> *declarationTokens) {
+DeclarationValidator::DeclarationValidator(vector<PqlToken> *declarationTokens, unordered_map<string, TokenType>* map) {
     tokens = declarationTokens;
     next = 0;
     size = tokens->size();
+    declarations = map;
 }
 
-unordered_map<string, TokenType> DeclarationValidator::validate() {
+void DeclarationValidator::validate() {
     PqlToken declarationType = getNextToken();
     while (declarationType.type != TokenType::END)
     {
@@ -30,18 +31,16 @@ unordered_map<string, TokenType> DeclarationValidator::validate() {
         isSemicolonOrComma(sign);
 
         while (sign.type == TokenType::COMMA) {
-            declarations[synonym.value] = declarationType.type;
+            (*declarations)[synonym.value] = declarationType.type;
             synonym = getNextToken();
             isValidSynonym(synonym);
             sign = getNextToken();
             isSemicolonOrComma(sign);
         }
 
-        declarations[synonym.value] = declarationType.type;
+        (*declarations)[synonym.value] = declarationType.type;
         declarationType = getNextToken();
     }
-
-    return declarations;
 }
 
 void DeclarationValidator::isValidDesignEntity(PqlToken token)
@@ -55,7 +54,7 @@ void DeclarationValidator::isValidSynonym(PqlToken token) {
     if (token.type != TokenType::SYNONYM) {
         throw SyntaxError("Declarations must be a synonym");
     }
-    else if (declarations.find(token.value) != declarations.end()) {
+    else if (declarations->find(token.value) != declarations->end()) {
         throw SemanticError("Synonym name can only be declared once");
     }
 }

@@ -24,19 +24,21 @@ using namespace std;
 using namespace TokenizerUtils;
 
 
-QueryTokenizer::QueryTokenizer(vector<PqlToken>& tokenVector, string queryString) : query(queryString), tokens(tokenVector) { }
+QueryTokenizer::QueryTokenizer(string queryString) : query(queryString) { }
 
 void QueryTokenizer::resetQueryString(string queryString) {
     query = queryString;
 }
 
-void QueryTokenizer::Tokenize() {
+vector<PqlToken> QueryTokenizer::Tokenize() {
     if (query.empty()) {
         throw "Invalid Query Syntax :: Query Length is zero.";
     }
 
     Split();
     ConvertIntoTokens();
+
+    return tokens;
 }
 
 void QueryTokenizer::Split() {
@@ -46,7 +48,7 @@ void QueryTokenizer::Split() {
     delimited_query = vector<string>();
 
     // Maximum length of delimited query is the number of characters in query string by Pigeonhole Principle
-    delimited_query.reserve(query.size()); 
+    delimited_query.reserve(query.size());
 
     for (int i = 0; i < query.size(); i++) {
         // If the character is a blank (whitespace or tab etc)
@@ -62,7 +64,7 @@ void QueryTokenizer::Split() {
                 currentString = "";
             }
         }
-           
+
         // If the character is a single character symbol, for eg brackets or comma
         else if (stringToTokenMap.find(string{ query[i] }) != stringToTokenMap.end()) {
             if (!currentString.empty()) {
@@ -70,7 +72,7 @@ void QueryTokenizer::Split() {
             }
             delimited_query.push_back(string{ query[i] });
             currentString = "";
-        } 
+        }
 
         else {
             if (query[i] == '"') {
@@ -81,7 +83,7 @@ void QueryTokenizer::Split() {
         }
     }
 
-  
+
     if (!currentString.empty()) {
         delimited_query.push_back(currentString);
     }
@@ -107,6 +109,7 @@ void QueryTokenizer::Split() {
 
 
 void QueryTokenizer::ConvertIntoTokens() {
+    tokens = vector<PqlToken>();
     tokens.reserve(delimited_query.size() + 1); // Additional 1 for `declaration end`
     int index = 0; // index of delimited_query that we are looping through
 
@@ -170,5 +173,3 @@ void QueryTokenizer::ConvertIntoTokens() {
         currentState = TokenizeState::FINDING_KEYWORDS;
     }
 }
-
-

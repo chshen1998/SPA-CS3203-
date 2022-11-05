@@ -22,7 +22,7 @@ using namespace std;
 * The state corresponds to what kind of keyword/clause we are looking at
 */
 enum class TokenizeState {
-    FINDING_KEYWORDS, 
+    FINDING_KEYWORDS,
     SELECT,
     SUCH_THAT,
     PATTERN,
@@ -32,13 +32,13 @@ enum class TokenizeState {
 
 class QueryTokenizer {
 public:
-    vector<PqlToken> &tokens;
+    vector<PqlToken> tokens;
     vector<string> delimited_query;
     string query;
 
-    QueryTokenizer(vector<PqlToken>&, string);
+    QueryTokenizer(string);
 
-    void Tokenize();
+    vector<PqlToken> Tokenize();
     void resetQueryString(string query);
 
 private:

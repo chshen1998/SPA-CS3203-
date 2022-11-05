@@ -30,12 +30,12 @@ public:
     PqlError validateQuery();
 
 private:
-    unordered_map<string, TokenType> validateDeclarations();
-    PqlToken validateSelect();
-    void validateClauses(PqlToken token);
-    PqlToken validatePattern();
-    PqlToken validateWith();
-    PqlToken validateSuchThat(PqlToken such);
+    void validateDeclarations();
+    PqlToken* validateSelect();
+    void validateClauses(PqlToken* token);
+    PqlToken* validatePattern();
+    PqlToken* validateWith();
+    PqlToken* validateSuchThat(PqlToken* such);
 
     shared_ptr<ClauseValidator> createClauseValidator(TokenType type);
     PqlToken getNextToken();

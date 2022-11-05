@@ -19,8 +19,8 @@
 
 class DeclarationValidator {
 public:
-	DeclarationValidator(vector<PqlToken> *tokens);
-	unordered_map<string, TokenType> validate();
+	DeclarationValidator(vector<PqlToken> *tokens, unordered_map<string, TokenType> *map);
+	void validate();
 
 private:
 	void isValidDesignEntity(PqlToken token);
@@ -31,7 +31,7 @@ private:
 	int next;
 	int size;
 	vector<PqlToken> *tokens;
-	unordered_map<string, TokenType> declarations;
+	unordered_map<string, TokenType> *declarations;
 };
 
 

@@ -38,14 +38,13 @@ public:
 
     QueryTokenizer(string);
 
-    vector<PqlToken> Tokenize();
+    vector<PqlToken> tokenize();
     void resetQueryString(string query);
 
 private:
-    void Split();
-    void ConvertIntoTokens();
-    void TokenizeDeclarations(int& i);
-    void TokenizeSelectAndClauses(int& i);
+    void split();
+    void convertIntoTokens();
+
 };
 
 #endif //TEAM37_QPS_H

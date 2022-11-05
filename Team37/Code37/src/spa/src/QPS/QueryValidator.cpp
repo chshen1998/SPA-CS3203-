@@ -36,14 +36,10 @@ PqlError QueryValidator::validateQuery()
 {
     try {
         validateDeclarations();
-
-        if (declarations.find("BOOLEAN") != declarations.end()) {
-            booleanIsSynonym = true;
-        }
     
-        PqlToken* curr = validateSelect();
+        validateSelect();
 
-	    validateClauses(curr);
+	    validateClauses();
 
         return PqlError(ErrorType::NONE, "");
     }
@@ -58,22 +54,25 @@ PqlError QueryValidator::validateQuery()
 void QueryValidator::validateDeclarations()
 {
     vector<PqlToken> declarationTokens;
-    PqlToken curr = getNextToken();
-    while (curr.type != TokenType::DECLARATION_END && curr.type != TokenType::END) {
-        declarationTokens.push_back(curr);
-        curr = getNextToken();
+    while (next < size && tokens->at(next).type != TokenType::DECLARATION_END) {
+        declarationTokens.push_back(tokens->at(next));
+        next++;
     }
 
     DeclarationValidator validator = DeclarationValidator(&declarationTokens, &declarations);
     validator.validate();
+
+    if (declarations.find("BOOLEAN") != declarations.end()) {
+        booleanIsSynonym = true;
+    }
+    next++;
 }
 
-PqlToken* QueryValidator::validateSelect()
+void QueryValidator::validateSelect()
 {
     SelectValidator validator = SelectValidator(&declarations);
 
-    validator.validateSelect(getNextToken()); // Select token
-
+    validator.validateSelect(getNextToken());
    
     PqlToken curr = getNextToken();
     if (curr.type == TokenType::OPEN_ARROW) {
@@ -94,7 +93,6 @@ PqlToken* QueryValidator::validateSelect()
         curr = getNextToken();
     } 
     else {
-        // If not boolean then validate synonym
         validator.validateSynonym(curr);
         curr = getNextToken();
 
@@ -107,14 +105,15 @@ PqlToken* QueryValidator::validateSelect()
         }
     }
 
-    return &curr;
+    next--;
 }
 
-void QueryValidator::validateClauses(PqlToken* curr)
+void QueryValidator::validateClauses()
 {
-    while (curr->type != TokenType::END)
+    PqlToken curr = getNextToken();
+    while (curr.type != TokenType::END)
     {
-        switch (curr->type) {
+        switch (curr.type) {
         case TokenType::PATTERN:
             curr = validatePattern();
             break;
@@ -122,7 +121,7 @@ void QueryValidator::validateClauses(PqlToken* curr)
             curr = validateWith();
             break;
         case TokenType::SUCH:
-            curr = validateSuchThat(curr);
+            curr =validateSuchThat();
             break;
         default:
             throw SyntaxError("Invalid clauses");
@@ -130,68 +129,63 @@ void QueryValidator::validateClauses(PqlToken* curr)
     }
 }
 
-PqlToken* QueryValidator::validatePattern()
+PqlToken QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(&declarations);
-
     PqlToken andToken = PqlToken(TokenType::AND, "and");
     while (andToken.type == TokenType::AND)
     {
         PqlToken pattern = getNextToken();
         validator.validatePattern(pattern);
 
-        if (declarations[pattern.value] == TokenType::ASSIGN) {
-            validator.validateOpen(getNextToken()); // Open bracket
-	        PqlToken left = getNextToken();
-            validator.validateComma(getNextToken()); // Comma
-	        PqlToken right = getNextToken();
-            validator.validateClose(getNextToken()); // Closed bracket
-            validator.validate(left, right);
-        }
-        else if (declarations[pattern.value] == TokenType::WHILE) {
-            validator.validateOpen(getNextToken()); // Open bracket
-            PqlToken left = getNextToken();
-            validator.validateComma(getNextToken()); // Comma
-            PqlToken right = getNextToken();
-            validator.validateClose(getNextToken()); // Closed bracket
-            validator.validateWhile(left, right);
-        }
-        else { // IF
-            validator.validateOpen(getNextToken()); // Open bracket
-            PqlToken left = getNextToken();
-            validator.validateComma(getNextToken()); // Comma
-            PqlToken mid = getNextToken();
-            validator.validateComma(getNextToken()); // Comma
-            PqlToken right = getNextToken();
-            validator.validateClose(getNextToken()); // Closed bracket
-            validator.validateIf(left, mid, right);
+        validator.validateOpen(getNextToken().type);
+        PqlToken arg1 = getNextToken();
+        validator.validateComma(getNextToken().type);
+        PqlToken arg2 = getNextToken();
+
+        switch (declarations[pattern.value]) {
+        case TokenType::ASSIGN:
+            validator.validateClose(getNextToken().type);
+            validator.validate(arg1, arg2);
+            break;
+        case TokenType::WHILE:
+            validator.validateClose(getNextToken().type);
+            validator.validateWhile(arg1, arg2);
+            break;
+        case TokenType::IF:
+            validator.validateComma(getNextToken().type);
+            PqlToken arg3 = getNextToken();
+            validator.validateClose(getNextToken().type);
+            validator.validateIf(arg1, arg2, arg3);
+            break;
         }
         andToken = getNextToken();
     }
-    return &andToken;
+
+    return andToken;
 }
 
-PqlToken* QueryValidator::validateWith()
+PqlToken QueryValidator::validateWith()
 {
     vector<PqlToken> withTokens;
 
-    PqlToken next = getNextToken();
-    while (next.type != TokenType::END && next.type != TokenType::PATTERN && next.type != TokenType::SUCH)
+    PqlToken nextToken = getNextToken();
+    while (nextToken.type != TokenType::END && nextToken.type != TokenType::PATTERN && nextToken.type != TokenType::SUCH)
     {
-        withTokens.push_back(next);
-        next = getNextToken();
+        withTokens.push_back(nextToken);
+        nextToken = getNextToken();
     }
 
     WithValidator validator = WithValidator(&declarations, &withTokens);
     validator.validate();
 
-    return &next;
+    return nextToken;
 }
 
-PqlToken* QueryValidator::validateSuchThat(PqlToken* such)
+PqlToken QueryValidator::validateSuchThat()
 {
     PqlToken that = getNextToken();
-    if (such->type != TokenType::SUCH || that.type != TokenType::THAT)
+    if (that.type != TokenType::THAT)
     {
         throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
     }
@@ -200,15 +194,16 @@ PqlToken* QueryValidator::validateSuchThat(PqlToken* such)
     while (andToken.type == TokenType::AND)
     {
         shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
-        validator->validateOpen(getNextToken()); // Open bracket
+        validator->validateOpen(getNextToken().type); 
         PqlToken left = getNextToken();
-        validator->validateComma(getNextToken()); // Comma
+        validator->validateComma(getNextToken().type); 
         PqlToken right = getNextToken();
-        validator->validateClose(getNextToken()); // Closed bracket
+        validator->validateClose(getNextToken().type);
 	    validator->validate(left, right);
         andToken = getNextToken();
     }
-    return &andToken;
+
+    return andToken;
 }
 
  
@@ -249,12 +244,13 @@ shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type
 
 
 PqlToken QueryValidator::getNextToken() {
-    if (next == size)
+    if (next >= size)
     {   
+        next++;
         return PqlToken(TokenType::END, "");
     }
     PqlToken token = tokens->at(next);
-    next = next + 1;
+    next++;
     if (token.type == TokenType::BOOLEAN && booleanIsSynonym) {
         token.type = TokenType::SYNONYM;
     }

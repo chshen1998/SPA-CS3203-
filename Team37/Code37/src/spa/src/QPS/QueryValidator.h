@@ -15,6 +15,8 @@
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 #include "Validators/ClauseValidator.h"
+#include "Validators/PatternValidator.h"
+#include "Validators/WithValidator.h"
 
 
 class QueryValidator {
@@ -31,11 +33,11 @@ public:
 
 private:
     void validateDeclarations();
-    PqlToken* validateSelect();
-    void validateClauses(PqlToken* token);
-    PqlToken* validatePattern();
-    PqlToken* validateWith();
-    PqlToken* validateSuchThat(PqlToken* such);
+    void validateSelect();
+    void validateClauses();
+    PqlToken validatePattern();
+    PqlToken validateWith();
+    PqlToken validateSuchThat();
 
     shared_ptr<ClauseValidator> createClauseValidator(TokenType type);
     PqlToken getNextToken();

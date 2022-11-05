@@ -21,9 +21,9 @@
 class ClauseValidator : public BaseValidator
 {
 public:
-	void validateOpen(PqlToken token);
-	void validateClose(PqlToken token);
-	void validateComma(PqlToken token);
+	void validateOpen(TokenType type);
+	void validateClose(TokenType type);
+	void validateComma(TokenType type);
 	virtual void validate(PqlToken left, PqlToken right) = 0;
 
 protected:

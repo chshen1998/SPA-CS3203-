@@ -3,6 +3,7 @@ using namespace std;
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include "../Types/TokenType.h"
 #include "PqlToken.h"
@@ -30,8 +31,7 @@ public:
         }
         return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
     }
-    // Uses (s, v)
-    // with s.varname = "x"
+
     PqlToken clauseType;
     PqlToken left;
     PqlToken leftAttr;

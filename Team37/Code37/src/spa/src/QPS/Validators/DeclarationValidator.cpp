@@ -12,12 +12,14 @@ using namespace std;
 #include "../Types/TokenType.h"
 #include "DeclarationValidator.h"
 #include "ValidatorUtils.h"
+#include "BaseValidator.h"
 
-DeclarationValidator::DeclarationValidator(vector<PqlToken> *declarationTokens, unordered_map<string, TokenType>* map) {
+DeclarationValidator::DeclarationValidator(vector<PqlToken>* declarationTokens, unordered_map<string, TokenType>* declarationMap) : BaseValidator{}
+{
     tokens = declarationTokens;
     next = 0;
     size = tokens->size();
-    declarations = map;
+    declarations = declarationMap;
 }
 
 void DeclarationValidator::validate() {
@@ -63,15 +65,4 @@ void DeclarationValidator::isSemicolonOrComma(PqlToken token) {
     if (token.type != TokenType::SEMICOLON && token.type != TokenType::COMMA) {
         throw SyntaxError("Declarations synonym must be followed with either a semicolon or comma");
     }
-}
-
-PqlToken DeclarationValidator::getNextToken() {
-    if (next == size)
-    {
-        return PqlToken(TokenType::END, "");
-    }
-    PqlToken token = tokens->at(next);
-    next = next + 1;
-    return token;
-
 }

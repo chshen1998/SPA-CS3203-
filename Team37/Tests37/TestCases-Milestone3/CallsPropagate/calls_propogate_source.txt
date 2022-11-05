@@ -1,0 +1,21 @@
+procedure a {
+    while (x == 0) {
+        call c ;
+        if( z==0) then {
+        dy = dx * marking;
+        } else {
+           call b;
+        }
+    }
+}
+
+procedure b {
+    while (s==0) {
+        p1 = 0;
+    }
+}
+
+procedure c {
+    left = incre * bottom;
+    right = decrement * top ;
+}

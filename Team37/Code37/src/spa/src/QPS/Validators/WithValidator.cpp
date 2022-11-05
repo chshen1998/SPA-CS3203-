@@ -12,8 +12,9 @@ using namespace std;
 #include "WithValidator.h"
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
+#include "BaseValidator.h"
 
-WithValidator::WithValidator(unordered_map<string, TokenType> *declarationsMap, vector<PqlToken> *withTokens)
+WithValidator::WithValidator(unordered_map<string, TokenType>* declarationsMap, vector<PqlToken>* withTokens) : BaseValidator{}
 {
 	declarations = declarationsMap;
 	tokens = withTokens;
@@ -106,15 +107,4 @@ TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
         throw SyntaxError("Invalid With Clause");
         return TokenType::NONE;
     }
-}
-
-PqlToken WithValidator::getNextToken() {
-    if (next == size)
-    {
-        return PqlToken(TokenType::END, "");
-    }
-    PqlToken token = tokens->at(next);
-    next = next + 1;
-    return token;
-
 }

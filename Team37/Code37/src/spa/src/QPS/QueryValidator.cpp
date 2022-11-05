@@ -72,7 +72,7 @@ void QueryValidator::validateSelect()
 {
     SelectValidator validator = SelectValidator(&declarations);
 
-    validator.validateSelect(getNextToken());
+    validator.validateSelect(getNextToken().type);
    
     PqlToken curr = getNextToken();
     if (curr.type == TokenType::OPEN_ARROW) {
@@ -136,7 +136,7 @@ PqlToken QueryValidator::validatePattern()
     while (andToken.type == TokenType::AND)
     {
         PqlToken pattern = getNextToken();
-        validator.validatePattern(pattern);
+        validator.validatePattern(&pattern);
 
         validator.validateOpen(getNextToken().type);
         PqlToken arg1 = getNextToken();
@@ -146,17 +146,17 @@ PqlToken QueryValidator::validatePattern()
         switch (declarations[pattern.value]) {
         case TokenType::ASSIGN:
             validator.validateClose(getNextToken().type);
-            validator.validate(arg1, arg2);
+            validator.validate(&arg1, &arg2);
             break;
         case TokenType::WHILE:
             validator.validateClose(getNextToken().type);
-            validator.validateWhile(arg1, arg2);
+            validator.validateWhile(&arg1, &arg2);
             break;
         case TokenType::IF:
             validator.validateComma(getNextToken().type);
             PqlToken arg3 = getNextToken();
             validator.validateClose(getNextToken().type);
-            validator.validateIf(arg1, arg2, arg3);
+            validator.validateIf(&arg1, &arg2, &arg3);
             break;
         }
         andToken = getNextToken();
@@ -199,7 +199,7 @@ PqlToken QueryValidator::validateSuchThat()
         validator->validateComma(getNextToken().type); 
         PqlToken right = getNextToken();
         validator->validateClose(getNextToken().type);
-	    validator->validate(left, right);
+	    validator->validate(&left, &right);
         andToken = getNextToken();
     }
 

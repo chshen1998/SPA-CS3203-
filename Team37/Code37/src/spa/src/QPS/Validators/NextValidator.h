@@ -20,7 +20,7 @@
 class NextValidator : public ClauseValidator {
 public:
 	NextValidator(unordered_map<string, TokenType> *declarations, TokenType token);
-	void validate(PqlToken left, PqlToken right);
+	void validate(PqlToken* left, PqlToken* right);
 };
 
 

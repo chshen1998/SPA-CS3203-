@@ -13,13 +13,13 @@ using namespace std;
 
 ModifiesValidator::ModifiesValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
-void ModifiesValidator::validate(PqlToken left, PqlToken right)
+void ModifiesValidator::validate(PqlToken* left, PqlToken* right)
 {
-	if (left.type == TokenType::WILDCARD) {
+	if (left->type == TokenType::WILDCARD) {
 		throw SemanticError("Modifies clause arg1 cannot be wildcard");
 	}
 
-	if (validStatementRef.find(left.type) != validStatementRef.end())
+	if (validStatementRef.find(left->type) != validStatementRef.end())
 	{
 		validateStatementRef(left);
 	}

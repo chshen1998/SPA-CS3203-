@@ -26,9 +26,9 @@ PqlToken BaseValidator::getNextToken() {
 
 }
 
-bool BaseValidator::isDeclared(PqlToken synonym)
+bool BaseValidator::isDeclared(PqlToken *synonym)
 {
-	auto findit = declarations->find(synonym.value);
+	auto findit = declarations->find(synonym->value);
 	return (findit != declarations->end());
 }
 

@@ -24,9 +24,9 @@ public:
 	void validate();
 
 private:
-	void isValidDesignEntity(PqlToken token);
-	void isValidSynonym(PqlToken token);
-	void isSemicolonOrComma(PqlToken token);
+	void isValidDesignEntity(PqlToken *token);
+	void isValidSynonym(PqlToken *token);
+	void isSemicolonOrComma(PqlToken *token);
 };
 
 

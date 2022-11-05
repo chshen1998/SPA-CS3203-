@@ -14,7 +14,7 @@ using namespace std;
 
 CallsValidator::CallsValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
-void CallsValidator::validate(PqlToken left, PqlToken right)
+void CallsValidator::validate(PqlToken* left, PqlToken* right)
 {
 	validateEntityRef(left, TokenType::PROCEDURE);
 	validateEntityRef(right, TokenType::PROCEDURE);

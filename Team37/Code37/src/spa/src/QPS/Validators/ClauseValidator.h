@@ -24,13 +24,13 @@ public:
 	void validateOpen(TokenType type);
 	void validateClose(TokenType type);
 	void validateComma(TokenType type);
-	virtual void validate(PqlToken left, PqlToken right) = 0;
+	virtual void validate(PqlToken *left, PqlToken *right) = 0;
 
 protected:
 	ClauseValidator(unordered_map<string, TokenType> *declarationsMap, TokenType token);
 
-	void validateEntityRef(PqlToken token, TokenType entityType);
-	void validateStatementRef(PqlToken token);
+	void validateEntityRef(PqlToken *token, TokenType entityType);
+	void validateStatementRef(PqlToken *token);
 
 	TokenType validatorType;
 };

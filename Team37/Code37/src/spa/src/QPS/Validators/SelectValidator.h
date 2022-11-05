@@ -22,7 +22,7 @@
 class SelectValidator : public BaseValidator {
 public:
 	SelectValidator(unordered_map<string, TokenType> *declarations);
-	void validateSelect(PqlToken select);
+	void validateSelect(TokenType type);
 	void validateSynonym(PqlToken token);
 	void validateAttrName(PqlToken dot, PqlToken attrName);
 	void validateMultiple(vector<PqlToken> *tokens);

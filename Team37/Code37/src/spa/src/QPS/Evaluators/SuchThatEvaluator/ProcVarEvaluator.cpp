@@ -14,10 +14,10 @@ unordered_map<TokenType, ProcVarRelationType> tokenTypeToProcVarRelationType = {
 };
 
 
-bool ProcVarEvaluator::evaluateBooleanClause(const Clause& clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
+bool ProcVarEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause->clauseType.type];
 
     // StmtNum-StmtNum --> Eg. Uses("procedure", "x") 
     if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::STRING) {
@@ -33,11 +33,11 @@ bool ProcVarEvaluator::evaluateBooleanClause(const Clause& clause) {
 }
 
 
-vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
+vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause->clauseType.type];
     vector<vector<string>> finalTable;
     vector<string> finalResult;
     vector<string> allProcedures;

@@ -15,7 +15,7 @@ public:
     AssignEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
         PatternEvaluator(s, d) {};
 
-    vector<vector<string>> evaluateClause(const Clause&, vector<vector<string>>);
+    vector<vector<string>> evaluateClause(shared_ptr<Clause>, vector<vector<string>>);
 
 };
 

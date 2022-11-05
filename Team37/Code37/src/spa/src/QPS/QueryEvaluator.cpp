@@ -35,7 +35,7 @@ QueryEvaluator::QueryEvaluator(shared_ptr<PqlQuery> pqlQuery, shared_ptr<QuerySe
     result(r), servicer(s), pq(pqlQuery) {}
 
 void QueryEvaluator::evaluate() {
-    const bool isResultBoolean = pq->selectObjects[0].type == SelectType::BOOLEAN;
+    const bool isResultBoolean = pq->selectObjects[0]->type == SelectType::BOOLEAN;
     bool falseBooleanClause = false;
 
     // TODO: restructure this 
@@ -49,12 +49,12 @@ void QueryEvaluator::evaluate() {
     IfEvaluator ifEvaluator = IfEvaluator(servicer, pq->declarations);
 
     // Solve the boolean clauses
-    for (Clause booleanClause : pq->booleanClauses) {
-        if (booleanClause.category == TokenType::WITH) {
+    for (shared_ptr<Clause> booleanClause : pq->booleanClauses) {
+        if (booleanClause->category == TokenType::WITH) {
             falseBooleanClause = !withEvaluator.evaluateBooleanClause(booleanClause);
         }
         else {
-            TokenType suchThatType = booleanClause.clauseType.type;
+            TokenType suchThatType = booleanClause->clauseType.type;
 
             if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
                 falseBooleanClause = !procProcEvaluator.evaluateBooleanClause(booleanClause);
@@ -65,7 +65,7 @@ void QueryEvaluator::evaluate() {
             }
 
             // Uses_P, Modifies_P
-            else if (booleanClause.left.type == TokenType::STRING || pq->declarations[booleanClause.left.value] == TokenType::PROCEDURE) {
+            else if (booleanClause->left.type == TokenType::STRING || pq->declarations[booleanClause->left.value] == TokenType::PROCEDURE) {
                 falseBooleanClause = !procVarEvaluator.evaluateBooleanClause(booleanClause);
             }
 
@@ -87,15 +87,15 @@ void QueryEvaluator::evaluate() {
     listOfIntermediateTables.reserve(pq->clauses.size());
 
     // Solve the Synonym Clauses
-    for (vector<Clause> clauseGroup : pq->clauses) {
+    for (vector<shared_ptr<Clause>> clauseGroup : pq->clauses) {
         vector<vector<string>> intermediateTable;
 
-        for (Clause clause : clauseGroup) {
-            if (clause.category == TokenType::WITH) {
+        for (shared_ptr<Clause> clause : clauseGroup) {
+            if (clause->category == TokenType::WITH) {
                 intermediateTable = withEvaluator.evaluateClause(clause, intermediateTable);
             }
-            else if (clause.category == TokenType::PATTERN) {
-                TokenType patternType = pq->declarations[clause.clauseType.value];
+            else if (clause->category == TokenType::PATTERN) {
+                TokenType patternType = pq->declarations[clause->clauseType.value];
 
                 if (patternType == TokenType::ASSIGN) {
                     intermediateTable = assignEvaluator.evaluateClause(clause, intermediateTable);
@@ -109,7 +109,7 @@ void QueryEvaluator::evaluate() {
             }
 
             else {
-                TokenType suchThatType = clause.clauseType.type;
+                TokenType suchThatType = clause->clauseType.type;
 
                 if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
                     intermediateTable = procProcEvaluator.evaluateSynonymClause(clause, intermediateTable);
@@ -121,7 +121,7 @@ void QueryEvaluator::evaluate() {
                 }
 
                 // Uses_P, Modifies_P
-                else if (clause.left.type == TokenType::STRING || pq->declarations[clause.left.value] == TokenType::PROCEDURE) {
+                else if (clause->left.type == TokenType::STRING || pq->declarations[clause->left.value] == TokenType::PROCEDURE) {
                     intermediateTable = procVarEvaluator.evaluateSynonymClause(clause, intermediateTable);
                 }
                 // Uses_S, Modifies_S

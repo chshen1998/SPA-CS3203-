@@ -19,10 +19,10 @@ unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType =
         {TokenType::AFFECTS_A, StmtStmtRelationType::AFFECTSS},
 };
 
-bool StmtStmtEvaluator::evaluateBooleanClause(const Clause &clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause.clauseType.type];
+bool StmtStmtEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause->clauseType.type];
 
     // StmtNum-StmtNum --> Eg. Follows(5,6) 
     if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STATEMENT_NUM) {
@@ -71,10 +71,10 @@ bool StmtStmtEvaluator::evaluateBooleanClause(const Clause &clause) {
 
 
 vector<vector<string>>
-StmtStmtEvaluator::evaluateSynonymClause(const Clause &clause, vector<vector<string>> intermediate) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause.clauseType.type];
+StmtStmtEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause->clauseType.type];
 
     if (!precheck(leftArg, rightArg, ss)) {
         return vector<vector<string>>{};

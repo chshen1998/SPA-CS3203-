@@ -37,8 +37,10 @@ void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
 */
 void QPS::evaluate(string query, list<string>& results) {
     try {
-        QueryTokenizer tokenizer = QueryTokenizer(query);
-        vector<PqlToken> tokens = tokenizer.Tokenize();
+        vector<PqlToken> tokens = vector<PqlToken>();
+
+        QueryTokenizer tokenizer = QueryTokenizer(tokens, query);
+        tokenizer.Tokenize();
 
         QueryValidator validator = QueryValidator(&tokens);
         PqlError pe = validator.validateQuery();

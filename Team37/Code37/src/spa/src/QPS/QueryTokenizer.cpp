@@ -24,21 +24,19 @@ using namespace std;
 using namespace TokenizerUtils;
 
 
-QueryTokenizer::QueryTokenizer(string queryString) : query(queryString) { }
+QueryTokenizer::QueryTokenizer(vector<PqlToken>& tokenVector, string queryString) : query(queryString), tokens(tokenVector) { }
 
 void QueryTokenizer::resetQueryString(string queryString) {
     query = queryString;
 }
 
-vector<PqlToken> QueryTokenizer::Tokenize() {
+void QueryTokenizer::Tokenize() {
     if (query.empty()) {
         throw "Invalid Query Syntax :: Query Length is zero.";
     }
 
     Split();
     ConvertIntoTokens();
-
-    return tokens;
 }
 
 void QueryTokenizer::Split() {
@@ -109,7 +107,6 @@ void QueryTokenizer::Split() {
 
 
 void QueryTokenizer::ConvertIntoTokens() {
-    tokens = vector<PqlToken>();
     tokens.reserve(delimited_query.size() + 1); // Additional 1 for `declaration end`
     int index = 0; // index of delimited_query that we are looping through
 

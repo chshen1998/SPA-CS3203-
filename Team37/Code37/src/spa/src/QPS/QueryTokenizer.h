@@ -32,13 +32,13 @@ enum class TokenizeState {
 
 class QueryTokenizer {
 public:
-    vector<PqlToken> tokens;
+    vector<PqlToken> &tokens;
     vector<string> delimited_query;
     string query;
 
-    QueryTokenizer(string);
+    QueryTokenizer(vector<PqlToken>&, string);
 
-    vector<PqlToken> Tokenize();
+    void Tokenize();
     void resetQueryString(string query);
 
 private:

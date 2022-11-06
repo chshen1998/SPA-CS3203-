@@ -8,10 +8,10 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-bool StmtStmtBooleanEvaluator::evaluateBooleanClause(const Clause &clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause.clauseType.type];
+bool StmtStmtBooleanEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause->clauseType.type];
 
     // StmtNum-StmtNum --> Eg. Follows(5,6) 
     if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STATEMENT_NUM) {

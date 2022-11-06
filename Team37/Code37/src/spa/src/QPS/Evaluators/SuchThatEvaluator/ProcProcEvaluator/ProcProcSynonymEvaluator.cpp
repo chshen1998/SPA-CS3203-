@@ -3,12 +3,10 @@ using namespace std;
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
-#include "QPS/Evaluators/SuchThatEvaluator/SuchThatEvaluatorHelper.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
 
 #include "ProcProcSynonymEvaluator.h"
 
-using namespace SuchThatEvaluatorHelper;
 using namespace EvaluatorUtils;
 
 vector<vector<string>> ProcProcSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)

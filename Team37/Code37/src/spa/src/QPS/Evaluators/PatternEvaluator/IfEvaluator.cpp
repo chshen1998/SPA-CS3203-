@@ -8,12 +8,12 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> IfEvaluator::evaluateClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+vector<vector<string>> IfEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause->left;
     TokenType patternType = declarations[clause->clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
     vector<vector<string>> finalTable;
-    vector<int> allIfStmtLines = IfEvaluator::getAllLineNumOfStmtType(patternStmtType);
+    vector<int> allIfStmtLines = getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
     finalTable.push_back(vector<string>{clause->clauseType.value});

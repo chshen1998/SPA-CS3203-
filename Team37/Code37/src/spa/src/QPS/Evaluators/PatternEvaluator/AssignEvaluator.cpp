@@ -8,14 +8,14 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> AssignEvaluator::evaluateClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+vector<vector<string>> AssignEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause->left;
     PqlToken rightArg = clause->right;
     TokenType patternType = declarations[clause->clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
     vector<vector<string>> finalTable;
     bool rightArgWildCardString = rightArg.type == TokenType::WILDCARD_STRING;
-    vector<int> allAssignStmtLines = AssignEvaluator::getAllLineNumOfStmtType(patternStmtType);
+    vector<int> allAssignStmtLines = getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
     finalTable.push_back(vector<string>{clause->clauseType.value});

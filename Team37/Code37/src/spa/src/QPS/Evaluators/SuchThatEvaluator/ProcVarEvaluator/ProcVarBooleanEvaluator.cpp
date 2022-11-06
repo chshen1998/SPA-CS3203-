@@ -7,10 +7,10 @@ using namespace std;
 #include "ProcVarBooleanEvaluator.h"
 
 
-bool ProcVarBooleanEvaluator::evaluateBooleanClause(const Clause& clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
+bool ProcVarBooleanEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause->clauseType.type];
 
     // StmtNum-StmtNum --> Eg. Uses("procedure", "x") 
     if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::STRING) {

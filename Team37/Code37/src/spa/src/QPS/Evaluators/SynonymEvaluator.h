@@ -3,7 +3,7 @@
 
 using namespace std;
 
-#include "../Structures/PqlQuery.h"
+#include "QPS/Structures/PqlQuery.h"
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"
 
@@ -15,7 +15,7 @@ public:
 
     virtual ~SynonymEvaluator() {}; // destructor for polymorphism
 
-    virtual vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) = 0;
+    virtual vector<vector<string>> evaluateSynonymClause(shared_ptr<Clause>, vector<vector<string>>) = 0;
 
 protected:
     shared_ptr<QueryServicer> servicer;

@@ -17,8 +17,8 @@ public:
     WithBooleanEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType> &d) :
         BooleanEvaluator(s, d) {};
 
-    bool evaluateBooleanClause(const Clause& clause) override {
-        return clause.left == clause.right;
+    bool evaluateBooleanClause(shared_ptr<Clause> clause) override {
+        return clause->left == clause->right;
     };
 };
 

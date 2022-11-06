@@ -4,16 +4,14 @@ using namespace std;
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
-#include "QPS/Evaluators/SuchThatEvaluator/SuchThatEvaluatorHelper.h"
 #include "ProcProcBooleanEvaluator.h"
 
-using namespace SuchThatEvaluatorHelper;
 using namespace EvaluatorUtils;
 
-bool ProcProcBooleanEvaluator::evaluateBooleanClause(const Clause& clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    ProcProcRelationType pp = tokenTypeToProcProcRelationType[clause.clauseType.type];
+bool ProcProcBooleanEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    ProcProcRelationType pp = tokenTypeToProcProcRelationType[clause->clauseType.type];
 
     // string-string --> Eg. Calls("procedure1", "procedure2") 
     if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::STRING) {

@@ -4,11 +4,9 @@ using namespace std;
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
-#include "QPS/Evaluators/SuchThatEvaluator/SuchThatEvaluatorHelper.h"
 
 #include "ProcVarSynonymEvaluator.h"
 
-using namespace SuchThatEvaluatorHelper;
 using namespace EvaluatorUtils;
 
 vector<vector<string>> ProcVarSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)

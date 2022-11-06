@@ -15,7 +15,7 @@ public:
 
     virtual ~BooleanEvaluator() {}; // destructor for polymorphism
 
-    virtual bool evaluateBooleanClause(const Clause&) = 0;
+    virtual bool evaluateBooleanClause(shared_ptr<Clause>) = 0;
 
 protected:
     shared_ptr<QueryServicer> servicer;

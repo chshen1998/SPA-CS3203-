@@ -10,7 +10,7 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> WithSynonymEvaluator::evaluateClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
+vector<vector<string>> WithSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
     PqlToken leftArg = clause->left;
     PqlToken rightArg = clause->right;
@@ -84,7 +84,7 @@ vector<vector<string>> WithSynonymEvaluator::evaluateClause(shared_ptr<Clause> c
 }
 
 
-void WithEvaluator::fillInitialTable(shared_ptr<Clause> clause, vector<vector<string>>& intermediate) {
+void WithSynonymEvaluator::fillInitialTable(shared_ptr<Clause> clause, vector<vector<string>>& intermediate) {
     intermediate.push_back(vector<string> { clause->left.value });
 
     if (clause->right.type == TokenType::SYNONYM) {
@@ -97,7 +97,7 @@ void WithEvaluator::fillInitialTable(shared_ptr<Clause> clause, vector<vector<st
         }
     }
     else {
-        for (string left : selectAll(declarations[clause->left.value])) {
+        for (string left : selectAll(SynonymEvaluator::declarations[clause->left.value])) {
             intermediate.push_back(vector<string> { left });
         }
     }

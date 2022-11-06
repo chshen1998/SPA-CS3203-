@@ -6,10 +6,10 @@ using namespace std;
 #include "StmtVarBooleanEvaluator.h"
 
 
-bool StmtVarBooleanEvaluator::evaluateBooleanClause(const Clause& clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
+bool StmtVarBooleanEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause->clauseType.type];
 
     // StmtNum-StmtNum --> Eg. Uses(5, "x") 
     if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STRING) {

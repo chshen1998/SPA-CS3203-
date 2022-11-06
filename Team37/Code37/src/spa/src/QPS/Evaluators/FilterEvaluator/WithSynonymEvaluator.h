@@ -17,10 +17,10 @@ public:
     WithSynonymEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
         SynonymEvaluator(s, d), FilterEvaluator(s, d) {};
 
-    vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) override;
+    vector<vector<string>> evaluateSynonymClause(shared_ptr<Clause>, vector<vector<string>>) override;
 
 private:
-    void fillInitialTable(const Clause&, vector<vector<string>>&);
+    void fillInitialTable(shared_ptr<Clause>, vector<vector<string>>&);
 
 };
 

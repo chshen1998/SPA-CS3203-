@@ -50,8 +50,8 @@ void QueryEvaluator::evaluate() {
     unique_ptr<BooleanEvaluator> booleanEvaluator;
 
     // Solve the boolean clauses
-    for (Clause booleanClause : pq->booleanClauses) {
-        if (booleanClause.category == TokenType::WITH) {
+    for (shared_ptr<Clause> booleanClause : pq->booleanClauses) {
+        if (booleanClause->category == TokenType::WITH) {
             booleanEvaluator = make_unique<WithBooleanEvaluator>(WithBooleanEvaluator(servicer, pq->declarations));
         }
         else {
@@ -66,7 +66,7 @@ void QueryEvaluator::evaluate() {
             }
 
             // Uses_P, Modifies_P
-            else if (booleanClause.left.type == TokenType::STRING || pq->declarations[booleanClause.left.value] == TokenType::PROCEDURE) {
+            else if (booleanClause->left.type == TokenType::STRING || pq->declarations[booleanClause->left.value] == TokenType::PROCEDURE) {
                 booleanEvaluator = make_unique<ProcVarBooleanEvaluator>(ProcVarBooleanEvaluator(servicer, pq->declarations));
             }
 
@@ -92,8 +92,8 @@ void QueryEvaluator::evaluate() {
     for (vector<shared_ptr<Clause>> clauseGroup : pq->clauses) {
         vector<vector<string>> intermediateTable;
 
-        for (Clause clause : clauseGroup) {
-            if (clause.category == TokenType::WITH) {
+        for (shared_ptr<Clause> clause : clauseGroup) {
+            if (clause->category == TokenType::WITH) {
                 synonymEvaluator = make_unique<WithSynonymEvaluator>(WithSynonymEvaluator(servicer, pq->declarations));
             }
             else if (clause->category == TokenType::PATTERN) {
@@ -121,7 +121,7 @@ void QueryEvaluator::evaluate() {
                 }
 
                 // Uses_P, Modifies_P
-                else if (clause.left.type == TokenType::STRING || pq->declarations[clause.left.value] == TokenType::PROCEDURE) {
+                else if (clause->left.type == TokenType::STRING || pq->declarations[clause->left.value] == TokenType::PROCEDURE) {
                     synonymEvaluator = make_unique<ProcVarSynonymEvaluator>(ProcVarSynonymEvaluator(servicer, pq->declarations));
                 }
 

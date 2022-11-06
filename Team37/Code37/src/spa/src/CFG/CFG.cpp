@@ -37,3 +37,11 @@ bool CFG::stmtExistsInMap(int stmtNum) {
         return true;
     }
 }
+
+shared_ptr<CFGNode> CFG::getNode(int stmtNum) {
+    if (stmtExistsInMap(stmtNum)) {
+        return stmtCFGNodeMap->at(stmtNum);
+    } else {
+        return nullptr;
+    }
+}

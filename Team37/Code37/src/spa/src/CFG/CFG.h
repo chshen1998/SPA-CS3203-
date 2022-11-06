@@ -70,6 +70,13 @@ public:
      * @return boolean if stmt exists in the map
      */
     bool stmtExistsInMap(int stmtNum);
+
+    /**
+     * Returns the CFGNode corresponding to the statement number
+     * @param stmtNum statement number of node
+     * @return pointer to the CFG Node
+     */
+    shared_ptr<CFGNode> getNode(int stmtNum);
 };
 
 

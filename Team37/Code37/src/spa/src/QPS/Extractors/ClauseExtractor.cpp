@@ -24,7 +24,7 @@ void ClauseExtractor::extract(int start, int last) {
     next = start;
     end = last;
 
-    pq->clauses.push_back(vector<Clause>{});
+    pq->clauses.push_back(vector<shared_ptr<Clause>>{});
     
     PqlToken token = getNextToken();
     while (token.type != TokenType::END)
@@ -60,7 +60,7 @@ PqlToken ClauseExtractor::extractPatternClause()
         getNextToken(); // CLOSE BRACKET or COMMA for IF pattern
 
         // For WHILE and IF pattern, only left arg matters since mid/right args must be wildcard 
-        pq->clauses[0].push_back(Clause(pattern, left, right, TokenType::PATTERN));
+        pq->clauses[0].push_back(shared_ptr<Clause>(new Clause(pattern, left, right, TokenType::PATTERN)));
 
         if (pq->declarations[pattern.value] == TokenType::IF) {
             getNextToken(); // right arg
@@ -102,7 +102,7 @@ PqlToken ClauseExtractor::extractWithClause()
             next = getNextToken(); // Either "and" or next clause type
         }
 
-        pq->clauses[0].push_back(Clause(PqlToken(TokenType::NONE, ""), left, right, TokenType::WITH, leftAttr, rightAttr));
+        pq->clauses[0].push_back(shared_ptr<Clause>(new Clause(PqlToken(TokenType::NONE, ""), left, right, TokenType::WITH, leftAttr, rightAttr)));
     }
 
     return next;
@@ -126,7 +126,7 @@ PqlToken ClauseExtractor::extractSuchThatClause()
 	    getNextToken(); // COMMA
 	    right = extractString(getNextToken());
 	    getNextToken(); // CLOSE BRACKET
-        pq->clauses[0].push_back(Clause(suchThatClause, left, right, TokenType::SUCH_THAT));
+        pq->clauses[0].push_back(shared_ptr<Clause>(new Clause(suchThatClause, left, right, TokenType::SUCH_THAT)));
         next = getNextToken();
     }
 

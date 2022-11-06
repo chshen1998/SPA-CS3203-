@@ -23,7 +23,7 @@ protected:
 	BaseValidator();
 
 	PqlToken getNextToken();
-	bool isDeclared(PqlToken token);
+	bool isDeclared(PqlToken *token);
 
 	unordered_map<string, TokenType>* declarations;
 	vector<PqlToken> *tokens;

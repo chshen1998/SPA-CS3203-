@@ -10,10 +10,10 @@ using namespace std;
 using namespace EvaluatorUtils;
 
 vector<vector<string>>
-StmtStmtSynonymEvaluator::evaluateSynonymClause(const Clause &clause, vector<vector<string>> intermediate) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause.clauseType.type];
+StmtStmtSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause->clauseType.type];
 
     if (!precheck(leftArg, rightArg, ss)) {
         return vector<vector<string>>{};

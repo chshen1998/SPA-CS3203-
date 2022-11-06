@@ -17,52 +17,52 @@ ClauseValidator::ClauseValidator(unordered_map<string, TokenType>* declarationsM
 	validatorType = token;
 }
 
-void ClauseValidator::validateOpen(PqlToken token) {
-	if (token.type != TokenType::OPEN_BRACKET) {
+void ClauseValidator::validateOpen(TokenType type) {
+	if (type != TokenType::OPEN_BRACKET) {
 		throw SyntaxError("Invalid " + relationshipToStringMap[validatorType] + " clause missing open bracket");
 	}
 }
 
-void ClauseValidator::validateClose(PqlToken token) {
-	if (token.type != TokenType::CLOSED_BRACKET) {
+void ClauseValidator::validateClose(TokenType type) {
+	if (type != TokenType::CLOSED_BRACKET) {
 		throw SyntaxError("Invalid " + relationshipToStringMap[validatorType] + " clause missing closed bracket");
 	}
 }
 
-void ClauseValidator::validateComma(PqlToken token) {
-	if (token.type != TokenType::COMMA) {
+void ClauseValidator::validateComma(TokenType type) {
+	if (type != TokenType::COMMA) {
 		throw SyntaxError("Invalid " + relationshipToStringMap[validatorType] + " clause missing comma between parameters");
 	}
 }
 
-void ClauseValidator::validateEntityRef(PqlToken token, TokenType entityType)
+void ClauseValidator::validateEntityRef(PqlToken *token, TokenType entityType)
 {
-	if (validEntityRef.find(token.type) == validEntityRef.end())
+	if (validEntityRef.find(token->type) == validEntityRef.end())
 	{
 		throw SyntaxError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
 	}
-	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
+	else if (token->type == TokenType::SYNONYM && !isDeclared(token))
 	{
-		throw SemanticError(token.value + " is undeclared parameter for " + relationshipToStringMap[validatorType] + " clause");
+		throw SemanticError(token->value + " is undeclared parameter for " + relationshipToStringMap[validatorType] + " clause");
 	} 
-	else if (token.type == TokenType::SYNONYM && declarations->at(token.value) != entityType)
+	else if (token->type == TokenType::SYNONYM && declarations->at(token->value) != entityType)
 	{
-		throw SemanticError(token.value + " is invalid parameter type for " + relationshipToStringMap[validatorType] + " clause");
+		throw SemanticError(token->value + " is invalid parameter type for " + relationshipToStringMap[validatorType] + " clause");
 	}
 }
 
-void ClauseValidator::validateStatementRef(PqlToken token)
+void ClauseValidator::validateStatementRef(PqlToken *token)
 {
-	if (validStatementRef.find(token.type) == validStatementRef.end())
+	if (validStatementRef.find(token->type) == validStatementRef.end())
 	{
 		throw SyntaxError("Invalid parameters for " + relationshipToStringMap[validatorType] + " clause");
 	}
-	else if (token.type == TokenType::SYNONYM && !isDeclared(token))
+	else if (token->type == TokenType::SYNONYM && !isDeclared(token))
 	{
-		throw SemanticError(token.value + " is undeclared parameter for " + relationshipToStringMap[validatorType] + " clause");
+		throw SemanticError(token->value + " is undeclared parameter for " + relationshipToStringMap[validatorType] + " clause");
 	}
-	else if (token.type == TokenType::SYNONYM && statementTypes.find(declarations->at(token.value)) == statementTypes.end())
+	else if (token->type == TokenType::SYNONYM && statementTypes.find(declarations->at(token->value)) == statementTypes.end())
 	{
-		throw SemanticError(token.value + " is invalid parameter type for " + relationshipToStringMap[validatorType] + " clause");
+		throw SemanticError(token->value + " is invalid parameter type for " + relationshipToStringMap[validatorType] + " clause");
 	}
 }

@@ -16,7 +16,7 @@ public:
     WhileEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
         SynonymEvaluator(s, d) {};
 
-    vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) override;
+    vector<vector<string>> evaluateSynonymClause(shared_ptr<Clause>, vector<vector<string>>) override;
 };
 
 

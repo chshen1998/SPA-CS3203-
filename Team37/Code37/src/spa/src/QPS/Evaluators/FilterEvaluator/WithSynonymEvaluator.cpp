@@ -10,10 +10,10 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> WithSynonymEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
+vector<vector<string>> WithSynonymEvaluator::evaluateClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
     vector<vector<string>> finalResult;
 
     // If initial table is empty
@@ -36,7 +36,7 @@ vector<vector<string>> WithSynonymEvaluator::evaluateSynonymClause(const Clause&
     finalResult.push_back(intermediate[0]);
 
     // Two Synonyms - s.procName() = v.procName()
-    if (clause.rightAttr.type != TokenType::NONE) {
+    if (clause->rightAttr.type != TokenType::NONE) {        
         bool isRightDoubleAttr = addAttrName(intermediate, rightArg);
 
         // Insert Column headers
@@ -83,20 +83,21 @@ vector<vector<string>> WithSynonymEvaluator::evaluateSynonymClause(const Clause&
     return finalResult;
 }
 
-void WithSynonymEvaluator::fillInitialTable(const Clause& clause, vector<vector<string>>& intermediate) {
-    intermediate.push_back(vector<string> { clause.left.value });
 
-    if (clause.right.type == TokenType::SYNONYM) {
-        intermediate[0].push_back(clause.right.value);
+void WithEvaluator::fillInitialTable(shared_ptr<Clause> clause, vector<vector<string>>& intermediate) {
+    intermediate.push_back(vector<string> { clause->left.value });
 
-        for (string left : selectAll(SynonymEvaluator::declarations[clause.left.value])) {
-            for (string right : selectAll(SynonymEvaluator::declarations[clause.right.value])) {
+    if (clause->right.type == TokenType::SYNONYM) {
+        intermediate[0].push_back(clause->right.value);
+
+        for (string left : selectAll(SynonymEvaluator::declarations[clause->left.value])) {
+            for (string right : selectAll(SynonymEvaluator::declarations[clause->right.value])) {
                 intermediate.push_back(vector<string> { left, right });
             }
         }
     }
     else {
-        for (string left : selectAll(SynonymEvaluator::declarations[clause.left.value])) {
+        for (string left : selectAll(declarations[clause->left.value])) {
             intermediate.push_back(vector<string> { left });
         }
     }

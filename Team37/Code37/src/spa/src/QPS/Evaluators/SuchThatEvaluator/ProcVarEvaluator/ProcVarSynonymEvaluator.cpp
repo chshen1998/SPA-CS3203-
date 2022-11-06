@@ -11,11 +11,11 @@ using namespace std;
 using namespace SuchThatEvaluatorHelper;
 using namespace EvaluatorUtils;
 
-vector<vector<string>> ProcVarSynonymEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
+vector<vector<string>> ProcVarSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause->clauseType.type];
     vector<vector<string>> finalTable;
     vector<string> finalResult;
     vector<string> allProcedures;

@@ -21,16 +21,16 @@
 class ClauseValidator : public BaseValidator
 {
 public:
-	void validateOpen(PqlToken token);
-	void validateClose(PqlToken token);
-	void validateComma(PqlToken token);
-	virtual void validate(PqlToken left, PqlToken right) = 0;
+	void validateOpen(TokenType type);
+	void validateClose(TokenType type);
+	void validateComma(TokenType type);
+	virtual void validate(PqlToken *left, PqlToken *right) = 0;
 
 protected:
 	ClauseValidator(unordered_map<string, TokenType> *declarationsMap, TokenType token);
 
-	void validateEntityRef(PqlToken token, TokenType entityType);
-	void validateStatementRef(PqlToken token);
+	void validateEntityRef(PqlToken *token, TokenType entityType);
+	void validateStatementRef(PqlToken *token);
 
 	TokenType validatorType;
 };

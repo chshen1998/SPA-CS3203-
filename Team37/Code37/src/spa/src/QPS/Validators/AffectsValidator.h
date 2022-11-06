@@ -19,7 +19,7 @@
 class AffectsValidator : public ClauseValidator {
 public:
 	AffectsValidator(unordered_map<string, TokenType> *declarations, TokenType token);
-	void validate(PqlToken left, PqlToken right);
+	void validate(PqlToken *left, PqlToken *right);
 };
 
 

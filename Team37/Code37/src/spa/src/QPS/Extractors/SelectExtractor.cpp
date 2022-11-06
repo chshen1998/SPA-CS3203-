@@ -5,6 +5,7 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <set>
+#include <memory>
 
 #include ".././Structures/PqlError.h"
 #include ".././Structures/PqlToken.h"
@@ -40,14 +41,14 @@ PqlToken SelectExtractor::extractSelectObject(PqlToken curr) {
     PqlToken nextToken = getNextToken();
     if (nextToken.type == TokenType::DOT) {
         nextToken = getNextToken();
-        pq->selectObjects.push_back(SelectObject(SelectType::ATTRNAME, curr.value, nextToken));
+        pq->selectObjects.push_back(shared_ptr<SelectObject>(new SelectObject(SelectType::ATTRNAME, curr.value, nextToken)));
         nextToken = getNextToken();
     }
     else if (curr.type == TokenType::BOOLEAN) {
-        pq->selectObjects.push_back(SelectObject(SelectType::BOOLEAN));
+        pq->selectObjects.push_back(shared_ptr<SelectObject>(new SelectObject(SelectType::BOOLEAN)));
     }
     else {
-        pq->selectObjects.push_back(SelectObject(SelectType::SYNONYM, curr.value));
+        pq->selectObjects.push_back(shared_ptr<SelectObject>(new SelectObject(SelectType::SYNONYM, curr.value)));
     }
 
     return nextToken;

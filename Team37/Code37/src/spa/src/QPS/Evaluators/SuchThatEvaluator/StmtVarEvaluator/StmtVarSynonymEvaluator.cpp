@@ -9,11 +9,11 @@ using namespace std;
 using namespace EvaluatorUtils;
 
 
-vector<vector<string>> StmtVarSynonymEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
+vector<vector<string>> StmtVarSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause->clauseType.type];
     vector<vector<string>> finalTable;
 
     string synonymValue = leftArg.type == TokenType::SYNONYM ? leftArg.value : rightArg.value;

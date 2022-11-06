@@ -45,7 +45,7 @@ QueryEvaluator::QueryEvaluator(shared_ptr<PqlQuery> pqlQuery, shared_ptr<QuerySe
     result(r), servicer(s), pq(pqlQuery) {}
 
 void QueryEvaluator::evaluate() {
-    const bool isResultBoolean = pq->selectObjects[0].type == SelectType::BOOLEAN;
+    const bool isResultBoolean = pq->selectObjects[0]->type == SelectType::BOOLEAN;
 
     unique_ptr<BooleanEvaluator> booleanEvaluator;
 
@@ -55,7 +55,7 @@ void QueryEvaluator::evaluate() {
             booleanEvaluator = make_unique<WithBooleanEvaluator>(WithBooleanEvaluator(servicer, pq->declarations));
         }
         else {
-            TokenType suchThatType = booleanClause.clauseType.type;
+            TokenType suchThatType = booleanClause->clauseType.type;
 
             if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
                 booleanEvaluator = make_unique<ProcProcBooleanEvaluator>(ProcProcBooleanEvaluator(servicer, pq->declarations));
@@ -89,15 +89,15 @@ void QueryEvaluator::evaluate() {
     unique_ptr<SynonymEvaluator> synonymEvaluator;
 
     // Solve the Synonym Clauses
-    for (vector<Clause> clauseGroup : pq->clauses) {
+    for (vector<shared_ptr<Clause>> clauseGroup : pq->clauses) {
         vector<vector<string>> intermediateTable;
 
         for (Clause clause : clauseGroup) {
             if (clause.category == TokenType::WITH) {
                 synonymEvaluator = make_unique<WithSynonymEvaluator>(WithSynonymEvaluator(servicer, pq->declarations));
             }
-            else if (clause.category == TokenType::PATTERN) {
-                TokenType patternType = pq->declarations[clause.clauseType.value];
+            else if (clause->category == TokenType::PATTERN) {
+                TokenType patternType = pq->declarations[clause->clauseType.value];
 
                 if (patternType == TokenType::ASSIGN) {
                     synonymEvaluator = make_unique<AssignEvaluator>(AssignEvaluator(servicer, pq->declarations));
@@ -110,7 +110,7 @@ void QueryEvaluator::evaluate() {
                 }
             }
             else {
-                TokenType suchThatType = clause.clauseType.type;
+                TokenType suchThatType = clause->clauseType.type;
 
                 if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
                     synonymEvaluator = make_unique<ProcProcSynonymEvaluator>(ProcProcSynonymEvaluator(servicer, pq->declarations));

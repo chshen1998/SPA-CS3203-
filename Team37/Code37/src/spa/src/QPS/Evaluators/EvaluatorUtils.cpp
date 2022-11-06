@@ -4,6 +4,7 @@ using namespace std;
 #include <algorithm>
 #include <iterator>
 #include <unordered_set>
+#include <PKB/Types/StatementType.h>
 #include <iostream>
 
 
@@ -106,4 +107,12 @@ vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vect
     return result;
 }
 
-
+unordered_map<TokenType, StatementType> EvaluatorUtils::tokenTypeToStatementType = {
+    { TokenType::STATEMENT, StatementType::STATEMENT},
+    { TokenType::ASSIGN, StatementType::ASSIGN },
+    { TokenType::CALL, StatementType::CALL },
+    { TokenType::IF, StatementType::IF },
+    { TokenType::PRINT, StatementType::PRINT },
+    { TokenType::READ, StatementType::READ },
+    { TokenType::WHILE, StatementType::WHILE }
+};

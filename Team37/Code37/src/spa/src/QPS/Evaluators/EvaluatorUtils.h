@@ -6,6 +6,7 @@ using namespace std;
 #include <vector>
 #include <string>
 #include <iostream>
+#include <PKB/Types/StatementType.h>
 #include "QPS/Types/TokenType.h"
 
 namespace EvaluatorUtils {
@@ -39,6 +40,8 @@ namespace EvaluatorUtils {
             cout << result << endl;
         }
     }
+
+    extern unordered_map<TokenType, StatementType> tokenTypeToStatementType;
 
 };
 

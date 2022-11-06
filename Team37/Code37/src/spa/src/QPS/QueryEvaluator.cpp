@@ -12,16 +12,26 @@ using namespace std;
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 
-#include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h"
-#include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
-#include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
-#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtBooleanEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtSynonymEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarBooleanEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarSynonymEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarBooleanEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarSynonymEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcBooleanEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcSynonymEvaluator.h"
+
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/WhileEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/IfEvaluator.h"
-#include "QPS/Evaluators/FilterEvaluator/WithEvaluator.h"
+
+#include "QPS/Evaluators/FilterEvaluator/WithBooleanEvaluator.h"
+#include "QPS/Evaluators/FilterEvaluator/WithSynonymEvaluator.h"
 #include "QPS/Evaluators/FilterEvaluator/FinalEvaluator.h"
+
 #include "QPS/Evaluators/EvaluatorUtils.h"
+#include "QPS/Evaluators/BooleanEvaluator.h"
+#include "QPS/Evaluators/SynonymEvaluator.h"
 
 #include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -36,46 +46,37 @@ QueryEvaluator::QueryEvaluator(shared_ptr<PqlQuery> pqlQuery, shared_ptr<QuerySe
 
 void QueryEvaluator::evaluate() {
     const bool isResultBoolean = pq->selectObjects[0]->type == SelectType::BOOLEAN;
-    bool falseBooleanClause = false;
 
-    // TODO: restructure this 
-    StmtStmtEvaluator stmtStmtEvaluator = StmtStmtEvaluator(servicer, pq->declarations);
-    StmtVarEvaluator stmtVarEvaluator = StmtVarEvaluator(servicer, pq->declarations);
-    ProcVarEvaluator procVarEvaluator = ProcVarEvaluator(servicer, pq->declarations);
-    ProcProcEvaluator procProcEvaluator = ProcProcEvaluator(servicer, pq->declarations);
-    AssignEvaluator assignEvaluator = AssignEvaluator(servicer, pq->declarations);
-    WithEvaluator withEvaluator = WithEvaluator(servicer, pq->declarations);
-    WhileEvaluator whileEvaluator = WhileEvaluator(servicer, pq->declarations);
-    IfEvaluator ifEvaluator = IfEvaluator(servicer, pq->declarations);
+    unique_ptr<BooleanEvaluator> booleanEvaluator;
 
     // Solve the boolean clauses
     for (shared_ptr<Clause> booleanClause : pq->booleanClauses) {
         if (booleanClause->category == TokenType::WITH) {
-            falseBooleanClause = !withEvaluator.evaluateBooleanClause(booleanClause);
+            booleanEvaluator = make_unique<WithBooleanEvaluator>(WithBooleanEvaluator(servicer, pq->declarations));
         }
         else {
             TokenType suchThatType = booleanClause->clauseType.type;
 
             if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
-                falseBooleanClause = !procProcEvaluator.evaluateBooleanClause(booleanClause);
+                booleanEvaluator = make_unique<ProcProcBooleanEvaluator>(ProcProcBooleanEvaluator(servicer, pq->declarations));
             }
 
             else if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
-                falseBooleanClause = !stmtStmtEvaluator.evaluateBooleanClause(booleanClause);
+                booleanEvaluator = make_unique<StmtStmtBooleanEvaluator>(StmtStmtBooleanEvaluator(servicer, pq->declarations));
             }
 
             // Uses_P, Modifies_P
             else if (booleanClause->left.type == TokenType::STRING || pq->declarations[booleanClause->left.value] == TokenType::PROCEDURE) {
-                falseBooleanClause = !procVarEvaluator.evaluateBooleanClause(booleanClause);
+                booleanEvaluator = make_unique<ProcVarBooleanEvaluator>(ProcVarBooleanEvaluator(servicer, pq->declarations));
             }
 
             // Uses_S, Modifies_S
             else {
-                falseBooleanClause = !stmtVarEvaluator.evaluateBooleanClause(booleanClause);
+                booleanEvaluator = make_unique<StmtVarBooleanEvaluator>(StmtVarBooleanEvaluator(servicer, pq->declarations));
             }
         }
 
-        if (falseBooleanClause) {
+        if (!booleanEvaluator->evaluateBooleanClause(booleanClause)) {
             if (isResultBoolean) {
                 result.push_back("FALSE");
             }
@@ -85,6 +86,7 @@ void QueryEvaluator::evaluate() {
 
     vector<vector<vector<string>>> listOfIntermediateTables;
     listOfIntermediateTables.reserve(pq->clauses.size());
+    unique_ptr<SynonymEvaluator> synonymEvaluator;
 
     // Solve the Synonym Clauses
     for (vector<shared_ptr<Clause>> clauseGroup : pq->clauses) {
@@ -92,44 +94,45 @@ void QueryEvaluator::evaluate() {
 
         for (shared_ptr<Clause> clause : clauseGroup) {
             if (clause->category == TokenType::WITH) {
-                intermediateTable = withEvaluator.evaluateClause(clause, intermediateTable);
+                synonymEvaluator = make_unique<WithSynonymEvaluator>(WithSynonymEvaluator(servicer, pq->declarations));
             }
             else if (clause->category == TokenType::PATTERN) {
                 TokenType patternType = pq->declarations[clause->clauseType.value];
 
                 if (patternType == TokenType::ASSIGN) {
-                    intermediateTable = assignEvaluator.evaluateClause(clause, intermediateTable);
+                    synonymEvaluator = make_unique<AssignEvaluator>(AssignEvaluator(servicer, pq->declarations));
                 }
                 else if (patternType == TokenType::WHILE) {
-                    intermediateTable = whileEvaluator.evaluateClause(clause, intermediateTable);
+                    synonymEvaluator = make_unique<WhileEvaluator>(WhileEvaluator(servicer, pq->declarations));
                 }
                 else if (patternType == TokenType::IF) {
-                    intermediateTable = ifEvaluator.evaluateClause(clause, intermediateTable);
+                    synonymEvaluator = make_unique<IfEvaluator>(IfEvaluator(servicer, pq->declarations));
                 }
             }
-
             else {
                 TokenType suchThatType = clause->clauseType.type;
 
                 if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
-                    intermediateTable = procProcEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                    synonymEvaluator = make_unique<ProcProcSynonymEvaluator>(ProcProcSynonymEvaluator(servicer, pq->declarations));
                 }
 
-                // Follows, Parents, Next, Affects
                 else if (suchThatStmtRefStmtRef.find(suchThatType) != suchThatStmtRefStmtRef.end()) {
-                    intermediateTable = stmtStmtEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                    synonymEvaluator = make_unique<StmtStmtSynonymEvaluator>(StmtStmtSynonymEvaluator(servicer, pq->declarations));
                 }
 
                 // Uses_P, Modifies_P
                 else if (clause->left.type == TokenType::STRING || pq->declarations[clause->left.value] == TokenType::PROCEDURE) {
-                    intermediateTable = procVarEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                    synonymEvaluator = make_unique<ProcVarSynonymEvaluator>(ProcVarSynonymEvaluator(servicer, pq->declarations));
                 }
+
                 // Uses_S, Modifies_S
                 else {
-                    intermediateTable = stmtVarEvaluator.evaluateSynonymClause(clause, intermediateTable);
+                    synonymEvaluator = make_unique<StmtVarSynonymEvaluator>(StmtVarSynonymEvaluator(servicer, pq->declarations));
                 }
             }
 
+            intermediateTable = synonymEvaluator->evaluateSynonymClause(clause, intermediateTable);
+            
             // Terminate early if any clause is invalid or empty
             if (intermediateTable.size() <= 1) {
                 if (isResultBoolean) {

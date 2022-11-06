@@ -1,0 +1,5 @@
+Invalid line number -
+stmt n;
+Select n such that Next (1000,n)
+none
+10000

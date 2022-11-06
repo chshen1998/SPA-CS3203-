@@ -31,6 +31,7 @@
 #include "../AST/ASTVisitor/ExtractCallsASTVisitor.h"
 #include "../CFG/CFG.h"
 #include "../CFG/CFGNode.h"
+#include "../CFG/AllCFGs.h"
 
 #include "Structures/RelationStorage.h"
 #include "Structures/RelationStarStorage.h"
@@ -46,7 +47,7 @@ using namespace std;
 class Storage : public enable_shared_from_this<Storage> {
 private:
     shared_ptr<SourceCode> AST;
-    shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap;
+    shared_ptr<AllCFGs> allCFGs;
 
     set<NameExpression> variables = {};
     set<ConstantExpression> constants = {};
@@ -118,8 +119,6 @@ public:
 
     set<shared_ptr<Statement>> getAllStmt();
 
-    void storeCFGMap(shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap);
-
     // Post-traversal
     void storeCallStmtProcedure(ProcVarRelationType, StmtVarRelationType);
 
@@ -162,6 +161,9 @@ public:
     vector<std::string> reverseRetrieveRelation(std::string, ProcProcRelationType);
 
     void buildStar(ProcProcRelationType);
+
+    // CFG
+    void storeAllCFGs(shared_ptr<AllCFGs>);
 
     // Process Relations(Next/Affects)
     vector<int> forwardComputeRelation(int, StmtStmtRelationType);

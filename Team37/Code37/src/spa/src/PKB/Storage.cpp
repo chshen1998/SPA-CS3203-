@@ -131,13 +131,6 @@ set<shared_ptr<Statement>> Storage::getAllStmt() {
     return output;
 }
 
-// CFG
-/*
- * Stores CFGMap
- */
-void Storage::storeCFGMap(shared_ptr<map<int, shared_ptr<CFGNode>>> map) {
-    this->CFGMap = map;
-}
 
 /**
  * after traversing the AST we have to store the Uses(c,v) relations that was not handled in the queue
@@ -194,37 +187,37 @@ Retrieve Statement-Statement Relation Stored. For Relation(stmt1, stmt2)
 */
 bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) {
     switch (type) {
-    case (FOLLOWS):
-        return Follows.retrieve(stmt1, stmt2);
-    case (FOLLOWSS):
-        return FollowsS.retrieve(stmt1, stmt2);
-    case (PARENT):
-        return Parent.retrieve(stmt1, stmt2);
-    case (PARENTS):
-        return ParentS.retrieve(stmt1, stmt2);
-    case (NEXT): {
-        vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXT);
+        case (FOLLOWS):
+            return Follows.retrieve(stmt1, stmt2);
+        case (FOLLOWSS):
+            return FollowsS.retrieve(stmt1, stmt2);
+        case (PARENT):
+            return Parent.retrieve(stmt1, stmt2);
+        case (PARENTS):
+            return ParentS.retrieve(stmt1, stmt2);
+        case (NEXT): {
+            vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXT);
 
-        // search for stmt2 in all lineNum that fulfil Next(stmt1,_)
-        return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
-    }
-    case (NEXTS): {
-        vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXTS);
+            // search for stmt2 in all lineNum that fulfil Next(stmt1,_)
+            return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
+        }
+        case (NEXTS): {
+            vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXTS);
 
-        // search for stmt2 in all lineNum that fulfil Nexts(stmt1,_)
-        return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
-    }
-    case (AFFECTS): {
-        vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTS);
-        return find(forward.begin(), forward.end(), stmt2) != forward.end();
-    }
-    case (AFFECTSS): {
-        vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTSS);
-        return find(forward.begin(), forward.end(), stmt2) != forward.end();
+            // search for stmt2 in all lineNum that fulfil Nexts(stmt1,_)
+            return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
+        }
+        case (AFFECTS): {
+            vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTS);
+            return find(forward.begin(), forward.end(), stmt2) != forward.end();
+        }
+        case (AFFECTSS): {
+            vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTSS);
+            return find(forward.begin(), forward.end(), stmt2) != forward.end();
 
-    }
-    default:
-        throw invalid_argument("Not a Statement-Statement Realtion");
+        }
+        default:
+            throw invalid_argument("Not a Statement-Statement Realtion");
     }
 }
 
@@ -555,6 +548,11 @@ void Storage::buildStar(ProcProcRelationType type) {
     }
 }
 
+void Storage::storeAllCFGs(shared_ptr<AllCFGs> allCfgs) {
+    this->allCFGs = allCfgs;
+}
+
+
 /*
 Compute Forward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @param stmt lineNum
@@ -562,7 +560,11 @@ Compute Forward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @returns All stmt2 such that Relation(stmt, stmt2) is True
 */
 vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type) {
-    shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+    if (!this->allCFGs->stmtExistsInMap(stmt)) {
+        return {};
+    }
+
+    shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
     vector<int> lstLineNum = {};
 
     switch (type) {
@@ -776,7 +778,11 @@ Compute Reverse Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @returns All stmt1 such that Relation(stmt1, stmt) is True
 */
 vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type) {
-    shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+    if (!this->allCFGs->stmtExistsInMap(stmt)) {
+        return {};
+    }
+
+    shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
     vector<int> lstLineNum = {};
     switch (type) {
         case (NEXT): {
@@ -804,7 +810,11 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
                 return lstLineNum;
             }
 
-            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+            if (!this->allCFGs->stmtExistsInMap(stmt)) {
+                return {};
+            }
+
+            shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
             shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>>();
 
             // Get all variables used

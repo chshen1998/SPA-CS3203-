@@ -33,14 +33,14 @@ void TestWrapper::parse(string filename) {
         shared_ptr<map<int, shared_ptr<CFGNode> > > allCFGMaps = AST->getAllCFGMaps();
         shared_ptr<AllCFGs> allCFGsInfo = AST->getAllCFGInfo();
         knowledgeBase->buildFromAst(AST);
-        knowledgeBase->buildFromCFG(allCFGMaps);
+        knowledgeBase->buildFromCFG(allCFGsInfo);
         queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
 
     } catch (InvalidSyntaxException e) {
         printf("%s\n", e.what());
         exit(0);
     }
-    
+
 }
 
 // method to evaluating a query

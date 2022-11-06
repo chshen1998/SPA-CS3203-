@@ -2,14 +2,15 @@
 
 using namespace std;
 
+#include "AST/SourceCode.h"
+#include "InvalidSyntaxException.h"
 #include "Parser.h"
 #include "Tokenizer.h"
 #include "Utilities/Keywords.h"
 #include "Utilities/Utils.h"
-#include "AST/SourceCode.h"
-#include "InvalidSyntaxException.h"
 
-vector<string> Parser::extractProcedures(string srcCode, vector<string> procedures) {
+vector<string> Parser::extractProcedures(string srcCode, vector<string> procedures)
+{
     if (srcCode.length() == 0) {
         return procedures;
     }
@@ -32,7 +33,7 @@ vector<string> Parser::extractProcedures(string srcCode, vector<string> procedur
         // Process until close bracket
         while (bracketCounter != 0) {
             if (srcCode.empty()) {
-                throw InvalidSyntaxException((char *) "Missing \"}\"");
+                throw InvalidSyntaxException((char*)"Missing \"}\"");
             }
             char nextChar = srcCode[0];
             procedure.push_back(nextChar);
@@ -47,18 +48,19 @@ vector<string> Parser::extractProcedures(string srcCode, vector<string> procedur
         procedures.push_back(procedure);
         return extractProcedures(Utils::trim(srcCode), procedures);
     } else {
-        throw InvalidSyntaxException((char *) "Incorrect procedure syntax");
+        throw InvalidSyntaxException((char*)"Incorrect procedure syntax");
     }
 }
 
-string Parser::extractProcName(string procedure) {
+string Parser::extractProcName(string procedure)
+{
     string keyword = "procedure ";
 
     // Defensive line, can remove if we are sure procedure string is already trimmed
     procedure = Utils::trim(procedure);
 
     if (procedure.substr(0, 10) != keyword) {
-        throw InvalidSyntaxException((char *) "Invalid procedure declaration");
+        throw InvalidSyntaxException((char*)"Invalid procedure declaration");
     }
 
     procedure = procedure.substr(10);
@@ -66,7 +68,7 @@ string Parser::extractProcName(string procedure) {
     string procedureName;
     bool bracketHit = false;
     // Process until first open bracket
-    for (char& c: procedure) {
+    for (char& c : procedure) {
         if (c != '{') {
             procedureName.push_back(c);
         } else {
@@ -76,18 +78,19 @@ string Parser::extractProcName(string procedure) {
     }
 
     if (!bracketHit) {
-        throw InvalidSyntaxException((char *) "Did you forget brackets in your procedure?");
+        throw InvalidSyntaxException((char*)"Did you forget brackets in your procedure?");
     }
 
     procedureName = Utils::trim(procedureName);
 
     if (!Utils::validateName(procedureName)) {
-        throw InvalidSyntaxException((char *) "Procedure name is invalid");
+        throw InvalidSyntaxException((char*)"Procedure name is invalid");
     }
     return procedureName;
 }
 
-vector<string> Parser::extractStatements(string statements, vector<string> statementList) {
+vector<string> Parser::extractStatements(string statements, vector<string> statementList)
+{
     // Assume that the raw procedure string is already trimmed
     if (statements.length() == 0) {
         return statementList;
@@ -114,7 +117,7 @@ vector<string> Parser::extractStatements(string statements, vector<string> state
         }
 
         if (statements.empty()) {
-            throw InvalidSyntaxException((char *) "Cannot find '{' for if statement");
+            throw InvalidSyntaxException((char*)"Cannot find '{' for if statement");
         }
 
         // Process the then block
@@ -142,7 +145,7 @@ vector<string> Parser::extractStatements(string statements, vector<string> state
         }
 
         if (statements.empty()) {
-            throw InvalidSyntaxException((char *) "Cannot find '{' for else block in if statement");
+            throw InvalidSyntaxException((char*)"Cannot find '{' for else block in if statement");
         }
 
         // Process until end of else block
@@ -178,7 +181,7 @@ vector<string> Parser::extractStatements(string statements, vector<string> state
         }
 
         if (statements.empty()) {
-            throw InvalidSyntaxException((char *) "Cannot find '{' for while statement");
+            throw InvalidSyntaxException((char*)"Cannot find '{' for while statement");
         }
 
         // Process until end of while block
@@ -201,7 +204,7 @@ vector<string> Parser::extractStatements(string statements, vector<string> state
 
     while (true) {
         if (statements.empty()) {
-            throw InvalidSyntaxException((char *) "No semicolon found for statement");
+            throw InvalidSyntaxException((char*)"No semicolon found for statement");
         }
         currChar = statements[0];
         statements.erase(0, 1);
@@ -216,7 +219,8 @@ vector<string> Parser::extractStatements(string statements, vector<string> state
     return extractStatements(statements, statementList);
 }
 
-string Parser::extractConditionalExpr(string str) {
+string Parser::extractConditionalExpr(string str)
+{
     str = Utils::trim(str);
     size_t condExprStart = str.find_first_of(Keywords::OPEN_BRACKET) + 1;
     size_t condExprEnd = str.find_last_of(Keywords::CLOSE_BRACKET);
@@ -235,15 +239,16 @@ string Parser::extractConditionalExpr(string str) {
         copy.erase(0, 1);
     }
     if (bracketCount > 0) {
-        throw InvalidSyntaxException((char *) "Invalid Syntax, missing '}'");
+        throw InvalidSyntaxException((char*)"Invalid Syntax, missing '}'");
     } else if (bracketCount < 0) {
-        throw InvalidSyntaxException((char *) "Invalid Syntax, missing '{'");
+        throw InvalidSyntaxException((char*)"Invalid Syntax, missing '{'");
     } else {
         return condition;
     }
 }
 
-string Parser::removeProcedureWrapper(string procedure) {
+string Parser::removeProcedureWrapper(string procedure)
+{
     string statements;
 
     // Process until first open bracket of procedure
@@ -254,7 +259,7 @@ string Parser::removeProcedureWrapper(string procedure) {
             break;
         }
         if (procedure.length() == 0) {
-            throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
+            throw InvalidSyntaxException((char*)"Invalid Syntax, no '{' found");
         }
     }
 
@@ -263,7 +268,7 @@ string Parser::removeProcedureWrapper(string procedure) {
     // Do bracket counting UNTIL end of procedure
     while (numBrackets != 0) {
         if (procedure.length() == 0) {
-            throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
+            throw InvalidSyntaxException((char*)"Invalid syntax, missing '}'");
         }
         char nextLetter = procedure[0];
         procedure.erase(0, 1);
@@ -281,22 +286,23 @@ string Parser::removeProcedureWrapper(string procedure) {
 
     if (Utils::trim(procedure).length() != 0) {
         // Return an error, procedure not valid
-        throw InvalidSyntaxException((char *) "Invalid Syntax");
+        throw InvalidSyntaxException((char*)"Invalid Syntax");
     }
 
     return Utils::trim(statements);
 }
 
-shared_ptr<SourceCode> Parser::parseSourceCode(string srcCode, string filename) {
+shared_ptr<SourceCode> Parser::parseSourceCode(string srcCode, string filename)
+{
     srcCode = Utils::trim(srcCode);
     if (srcCode.empty()) {
-        throw InvalidSyntaxException((char *) "Source code must contain at least 1 procedure");
+        throw InvalidSyntaxException((char*)"Source code must contain at least 1 procedure");
     }
     shared_ptr<SourceCode> sourceCodeNode = make_shared<SourceCode>(filename);
     vector<string> procedureList;
     procedureList = Parser::extractProcedures(Utils::trim(srcCode), procedureList);
     // call parseProcedure on each procedure
-    for (string rawProcedure: procedureList) {
+    for (string rawProcedure : procedureList) {
         shared_ptr<Procedure> procedureNode = Parser::parseProcedure(rawProcedure);
         sourceCodeNode->addProcedure(procedureNode);
         procedureNode->setParent(sourceCodeNode);
@@ -305,14 +311,15 @@ shared_ptr<SourceCode> Parser::parseSourceCode(string srcCode, string filename) 
     return sourceCodeNode;
 }
 
-shared_ptr<Procedure> Parser::parseProcedure(string procedure) {
+shared_ptr<Procedure> Parser::parseProcedure(string procedure)
+{
     string procedureName = Parser::extractProcName(procedure);
     shared_ptr<Procedure> procedureNode = make_shared<Procedure>(nullptr, procedureName);
 
     vector<string> statementList;
     statementList = Parser::extractStatements(removeProcedureWrapper(procedure), statementList);
     if (statementList.empty()) {
-        throw InvalidSyntaxException((char *) "Procedures need to contain at least 1 statement");
+        throw InvalidSyntaxException((char*)"Procedures need to contain at least 1 statement");
     }
     for (string statement : statementList) {
         shared_ptr<Statement> statementNode = Parser::parseStatement(statement);
@@ -322,7 +329,8 @@ shared_ptr<Procedure> Parser::parseProcedure(string procedure) {
     return procedureNode;
 }
 
-shared_ptr<Statement> Parser::parseStatement(string statement) {
+shared_ptr<Statement> Parser::parseStatement(string statement)
+{
     statement = Utils::trim(statement);
     shared_ptr<Statement> statementNode;
 
@@ -339,12 +347,13 @@ shared_ptr<Statement> Parser::parseStatement(string statement) {
     } else if (statement.substr(0, 5) == "while") {
         statementNode = Parser::parseWhile(statement);
     } else {
-        throw InvalidSyntaxException((char *) "Not a valid statement");
+        throw InvalidSyntaxException((char*)"Not a valid statement");
     }
     return statementNode;
 }
 
-shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
+shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock)
+{
     string ifStmt;
     string ifBlock;
     string elseBlock;
@@ -358,7 +367,7 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
             break;
         }
         if (ifElseBlock.length() == 0) {
-            throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
+            throw InvalidSyntaxException((char*)"Invalid Syntax, no '{' found");
         }
     }
 
@@ -367,7 +376,7 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     // Do bracket counting UNTIL end of if block
     while (numBrackets != 0) {
         if (ifElseBlock.length() == 0) {
-            throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
+            throw InvalidSyntaxException((char*)"Invalid syntax, missing '}'");
         }
         char nextLetter = ifElseBlock[0];
         ifElseBlock.erase(0, 1);
@@ -387,12 +396,12 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
 
     // throw error, missing else block
     if (ifElseBlock.length() == 0) {
-        throw InvalidSyntaxException((char *) "Invalid syntax, missing else block");
+        throw InvalidSyntaxException((char*)"Invalid syntax, missing else block");
     }
 
     if (ifElseBlock.length() != 0) {
         // if else block is present, do bracket counting as well till end of else block
-        if (ifElseBlock.substr(0,4) == "else") {
+        if (ifElseBlock.substr(0, 4) == "else") {
             // Process until first open bracket of else block
             while (true) {
                 char nextLetter = ifElseBlock[0];
@@ -401,7 +410,7 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
                     break;
                 }
                 if (ifElseBlock.length() == 0) {
-                    throw InvalidSyntaxException((char *) "Invalid Syntax, no '{' found");
+                    throw InvalidSyntaxException((char*)"Invalid Syntax, no '{' found");
                 }
             }
 
@@ -410,7 +419,7 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
             // Do bracket counting UNTIL end of else block
             while (numBrackets != 0) {
                 if (ifElseBlock.length() == 0) {
-                    throw InvalidSyntaxException((char *) "Invalid syntax, missing '}'");
+                    throw InvalidSyntaxException((char*)"Invalid syntax, missing '}'");
                 }
                 char nextLetter = ifElseBlock[0];
                 ifElseBlock.erase(0, 1);
@@ -427,7 +436,7 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
             }
         } else {
             // Return an error, procedure not valid
-            throw InvalidSyntaxException((char *) "Invalid If Else Block");
+            throw InvalidSyntaxException((char*)"Invalid If Else Block");
         }
     }
 
@@ -438,7 +447,7 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     size_t endOfCondition = ifStmt.find_last_of(')');
     // Throw exceptions for missing then keyword, will be caught in SP::Parser()
     if (ifStmt.substr(endOfCondition, string::npos).find(Keywords::THEN) == string::npos) {
-        throw InvalidSyntaxException((char *)"Syntax error: if-else must have then keyword.");
+        throw InvalidSyntaxException((char*)"Syntax error: if-else must have then keyword.");
     }
 
     string condExpr = Parser::extractConditionalExpr(ifStmt);
@@ -452,16 +461,16 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     elseStmtLst = Parser::extractStatements(elseBlock, elseStmtLst);
 
     if (ifStmtLst.empty() || elseStmtLst.empty()) {
-        throw InvalidSyntaxException((char *) "If and Else statement blocks cannot be empty");
+        throw InvalidSyntaxException((char*)"If and Else statement blocks cannot be empty");
     }
 
-    for (string s: ifStmtLst) {
+    for (string s : ifStmtLst) {
         shared_ptr<Statement> statement = Parser::parseStatement(s);
         ifNode->addThenStatement(statement);
         statement->setParent(ifNode);
     }
 
-    for (string s: elseStmtLst) {
+    for (string s : elseStmtLst) {
         shared_ptr<Statement> statement = Parser::parseStatement(s);
         ifNode->addElseStatement(statement);
         statement->setParent(ifNode);
@@ -469,7 +478,8 @@ shared_ptr<IfStatement> Parser::parseIfElse(string ifElseBlock) {
     return ifNode;
 }
 
-shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
+shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock)
+{
     size_t firstEgyptianOpen = whileBlock.find_first_of(Keywords::OPEN_EGYPTIAN);
     string whileStmtStr = whileBlock.substr(0, firstEgyptianOpen);
     string condExpr = Parser::extractConditionalExpr(whileStmtStr);
@@ -483,10 +493,10 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     stmts = Parser::extractStatements(stmtsBlock, stmts);
 
     if (stmts.empty()) {
-        throw InvalidSyntaxException((char *) "While blocks must have a statement");
+        throw InvalidSyntaxException((char*)"While blocks must have a statement");
     }
 
-    for (string s:stmts) {
+    for (string s : stmts) {
         shared_ptr<Statement> statement = Parser::parseStatement(s);
         whileStatement->addStatement(statement);
         statement->setParent(whileStatement);
@@ -494,7 +504,8 @@ shared_ptr<WhileStatement> Parser::parseWhile(string whileBlock) {
     return whileStatement;
 }
 
-shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
+shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr)
+{
     int greaterEqIdx = relExprStr.find(">=");
     int lessEqIdx = relExprStr.find("<=");
     int notEqIdx = relExprStr.find("!=");
@@ -533,13 +544,12 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
         relFactorStr1 = Utils::trim(relExprStr.substr(0, lesserIdx));
         relFactorStr2 = Utils::trim(relExprStr.substr(lesserIdx + 1, string::npos));
     } else {
-        throw InvalidSyntaxException((char *) "No valid relational operator found");
+        throw InvalidSyntaxException((char*)"No valid relational operator found");
     }
     relFactor1 = Tokenizer::tokenizeRelFactor(relFactorStr1);
     relFactor2 = Tokenizer::tokenizeRelFactor(relFactorStr2);
 
-    shared_ptr<RelationalExpression> relExpr =
-            make_shared<RelationalExpression>(nullptr, opr, relFactor1, relFactor2);
+    shared_ptr<RelationalExpression> relExpr = make_shared<RelationalExpression>(nullptr, opr, relFactor1, relFactor2);
 
     relFactor1->setParent(relExpr);
     relFactor2->setParent(relExpr);
@@ -547,7 +557,8 @@ shared_ptr<RelationalExpression> Parser::parseRelExpr(string relExprStr) {
     return relExpr;
 }
 
-shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
+shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr)
+{
     condExprStr = Utils::stripOuterBrackets(condExprStr);
     string andOrOperators = "&|";
     string notOperator = "!";
@@ -569,7 +580,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
             expression.push_back(nextChar);
             condExprStr.erase(0, 1);
             if (condExprStr.length() == 0 && bracketCounter != 0) {
-                throw InvalidSyntaxException((char *) "Too many open brackets in conditional expression");
+                throw InvalidSyntaxException((char*)"Too many open brackets in conditional expression");
             }
             continue;
         }
@@ -584,7 +595,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
 
         // Cannot close bracket without open
         if (nextChar == ')') {
-            throw InvalidSyntaxException((char *) "Invalid syntax");
+            throw InvalidSyntaxException((char*)"Invalid syntax");
         }
 
         if (andOrOperators.find(nextChar) == string::npos) {
@@ -602,7 +613,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
                 conditionalExpression = make_shared<OrCondition>(nullptr, leftSide, rightSide);
             } else {
                 // if & or | found but not &&, ||
-                throw InvalidSyntaxException((char *) "Invalid conditional operator");
+                throw InvalidSyntaxException((char*)"Invalid conditional operator");
             }
             leftSide->setParent(conditionalExpression);
             rightSide->setParent(conditionalExpression);
@@ -642,7 +653,7 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
 
         // Cannot close bracket without open
         if (nextChar == ')') {
-            throw InvalidSyntaxException((char *) "Invalid syntax");
+            throw InvalidSyntaxException((char*)"Invalid syntax");
         }
 
         if (notOperator.find(nextChar) == string::npos || condExprStr.substr(0, 2) == "!=") {
@@ -661,24 +672,20 @@ shared_ptr<ConditionalExpression> Parser::parseCondExpr(string condExprStr) {
     // if code reaches here, there should be no && and || operators
     // Might still have brackets from it being a relation factor
 
-    //reset variables
+    // reset variables
     condExprStr = Utils::stripOuterBrackets(expression);
     expression.clear();
 
     // check if is a relational expr
-    if (condExprStr.find('<') != string::npos ||
-        condExprStr.find("<=") != string::npos ||
-        condExprStr.find('>') != string::npos ||
-        condExprStr.find('<') != string::npos ||
-        condExprStr.find("!=") != string::npos ||
-        condExprStr.find("==") != string::npos) {
+    if (condExprStr.find('<') != string::npos || condExprStr.find("<=") != string::npos || condExprStr.find('>') != string::npos || condExprStr.find('<') != string::npos || condExprStr.find("!=") != string::npos || condExprStr.find("==") != string::npos) {
         return parseRelExpr(condExprStr);
     }
     // else throw error
-    throw InvalidSyntaxException((char *) "Invalid conditional expression");
+    throw InvalidSyntaxException((char*)"Invalid conditional expression");
 }
 
-bool Parser::isAssignStatement(string statement) {
+bool Parser::isAssignStatement(string statement)
+{
     int pos = statement.find("=");
     if (pos == string::npos) {
         return false;

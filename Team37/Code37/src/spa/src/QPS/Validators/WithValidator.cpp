@@ -1,25 +1,26 @@
 using namespace std;
 
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 #include "../Structures/PqlError.h"
-#include "../Structures/PqlToken.h"
 #include "../Structures/PqlQuery.h"
+#include "../Structures/PqlToken.h"
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
-#include "WithValidator.h"
+#include "BaseValidator.h"
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
-#include "BaseValidator.h"
+#include "WithValidator.h"
 
-WithValidator::WithValidator(unordered_map<string, TokenType>* declarationsMap, vector<PqlToken>* withTokens) : BaseValidator{}
+WithValidator::WithValidator(unordered_map<string, TokenType>* declarationsMap, vector<PqlToken>* withTokens)
+    : BaseValidator {}
 {
-	declarations = declarationsMap;
-	tokens = withTokens;
-	next = 0;
-	size = tokens->size();
+    declarations = declarationsMap;
+    tokens = withTokens;
+    next = 0;
+    size = tokens->size();
 }
 
 void WithValidator::validate()
@@ -27,11 +28,9 @@ void WithValidator::validate()
     vector<PqlToken> refTokens;
 
     PqlToken curr = getNextToken();
-    while (curr.type != TokenType::END)
-    {
+    while (curr.type != TokenType::END) {
         refTokens.clear();
-        while (curr.type != TokenType::EQUAL && curr.type != TokenType::END)
-        {
+        while (curr.type != TokenType::EQUAL && curr.type != TokenType::END) {
             refTokens.push_back(curr);
             curr = getNextToken();
         }
@@ -39,8 +38,7 @@ void WithValidator::validate()
 
         refTokens.clear();
         curr = getNextToken(); // Get token after "="
-        while (curr.type != TokenType::AND && curr.type != TokenType::END)
-        {
+        while (curr.type != TokenType::AND && curr.type != TokenType::END) {
             refTokens.push_back(curr);
             curr = getNextToken();
         }
@@ -56,36 +54,28 @@ void WithValidator::validate()
 
 TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
 {
-    if (refTokens.size() == 1)
-    {
+    if (refTokens.size() == 1) {
         TokenType type = refTokens[0].type;
-	    if (type != TokenType::STRING && type != TokenType::NUMBER)
-	    {
-            throw SyntaxError("Invalid With clause parameters");
-	    }
-        return type;
-    }
-    else if (refTokens.size() == 3)
-    {
-        PqlToken synonym = refTokens[0];
-        if (synonym.type != TokenType::SYNONYM)
-        {
+        if (type != TokenType::STRING && type != TokenType::NUMBER) {
             throw SyntaxError("Invalid With clause parameters");
         }
-        if (declarations->find(synonym.value) == declarations->end())
-        {
+        return type;
+    } else if (refTokens.size() == 3) {
+        PqlToken synonym = refTokens[0];
+        if (synonym.type != TokenType::SYNONYM) {
+            throw SyntaxError("Invalid With clause parameters");
+        }
+        if (declarations->find(synonym.value) == declarations->end()) {
             throw SemanticError("Undeclared parameter in With clause");
         }
 
         PqlToken dot = refTokens[1];
-        if (dot.type != TokenType::DOT)
-        {
+        if (dot.type != TokenType::DOT) {
             throw SyntaxError("Invalid With clause parameters");
         }
-        
+
         PqlToken attrName = refTokens[2];
-        if (validAttrName.find(attrName.type) == validAttrName.end())
-        {
+        if (validAttrName.find(attrName.type) == validAttrName.end()) {
             throw SyntaxError("Invalid With clause parameters");
         }
 
@@ -94,16 +84,13 @@ TokenType WithValidator::validateRef(vector<PqlToken> refTokens)
             throw SemanticError("Invalid attrName for attrRef synonym");
         }
 
-
         if (attrName.type == TokenType::PROCNAME || attrName.type == TokenType::VARNAME) {
             return TokenType::STRING;
-        }
-        else {
+        } else {
             return TokenType::NUMBER;
         }
 
-    } else
-    {
+    } else {
         throw SyntaxError("Invalid With Clause");
         return TokenType::NONE;
     }

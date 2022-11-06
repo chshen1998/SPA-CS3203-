@@ -3,37 +3,38 @@
 #ifndef SPA_QUERY_SERVICER_H
 #define SPA_QUERY_SERVICER_H
 
-#include <stdio.h>
+#include <algorithm>
 #include <iostream>
+#include <memory>
+#include <set>
+#include <stdio.h>
 #include <string>
 #include <vector>
-#include <memory>
-#include <algorithm>
-#include <set>
 
 using namespace std;
 
-#include "Storage.h"
-#include "../SP/Tokenizer.h"
-#include "Types/StatementType.h"
-#include "Types/StmtStmtRelationType.h"
-#include "Types/StmtVarRelationType.h"
-#include "Types/ProcVarRelationType.h"
-#include "Types/ProcProcRelationType.h"
 #include "../AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "../AST/Expression/RelationalFactor/NameExpression.h"
-#include "../AST/Statement/Statement.h"
+#include "../AST/Procedure.h"
 #include "../AST/Statement/AssignStatement.h"
 #include "../AST/Statement/CallStatement.h"
 #include "../AST/Statement/IfStatement.h"
 #include "../AST/Statement/PrintStatement.h"
 #include "../AST/Statement/ReadStatement.h"
+#include "../AST/Statement/Statement.h"
 #include "../AST/Statement/WhileStatement.h"
-#include "../AST/Procedure.h"
+#include "../SP/Tokenizer.h"
+#include "Storage.h"
+#include "Types/ProcProcRelationType.h"
+#include "Types/ProcVarRelationType.h"
+#include "Types/StatementType.h"
+#include "Types/StmtStmtRelationType.h"
+#include "Types/StmtVarRelationType.h"
 
 class QueryServicer {
 private:
     shared_ptr<Storage> storage;
+
 public:
     // Constructor
     QueryServicer(shared_ptr<Storage>);
@@ -72,7 +73,7 @@ public:
 
     set<int> reverseRetrievePatternMatch(string, bool);
 
-    static deque<string> parseRelationalFactorString(const std::string &str);
+    static deque<string> parseRelationalFactorString(const std::string& str);
 
     static string sanitizeString(string word);
 

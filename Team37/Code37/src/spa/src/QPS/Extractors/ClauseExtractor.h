@@ -3,36 +3,34 @@
 #ifndef TEAM37_CLAUSEEXTRACTOR_H
 #define TEAM37_CLAUSEEXTRACTOR_H
 
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <set>
 #include <memory>
+#include <set>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "../Structures/PqlError.h"
-#include "../Structures/PqlToken.h"
 #include "../Structures/PqlQuery.h"
+#include "../Structures/PqlToken.h"
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
 #include "./BaseExtractor.h"
 
-
-class ClauseExtractor : public BaseExtractor
-{
+class ClauseExtractor : public BaseExtractor {
 public:
-	ClauseExtractor(shared_ptr<PqlQuery> pq, vector<PqlToken>* tokens, bool booleanIsSynonym);
-	void extract(int start, int last);
+    ClauseExtractor(shared_ptr<PqlQuery> pq, vector<PqlToken>* tokens, bool booleanIsSynonym);
+    void extract(int start, int last);
 
 private:
-	PqlToken extractPatternClause();
+    PqlToken extractPatternClause();
 
-	PqlToken extractWithClause();
+    PqlToken extractWithClause();
 
-	PqlToken extractSuchThatClause();
+    PqlToken extractSuchThatClause();
 
-	PqlToken extractString(PqlToken token);
+    PqlToken extractString(PqlToken token);
 
-	string removeWhitespace(string value);
+    string removeWhitespace(string value);
 };
 
-#endif //TEAM37_CLAUSEEXTRACTOR_H
+#endif // TEAM37_CLAUSEEXTRACTOR_H

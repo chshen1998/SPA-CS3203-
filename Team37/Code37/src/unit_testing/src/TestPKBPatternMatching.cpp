@@ -1,25 +1,24 @@
-#include "AST/Statement/CallStatement.h"
-#include "AST/Statement/WhileStatement.h"
-#include "AST/Statement/IfStatement.h"
 #include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/WhileStatement.h"
 
 #include "AST/Expression/ConditionalExpression/RelationalExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 
 #include "AST/Operators/RelationalOperator.h"
 
-#include "PKB/Storage.h"
 #include "PKB/QueryServicer.h"
+#include "PKB/Storage.h"
 
 #include "SP/Tokenizer.h"
-
 
 #include "catch.hpp"
 
 using namespace std;
 
-
-TEST_CASE("Parsing bracketed relational factors") {
+TEST_CASE("Parsing bracketed relational factors")
+{
     string rawRelFactor = "v + x * y + z * t";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
 
@@ -30,7 +29,7 @@ TEST_CASE("Parsing bracketed relational factors") {
     deque<string> parsedRelationalFactors = QueryServicer::parseRelationalFactorString(generatedString);
 
     vector<string> sanitizedRelationalFactors = {};
-    for (const string &parsedFactor: parsedRelationalFactors) {
+    for (const string& parsedFactor : parsedRelationalFactors) {
         string sanitizedString = QueryServicer::sanitizeString(parsedFactor);
 
         sanitizedRelationalFactors.push_back(sanitizedString);
@@ -41,18 +40,17 @@ TEST_CASE("Parsing bracketed relational factors") {
     REQUIRE(it != sanitizedRelationalFactors.end());
 
     auto it2 = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "v+x*y");
-    REQUIRE(it2 != sanitizedRelationalFactors.end());\
+    REQUIRE(it2 != sanitizedRelationalFactors.end());
 
     auto it3 = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "z*t");
     REQUIRE(it3 != sanitizedRelationalFactors.end());
 
     auto it4 = find(sanitizedRelationalFactors.begin(), sanitizedRelationalFactors.end(), "v+x*y+z*t");
     REQUIRE(it4 != sanitizedRelationalFactors.end());
-
 }
 
-
-TEST_CASE("Reverse retrieve pattern match") {
+TEST_CASE("Reverse retrieve pattern match")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "first procedure");
     shared_ptr<Storage> storage = make_shared<Storage>();

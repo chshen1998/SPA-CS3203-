@@ -4,23 +4,22 @@ using namespace std;
 #define TEAM37_QUERYTOKENIZER_H
 
 #include "./Structures/PqlError.h"
-#include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
+#include "./Structures/PqlToken.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 
-#include <string>
-#include <vector>
-#include <unordered_map>
 #include <set>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "QPS.h"
 
-
 /*
-* Represents the current state when tokenizing our delimited query
-* The state corresponds to what kind of keyword/clause we are looking at
-*/
+ * Represents the current state when tokenizing our delimited query
+ * The state corresponds to what kind of keyword/clause we are looking at
+ */
 enum class TokenizeState {
     FINDING_KEYWORDS,
     SELECT,
@@ -28,7 +27,6 @@ enum class TokenizeState {
     PATTERN,
     WITH
 };
-
 
 class QueryTokenizer {
 public:
@@ -44,7 +42,6 @@ public:
 private:
     void split();
     void convertIntoTokens();
-
 };
 
-#endif //TEAM37_QPS_H
+#endif // TEAM37_QPS_H

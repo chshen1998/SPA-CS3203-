@@ -3,20 +3,20 @@
 #ifndef SPA_RELATION_STORAGE_STAR_H
 #define SPA_RELATION_STORAGE_STAR_H
 
-#include <unordered_set>
-#include <unordered_map>
-#include <map>
 #include "RelationStorage.h"
+#include <map>
+#include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
-template<typename S, typename T>
+template <typename S, typename T>
 class RelationStarStorage : public RelationStorage<S, T> {
 public:
     // Store
-    RelationStarStorage<S, T> buildStar() {
+    RelationStarStorage<S, T> buildStar()
+    {
         RelationStarStorage<S, T> output = RelationStarStorage<S, T>();
-
 
         for (typename multimap<S, T>::iterator itr = this->forwardStore.begin(); itr != this->forwardStore.end();) {
             S key = itr->first;
@@ -24,7 +24,7 @@ public:
             unordered_set<T> workingSet;
             vector<T> initalRelation = this->forwardRetrieve(key);
 
-            for (T x: initalRelation) {
+            for (T x : initalRelation) {
                 workingSet.insert(x);
             }
 
@@ -36,7 +36,7 @@ public:
                 // Add all that forwardRetreive
                 vector<T> nextVals = this->forwardRetrieve(currVal);
 
-                for (T x: nextVals) {
+                for (T x : nextVals) {
                     // Check if done before
                     if (memo[x]) {
                         continue;
@@ -46,7 +46,6 @@ public:
                 }
             }
 
-
             // Till the next key
             typename multimap<S, T>::iterator curr = itr;
             while (itr != this->forwardStore.end() && itr->first == curr->first)
@@ -55,7 +54,6 @@ public:
 
         return output;
     }
-
 };
 
 #endif

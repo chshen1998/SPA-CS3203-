@@ -2,18 +2,18 @@
 #include <string>
 #include <vector>
 
-#include "SP/SP.h"
-#include "SP/Parser.h"
-#include "SP/InvalidSyntaxException.h"
-#include "AST/Statement/AssignStatement.h"
-#include "AST/Statement/ReadStatement.h"
-#include "AST/Statement/CallStatement.h"
-#include "AST/Statement/PrintStatement.h"
-#include "AST/Statement/IfStatement.h"
-#include "AST/Statement/WhileStatement.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/OperatedExpression.h"
+#include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/PrintStatement.h"
+#include "AST/Statement/ReadStatement.h"
+#include "AST/Statement/WhileStatement.h"
+#include "SP/InvalidSyntaxException.h"
+#include "SP/Parser.h"
+#include "SP/SP.h"
 
 using namespace std;
 
@@ -25,7 +25,8 @@ using namespace std;
  * extractProcedures - Negative Case - Very Nested Blocks
  */
 
-TEST_CASE("extractProcedures - Positive Case") {
+TEST_CASE("extractProcedures - Positive Case")
+{
     vector<string> procedures;
     string rawProcedure;
     string sourceCode;
@@ -137,7 +138,8 @@ TEST_CASE("extractProcedures - Positive Case") {
     REQUIRE(result == procedures);
 }
 
-TEST_CASE("extractProcName - Positive Case") {
+TEST_CASE("extractProcName - Positive Case")
+{
     string rawProcedure;
     string result;
 
@@ -154,50 +156,51 @@ TEST_CASE("extractProcName - Positive Case") {
     result = Parser::extractProcName(rawProcedure);
     REQUIRE(result == "main");
 
-//    rawProcedure = "procedure somethingHmm {\n"
-//                   "\twhile (iter <=  5) {\n"
-//                   "\t\tx = right + 3 + 2 + left;\n"
-//                   "\t\ttemp = temp + 7;\n"
-//                   "\t}\n"
-//                   "\tif (iter != 1) then {\n"
-//                   "\t\titer = iter + 1; \n"
-//                   "\t\tlength = radius * 10;\n"
-//                   "\t\tbreadth = radius + 10;\n"
-//                   "\t} else {\n"
-//                   "\t\twhile ((left + 1 > 2) || (radius + 1 > 2)) {\n"
-//                   "\t\t\tbreadth = radius - 100;\n"
-//                   "\t\t\tlength = left + right;\n"
-//                   "\t\t}\n"
-//                   "\t}\n"
-//                   "}";
-//    result = Parser::extractProcName(rawProcedure);
-//    REQUIRE(result == "somethingHmm");
-//
-//    rawProcedure = "procedure nestedBlocks {\n"
-//                   "\tif (iter != 1) then {\n"
-//                   "\t\titer = iter + 1; \n"
-//                   "\t\tlength = radius * 10;\n"
-//                   "\t\tbreadth = radius + 10;\n"
-//                   "\t} else {\n"
-//                   "\t\twhile ((left + 1 > 2) || (radius + 1 > 2)) {\n"
-//                   "\t\t\tbreadth = radius - 100;\n"
-//                   "\t\t\tlength = left + right;\n"
-//                   "\t\t\tif (1 > 2) then {\n"
-//                   "\t\t\t\tprocedure  = 5;\n"
-//                   "\t\t\t} else {\n"
-//                   "\t\t\t\twhile = no;\n"
-//                   "\t\t\t\twhile ((x > 2) || !(y <= 5)) {\n"
-//                   "\t\t\t\t\tif = while;\n"
-//                   "\t\t\t\t}\n"
-//                   "\t\t\t}\n"
-//                   "\t\t}\n"
-//                   "\t}\n"
-//                   "}";
-//    result = Parser::extractProcName(rawProcedure);
-//    REQUIRE(result == "nestedBlocks");
+    //    rawProcedure = "procedure somethingHmm {\n"
+    //                   "\twhile (iter <=  5) {\n"
+    //                   "\t\tx = right + 3 + 2 + left;\n"
+    //                   "\t\ttemp = temp + 7;\n"
+    //                   "\t}\n"
+    //                   "\tif (iter != 1) then {\n"
+    //                   "\t\titer = iter + 1; \n"
+    //                   "\t\tlength = radius * 10;\n"
+    //                   "\t\tbreadth = radius + 10;\n"
+    //                   "\t} else {\n"
+    //                   "\t\twhile ((left + 1 > 2) || (radius + 1 > 2)) {\n"
+    //                   "\t\t\tbreadth = radius - 100;\n"
+    //                   "\t\t\tlength = left + right;\n"
+    //                   "\t\t}\n"
+    //                   "\t}\n"
+    //                   "}";
+    //    result = Parser::extractProcName(rawProcedure);
+    //    REQUIRE(result == "somethingHmm");
+    //
+    //    rawProcedure = "procedure nestedBlocks {\n"
+    //                   "\tif (iter != 1) then {\n"
+    //                   "\t\titer = iter + 1; \n"
+    //                   "\t\tlength = radius * 10;\n"
+    //                   "\t\tbreadth = radius + 10;\n"
+    //                   "\t} else {\n"
+    //                   "\t\twhile ((left + 1 > 2) || (radius + 1 > 2)) {\n"
+    //                   "\t\t\tbreadth = radius - 100;\n"
+    //                   "\t\t\tlength = left + right;\n"
+    //                   "\t\t\tif (1 > 2) then {\n"
+    //                   "\t\t\t\tprocedure  = 5;\n"
+    //                   "\t\t\t} else {\n"
+    //                   "\t\t\t\twhile = no;\n"
+    //                   "\t\t\t\twhile ((x > 2) || !(y <= 5)) {\n"
+    //                   "\t\t\t\t\tif = while;\n"
+    //                   "\t\t\t\t}\n"
+    //                   "\t\t\t}\n"
+    //                   "\t\t}\n"
+    //                   "\t}\n"
+    //                   "}";
+    //    result = Parser::extractProcName(rawProcedure);
+    //    REQUIRE(result == "nestedBlocks");
 }
 
-TEST_CASE("extractStatements - Positive Case") {
+TEST_CASE("extractStatements - Positive Case")
+{
     string rawStatements;
     vector<string> result;
 
@@ -267,26 +270,27 @@ TEST_CASE("extractStatements - Positive Case") {
                          "\t\t}\n"
                          "\t}");
     REQUIRE(result[10] == "if (iter != 1) then {\n"
-                         "\t\titer = iter + 1; \n"
-                         "\t\tlength = radius * 10;\n"
-                         "\t\tbreadth = radius + 10;\n"
-                         "\t} else {\n"
-                         "\t\twhile ((left + 1 > 2) || (radius + 1 > 2)) {\n"
-                         "\t\t\tbreadth = radius - 100;\n"
-                         "\t\t\tlength = left + right;\n"
-                         "\t\t\tif (1 > 2) then {\n"
-                         "\t\t\t\tprocedure  = 5;\n"
-                         "\t\t\t} else {\n"
-                         "\t\t\t\twhile = no;\n"
-                         "\t\t\t\twhile ((x > 2) || !(y <= 5)) {\n"
-                         "\t\t\t\t\tif = while;\n"
-                         "\t\t\t\t}\n"
-                         "\t\t\t}\n"
-                         "\t\t}\n"
-                         "\t}");
+                          "\t\titer = iter + 1; \n"
+                          "\t\tlength = radius * 10;\n"
+                          "\t\tbreadth = radius + 10;\n"
+                          "\t} else {\n"
+                          "\t\twhile ((left + 1 > 2) || (radius + 1 > 2)) {\n"
+                          "\t\t\tbreadth = radius - 100;\n"
+                          "\t\t\tlength = left + right;\n"
+                          "\t\t\tif (1 > 2) then {\n"
+                          "\t\t\t\tprocedure  = 5;\n"
+                          "\t\t\t} else {\n"
+                          "\t\t\t\twhile = no;\n"
+                          "\t\t\t\twhile ((x > 2) || !(y <= 5)) {\n"
+                          "\t\t\t\t\tif = while;\n"
+                          "\t\t\t\t}\n"
+                          "\t\t\t}\n"
+                          "\t\t}\n"
+                          "\t}");
 }
 
-TEST_CASE("extractStatements - Negative Case - Missing semicolon") {
+TEST_CASE("extractStatements - Negative Case - Missing semicolon")
+{
     string str = "procedure ABC {\n"
                  "\t\t\t\tread x\n"
                  "\t\t}";
@@ -294,7 +298,8 @@ TEST_CASE("extractStatements - Negative Case - Missing semicolon") {
     REQUIRE_THROWS_AS(Parser::extractStatements(str, stmtLst), InvalidSyntaxException);
 }
 
-TEST_CASE("extractConditionalExpr - Positive Case") {
+TEST_CASE("extractConditionalExpr - Positive Case")
+{
     string rawStatementString;
     string expected;
     string result;
@@ -320,21 +325,24 @@ TEST_CASE("extractConditionalExpr - Positive Case") {
     REQUIRE(result == expected);
 }
 
-TEST_CASE("extractConditionalExpr - Positive Case - Contains RelFactor 1") {
+TEST_CASE("extractConditionalExpr - Positive Case - Contains RelFactor 1")
+{
     string stmt = "while (1>= 1%((0-1)) )";
     string expected = "1>= 1%((0-1))";
     string result = Parser::extractConditionalExpr(stmt);
     REQUIRE(result == expected);
 }
 
-TEST_CASE("extractConditionalExpr - Positive Case - Contains RelFactor 2") {
+TEST_CASE("extractConditionalExpr - Positive Case - Contains RelFactor 2")
+{
     string stmt = "while (1>= 1%((1)) )";
     string expected = "1>= 1%((1))";
     string result = Parser::extractConditionalExpr(stmt);
     REQUIRE(result == expected);
 }
 
-TEST_CASE("removeProcedureWrapper - Positive Case") {
+TEST_CASE("removeProcedureWrapper - Positive Case")
+{
     string rawProcedure;
     string expected;
     string result;
@@ -435,7 +443,8 @@ TEST_CASE("removeProcedureWrapper - Positive Case") {
     REQUIRE(result == expected);
 }
 
-TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
+TEST_CASE("parseSourceCode - Positive Case - Statement Number Related")
+{
     string rawSourceCode;
     shared_ptr<SourceCode> sourceCodeNode;
     Statement::resetLineNumCount();
@@ -496,7 +505,7 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
     vector<shared_ptr<Procedure>> procedures = sourceCodeNode->getProcedures();
 
     vector<shared_ptr<Statement>> statements = procedures[0]->getStatements();
-    for (shared_ptr<Statement> s: statements) {
+    for (shared_ptr<Statement> s : statements) {
         REQUIRE(s->getLineNum() == currStatementNumber);
         currStatementNumber++;
     }
@@ -506,7 +515,7 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
     REQUIRE(statements[0]->getLineNum() == currStatementNumber);
     currStatementNumber++;
 
-    for (shared_ptr<Statement> s: dynamic_pointer_cast<WhileStatement>(statements[0])->getStatements()) {
+    for (shared_ptr<Statement> s : dynamic_pointer_cast<WhileStatement>(statements[0])->getStatements()) {
         REQUIRE(s->getLineNum() == currStatementNumber);
         currStatementNumber++;
     }
@@ -514,7 +523,7 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
     REQUIRE(statements[1]->getLineNum() == currStatementNumber);
     currStatementNumber++;
 
-    for (shared_ptr<Statement> s: dynamic_pointer_cast<IfStatement>(statements[1])->getThenStatements()) {
+    for (shared_ptr<Statement> s : dynamic_pointer_cast<IfStatement>(statements[1])->getThenStatements()) {
         REQUIRE(s->getLineNum() == currStatementNumber);
         currStatementNumber++;
     }
@@ -523,7 +532,7 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
     REQUIRE(statements[0]->getLineNum() == currStatementNumber);
     currStatementNumber++;
 
-    for (shared_ptr<Statement> s: dynamic_pointer_cast<WhileStatement>(statements[0])->getStatements()) {
+    for (shared_ptr<Statement> s : dynamic_pointer_cast<WhileStatement>(statements[0])->getStatements()) {
         REQUIRE(s->getLineNum() == currStatementNumber);
         currStatementNumber++;
     }
@@ -532,16 +541,16 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
     REQUIRE(statements[0]->getLineNum() == currStatementNumber);
     currStatementNumber++;
 
-    for (shared_ptr<Statement> s: dynamic_pointer_cast<IfStatement>(statements[0])->getThenStatements()) {
+    for (shared_ptr<Statement> s : dynamic_pointer_cast<IfStatement>(statements[0])->getThenStatements()) {
         REQUIRE(s->getLineNum() == currStatementNumber);
         currStatementNumber++;
     }
 
-    statements =  dynamic_pointer_cast<IfStatement>(statements[0])->getElseStatements();
+    statements = dynamic_pointer_cast<IfStatement>(statements[0])->getElseStatements();
     REQUIRE(statements[0]->getLineNum() == currStatementNumber);
     currStatementNumber++;
 
-    statements =  dynamic_pointer_cast<WhileStatement>(statements[0])->getStatements();
+    statements = dynamic_pointer_cast<WhileStatement>(statements[0])->getStatements();
     REQUIRE(statements[0]->getLineNum() == currStatementNumber);
     currStatementNumber++;
     REQUIRE(statements[1]->getLineNum() == currStatementNumber);
@@ -549,7 +558,7 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
     REQUIRE(statements[2]->getLineNum() == currStatementNumber);
     currStatementNumber++;
 
-    for (shared_ptr<Statement> s: dynamic_pointer_cast<IfStatement>(statements[2])->getThenStatements()) {
+    for (shared_ptr<Statement> s : dynamic_pointer_cast<IfStatement>(statements[2])->getThenStatements()) {
         REQUIRE(s->getLineNum() == currStatementNumber);
         currStatementNumber++;
     }
@@ -560,11 +569,12 @@ TEST_CASE("parseSourceCode - Positive Case - Statement Number Related") {
     REQUIRE(statements[1]->getLineNum() == currStatementNumber);
     currStatementNumber++;
 
-    statements =  dynamic_pointer_cast<WhileStatement>(statements[1])->getStatements();
+    statements = dynamic_pointer_cast<WhileStatement>(statements[1])->getStatements();
     REQUIRE(statements[0]->getLineNum() == currStatementNumber);
 }
 
-TEST_CASE("parseSourceCode - Positive Case - EASY 1") {
+TEST_CASE("parseSourceCode - Positive Case - EASY 1")
+{
     string rawSourceCode = "procedure main {\n"
                            "\tprint = x;\n"
                            "\tread x;\n"
@@ -619,7 +629,8 @@ TEST_CASE("parseSourceCode - Positive Case - EASY 1") {
     REQUIRE(AST->getNumOfStatements() == 30);
 }
 
-TEST_CASE("parseSourceCode - Positive Case - EASY 2") {
+TEST_CASE("parseSourceCode - Positive Case - EASY 2")
+{
     string rawSourceCode = "procedure main {\n"
                            "\tprint = x;\n"
                            "\tread x;\n"
@@ -683,7 +694,8 @@ TEST_CASE("parseSourceCode - Positive Case - EASY 2") {
     REQUIRE(AST->getNumOfStatements() == 36);
 }
 
-TEST_CASE("parseSourceCode - Positive Case - HARD 1") {
+TEST_CASE("parseSourceCode - Positive Case - HARD 1")
+{
     string rawSourceCode = "procedure procedure {\n"
                            "  while (while < while) {\n"
                            "    if (if != if * (2 + 1)) then {\n"
@@ -756,7 +768,6 @@ TEST_CASE("parseSourceCode - Positive Case - HARD 1") {
     shared_ptr<OperatedExpression> operatedExpression;
     shared_ptr<NameExpression> nameExpression;
     shared_ptr<ConstantExpression> constantExpression;
-
 
     Statement::resetLineNumCount();
     AST = Parser::parseSourceCode(rawSourceCode, "filename");
@@ -880,13 +891,11 @@ TEST_CASE("parseSourceCode - Positive Case - HARD 1") {
     callStatement = dynamic_pointer_cast<CallStatement>(whileStatement->getStatements()[0]);
     REQUIRE(callStatement->getProcedureName() == "doNothing");
 
-
     procedure = AST->getProcedures()[1];
     REQUIRE(procedure->getProcedureName() == "doNothing");
     assignStatement = dynamic_pointer_cast<AssignStatement>(procedure->getStatements()[0]);
     REQUIRE(assignStatement->getVarName() == "while");
-    REQUIRE(assignStatement->getRelFactor()->generateString() ==
-            "((((1) + (((doNothing) % (doSomething)) * (ifThen))) - (print)) + ((a9345934un34ubhr) / (23423453)))");
+    REQUIRE(assignStatement->getRelFactor()->generateString() == "((((1) + (((doNothing) % (doSomething)) * (ifThen))) - (print)) + ((a9345934un34ubhr) / (23423453)))");
     assignStatement = dynamic_pointer_cast<AssignStatement>(procedure->getStatements()[1]);
     REQUIRE(assignStatement->getVarName() == "ifThen");
     REQUIRE(assignStatement->getRelFactor()->generateString() == "(2)");
@@ -899,7 +908,6 @@ TEST_CASE("parseSourceCode - Positive Case - HARD 1") {
     assignStatement = dynamic_pointer_cast<AssignStatement>(procedure->getStatements()[4]);
     REQUIRE(assignStatement->getVarName() == "else");
     REQUIRE(assignStatement->getRelFactor()->generateString() == "(5)");
-
 
     procedure = AST->getProcedures()[2];
     callStatement = dynamic_pointer_cast<CallStatement>(procedure->getStatements()[0]);
@@ -928,7 +936,8 @@ TEST_CASE("parseSourceCode - Positive Case - HARD 1") {
     REQUIRE(printStatement->getVariableName() == "else");
 }
 
-TEST_CASE("parseSourceCode - Positive Case - HARD 2") {
+TEST_CASE("parseSourceCode - Positive Case - HARD 2")
+{
     string rawSourceCode = "procedure procedure1 {\n"
                            "  while (while < while) { if (if != if * (2 + 1)) then { then = then + if; while = procedure + 32432 + if + then;\n"
                            "      else = while; } else { else = if + then + procedure; while (5 > 0) { if (then > (else - procedure) * (then / 9342) + while) then { print print;\n"
@@ -1338,7 +1347,8 @@ TEST_CASE("parseSourceCode - Positive Case - HARD 2") {
     REQUIRE(AST->getNumOfStatements() == 1001);
 }
 
-TEST_CASE("parseSourceCode - Negative Case - Extra Semicolons") {
+TEST_CASE("parseSourceCode - Negative Case - Extra Semicolons")
+{
     string rawSourceCode;
 
     rawSourceCode = "procedure affecting {\n"
@@ -1386,7 +1396,8 @@ TEST_CASE("parseSourceCode - Negative Case - Extra Semicolons") {
     REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
 }
 
-TEST_CASE("parseSourceCode - Negative Case - Wrong Curly Brackets") {
+TEST_CASE("parseSourceCode - Negative Case - Wrong Curly Brackets")
+{
     string rawSourceCode;
 
     rawSourceCode = "procedure affecting {\n"
@@ -1446,7 +1457,8 @@ TEST_CASE("parseSourceCode - Negative Case - Wrong Curly Brackets") {
     REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
 }
 
-TEST_CASE("parseSourceCode - Negative Case - Wrong Round Brackets") {
+TEST_CASE("parseSourceCode - Negative Case - Wrong Round Brackets")
+{
     string rawSourceCode;
 
     rawSourceCode = "procedure factorial {\n"
@@ -1498,7 +1510,8 @@ TEST_CASE("parseSourceCode - Negative Case - Wrong Round Brackets") {
     REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
 }
 
-TEST_CASE("parseSourceCode - Negative Case - Empty blocks") {
+TEST_CASE("parseSourceCode - Negative Case - Empty blocks")
+{
     string rawSourceCode;
 
     // No procedures
@@ -1535,7 +1548,8 @@ TEST_CASE("parseSourceCode - Negative Case - Empty blocks") {
     REQUIRE_THROWS_AS(Parser::parseSourceCode(rawSourceCode, "filename"), InvalidSyntaxException);
 }
 
-TEST_CASE("parseProcedure - Positive Case") {
+TEST_CASE("parseProcedure - Positive Case")
+{
     string rawProcedure;
     shared_ptr<Procedure> procedure;
     vector<shared_ptr<Statement>> statements;
@@ -1550,29 +1564,41 @@ TEST_CASE("parseProcedure - Positive Case") {
 
     statements = procedure->getStatements();
 
-
     REQUIRE(dynamic_pointer_cast<AssignStatement>(statements[0])->getVarName() == "print");
     REQUIRE(dynamic_pointer_cast<NameExpression>(
-            dynamic_pointer_cast<AssignStatement>(statements[0])->getRelFactor())->getVarName() == "x");
+                dynamic_pointer_cast<AssignStatement>(statements[0])->getRelFactor())
+                ->getVarName()
+        == "x");
 
     REQUIRE(dynamic_pointer_cast<ReadStatement>(statements[1])->getVariableName() == "x");
 
     REQUIRE(dynamic_pointer_cast<AssignStatement>(statements[2])->getVarName() == "left");
     REQUIRE(dynamic_pointer_cast<NameExpression>(
-            dynamic_pointer_cast<AssignStatement>(statements[2])->getRelFactor())->getVarName() == "right");
+                dynamic_pointer_cast<AssignStatement>(statements[2])->getRelFactor())
+                ->getVarName()
+        == "right");
 
     REQUIRE(dynamic_pointer_cast<AssignStatement>(statements[3])->getVarName() == "right");
     REQUIRE(dynamic_pointer_cast<OperatedExpression>(
-            dynamic_pointer_cast<AssignStatement>(statements[3])->getRelFactor())->getOperator() == Operator::ADD);
+                dynamic_pointer_cast<AssignStatement>(statements[3])->getRelFactor())
+                ->getOperator()
+        == Operator::ADD);
     REQUIRE(dynamic_pointer_cast<NameExpression>(
-            dynamic_pointer_cast<OperatedExpression>(
-                    dynamic_pointer_cast<AssignStatement>(statements[3])->getRelFactor())->getExpression1())->getVarName() == "left");
+                dynamic_pointer_cast<OperatedExpression>(
+                    dynamic_pointer_cast<AssignStatement>(statements[3])->getRelFactor())
+                    ->getExpression1())
+                ->getVarName()
+        == "left");
     REQUIRE(dynamic_pointer_cast<ConstantExpression>(
-            dynamic_pointer_cast<OperatedExpression>(
-                    dynamic_pointer_cast<AssignStatement>(statements[3])->getRelFactor())->getExpression2())->getValue() == 2);
+                dynamic_pointer_cast<OperatedExpression>(
+                    dynamic_pointer_cast<AssignStatement>(statements[3])->getRelFactor())
+                    ->getExpression2())
+                ->getValue()
+        == 2);
 }
 
-TEST_CASE("parseProcedure - Positive Case - Nested If-Else, bad styling") {
+TEST_CASE("parseProcedure - Positive Case - Nested If-Else, bad styling")
+{
     string str = "procedure Main {\n"
                  "if (x   > 3) then {\n"
                  "if (x > 3 )then {\n"
@@ -1618,7 +1644,8 @@ TEST_CASE("parseProcedure - Positive Case - Nested If-Else, bad styling") {
     REQUIRE(constantExpression->getValue() == 1);
 }
 
-TEST_CASE("parseStatement - Positive Case") {
+TEST_CASE("parseStatement - Positive Case")
+{
     string stmt1 = "print x";
     string stmt2 = "read x";
     string stmt3 = "if (!(x == y)) then {\n"
@@ -1663,19 +1690,17 @@ TEST_CASE("parseStatement - Positive Case") {
     REQUIRE(readStatement->getVariableName() == "x");
 }
 
-TEST_CASE("parseIfElse - Positive Case") {
+TEST_CASE("parseIfElse - Positive Case")
+{
     string rawIfStatement = "if (!(x == y)) then {\n"
-                   "\t\t\t\tread x;\n"
-                   "\t\t} else {\n"
-                   "\t\t\t\tprint x;\n"
-                   "\t\t}";
+                            "\t\t\t\tread x;\n"
+                            "\t\t} else {\n"
+                            "\t\t\t\tprint x;\n"
+                            "\t\t}";
 
-    shared_ptr<IfStatement> ifStatement =
-            dynamic_pointer_cast<IfStatement>(Parser::parseStatement(rawIfStatement));
-    shared_ptr<NotCondition> condExpr =
-            dynamic_pointer_cast<NotCondition>(ifStatement->getConditionalExpression());
-    shared_ptr<RelationalExpression> relExpr =
-            dynamic_pointer_cast<RelationalExpression>(condExpr->getConditionalExpression());
+    shared_ptr<IfStatement> ifStatement = dynamic_pointer_cast<IfStatement>(Parser::parseStatement(rawIfStatement));
+    shared_ptr<NotCondition> condExpr = dynamic_pointer_cast<NotCondition>(ifStatement->getConditionalExpression());
+    shared_ptr<RelationalExpression> relExpr = dynamic_pointer_cast<RelationalExpression>(condExpr->getConditionalExpression());
 
     REQUIRE(relExpr->getOperator() == RelationalOperator::EQUALS);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr->getRelFactor1());
@@ -1688,7 +1713,8 @@ TEST_CASE("parseIfElse - Positive Case") {
     REQUIRE(printStmt->getVariableName() == "x");
 }
 
-TEST_CASE("parseIfElse - Positive Case - Nested If statement") {
+TEST_CASE("parseIfElse - Positive Case - Nested If statement")
+{
     string str = "if (x > 3) then {\n"
                  "  if (x > 3 )then {\n"
                  "      x=1;\n"
@@ -1729,7 +1755,8 @@ TEST_CASE("parseIfElse - Positive Case - Nested If statement") {
     REQUIRE(constantExpression->getValue() == 1);
 }
 
-TEST_CASE("parseIfElse - Positive Case - Keywords used a variable names") {
+TEST_CASE("parseIfElse - Positive Case - Keywords used a variable names")
+{
     string rawIfStatement;
     shared_ptr<IfStatement> ifStatement;
     shared_ptr<RelationalExpression> relationalExpression;
@@ -1774,14 +1801,16 @@ TEST_CASE("parseIfElse - Positive Case - Keywords used a variable names") {
     REQUIRE(printStatement->getVariableName() == "else");
 }
 
-TEST_CASE("parseIfElse - Negative Case - if-else missing else block") {
+TEST_CASE("parseIfElse - Negative Case - if-else missing else block")
+{
     string str = "if (!(x == y)) then {\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}";
     REQUIRE_THROWS_AS(Parser::parseIfElse(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseIfElse - Negative Case - if-else missing 'then' keyword") {
+TEST_CASE("parseIfElse - Negative Case - if-else missing 'then' keyword")
+{
     string str = "if (iter != 1) {\n"
                  "13\t\titer = iter + 1; \n"
                  "14\t\tlength = radius * 10;\n"
@@ -1795,13 +1824,15 @@ TEST_CASE("parseIfElse - Negative Case - if-else missing 'then' keyword") {
     REQUIRE_THROWS_AS(Parser::parseIfElse(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseIfElse - Negative Case - Missing '{' in if block") {
+TEST_CASE("parseIfElse - Negative Case - Missing '{' in if block")
+{
     string str = "if (x>y) then \n"
                  "\t\t\t\tread x;}\n";
     REQUIRE_THROWS_AS(Parser::parseIfElse(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseWhile - Positive Case - Bad styling") {
+TEST_CASE("parseWhile - Positive Case - Bad styling")
+{
     string rawWhileStatement = "while    (x >= y)       {\n"
                                "\t\t  print    longlonglonglonglongNAME;\n"
                                "\t  \t       read namewithNUMBERS123053;\n"
@@ -1825,7 +1856,8 @@ TEST_CASE("parseWhile - Positive Case - Bad styling") {
     REQUIRE(readStmt->getVariableName() == "namewithNUMBERS123053");
 }
 
-TEST_CASE("parseWhile - Positive Case - Keywords used as variable name") {
+TEST_CASE("parseWhile - Positive Case - Keywords used as variable name")
+{
     string rawWhileStatement;
     shared_ptr<RelationalExpression> relExpr;
     shared_ptr<NameExpression> nameExpr;
@@ -1835,9 +1867,9 @@ TEST_CASE("parseWhile - Positive Case - Keywords used as variable name") {
     shared_ptr<AssignStatement> assignStatement;
 
     rawWhileStatement = "while (while > while) {\n"
-                               "            print while;\n"
-                               "            read while;\n"
-                               "          }";
+                        "            print while;\n"
+                        "            read while;\n"
+                        "          }";
 
     whileStatement = dynamic_pointer_cast<WhileStatement>(Parser::parseStatement(rawWhileStatement));
     relExpr = dynamic_pointer_cast<RelationalExpression>(whileStatement->getConditionalExpression());
@@ -1850,7 +1882,6 @@ TEST_CASE("parseWhile - Positive Case - Keywords used as variable name") {
     REQUIRE(printStmt->getVariableName() == "while");
     readStmt = dynamic_pointer_cast<ReadStatement>((whileStatement->getStatements())[1]);
     REQUIRE(readStmt->getVariableName() == "while");
-
 
     rawWhileStatement = "while (if > then) {\n"
                         "            print if;\n"
@@ -1871,8 +1902,6 @@ TEST_CASE("parseWhile - Positive Case - Keywords used as variable name") {
     REQUIRE(readStmt->getVariableName() == "else");
     printStmt = dynamic_pointer_cast<PrintStatement>((whileStatement->getStatements())[2]);
     REQUIRE(printStmt->getVariableName() == "then");
-
-
 
     rawWhileStatement = "while (procedure > stop) {\n"
                         "            while = if + then;\n"
@@ -1898,40 +1927,46 @@ TEST_CASE("parseWhile - Positive Case - Keywords used as variable name") {
     REQUIRE(assignStatement->getVarName() == "then");
 }
 
-TEST_CASE("parseWhile - Negative Case - Missing semicolon") {
+TEST_CASE("parseWhile - Negative Case - Missing semicolon")
+{
     string str = "while (x == 0) {\n"
                  "\t\t\t\tread x\n"
                  "\t\t}";
     REQUIRE_THROWS_AS(Parser::parseWhile(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseWhile - Negative Case - Extra '}'") {
+TEST_CASE("parseWhile - Negative Case - Extra '}'")
+{
     string str = "while (!(x == y)) {\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}}";
     REQUIRE_THROWS_AS(Parser::parseWhile(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseWhile - Negative Case - Extra '{'") {
+TEST_CASE("parseWhile - Negative Case - Extra '{'")
+{
     string str = "while (!(x == y)) {{\n"
                  "\t\t\t\tread x;\n"
                  "\t\t}";
     REQUIRE_THROWS_AS(Parser::parseWhile(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseWhile - Negative Case - Missing '}'") {
+TEST_CASE("parseWhile - Negative Case - Missing '}'")
+{
     string str = "while (x < 1) {\n"
                  "\t\t\t\tread x;\n";
     REQUIRE_THROWS_AS(Parser::parseWhile(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseWhile - Negative Case - Missing '{'") {
+TEST_CASE("parseWhile - Negative Case - Missing '{'")
+{
     string str = "while (x < 1) \n"
                  "\t\t\t\tread x;}\n";
     REQUIRE_THROWS_AS(Parser::parseWhile(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseCondExpr - Positive Case") {
+TEST_CASE("parseCondExpr - Positive Case")
+{
     string rawCondExpr = "x <= 5";
     shared_ptr<RelationalExpression> result = dynamic_pointer_cast<RelationalExpression>(Parser::parseCondExpr(rawCondExpr));
     REQUIRE(result->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
@@ -1941,7 +1976,8 @@ TEST_CASE("parseCondExpr - Positive Case") {
     REQUIRE(constExpr->getValue() == 5);
 }
 
-TEST_CASE("parseCondExpr - Positive Case - Annoying Brackets 1") {
+TEST_CASE("parseCondExpr - Positive Case - Annoying Brackets 1")
+{
     string rawCondExpr = "((((((x)) <= (((5)))))))";
     shared_ptr<RelationalExpression> result = dynamic_pointer_cast<RelationalExpression>(Parser::parseCondExpr(rawCondExpr));
     REQUIRE(result->getOperator() == RelationalOperator::LESS_THAN_OR_EQUALS);
@@ -1951,7 +1987,8 @@ TEST_CASE("parseCondExpr - Positive Case - Annoying Brackets 1") {
     REQUIRE(constExpr->getValue() == 5);
 }
 
-TEST_CASE("parseCondExpr - Positive Case - Annoying Brackets 2") {
+TEST_CASE("parseCondExpr - Positive Case - Annoying Brackets 2")
+{
     string str = "((!((((x)) <= (((5)))))))";
     shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str));
     shared_ptr<RelationalExpression> condExpr = dynamic_pointer_cast<RelationalExpression>(result->getConditionalExpression());
@@ -1962,7 +1999,8 @@ TEST_CASE("parseCondExpr - Positive Case - Annoying Brackets 2") {
     REQUIRE(constExpr->getValue() == 5);
 }
 
-TEST_CASE("parseCondExpr - Positive Case - NotCondition") {
+TEST_CASE("parseCondExpr - Positive Case - NotCondition")
+{
     string rawCondExpr = "!(x <= 5)";
     shared_ptr<NotCondition> result = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(rawCondExpr));
     shared_ptr<RelationalExpression> condExpr = dynamic_pointer_cast<RelationalExpression>(result->getConditionalExpression());
@@ -1973,7 +2011,8 @@ TEST_CASE("parseCondExpr - Positive Case - NotCondition") {
     REQUIRE(constExpr->getValue() == 5);
 }
 
-TEST_CASE("parseCondExpr - Positive Case - Not expression") {
+TEST_CASE("parseCondExpr - Positive Case - Not expression")
+{
     string str = "!(y!=1)";
     shared_ptr<NotCondition> notCondition = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(str));
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(notCondition->getConditionalExpression());
@@ -1984,7 +2023,8 @@ TEST_CASE("parseCondExpr - Positive Case - Not expression") {
     REQUIRE(constExpr->getValue() == 1);
 }
 
-TEST_CASE("parseCondExpr - Positive Case - Complicated Expressions 1") {
+TEST_CASE("parseCondExpr - Positive Case - Complicated Expressions 1")
+{
     string rawCondExpr;
 
     shared_ptr<NotCondition> notCondition;
@@ -1994,7 +2034,6 @@ TEST_CASE("parseCondExpr - Positive Case - Complicated Expressions 1") {
     shared_ptr<RelationalExpression> relExpr2;
     shared_ptr<NameExpression> nameExpr;
     shared_ptr<ConstantExpression> constExpr;
-
 
     rawCondExpr = "!((x <= 5) || (x == 10))";
     notCondition = dynamic_pointer_cast<NotCondition>(Parser::parseCondExpr(rawCondExpr));
@@ -2013,7 +2052,6 @@ TEST_CASE("parseCondExpr - Positive Case - Complicated Expressions 1") {
     REQUIRE(nameExpr->getVarName() == "x");
     constExpr = dynamic_pointer_cast<ConstantExpression>(relExpr2->getRelFactor2());
     REQUIRE(constExpr->getValue() == 10);
-
 
     rawCondExpr = "((x < y) || (x == y)) && !(x > 3)";
     andCondition = dynamic_pointer_cast<AndCondition>(Parser::parseCondExpr(rawCondExpr));
@@ -2042,7 +2080,8 @@ TEST_CASE("parseCondExpr - Positive Case - Complicated Expressions 1") {
     REQUIRE(constExpr->getValue() == 3);
 }
 
-TEST_CASE("parseCondExpr - Positive Case - Complicated Expressions 2") {
+TEST_CASE("parseCondExpr - Positive Case - Complicated Expressions 2")
+{
     string rawCondExpr = "(1 >= x ) || (!(procedure == 2147483647))";
     shared_ptr<OrCondition> orCondition = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(rawCondExpr));
     shared_ptr<RelationalExpression> relExpr1 = dynamic_pointer_cast<RelationalExpression>(orCondition->getConditionalExpression1());
@@ -2059,7 +2098,8 @@ TEST_CASE("parseCondExpr - Positive Case - Complicated Expressions 2") {
     REQUIRE(constExpr->getValue() == 2147483647);
 }
 
-TEST_CASE("parseCondExpr - Positive Case - Complex expression, bad styling") {
+TEST_CASE("parseCondExpr - Positive Case - Complex expression, bad styling")
+{
     string str = "!  ((x    >    5) &&    (x    < (y   + 3  )))   || ((x    ==3) &&   (y!=    1))";
     shared_ptr<OrCondition> orCondition = dynamic_pointer_cast<OrCondition>(Parser::parseCondExpr(str));
     shared_ptr<NotCondition> notCondition = dynamic_pointer_cast<NotCondition>(orCondition->getConditionalExpression1());
@@ -2094,12 +2134,14 @@ TEST_CASE("parseCondExpr - Positive Case - Complex expression, bad styling") {
     REQUIRE(constExpr->getValue() == 1);
 }
 
-TEST_CASE("parseCondExpr - Negative Case - Missing expression") {
+TEST_CASE("parseCondExpr - Negative Case - Missing expression")
+{
     string str = "(!(x == y) && )";
     REQUIRE_THROWS_AS(Parser::parseCondExpr(str), InvalidSyntaxException);
 }
 
-TEST_CASE("parseCondExpr - Negative Case - Extra Bracket") {
+TEST_CASE("parseCondExpr - Negative Case - Extra Bracket")
+{
     string rawCondExpr;
     rawCondExpr = "(!(x == y)))";
     REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
@@ -2108,7 +2150,8 @@ TEST_CASE("parseCondExpr - Negative Case - Extra Bracket") {
     REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
 }
 
-TEST_CASE("parseCondExpr - Negative Case - Invalid conditional operators") {
+TEST_CASE("parseCondExpr - Negative Case - Invalid conditional operators")
+{
     string rawCondExpr;
     rawCondExpr = "(!(x == y) & (x != 5))";
     REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
@@ -2117,7 +2160,8 @@ TEST_CASE("parseCondExpr - Negative Case - Invalid conditional operators") {
     REQUIRE_THROWS_AS(Parser::parseCondExpr(rawCondExpr), InvalidSyntaxException);
 }
 
-TEST_CASE("parseRelExpr - Positive Case - Simple expressions") {
+TEST_CASE("parseRelExpr - Positive Case - Simple expressions")
+{
     string expr1 = "x >= 5";
     shared_ptr<RelationalExpression> relExpr1 = Parser::parseRelExpr(expr1);
     shared_ptr<NameExpression> nameExpr = dynamic_pointer_cast<NameExpression>(relExpr1->getRelFactor1());
@@ -2171,7 +2215,8 @@ TEST_CASE("parseRelExpr - Positive Case - Simple expressions") {
     REQUIRE(constExpr->getValue() == 3245);
 }
 
-TEST_CASE("parseRelExpr - Positive Case - Annoying brackets 1") {
+TEST_CASE("parseRelExpr - Positive Case - Annoying brackets 1")
+{
     // NO Surrounding brackets on outside, refer to function description
     string rawRelExpr;
     rawRelExpr = "(x) <= (((1 + (((2))))))";
@@ -2185,7 +2230,8 @@ TEST_CASE("parseRelExpr - Positive Case - Annoying brackets 1") {
     REQUIRE(dynamic_pointer_cast<ConstantExpression>(oprExpr->getExpression2())->getValue() == 2);
 }
 
-TEST_CASE("parseRelExpr - Positive Case - Annoying brackets 2") {
+TEST_CASE("parseRelExpr - Positive Case - Annoying brackets 2")
+{
     string rawRelExpr = "(((1)))>= (((((1)))%((1))))";
     shared_ptr<RelationalExpression> relExpr = Parser::parseRelExpr(rawRelExpr);
     REQUIRE(relExpr->getOperator() == RelationalOperator::GREATER_THAN_OR_EQUALS);
@@ -2199,7 +2245,8 @@ TEST_CASE("parseRelExpr - Positive Case - Annoying brackets 2") {
     REQUIRE(constExpr2->getValue() == 1);
 }
 
-TEST_CASE("parseRelExpr - Negative Case") {
+TEST_CASE("parseRelExpr - Negative Case")
+{
     string rawRelExpr;
     rawRelExpr = "x >(=<) 5";
     REQUIRE_THROWS_AS(Parser::parseRelExpr(rawRelExpr), InvalidSyntaxException);
@@ -2217,7 +2264,8 @@ TEST_CASE("parseRelExpr - Negative Case") {
     REQUIRE_THROWS_AS(Parser::parseRelExpr(rawRelExpr), InvalidSyntaxException);
 }
 
-TEST_CASE("isAssignStatement - Positive Case") {
+TEST_CASE("isAssignStatement - Positive Case")
+{
     string rawAssignStatement;
 
     rawAssignStatement = "something = xxx";
@@ -2236,7 +2284,8 @@ TEST_CASE("isAssignStatement - Positive Case") {
     REQUIRE(Parser::isAssignStatement(rawAssignStatement));
 }
 
-TEST_CASE("isAssignStatement - Negative Case") {
+TEST_CASE("isAssignStatement - Negative Case")
+{
     string rawAssignStatement;
 
     rawAssignStatement = "call procedure";
@@ -2266,7 +2315,6 @@ TEST_CASE("isAssignStatement - Negative Case") {
                          "\t\t\t\t}";
     REQUIRE(!Parser::isAssignStatement(rawAssignStatement));
 
-
     rawAssignStatement = "while (if > then) {\n"
                          "            while = if + then;\n"
                          "            if = while + then;\n"
@@ -2274,4 +2322,3 @@ TEST_CASE("isAssignStatement - Negative Case") {
                          "          }";
     REQUIRE(!Parser::isAssignStatement(rawAssignStatement));
 }
-

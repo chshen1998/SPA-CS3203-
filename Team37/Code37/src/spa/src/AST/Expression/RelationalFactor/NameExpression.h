@@ -7,12 +7,13 @@ using namespace std;
 
 #include "RelationalFactor.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class NameExpression : public RelationalFactor, public enable_shared_from_this<NameExpression> {
 private:
     string varName = "";
+
 public:
     NameExpression(shared_ptr<TNode> parent, string varName);
 
@@ -31,11 +32,13 @@ public:
      */
     string generateString() override;
 
-    bool operator==(const NameExpression &other) const {
+    bool operator==(const NameExpression& other) const
+    {
         return varName == other.varName;
     };
 
-    bool operator<(const NameExpression &other) const {
+    bool operator<(const NameExpression& other) const
+    {
         return varName > other.varName;
     };
 };

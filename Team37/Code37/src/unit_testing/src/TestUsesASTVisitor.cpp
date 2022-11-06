@@ -1,11 +1,11 @@
 #include "AST/SourceCode.h"
 
-#include "AST/Statement/ReadStatement.h"
-#include "AST/Statement/PrintStatement.h"
-#include "AST/Statement/CallStatement.h"
-#include "AST/Statement/WhileStatement.h"
-#include "AST/Statement/IfStatement.h"
 #include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/PrintStatement.h"
+#include "AST/Statement/ReadStatement.h"
+#include "AST/Statement/WhileStatement.h"
 
 #include "AST/Expression/ConditionalExpression/RelationalExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -16,13 +16,12 @@
 
 #include "SP/Tokenizer.h"
 
-
 #include "catch.hpp"
 
 using namespace std;
 
-
-TEST_CASE("Uses assign statements") {
+TEST_CASE("Uses assign statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     // TODO: change nullptr to assignStmt
@@ -44,7 +43,8 @@ TEST_CASE("Uses assign statements") {
     REQUIRE(usesVariables.size() == 0);
 }
 
-TEST_CASE("Uses print statements") {
+TEST_CASE("Uses print statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
 
@@ -64,7 +64,8 @@ TEST_CASE("Uses print statements") {
     REQUIRE(usesVariables.size() == 1);
 }
 
-TEST_CASE("Uses while statements") {
+TEST_CASE("Uses while statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
 
@@ -72,10 +73,10 @@ TEST_CASE("Uses while statements") {
     shared_ptr<ConstantExpression> constExpr = make_shared<ConstantExpression>(nullptr, 11);
 
     shared_ptr<ConditionalExpression> expr = make_shared<RelationalExpression>(
-            nullptr,
-            RelationalOperator::LESS_THAN,
-            nameExpr,
-            constExpr);
+        nullptr,
+        RelationalOperator::LESS_THAN,
+        nameExpr,
+        constExpr);
 
     nameExpr->setParent(expr);
     constExpr->setParent(expr);
@@ -101,7 +102,8 @@ TEST_CASE("Uses while statements") {
     REQUIRE(usesPredicateVariables.size() == 1);
 }
 
-TEST_CASE("Uses call statements") {
+TEST_CASE("Uses call statements")
+{
     /**
      * In this testcase, procedure 1 only contains a call stmt on procedure 2, we are testing if we are able to store
      * the variables from procedure 2 into Uses(c,v) even though procedure 2 is traversed later on in the evaluation
@@ -123,7 +125,6 @@ TEST_CASE("Uses call statements") {
     procedure2->addStatement(printStmt1);
     procedure2->addStatement(printStmt2);
     procedure2->addStatement(printStmt3);
-
 
     sc->addProcedure(procedure1);
     sc->addProcedure(procedure2);

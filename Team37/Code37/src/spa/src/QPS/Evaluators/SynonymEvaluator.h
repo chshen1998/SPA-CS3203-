@@ -3,15 +3,16 @@
 
 using namespace std;
 
-#include "QPS/Structures/PqlQuery.h"
-#include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"
+#include "PKB/Types/StmtStmtRelationType.h"
+#include "QPS/Structures/PqlQuery.h"
 
 class SynonymEvaluator {
 
 public:
-    SynonymEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
-        servicer(s), declarations(d) {};
+    SynonymEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d)
+        : servicer(s)
+        , declarations(d) {};
 
     virtual ~SynonymEvaluator() {}; // destructor for polymorphism
 
@@ -23,6 +24,5 @@ protected:
 
     vector<int> getAllLineNumOfStmtType(const StatementType);
 };
-
 
 #endif

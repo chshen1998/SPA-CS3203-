@@ -3,18 +3,17 @@
 
 using namespace std;
 
+#include "PKB/QueryServicer.h"
+#include "PKB/Types/StmtStmtRelationType.h"
+#include "QPS/Evaluators/SynonymEvaluator.h"
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Types/TokenType.h"
-#include "PKB/Types/StmtStmtRelationType.h"
-#include "PKB/QueryServicer.h"
-#include "QPS/Evaluators/SynonymEvaluator.h"
-
 
 class AssignEvaluator : public SynonymEvaluator {
 
 public:
-    AssignEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
-        SynonymEvaluator(s, d) {};
+    AssignEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d)
+        : SynonymEvaluator(s, d) {};
 
     vector<vector<string>> evaluateSynonymClause(shared_ptr<Clause>, vector<vector<string>>) override;
 };

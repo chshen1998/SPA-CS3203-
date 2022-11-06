@@ -27,7 +27,7 @@ enum class TokenType {
     PRINT,
     CALL,
 
-    // Arguments / return types 
+    // Arguments / return types
     BOOLEAN,
     SYNONYM,
     NUMBER,
@@ -88,4 +88,4 @@ enum class TokenType {
  */
 extern unordered_map<string, TokenType> stringToTokenMap;
 
-#endif 
+#endif

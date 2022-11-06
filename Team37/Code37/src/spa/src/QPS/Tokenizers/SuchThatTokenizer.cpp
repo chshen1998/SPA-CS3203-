@@ -10,7 +10,8 @@ using namespace std;
 
 using namespace TokenizerUtils;
 
-void SuchThatTokenizer::tokenize() {
+void SuchThatTokenizer::tokenize()
+{
     TokenType currentToken;
     ClauseType type = ClauseType::NONE;
     int clauseCounter = 1;
@@ -18,11 +19,9 @@ void SuchThatTokenizer::tokenize() {
     while (currentIndex < delimited_query.size()) {
         currentToken = TokenType::UNKNOWN;
 
-        if (clauseCounter == suchThatClauseFirstArgIndex ||
-            clauseCounter == suchThatClauseSecondArgIndex) {
+        if (clauseCounter == suchThatClauseFirstArgIndex || clauseCounter == suchThatClauseSecondArgIndex) {
             currentToken = checkSuchThatTokenType(delimited_query[currentIndex], type, clauseCounter);
-        }
-        else {
+        } else {
             if (stringToTokenMap.find(delimited_query[currentIndex]) != stringToTokenMap.end()) {
                 currentToken = stringToTokenMap[delimited_query[currentIndex]];
 
@@ -41,16 +40,15 @@ void SuchThatTokenizer::tokenize() {
                 tokens.push_back(PqlToken(TokenType::AND, delimited_query[currentIndex]));
                 currentIndex += 1;
                 clauseCounter = suchThatClauseTypeIndex;
-            }
-            else {
+            } else {
                 return;
             }
         }
     }
 }
 
-
-TokenType SuchThatTokenizer::checkSuchThatTokenType(const string& s, const ClauseType& clauseType, const int& argNum) {
+TokenType SuchThatTokenizer::checkSuchThatTokenType(const string& s, const ClauseType& clauseType, const int& argNum)
+{
     switch (clauseType) {
     case ClauseType::USE:
     case ClauseType::MODIFIES:

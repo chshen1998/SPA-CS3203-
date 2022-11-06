@@ -75,7 +75,6 @@ public:
     virtual void visitAndCondition(shared_ptr<AndCondition> andCondition) = 0;
 
     virtual void visitOrCondition(shared_ptr<OrCondition> orCondition) = 0;
-
 };
 
 #endif

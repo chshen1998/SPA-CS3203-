@@ -1,41 +1,42 @@
 using namespace std;
 
-#include <stdio.h>
 #include <iostream>
+#include <list>
 #include <memory>
+#include <set>
+#include <stdio.h>
 #include <string>
 #include <vector>
-#include <set>
-#include <list>
 
-#include "QPS.h"
-#include "QueryExtractor.h"
-#include "QueryEvaluator.h"
-#include "QueryTokenizer.h"
-#include "QueryValidator.h"
-#include "QueryOptimizer.h"
 #include "./Structures/PqlError.h"
-#include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
-#include "./Validators/ValidatorUtils.h"
+#include "./Structures/PqlToken.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
+#include "./Validators/ValidatorUtils.h"
 #include "AST/TNode.h"
 #include "PKB/PKB.h"
+#include "QPS.h"
+#include "QueryEvaluator.h"
+#include "QueryExtractor.h"
+#include "QueryOptimizer.h"
+#include "QueryTokenizer.h"
+#include "QueryValidator.h"
 #include <unordered_map>
 
-
 /*
-* Sets the queryServicer from PKB so that we can make API calls to the PKB when evaluating a query
-*/
-void QPS::setQueryServicer(shared_ptr<QueryServicer> s) {
+ * Sets the queryServicer from PKB so that we can make API calls to the PKB when evaluating a query
+ */
+void QPS::setQueryServicer(shared_ptr<QueryServicer> s)
+{
     QPS::servicer = s;
 }
 
 /*
-* Takes in query string input from user, parses the query string then return result from PKB
-*/
-void QPS::evaluate(string query, list<string>& results) {
+ * Takes in query string input from user, parses the query string then return result from PKB
+ */
+void QPS::evaluate(string query, list<string>& results)
+{
     try {
         QueryTokenizer tokenizer = QueryTokenizer(query);
         vector<PqlToken> tokens = tokenizer.tokenize();
@@ -43,8 +44,7 @@ void QPS::evaluate(string query, list<string>& results) {
         QueryValidator validator = QueryValidator(&tokens);
         PqlError pe = validator.validateQuery();
 
-        if (pe.errorType != ErrorType::NONE)
-        {
+        if (pe.errorType != ErrorType::NONE) {
             results.push_back(errorTypeToStringMap[pe.errorType]);
             cout << pe.message;
             return;
@@ -60,8 +60,7 @@ void QPS::evaluate(string query, list<string>& results) {
 
         QueryEvaluator evaluator = QueryEvaluator(pq_pointer, servicer, results);
         evaluator.evaluate();
-    }
-    catch (SyntaxError pe) {
+    } catch (SyntaxError pe) {
         results.push_back("SyntaxError");
         cout << pe.message;
         return;

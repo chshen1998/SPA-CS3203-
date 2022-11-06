@@ -7,13 +7,17 @@ using namespace std;
 
 class InvalidSyntaxException : public std::exception {
 private:
-    char * message;
+    char* message;
 
 public:
-    InvalidSyntaxException(char * msg) : message(msg) {}
-    char * what () {
+    InvalidSyntaxException(char* msg)
+        : message(msg)
+    {
+    }
+    char* what()
+    {
         return message;
     }
 };
 
-#endif //SPA_INVALIDSYNTAXEXCEPTION_H
+#endif // SPA_INVALIDSYNTAXEXCEPTION_H

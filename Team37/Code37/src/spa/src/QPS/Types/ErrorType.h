@@ -6,8 +6,7 @@ using namespace std;
 #ifndef TEAM37_ERRORTYPE_H
 #define TEAM37_ERRORTYPE_H
 
-enum class ErrorType
-{
+enum class ErrorType {
     SYNTAX_ERROR,
     SEMANTIC_ERROR,
     NONE
@@ -15,4 +14,4 @@ enum class ErrorType
 
 extern unordered_map<ErrorType, string> errorTypeToStringMap;
 
-#endif 
+#endif

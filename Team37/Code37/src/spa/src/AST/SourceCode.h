@@ -1,18 +1,19 @@
 #ifndef TEAM37_SOURCECODE_H
 #define TEAM37_SOURCECODE_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "Procedure.h"
-#include "CFG/CFG.h"
 #include "CFG/AllCFGs.h"
+#include "CFG/CFG.h"
+#include "Procedure.h"
 
 class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
-    vector<shared_ptr<Procedure> > procedureLst = {};
+    vector<shared_ptr<Procedure>> procedureLst = {};
     string filename = "";
     int numOfStatements = 1000;
+
 public:
     SourceCode(string filename);
 
@@ -29,7 +30,7 @@ public:
      *
      * @return the list of procedures
      */
-    vector<shared_ptr<Procedure> > getProcedures();
+    vector<shared_ptr<Procedure>> getProcedures();
 
     /**
      * Gets filename of source code
@@ -58,19 +59,21 @@ public:
      * Gets all the CFG associated with each procedure in the source code.
      * @return vector containing all CFGs in the program
      */
-    vector<shared_ptr<CFG> > getAllCFGs();
+    vector<shared_ptr<CFG>> getAllCFGs();
 
     /**
      * Gets all the statement number to CFG node mappings for every procedure
      * @return all the statement number to CFG node mappings for every procedure
      */
-    shared_ptr<map<int, shared_ptr<CFGNode> > > getAllCFGMaps();
+    shared_ptr<map<int, shared_ptr<CFGNode>>> getAllCFGMaps();
 
-    bool operator==(const SourceCode &other) {
+    bool operator==(const SourceCode& other)
+    {
         return procedureLst == other.procedureLst && filename == other.filename;
     };
 
-    bool operator<(const SourceCode &other) {
+    bool operator<(const SourceCode& other)
+    {
         return filename < other.filename;
     };
 

@@ -1,10 +1,10 @@
 #ifndef TEAM37_SP_H
 #define TEAM37_SP_H
 
+#include "AST/TNode.h"
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include "AST/TNode.h"
 
 class SP {
 public:

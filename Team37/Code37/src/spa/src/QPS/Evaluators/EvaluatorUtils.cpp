@@ -1,15 +1,15 @@
 using namespace std;
 
 #include "EvaluatorUtils.h"
+#include <PKB/Types/StatementType.h>
 #include <algorithm>
+#include <iostream>
 #include <iterator>
 #include <unordered_set>
-#include <PKB/Types/StatementType.h>
-#include <iostream>
-
 
 vector<vector<string>> EvaluatorUtils::JoinTable(const vector<vector<string>>& v1,
-    const vector<vector<string>>& v2) {
+    const vector<vector<string>>& v2)
+{
 
     if (v2.empty()) {
         return v1;
@@ -24,9 +24,9 @@ vector<vector<string>> EvaluatorUtils::JoinTable(const vector<vector<string>>& v
     return EvaluatorUtils::JoinToIntermediateTable(v1, v2, commonColumnIndexes);
 }
 
-
 unordered_map<int, int> EvaluatorUtils::findCommonColumnIndex(const vector<vector<string>>& v1,
-    const vector<vector<string>>& v2) {
+    const vector<vector<string>>& v2)
+{
     unordered_map<int, int> commonColumnIndexes;
     unordered_map<string, int> v1Columns;
 
@@ -43,7 +43,7 @@ unordered_map<int, int> EvaluatorUtils::findCommonColumnIndex(const vector<vecto
     return commonColumnIndexes;
 }
 
-vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vector<string>>& v1, const vector<vector<string>>& v2, unordered_map<int, int>& columnIndexes) 
+vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vector<string>>& v1, const vector<vector<string>>& v2, unordered_map<int, int>& columnIndexes)
 {
     vector<vector<string>> result;
     vector<string> columns;
@@ -60,8 +60,7 @@ vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vect
     for (int i = 0; i < v2[0].size(); i++) {
         if (commonColumn.find(v2[0][i]) != commonColumn.end()) {
             tableTwoCommonIndex.insert(i);
-        }
-        else {
+        } else {
             columns.push_back(v2[0][i]);
         }
     }
@@ -76,12 +75,12 @@ vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vect
         for (int j = 1; j != v2.size(); j++) {
             bool allCommonIndexEqual = true;
 
-            // Check if all the common columns are equal 
-            for (const auto&[tableOneIndex, tableTwoIndex] : columnIndexes) {
-               if (v1[i][tableOneIndex] != v2[j][tableTwoIndex]) {
-                   allCommonIndexEqual = false;
-                   break;
-               }
+            // Check if all the common columns are equal
+            for (const auto& [tableOneIndex, tableTwoIndex] : columnIndexes) {
+                if (v1[i][tableOneIndex] != v2[j][tableTwoIndex]) {
+                    allCommonIndexEqual = false;
+                    break;
+                }
             }
 
             if (allCommonIndexEqual) {
@@ -108,7 +107,7 @@ vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vect
 }
 
 unordered_map<TokenType, StatementType> EvaluatorUtils::tokenTypeToStatementType = {
-    { TokenType::STATEMENT, StatementType::STATEMENT},
+    { TokenType::STATEMENT, StatementType::STATEMENT },
     { TokenType::ASSIGN, StatementType::ASSIGN },
     { TokenType::CALL, StatementType::CALL },
     { TokenType::IF, StatementType::IF },

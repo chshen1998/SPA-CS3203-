@@ -3,16 +3,16 @@
 
 using namespace std;
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 #include "AST/SourceCode.h"
 
 class CallLoopChecker {
 private:
-    static inline map<string, vector<string>> procedureCallMap =
-            map<string, vector<string>>();
+    static inline map<string, vector<string>> procedureCallMap = map<string, vector<string>>();
+
 public:
     /**
      * Checks for procedure call loops in a given AST
@@ -55,11 +55,10 @@ public:
      *
      */
     static void checkCallMap(
-            map<string, vector<string>> myMap,
-            vector<string> visited,
-            string currNode,
-            shared_ptr<vector<string>> overallVisited);
+        map<string, vector<string>> myMap,
+        vector<string> visited,
+        string currNode,
+        shared_ptr<vector<string>> overallVisited);
 };
 
-
-#endif //SPA_CALLLOOPCHECKER_H
+#endif // SPA_CALLLOOPCHECKER_H

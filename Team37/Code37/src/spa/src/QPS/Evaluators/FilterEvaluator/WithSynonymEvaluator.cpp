@@ -1,12 +1,12 @@
 using namespace std;
 
-#include "QPS/Structures/PqlQuery.h"
-#include "QPS/Structures/PqlToken.h"
-#include "QPS/Types/TokenType.h"
 #include "WithSynonymEvaluator.h"
 #include "PKB/Types/StatementType.h"
 #include "PKB/Types/StmtVarRelationType.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
+#include "QPS/Structures/PqlQuery.h"
+#include "QPS/Structures/PqlToken.h"
+#include "QPS/Types/TokenType.h"
 
 using namespace EvaluatorUtils;
 
@@ -36,7 +36,7 @@ vector<vector<string>> WithSynonymEvaluator::evaluateSynonymClause(shared_ptr<Cl
     finalResult.push_back(intermediate[0]);
 
     // Two Synonyms - s.procName() = v.procName()
-    if (clause->rightAttr.type != TokenType::NONE) {        
+    if (clause->rightAttr.type != TokenType::NONE) {
         bool isRightDoubleAttr = addAttrName(intermediate, rightArg);
 
         // Insert Column headers
@@ -83,8 +83,8 @@ vector<vector<string>> WithSynonymEvaluator::evaluateSynonymClause(shared_ptr<Cl
     return finalResult;
 }
 
-
-void WithSynonymEvaluator::fillInitialTable(shared_ptr<Clause> clause, vector<vector<string>>& intermediate) {
+void WithSynonymEvaluator::fillInitialTable(shared_ptr<Clause> clause, vector<vector<string>>& intermediate)
+{
     intermediate.push_back(vector<string> { clause->left.value });
 
     if (clause->right.type == TokenType::SYNONYM) {
@@ -95,8 +95,7 @@ void WithSynonymEvaluator::fillInitialTable(shared_ptr<Clause> clause, vector<ve
                 intermediate.push_back(vector<string> { left, right });
             }
         }
-    }
-    else {
+    } else {
         for (string left : selectAll(SynonymEvaluator::declarations[clause->left.value])) {
             intermediate.push_back(vector<string> { left });
         }

@@ -1,13 +1,13 @@
 using namespace std;
 
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <iostream>
 
 #include "../Types/TokenType.h"
-#include "PqlToken.h"
 #include "PqlQuery.h"
+#include "PqlToken.h"
 
 Clause::Clause(PqlToken type, PqlToken l, PqlToken r, TokenType categoryType)
 {
@@ -34,7 +34,6 @@ SelectObject::SelectObject(SelectType t)
     attrName = PqlToken();
 }
 
-
 SelectObject::SelectObject(SelectType t, string s)
 {
     type = t;
@@ -42,11 +41,9 @@ SelectObject::SelectObject(SelectType t, string s)
     attrName = PqlToken();
 }
 
-
 SelectObject::SelectObject(SelectType t, string s, PqlToken a)
 {
     type = t;
     synonym = s;
     attrName = a;
 }
-   

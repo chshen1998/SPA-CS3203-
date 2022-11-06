@@ -3,15 +3,15 @@
 
 using namespace std;
 
-#include "QPS/Structures/PqlQuery.h"
-#include "QPS/Evaluators/SynonymEvaluator.h"
 #include "PKB/QueryServicer.h"
+#include "QPS/Evaluators/SynonymEvaluator.h"
+#include "QPS/Structures/PqlQuery.h"
 
 class ProcVarEvaluator {
 protected:
     unordered_map<TokenType, ProcVarRelationType> tokenTypeToProcVarRelationType = {
-       { TokenType::USES, ProcVarRelationType::USESPV },
-       { TokenType::MODIFIES, ProcVarRelationType::MODIFIESPV },
+        { TokenType::USES, ProcVarRelationType::USESPV },
+        { TokenType::MODIFIES, ProcVarRelationType::MODIFIESPV },
     };
 };
 

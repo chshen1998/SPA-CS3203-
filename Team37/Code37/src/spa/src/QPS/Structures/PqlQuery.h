@@ -1,9 +1,9 @@
 using namespace std;
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <memory>
 
 #include "../Types/TokenType.h"
 #include "PqlToken.h"
@@ -17,17 +17,16 @@ using namespace std;
  *
  * These synonyms must be variable type.
  */
-class Clause
-{
+class Clause {
 public:
     Clause(PqlToken clauseType, PqlToken left, PqlToken right, TokenType category);
 
     Clause(PqlToken clauseType, PqlToken left, PqlToken right, TokenType category, PqlToken leftAttr, PqlToken rightAttr);
 
-    bool operator==(const Clause& other) const {
-        if (category == TokenType::WITH)
-        {
-	        return (other.clauseType == clauseType) && (other.left == left) && (other.right == right) && (other.leftAttr == leftAttr) && (other.rightAttr == rightAttr);
+    bool operator==(const Clause& other) const
+    {
+        if (category == TokenType::WITH) {
+            return (other.clauseType == clauseType) && (other.left == left) && (other.right == right) && (other.leftAttr == leftAttr) && (other.rightAttr == rightAttr);
         }
         return (other.clauseType == clauseType) && (other.left == left) && (other.right == right);
     }
@@ -39,9 +38,9 @@ public:
     PqlToken rightAttr;
     TokenType category;
 
-    inline bool checkIfBooleanClause() {
-        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM &&
-            category != TokenType::PATTERN;
+    inline bool checkIfBooleanClause()
+    {
+        return left.type != TokenType::SYNONYM && right.type != TokenType::SYNONYM && category != TokenType::PATTERN;
     };
 };
 
@@ -51,20 +50,20 @@ enum class SelectType {
     ATTRNAME
 };
 
-class SelectObject
-{
+class SelectObject {
 public:
     SelectObject(SelectType type);
 
     SelectObject(SelectType type, string synonym);
 
     SelectObject(SelectType type, string synonym, PqlToken attrName);
-    
+
     SelectType type;
     string synonym;
     PqlToken attrName;
 
-    bool operator==(const SelectObject& other) const {
+    bool operator==(const SelectObject& other) const
+    {
         return (other.type == type) && (other.synonym == synonym) && (other.attrName == attrName);
     }
 };
@@ -79,4 +78,4 @@ struct PqlQuery {
     vector<vector<shared_ptr<Clause>>> clauses = {};
 };
 
-#endif 
+#endif

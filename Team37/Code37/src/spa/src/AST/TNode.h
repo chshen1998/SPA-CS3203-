@@ -3,9 +3,9 @@
 #ifndef TEAM37_TNODE_H
 #define TEAM37_TNODE_H
 
-#include <stdio.h>
 #include <iostream>
 #include <memory>
+#include <stdio.h>
 
 using namespace std;
 
@@ -14,10 +14,14 @@ using namespace std;
 class TNode {
 private:
     shared_ptr<TNode> parent = nullptr;
+
 protected:
     // Protected since you should not be able to create a TNode object
     // Should only be accessible to SourceCode, Procedure and Statement + their children
-    TNode(shared_ptr<TNode> parent) : parent(parent) {}
+    TNode(shared_ptr<TNode> parent)
+        : parent(parent)
+    {
+    }
 
 public:
     /**
@@ -25,7 +29,8 @@ public:
      *
      * @return a TNode or a nullptr
      */
-    virtual shared_ptr<TNode> getParent() {
+    virtual shared_ptr<TNode> getParent()
+    {
         return parent;
     }
 
@@ -35,7 +40,8 @@ public:
      * @param newParent the new parent to set
      * @return none
      */
-    void setParent(shared_ptr<TNode> newParent) {
+    void setParent(shared_ptr<TNode> newParent)
+    {
         parent = newParent;
     }
 
@@ -49,4 +55,4 @@ public:
     virtual void accept(shared_ptr<ASTVisitor> visitor) = 0;
 };
 
-#endif //TEAM37_TNODE_H
+#endif // TEAM37_TNODE_H

@@ -1,9 +1,9 @@
 using namespace std;
 
+#include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
-#include "QPS/Evaluators/EvaluatorUtils.h"
 
 #include "ProcProcSynonymEvaluator.h"
 
@@ -22,7 +22,7 @@ vector<vector<string>> ProcProcSynonymEvaluator::evaluateSynonymClause(shared_pt
         allProcedures.push_back(p.getProcedureName());
     }
 
-    // Synonym-Synonym --> Eg. Calls(p1, p2) 
+    // Synonym-Synonym --> Eg. Calls(p1, p2)
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string> { leftArg.value, rightArg.value });
 
@@ -39,7 +39,7 @@ vector<vector<string>> ProcProcSynonymEvaluator::evaluateSynonymClause(shared_pt
 
         for (string procedure : allProcedures) {
             if (!servicer->forwardRetrieveRelation(procedure, pp).empty()) {
-                finalTable.push_back(vector<string>{ procedure });
+                finalTable.push_back(vector<string> { procedure });
             }
         }
     }
@@ -50,12 +50,12 @@ vector<vector<string>> ProcProcSynonymEvaluator::evaluateSynonymClause(shared_pt
 
         for (string procedure : allProcedures) {
             if (!servicer->reverseRetrieveRelation(procedure, pp).empty()) {
-                finalTable.push_back(vector<string>{ procedure });
+                finalTable.push_back(vector<string> { procedure });
             }
         }
     }
 
-    // Synonym-string --> Eg. Calls(p, "procedure") 
+    // Synonym-string --> Eg. Calls(p, "procedure")
     else if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STRING) {
         finalTable.push_back(vector<string> { leftArg.value });
         vector<string> intermediateStmtLines = servicer->reverseRetrieveRelation(rightArg.value, pp);
@@ -65,7 +65,7 @@ vector<vector<string>> ProcProcSynonymEvaluator::evaluateSynonymClause(shared_pt
         }
     }
 
-    // string-Synonym --> Eg. Calls("procedure", p) 
+    // string-Synonym --> Eg. Calls("procedure", p)
     else if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string> { rightArg.value });
 

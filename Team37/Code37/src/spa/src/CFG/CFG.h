@@ -1,9 +1,9 @@
 #ifndef SPA_CFG_H
 #define SPA_CFG_H
 
-#include <vector>
 #include <cassert>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -13,8 +13,8 @@ class CFG {
 private:
     string procName = "";
     shared_ptr<CFGNode> startNode = nullptr;
-    shared_ptr<map<int, shared_ptr<CFGNode> > > stmtCFGNodeMap =
-            make_shared<map<int, shared_ptr<CFGNode> > >();
+    shared_ptr<map<int, shared_ptr<CFGNode>>> stmtCFGNodeMap = make_shared<map<int, shared_ptr<CFGNode>>>();
+
 public:
     CFG(shared_ptr<CFGNode> startNode, string procName);
 
@@ -62,7 +62,7 @@ public:
      * Gets the stmtNumCFGNode map
      * @return the stmtNumCFGNode map
      */
-    shared_ptr<map<int, shared_ptr<CFGNode> > > getMap();
+    shared_ptr<map<int, shared_ptr<CFGNode>>> getMap();
 
     /**
      * Returns true if the statement exist in the stmtCFGNodeMap, false otherwise.
@@ -79,5 +79,4 @@ public:
     shared_ptr<CFGNode> getNode(int stmtNum);
 };
 
-
-#endif //SPA_CFG_H
+#endif // SPA_CFG_H

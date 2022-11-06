@@ -1,26 +1,26 @@
 using namespace std;
 
+#include "StmtStmtBooleanEvaluator.h"
+#include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
-#include "QPS/Evaluators/EvaluatorUtils.h"
-#include "StmtStmtBooleanEvaluator.h"
 
 using namespace EvaluatorUtils;
 
-bool StmtStmtBooleanEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
+bool StmtStmtBooleanEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause)
+{
     PqlToken leftArg = clause->left;
     PqlToken rightArg = clause->right;
     StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause->clauseType.type];
 
-    // StmtNum-StmtNum --> Eg. Follows(5,6) 
+    // StmtNum-StmtNum --> Eg. Follows(5,6)
     if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STATEMENT_NUM) {
 
         return servicer->retrieveRelation(stoi(leftArg.value), stoi(rightArg.value), ss);
-
     }
 
-    // WildCard-StmtNum --> Eg. Follows(_,6) 
+    // WildCard-StmtNum --> Eg. Follows(_,6)
     if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::STATEMENT_NUM) {
         if (checkIfComputeRelation(ss)) {
             return !servicer->reverseComputeRelation(stoi(rightArg.value), ss).empty();
@@ -29,7 +29,7 @@ bool StmtStmtBooleanEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) 
         }
     }
 
-    // StmtNum-WildCard --> Eg. Follows(5,_) 
+    // StmtNum-WildCard --> Eg. Follows(5,_)
     if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::WILDCARD) {
         if (checkIfComputeRelation(ss)) {
             return !servicer->forwardComputeRelation(stoi(leftArg.value), ss).empty();
@@ -38,16 +38,16 @@ bool StmtStmtBooleanEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) 
         }
     }
 
-    // WildCard-WildCard --> Eg. Follows(_,_) 
+    // WildCard-WildCard --> Eg. Follows(_,_)
     if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::WILDCARD) {
         if (checkIfComputeRelation(ss)) {
-            for (shared_ptr<Statement> s: servicer->getAllStmt(STATEMENT)) {
+            for (shared_ptr<Statement> s : servicer->getAllStmt(STATEMENT)) {
                 if (!servicer->forwardComputeRelation(s->getLineNum(), ss).empty()) {
                     return true;
                 }
             }
         } else {
-            for (shared_ptr<Statement> s: servicer->getAllStmt(STATEMENT)) {
+            for (shared_ptr<Statement> s : servicer->getAllStmt(STATEMENT)) {
                 if (!servicer->forwardRetrieveRelation(s->getLineNum(), ss).empty()) {
                     return true;
                 }

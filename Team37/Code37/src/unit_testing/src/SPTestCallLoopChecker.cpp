@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 
-#include "SP/Utilities/CallLoopChecker.h"
-#include "SP/Parser.h"
 #include "SP/InvalidSyntaxException.h"
+#include "SP/Parser.h"
+#include "SP/Utilities/CallLoopChecker.h"
 
 /*
  * Naming Convention:
@@ -14,7 +14,8 @@
  * tokenizeRelFactor - Negative Case - Very Nested Blocks
  */
 
-TEST_CASE("checkCallLoop - Positive Case") {
+TEST_CASE("checkCallLoop - Positive Case")
+{
     string rawSourceCode = "procedure main {\n"
                            "\tprint = x;\n"
                            "\tread x;\n"
@@ -77,7 +78,8 @@ TEST_CASE("checkCallLoop - Positive Case") {
     REQUIRE(!CallLoopChecker::checkCallLoop(AST));
 }
 
-TEST_CASE("checkCallLoop - Positive Case - HARD 2") {
+TEST_CASE("checkCallLoop - Positive Case - HARD 2")
+{
     string rawSourceCode = "procedure procedure1 {\n"
                            "  while (while < while) { if (if != if * (2 + 1)) then { then = then + if; while = procedure + 32432 + if + then;\n"
                            "      else = while; } else { else = if + then + procedure; while (5 > 0) { if (then > (else - procedure) * (then / 9342) + while) then { print print;\n"
@@ -488,7 +490,8 @@ TEST_CASE("checkCallLoop - Positive Case - HARD 2") {
     REQUIRE(!CallLoopChecker::checkCallLoop(AST));
 }
 
-TEST_CASE("checkCallLoop - Negative Case - Recursive call") {
+TEST_CASE("checkCallLoop - Negative Case - Recursive call")
+{
     string rawSourceCode = "procedure main {\n"
                            "\tprint = x;\n"
                            "\tread x;\n"
@@ -505,7 +508,8 @@ TEST_CASE("checkCallLoop - Negative Case - Recursive call") {
     REQUIRE_THROWS_AS(CallLoopChecker::checkCallLoop(AST), InvalidSyntaxException);
 }
 
-TEST_CASE("checkCallLoop - Negative Case - Procedure call loop") {
+TEST_CASE("checkCallLoop - Negative Case - Procedure call loop")
+{
     string rawSourceCode = "procedure main {\n"
                            "\tprint = x;\n"
                            "\tread x;\n"
@@ -540,7 +544,8 @@ TEST_CASE("checkCallLoop - Negative Case - Procedure call loop") {
     REQUIRE_THROWS_AS(CallLoopChecker::checkCallLoop(AST), InvalidSyntaxException);
 }
 
-TEST_CASE("checkCallLoop - Negative Case - Calling non-existent procedure") {
+TEST_CASE("checkCallLoop - Negative Case - Calling non-existent procedure")
+{
     string rawSourceCode = "procedure main {\n"
                            "\tprint = x;\n"
                            "\tread x;\n"
@@ -557,7 +562,8 @@ TEST_CASE("checkCallLoop - Negative Case - Calling non-existent procedure") {
     REQUIRE_THROWS_AS(CallLoopChecker::checkCallLoop(AST), InvalidSyntaxException);
 }
 
-TEST_CASE("checkCallLoop - Negative Case - Repeated procedure name") {
+TEST_CASE("checkCallLoop - Negative Case - Repeated procedure name")
+{
     string rawSourceCode = "procedure main {\n"
                            "\tprint = x;\n"
                            "\tread x;\n"

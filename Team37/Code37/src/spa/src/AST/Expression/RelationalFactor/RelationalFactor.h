@@ -5,12 +5,15 @@
 
 #include "../Expression.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class RelationalFactor : public Expression {
 public:
-    RelationalFactor(shared_ptr<TNode> parent) : Expression(parent) { }
+    RelationalFactor(shared_ptr<TNode> parent)
+        : Expression(parent)
+    {
+    }
 
     /**
      * Generates a string representation of the relFactor.

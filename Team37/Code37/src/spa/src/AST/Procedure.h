@@ -3,9 +3,9 @@
 #ifndef TEAM37_PROCEDURE_H
 #define TEAM37_PROCEDURE_H
 
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -15,8 +15,9 @@ using namespace std;
 class Procedure : public TNode, public enable_shared_from_this<Procedure> {
 private:
     string procedureName = "";
-    vector<shared_ptr<Statement> > stmtLst = {};
+    vector<shared_ptr<Statement>> stmtLst = {};
     shared_ptr<CFG> cfg = make_shared<CFG>(nullptr, "");
+
 public:
     Procedure(shared_ptr<TNode> parent, string procedureName);
 
@@ -40,7 +41,7 @@ public:
      *
      * @return the list of statements
      */
-    vector<shared_ptr<Statement> > getStatements();
+    vector<shared_ptr<Statement>> getStatements();
 
     /**
      * Gets the CFG associated with this procedure
@@ -55,14 +56,16 @@ public:
     void buildCFG(string procName);
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
-    
-    bool operator==(const Procedure &other) const {
+
+    bool operator==(const Procedure& other) const
+    {
         return procedureName == other.procedureName && stmtLst == other.stmtLst;
     };
 
-    bool operator<(const Procedure &other) const {
+    bool operator<(const Procedure& other) const
+    {
         return procedureName > other.procedureName;
     };
 };
 
-#endif //TEAM37_PROCEDURE_H
+#endif // TEAM37_PROCEDURE_H

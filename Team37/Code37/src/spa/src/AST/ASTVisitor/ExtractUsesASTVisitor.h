@@ -5,15 +5,16 @@ using namespace std;
 
 #include "AST/ASTVisitor/ASTVisitor.h"
 
-#include <vector>
-#include <memory>
-#include <string>
 #include <deque>
+#include <memory>
 #include <stack>
+#include <string>
+#include <vector>
 
 class ExtractUsesASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
     shared_ptr<Storage> storage = nullptr;
+
 public:
     // Constructor
     ExtractUsesASTVisitor(shared_ptr<Storage> storage);
@@ -54,8 +55,6 @@ public:
     void visitParentAndStore(shared_ptr<TNode> node, string variable);
 
     void visitParentAndStoreCalls(shared_ptr<TNode> node, string parentProcedureName, string calledProcedureName);
-
 };
-
 
 #endif

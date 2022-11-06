@@ -3,9 +3,9 @@
 
 using namespace std;
 
-#include "QPS/Structures/PqlQuery.h"
-#include "QPS/Evaluators/SynonymEvaluator.h"
 #include "PKB/QueryServicer.h"
+#include "QPS/Evaluators/SynonymEvaluator.h"
+#include "QPS/Structures/PqlQuery.h"
 
 class ProcProcEvaluator {
 protected:
@@ -14,7 +14,5 @@ protected:
         { TokenType::CALLS_A, ProcProcRelationType::CALLSS },
     };
 };
-
-
 
 #endif // !TEAM37_PROC_PROC_SYNONYM_EVALUATOR_H

@@ -8,7 +8,7 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> IfEvaluator::evaluateClause(const Clause &clause, vector<vector<string>> intermediate) {
+vector<vector<string>> IfEvaluator::evaluateSynonymClause(const Clause &clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause.left;
     TokenType patternType = declarations[clause.clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];

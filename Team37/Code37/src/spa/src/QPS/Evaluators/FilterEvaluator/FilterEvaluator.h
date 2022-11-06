@@ -5,17 +5,18 @@ using namespace std;
 
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Types/TokenType.h"
-#include "../GeneralEvaluator.h"
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"
 
-class FilterEvaluator : public GeneralEvaluator {
-
+class FilterEvaluator {
 public:
-    FilterEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType> &d) :
-            GeneralEvaluator(s, d) {};
+    FilterEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
+        servicer(s), declarations(d) {};
 
 protected:
+    shared_ptr<QueryServicer> servicer;
+    unordered_map<string, TokenType>& declarations;
+
     string updatedColumnName(const PqlToken&);
 
     vector<string> selectAll(const TokenType);

@@ -11,16 +11,14 @@ using namespace std;
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
 
-
 /*
-* For Pattern Clause: [pattern, synonym, (, entRef, comma, expression_spec, )]
-* Notice that we need to verify the token type for indexes 1 (synonym), 3 (entRef), 5 (Expression Spec)
-*/
+	* For Pattern Clause: [pattern, synonym, (, entRef, comma, expression_spec, )]
+	* Notice that we need to verify the token type for indexes 1 (synonym), 3 (entRef), 5 (Expression Spec)
+	*/
 const int patternClauseFirstArgIndex = 1;
 const int patternClauseSecondArgIndex = 3;
 const int patternClauseThirdArgIndex = 5;
 const int patternClauseFourthArgIndex = 7; // only applicable for if-pattern clause
-
 
 class PatternTokenizer : public GeneralTokenizer {
 
@@ -29,7 +27,7 @@ public:
 		GeneralTokenizer(index, delimited, result) {};
 
 	void tokenize() override;
-	TokenType checkPatternTokenType(const string&, const int&);
+	TokenType checkPatternTokenType(const string&, int);
 };
 
 #endif

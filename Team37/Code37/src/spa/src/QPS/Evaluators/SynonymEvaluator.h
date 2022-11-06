@@ -1,5 +1,5 @@
-#ifndef TEAM37_GENERAL_EVALUATOR_H
-#define TEAM37_GENERAL_EVALUATOR_H
+#ifndef TEAM37_SYNONYM_EVALUATOR_H
+#define TEAM37_SYNONYM_EVALUATOR_H
 
 using namespace std;
 
@@ -7,16 +7,15 @@ using namespace std;
 #include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"
 
-
-extern unordered_map<TokenType, StatementType> tokenTypeToStatementType;
-
-class GeneralEvaluator {
+class SynonymEvaluator {
 
 public:
-    GeneralEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
+    SynonymEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
         servicer(s), declarations(d) {};
 
-    virtual ~GeneralEvaluator() {}; // destructor for polymorphism
+    virtual ~SynonymEvaluator() {}; // destructor for polymorphism
+
+    virtual vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) = 0;
 
 protected:
     shared_ptr<QueryServicer> servicer;

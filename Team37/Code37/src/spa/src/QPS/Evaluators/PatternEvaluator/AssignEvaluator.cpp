@@ -8,7 +8,7 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vector<vector<string>> intermediate) {
+vector<vector<string>> AssignEvaluator::evaluateSynonymClause(const Clause &clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause.left;
     PqlToken rightArg = clause.right;
     TokenType patternType = declarations[clause.clauseType.value];
@@ -19,7 +19,6 @@ vector<vector<string>> AssignEvaluator::evaluateClause(const Clause &clause, vec
 
     // Add in the column header
     finalTable.push_back(vector<string>{clause.clauseType.value});
-
 
     if (leftArg.type == TokenType::SYNONYM) {
         // Add Synonym column header

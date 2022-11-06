@@ -3,12 +3,12 @@
   "configurePresets": [
     {
       "name": "Release",
-      "displayName": "Windows x64 Release",
+      "displayName": "Windows x32 Release",
       "description": "Target Windows with the Visual Studio development environment.",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "architecture": {
-        "value": "x64",
+        "value": "x86",
         "strategy": "external"
       },
       "cacheVariables": {
@@ -19,12 +19,12 @@
     },
     {
       "name": "Debug",
-      "displayName": "Windows x64 Debug",
+      "displayName": "Windows x32 Debug",
       "description": "Target Windows with the Visual Studio development environment.",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "architecture": {
-        "value": "x64",
+        "value": "x86",
         "strategy": "external"
       },
       "cacheVariables": {

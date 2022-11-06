@@ -30,5 +30,4 @@ public:
     static const string THEN;
 };
 
-
-#endif //SPA_KEYWORDS_H
+#endif // SPA_KEYWORDS_H

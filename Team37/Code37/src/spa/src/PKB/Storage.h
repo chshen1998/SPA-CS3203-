@@ -3,44 +3,44 @@
 #ifndef SPA_STORAGE_H
 #define SPA_STORAGE_H
 
-#include <stdio.h>
 #include <iostream>
-#include <string>
-#include <vector>
-#include <set>
-#include <unordered_set>
 #include <memory>
+#include <queue>
+#include <set>
+#include <stdio.h>
+#include <string>
 #include <tuple>
 #include <unordered_map>
-#include <queue>
+#include <unordered_set>
+#include <vector>
 
-#include "../AST/TNode.h"
+#include "../AST/ASTVisitor/ExtractCallsASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractFollowsASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractGeneralASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractModifiesASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractParentsASTVisitor.h"
+#include "../AST/ASTVisitor/ExtractUsesASTVisitor.h"
+#include "../AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "../AST/Expression/RelationalFactor/NameExpression.h"
 #include "../AST/Procedure.h"
 #include "../AST/SourceCode.h"
-#include "../AST/Statement/Statement.h"
 #include "../AST/Statement/AssignStatement.h"
-#include "../AST/Statement/ReadStatement.h"
 #include "../AST/Statement/CallStatement.h"
-#include "../AST/Expression/RelationalFactor/NameExpression.h"
-#include "../AST/Expression/RelationalFactor/ConstantExpression.h"
-#include "../AST/ASTVisitor/ExtractGeneralASTVisitor.h"
-#include "../AST/ASTVisitor/ExtractFollowsASTVisitor.h"
-#include "../AST/ASTVisitor/ExtractParentsASTVisitor.h"
-#include "../AST/ASTVisitor/ExtractModifiesASTVisitor.h"
-#include "../AST/ASTVisitor/ExtractUsesASTVisitor.h"
-#include "../AST/ASTVisitor/ExtractCallsASTVisitor.h"
+#include "../AST/Statement/ReadStatement.h"
+#include "../AST/Statement/Statement.h"
+#include "../AST/TNode.h"
+#include "../CFG/AllCFGs.h"
 #include "../CFG/CFG.h"
 #include "../CFG/CFGNode.h"
-#include "../CFG/AllCFGs.h"
 
-#include "Structures/RelationStorage.h"
 #include "Structures/RelationStarStorage.h"
+#include "Structures/RelationStorage.h"
 
+#include "Types/ProcProcRelationType.h"
+#include "Types/ProcVarRelationType.h"
+#include "Types/StatementType.h"
 #include "Types/StmtStmtRelationType.h"
 #include "Types/StmtVarRelationType.h"
-#include "Types/ProcVarRelationType.h"
-#include "Types/ProcProcRelationType.h"
-#include "Types/StatementType.h"
 
 using namespace std;
 
@@ -53,7 +53,7 @@ private:
     set<ConstantExpression> constants = {};
     set<Procedure> procedures = {};
     unordered_map<int, shared_ptr<Statement>> statements = {};
-    shared_ptr<map<int, bool>> visited = make_shared<map<int, bool >>();
+    shared_ptr<map<int, bool>> visited = make_shared<map<int, bool>>();
 
     // Precompute
     RelationStarStorage<int, int> Follows = RelationStarStorage<int, int>();
@@ -74,14 +74,14 @@ private:
 
     // Helper functions
     set<int> forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, string var,
-                                  shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited);
+        shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited);
 
     set<int> reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> childNode, set<string> var_used,
-                                  shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited);
+        shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited);
 
-    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
+    vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool>>);
 
-    vector<int> getNextStarReverseLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool >>);
+    vector<int> getNextStarReverseLineNum(shared_ptr<CFGNode>, shared_ptr<map<int, bool>>);
 
 public:
     // Constructor
@@ -177,7 +177,6 @@ public:
     vector<int> getNextStarForwardLineNum(shared_ptr<CFGNode>);
 
     vector<int> getNextStarReverseLineNum(shared_ptr<CFGNode>);
-
 };
 
 #endif

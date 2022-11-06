@@ -3,12 +3,12 @@
 
 using namespace std;
 
-#include <string>
-#include <vector>
-#include <sstream>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <algorithm>
+#include <sstream>
+#include <string>
+#include <vector>
 
 class Utils {
 public:
@@ -64,4 +64,4 @@ public:
     static string stripOuterBrackets(string s);
 };
 
-#endif //SP_UTILS_H
+#endif // SP_UTILS_H

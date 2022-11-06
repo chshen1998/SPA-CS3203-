@@ -3,21 +3,21 @@
 
 using namespace std;
 
+#include <algorithm>
+#include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <algorithm>
-#include <memory>
 
-#include "AST/SourceCode.h"
-#include "AST/Procedure.h"
-#include "AST/Expression/ConditionalExpression/ConditionalExpression.h"
-#include "AST/Expression/ConditionalExpression/RelationalExpression.h"
-#include "AST/Statement/WhileStatement.h"
-#include "AST/Statement/IfStatement.h"
-#include "AST/Expression/ConditionalExpression/NotCondition.h"
 #include "AST/Expression/ConditionalExpression/AndCondition.h"
+#include "AST/Expression/ConditionalExpression/ConditionalExpression.h"
+#include "AST/Expression/ConditionalExpression/NotCondition.h"
 #include "AST/Expression/ConditionalExpression/OrCondition.h"
+#include "AST/Expression/ConditionalExpression/RelationalExpression.h"
+#include "AST/Procedure.h"
+#include "AST/SourceCode.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/WhileStatement.h"
 
 class Parser {
 public:
@@ -118,4 +118,4 @@ public:
     static bool isAssignStatement(string statement);
 };
 
-#endif //SPA_PARSER_H
+#endif // SPA_PARSER_H

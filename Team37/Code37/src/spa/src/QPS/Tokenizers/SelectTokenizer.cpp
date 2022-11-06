@@ -10,21 +10,20 @@ using namespace std;
 
 using namespace TokenizerUtils;
 
-void SelectTokenizer::tokenize() {
+void SelectTokenizer::tokenize()
+{
 
     // Has to be boolean, synonym or attrRef (all single values)
     if (delimited_query[currentIndex] != "<") {
-        // Boolean 
+        // Boolean
         if (delimited_query[currentIndex] == "BOOLEAN") {
             tokens.push_back(PqlToken(TokenType::BOOLEAN, delimited_query[currentIndex]));
         }
 
         else if (checkIfSynonym(delimited_query[currentIndex])) {
-            
+
             // Single Attr Ref
-            if (currentIndex < delimited_query.size() - 2 &&
-                delimited_query[currentIndex + 1] == ".")
-            {
+            if (currentIndex < delimited_query.size() - 2 && delimited_query[currentIndex + 1] == ".") {
                 tokens.push_back(PqlToken(TokenType::SYNONYM, delimited_query[currentIndex]));
                 currentIndex += 1;
 
@@ -34,8 +33,7 @@ void SelectTokenizer::tokenize() {
                 if (checkIfAttrName(delimited_query[currentIndex])) {
                     TokenType attrName = stringToTokenMap[delimited_query[currentIndex]];
                     tokens.push_back(PqlToken(attrName, delimited_query[currentIndex]));
-                }
-                else {
+                } else {
                     tokens.push_back(PqlToken(TokenType::UNKNOWN, delimited_query[currentIndex]));
                 }
             }
@@ -73,7 +71,6 @@ void SelectTokenizer::tokenize() {
                 ? stringToTokenMap[delimited_query[currentIndex]]
                 : checkSelectTokenType(delimited_query[currentIndex], isCurrentStringSynonym);
 
-
             if (currentToken == TokenType::DOT) {
                 isCurrentStringSynonym = false;
             }
@@ -81,7 +78,7 @@ void SelectTokenizer::tokenize() {
             if (checkIfAttrName(delimited_query[currentIndex])) {
                 isCurrentStringSynonym = true;
             }
-           
+
             tokens.push_back(PqlToken(currentToken, delimited_query[currentIndex]));
             currentIndex += 1;
 
@@ -93,11 +90,11 @@ void SelectTokenizer::tokenize() {
     }
 }
 
-TokenType SelectTokenizer::checkSelectTokenType(const string& s, const bool isCurrentSynonym) {
+TokenType SelectTokenizer::checkSelectTokenType(const string& s, const bool isCurrentSynonym)
+{
     if (!isCurrentSynonym && checkIfAttrName(s)) {
         return stringToTokenMap[s];
-    }
-    else {
+    } else {
         return checkIfSynonym(s) ? TokenType::SYNONYM : TokenType::UNKNOWN;
     }
 }

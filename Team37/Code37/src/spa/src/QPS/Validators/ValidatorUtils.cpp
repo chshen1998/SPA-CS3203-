@@ -4,19 +4,20 @@ using namespace std;
 #include <unordered_map>
 
 #include "../Structures/PqlError.h"
-#include "../Structures/PqlToken.h"
 #include "../Structures/PqlQuery.h"
+#include "../Structures/PqlToken.h"
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
 #include "ValidatorUtils.h"
 
-
-SyntaxError::SyntaxError(string msg) : exception()
+SyntaxError::SyntaxError(string msg)
+    : exception()
 {
     message = msg;
 }
 
-SemanticError::SemanticError(string msg) : exception()
+SemanticError::SemanticError(string msg)
+    : exception()
 {
     message = msg;
 }
@@ -42,7 +43,7 @@ set<TokenType> validDesignEntities = {
     TokenType::WHILE,
     TokenType::IF,
     TokenType::ASSIGN,
-	TokenType::VARIABLE,
+    TokenType::VARIABLE,
     TokenType::CONSTANT,
     TokenType::PROCEDURE
 };
@@ -82,7 +83,7 @@ set<TokenType> validEntityRef = {
 
 set<TokenType> validExpressionSpec = {
     TokenType::WILDCARD_STRING,
-	TokenType::WILDCARD,
+    TokenType::WILDCARD,
     TokenType::STRING,
 };
 
@@ -105,32 +106,32 @@ set<TokenType> validPatternType = {
 };
 
 unordered_map<TokenType, string> relationshipToStringMap = {
-    {TokenType::USES, "Uses"},
-    {TokenType::USES_P, "Uses"},
-    {TokenType::MODIFIES, "Modifies"},
-    {TokenType::MODIFIES_P, "Modifies"},
-    {TokenType::PARENT, "Parent"},
-    {TokenType::PARENT_A, "Parent*"},
-    {TokenType::FOLLOWS, "Follows"},
-    {TokenType::FOLLOWS_A, "Follows*"},
-    {TokenType::CALLS, "Calls"},
-    {TokenType::CALLS_A, "Calls*"},
-    {TokenType::NEXT, "Next"},
-    {TokenType::NEXT_A, "Next*"},
-    {TokenType::AFFECTS, "Affects"},
-    {TokenType::AFFECTS_A, "Affects*"},
-    {TokenType::PATTERN, "Pattern"}
+    { TokenType::USES, "Uses" },
+    { TokenType::USES_P, "Uses" },
+    { TokenType::MODIFIES, "Modifies" },
+    { TokenType::MODIFIES_P, "Modifies" },
+    { TokenType::PARENT, "Parent" },
+    { TokenType::PARENT_A, "Parent*" },
+    { TokenType::FOLLOWS, "Follows" },
+    { TokenType::FOLLOWS_A, "Follows*" },
+    { TokenType::CALLS, "Calls" },
+    { TokenType::CALLS_A, "Calls*" },
+    { TokenType::NEXT, "Next" },
+    { TokenType::NEXT_A, "Next*" },
+    { TokenType::AFFECTS, "Affects" },
+    { TokenType::AFFECTS_A, "Affects*" },
+    { TokenType::PATTERN, "Pattern" }
 };
 
 unordered_map<TokenType, set<TokenType>> validSynonymToAttrMap = {
-    {TokenType::PROCEDURE, {TokenType::PROCNAME}},
-    {TokenType::CALL, {TokenType::PROCNAME, TokenType::STMTLINE}},
-    {TokenType::VARIABLE, {TokenType::VARNAME}},
-    {TokenType::READ, {TokenType::VARNAME, TokenType::STMTLINE}},
-    {TokenType::PRINT, {TokenType::VARNAME, TokenType::STMTLINE}},
-    {TokenType::CONSTANT, {TokenType::VALUE}},
-    {TokenType::STATEMENT, {TokenType::STMTLINE}},
-    {TokenType::WHILE, {TokenType::STMTLINE}},
-    {TokenType::IF, {TokenType::STMTLINE}},
-    {TokenType::ASSIGN, {TokenType::STMTLINE}}
+    { TokenType::PROCEDURE, { TokenType::PROCNAME } },
+    { TokenType::CALL, { TokenType::PROCNAME, TokenType::STMTLINE } },
+    { TokenType::VARIABLE, { TokenType::VARNAME } },
+    { TokenType::READ, { TokenType::VARNAME, TokenType::STMTLINE } },
+    { TokenType::PRINT, { TokenType::VARNAME, TokenType::STMTLINE } },
+    { TokenType::CONSTANT, { TokenType::VALUE } },
+    { TokenType::STATEMENT, { TokenType::STMTLINE } },
+    { TokenType::WHILE, { TokenType::STMTLINE } },
+    { TokenType::IF, { TokenType::STMTLINE } },
+    { TokenType::ASSIGN, { TokenType::STMTLINE } }
 };

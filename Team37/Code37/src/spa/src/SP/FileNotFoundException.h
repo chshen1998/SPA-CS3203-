@@ -7,13 +7,17 @@ using namespace std;
 
 class FileNotFoundException : public std::exception {
 private:
-    char * message;
+    char* message;
 
 public:
-    FileNotFoundException(char * msg) : message(msg) {}
-    char * what () {
+    FileNotFoundException(char* msg)
+        : message(msg)
+    {
+    }
+    char* what()
+    {
         return message;
     }
 };
 
-#endif //SPA_FILENOTFOUNDEXCEPTION_H
+#endif // SPA_FILENOTFOUNDEXCEPTION_H

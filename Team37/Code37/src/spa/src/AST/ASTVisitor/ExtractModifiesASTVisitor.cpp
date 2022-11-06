@@ -1,22 +1,21 @@
 #include "ExtractModifiesASTVisitor.h"
 
-
 #include "AST/SourceCode.h"
-#include "AST/Statement/ReadStatement.h"
-#include "AST/Statement/PrintStatement.h"
-#include "AST/Statement/CallStatement.h"
-#include "AST/Statement/WhileStatement.h"
-#include "AST/Statement/IfStatement.h"
 #include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/PrintStatement.h"
+#include "AST/Statement/ReadStatement.h"
+#include "AST/Statement/WhileStatement.h"
 
-#include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/OperatedExpression.h"
 
-#include "AST/Expression/ConditionalExpression/RelationalExpression.h"
-#include "AST/Expression/ConditionalExpression/NotCondition.h"
 #include "AST/Expression/ConditionalExpression/AndCondition.h"
+#include "AST/Expression/ConditionalExpression/NotCondition.h"
 #include "AST/Expression/ConditionalExpression/OrCondition.h"
+#include "AST/Expression/ConditionalExpression/RelationalExpression.h"
 
 #include "PKB/Storage.h"
 
@@ -26,10 +25,11 @@ ExtractModifiesASTVisitor::ExtractModifiesASTVisitor(shared_ptr<Storage> storage
  * We traverse all procedures in the source code to accept a visitor
  * @param sourceCode
  */
-void ExtractModifiesASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode) {
+void ExtractModifiesASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCode)
+{
     vector<shared_ptr<Procedure>> procedures = sourceCode->getProcedures();
 
-    for (auto procedure: procedures) {
+    for (auto procedure : procedures) {
         procedure->accept(shared_from_this());
     }
 }
@@ -38,9 +38,10 @@ void ExtractModifiesASTVisitor::visitSourceCode(shared_ptr<SourceCode> sourceCod
  * We traverse all statements in the procedure to accept a visitor
  * @param procedure
  */
-void ExtractModifiesASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) {
+void ExtractModifiesASTVisitor::visitProcedure(shared_ptr<Procedure> procedure)
+{
     vector<shared_ptr<Statement>> statements = procedure->getStatements();
-    for (auto statement: statements) {
+    for (auto statement : statements) {
         if (statement == nullptr) {
             continue;
         } else {
@@ -55,18 +56,19 @@ void ExtractModifiesASTVisitor::visitProcedure(shared_ptr<Procedure> procedure) 
  * We visit a read statement and store Modifies(re, v)
  * @param readStmt
  */
-void ExtractModifiesASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt) {
+void ExtractModifiesASTVisitor::visitReadStatement(shared_ptr<ReadStatement> readStmt)
+{
     string variable = readStmt->getVariableName();
     this->storage->storeRelation(readStmt->getLineNum(), variable, MODIFIESSV);
     this->visitParentAndStore(readStmt->getParent(), variable);
 }
 
-
 /**
  * We visit a print statement and do nothing
  * @param printStmt
  */
-void ExtractModifiesASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt) {
+void ExtractModifiesASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> printStmt)
+{
     // we do not store for print stmts
 }
 
@@ -74,7 +76,8 @@ void ExtractModifiesASTVisitor::visitPrintStatement(shared_ptr<PrintStatement> p
  * We visit call statement
  * @param callStmt
  */
-void ExtractModifiesASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt) {
+void ExtractModifiesASTVisitor::visitCallStatement(shared_ptr<CallStatement> callStmt)
+{
     string calledProcedureName = callStmt->getProcedureName();
     int lineNum = callStmt->getLineNum();
     vector<string> storedVariablesInProcedure = this->storage->forwardRetrieveRelation(calledProcedureName, MODIFIESPV);
@@ -84,7 +87,7 @@ void ExtractModifiesASTVisitor::visitCallStatement(shared_ptr<CallStatement> cal
      * we add relationships from the storage with Modifies(calledProcedureName,v)
      */
     if (!storedVariablesInProcedure.empty()) {
-        for (const auto &variable: storedVariablesInProcedure) {
+        for (const auto& variable : storedVariablesInProcedure) {
             // store Modifies(c,v)
             this->storage->storeRelation(lineNum, variable, MODIFIESSV);
         }
@@ -106,32 +109,33 @@ void ExtractModifiesASTVisitor::visitCallStatement(shared_ptr<CallStatement> cal
  * We traverse all the statements in a while loop to accept a visitor
  * @param whileStmt
  */
-void ExtractModifiesASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> whileStmt) {
+void ExtractModifiesASTVisitor::visitWhileStatement(shared_ptr<WhileStatement> whileStmt)
+{
     // iterate into  statements
     vector<shared_ptr<Statement>> statements = whileStmt->getStatements();
 
-    for (auto statement: statements) {
+    for (auto statement : statements) {
         statement->accept(shared_from_this());
     }
 
     // iterate into conditional expressions
     whileStmt->getConditionalExpression()->accept(shared_from_this());
-
 }
 
 /**
  * We traverse all the statements in if-else to accept a visitor
  * @param ifStmt
  */
-void ExtractModifiesASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt) {
+void ExtractModifiesASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt)
+{
     vector<shared_ptr<Statement>> thenStmts = ifStmt->getThenStatements();
-    for (auto statement: thenStmts) {
+    for (auto statement : thenStmts) {
         // iterate children
         statement->accept(shared_from_this());
     }
 
     vector<shared_ptr<Statement>> elseStmts = ifStmt->getElseStatements();
-    for (auto statement: elseStmts) {
+    for (auto statement : elseStmts) {
         // iterate children
         statement->accept(shared_from_this());
     }
@@ -144,7 +148,8 @@ void ExtractModifiesASTVisitor::visitIfStatement(shared_ptr<IfStatement> ifStmt)
  * We visit an assign statement and store Modifies(a,v)
  * @param assignStmt
  */
-void ExtractModifiesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt) {
+void ExtractModifiesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement> assignStmt)
+{
     string variable = assignStmt->getVarName();
 
     this->storage->storeRelation(assignStmt->getLineNum(), variable, MODIFIESSV);
@@ -157,7 +162,8 @@ void ExtractModifiesASTVisitor::visitAssignStatement(shared_ptr<AssignStatement>
  * We visit a name expression and store up along its Parent nodes
  * @param nameExpr
  */
-void ExtractModifiesASTVisitor::visitNameExpression(shared_ptr<NameExpression> nameExpr) {
+void ExtractModifiesASTVisitor::visitNameExpression(shared_ptr<NameExpression> nameExpr)
+{
     this->visitParentAndStore(nameExpr->getParent(), nameExpr->getVarName());
 }
 
@@ -165,15 +171,16 @@ void ExtractModifiesASTVisitor::visitNameExpression(shared_ptr<NameExpression> n
  * We visit a constant expression and do nothing
  * @param constantExpr
  */
-void ExtractModifiesASTVisitor::visitConstantExpression(shared_ptr<ConstantExpression> constantExpr) {
+void ExtractModifiesASTVisitor::visitConstantExpression(shared_ptr<ConstantExpression> constantExpr)
+{
 }
 
 /**
  * We visit an operated expression
  * @param operatedExpr
  */
-void ExtractModifiesASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpression> operatedExpr) {
-
+void ExtractModifiesASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpression> operatedExpr)
+{
 }
 
 // ConditionalExpression
@@ -182,30 +189,32 @@ void ExtractModifiesASTVisitor::visitOperatedExpression(shared_ptr<OperatedExpre
  * We visit a relational expression
  * @param relationalExpr
  */
-void ExtractModifiesASTVisitor::visitRelationalExpression(shared_ptr<RelationalExpression> relationalExpr) {
-
+void ExtractModifiesASTVisitor::visitRelationalExpression(shared_ptr<RelationalExpression> relationalExpr)
+{
 }
 
 /**
  * We visit a not condition
  * @param notCondition
  */
-void ExtractModifiesASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCondition) {
+void ExtractModifiesASTVisitor::visitNotCondition(shared_ptr<NotCondition> notCondition)
+{
 }
 
 /**
  * We visit an And condition
  * @param andCondition
  */
-void ExtractModifiesASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCondition) {
-
+void ExtractModifiesASTVisitor::visitAndCondition(shared_ptr<AndCondition> andCondition)
+{
 }
 
 /**
  * We visit an Or condition
  * @param orCondition
  */
-void ExtractModifiesASTVisitor::visitOrCondition(shared_ptr<OrCondition> orCondition) {
+void ExtractModifiesASTVisitor::visitOrCondition(shared_ptr<OrCondition> orCondition)
+{
 }
 
 /**
@@ -213,7 +222,8 @@ void ExtractModifiesASTVisitor::visitOrCondition(shared_ptr<OrCondition> orCondi
  * for the respective variables and their parent containers
  * @param node
  */
-void ExtractModifiesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string variable) {
+void ExtractModifiesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, string variable)
+{
     while (node != nullptr) {
         // Assign Statement: Modifies(a, v)
         if (dynamic_pointer_cast<AssignStatement>(node) != nullptr) {
@@ -248,17 +258,17 @@ void ExtractModifiesASTVisitor::visitParentAndStore(shared_ptr<TNode> node, stri
         // traverse upwards
         node = node->getParent();
     }
-
 }
 
 void ExtractModifiesASTVisitor::visitParentAndStoreCalls(shared_ptr<TNode> node, string parentProcedureName,
-                                                         string calledProcedureName) {
+    string calledProcedureName)
+{
     while (node != nullptr) {
         // Assign Statement: Uses(a, v)
         if (dynamic_pointer_cast<AssignStatement>(node) != nullptr) {
             shared_ptr<AssignStatement> assignStmt = dynamic_pointer_cast<AssignStatement>(node);
             tuple<int, string, string> lineNumProcedureTuple(assignStmt->getLineNum(), parentProcedureName,
-                                                             calledProcedureName);
+                calledProcedureName);
             this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
         }
 
@@ -267,7 +277,7 @@ void ExtractModifiesASTVisitor::visitParentAndStoreCalls(shared_ptr<TNode> node,
         if (dynamic_pointer_cast<ReadStatement>(node) != nullptr) {
             shared_ptr<ReadStatement> readStmt = dynamic_pointer_cast<ReadStatement>(node);
             tuple<int, string, string> lineNumProcedureTuple(readStmt->getLineNum(), parentProcedureName,
-                                                             calledProcedureName);
+                calledProcedureName);
             this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
         }
 
@@ -275,7 +285,7 @@ void ExtractModifiesASTVisitor::visitParentAndStoreCalls(shared_ptr<TNode> node,
         if (dynamic_pointer_cast<IfStatement>(node) != nullptr) {
             shared_ptr<IfStatement> ifStmt = dynamic_pointer_cast<IfStatement>(node);
             tuple<int, string, string> lineNumProcedureTuple(ifStmt->getLineNum(), parentProcedureName,
-                                                             calledProcedureName);
+                calledProcedureName);
             this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
         }
 
@@ -283,7 +293,7 @@ void ExtractModifiesASTVisitor::visitParentAndStoreCalls(shared_ptr<TNode> node,
         if (dynamic_pointer_cast<WhileStatement>(node) != nullptr) {
             shared_ptr<WhileStatement> whileStmt = dynamic_pointer_cast<WhileStatement>(node);
             tuple<int, string, string> lineNumProcedureTuple(whileStmt->getLineNum(), parentProcedureName,
-                                                             calledProcedureName);
+                calledProcedureName);
             this->storage->callStmtProcedureQueue.push_back(lineNumProcedureTuple);
         }
 

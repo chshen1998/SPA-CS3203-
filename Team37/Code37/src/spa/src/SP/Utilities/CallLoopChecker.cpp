@@ -1,16 +1,17 @@
 #include "CallLoopChecker.h"
 #include "AST/Statement/CallStatement.h"
-#include "AST/Statement/WhileStatement.h"
 #include "AST/Statement/IfStatement.h"
+#include "AST/Statement/WhileStatement.h"
 #include "SP/InvalidSyntaxException.h"
 
-bool CallLoopChecker::checkCallLoop(shared_ptr<SourceCode> AST) {
+bool CallLoopChecker::checkCallLoop(shared_ptr<SourceCode> AST)
+{
     checkSameName(AST->getProcedures());
 
     procedureCallMap.clear();
-    for (shared_ptr<Procedure> p: AST->getProcedures()) {
+    for (shared_ptr<Procedure> p : AST->getProcedures()) {
         vector<string> visited;
-        procedureCallMap.insert({p->getProcedureName(), visited});
+        procedureCallMap.insert({ p->getProcedureName(), visited });
         populateCallMap(p);
     }
 
@@ -27,13 +28,15 @@ bool CallLoopChecker::checkCallLoop(shared_ptr<SourceCode> AST) {
     return false;
 }
 
-void CallLoopChecker::populateCallMap(shared_ptr<Procedure> procedure) {
+void CallLoopChecker::populateCallMap(shared_ptr<Procedure> procedure)
+{
     string procedureName = procedure->getProcedureName();
     populateCallMap(procedureName, procedure->getStatements());
 }
 
-void CallLoopChecker::populateCallMap(string caller, vector<shared_ptr<Statement>> statements) {
-    for (shared_ptr<Statement> s: statements) {
+void CallLoopChecker::populateCallMap(string caller, vector<shared_ptr<Statement>> statements)
+{
+    for (shared_ptr<Statement> s : statements) {
         if (dynamic_pointer_cast<CallStatement>(s) != nullptr) {
             addMapping(caller, dynamic_pointer_cast<CallStatement>(s)->getProcedureName());
         } else if (dynamic_pointer_cast<WhileStatement>(s) != nullptr) {
@@ -45,7 +48,8 @@ void CallLoopChecker::populateCallMap(string caller, vector<shared_ptr<Statement
     }
 }
 
-void CallLoopChecker::addMapping(string caller, string callee) {
+void CallLoopChecker::addMapping(string caller, string callee)
+{
     vector<string> value;
     value = procedureCallMap.find(caller)->second;
 
@@ -54,33 +58,35 @@ void CallLoopChecker::addMapping(string caller, string callee) {
         value.push_back(callee);
     }
 
-    procedureCallMap.insert({caller, value});
+    procedureCallMap.insert({ caller, value });
 }
 
-void CallLoopChecker::checkSameName(vector<shared_ptr<Procedure>> procedures) {
+void CallLoopChecker::checkSameName(vector<shared_ptr<Procedure>> procedures)
+{
     vector<string> procedureNames;
-    for (shared_ptr<Procedure> p: procedures) {
+    for (shared_ptr<Procedure> p : procedures) {
         string name = p->getProcedureName();
         if (find(procedureNames.begin(), procedureNames.end(), name) == procedureNames.end()) {
             procedureNames.push_back(name);
         } else {
-            throw InvalidSyntaxException((char *) "2 Procedures cannot have the same name");
+            throw InvalidSyntaxException((char*)"2 Procedures cannot have the same name");
         }
     }
 }
 
 void CallLoopChecker::checkCallMap(
-        map<string, vector<string>> myMap,
-        vector<string> visited,
-        string currNode,
-        shared_ptr<vector<string>> overallVisited) {
+    map<string, vector<string>> myMap,
+    vector<string> visited,
+    string currNode,
+    shared_ptr<vector<string>> overallVisited)
+{
     // If currNode has been visited before
     if (find(visited.begin(), visited.end(), currNode) != visited.end()) {
-        throw InvalidSyntaxException((char *) "Recursive procedure call loops are not allowed");
+        throw InvalidSyntaxException((char*)"Recursive procedure call loops are not allowed");
     }
 
     if (myMap.find(currNode) == myMap.end()) {
-        throw InvalidSyntaxException((char *) "Cannot call a procedure that does not exist");
+        throw InvalidSyntaxException((char*)"Cannot call a procedure that does not exist");
     }
 
     visited.push_back(currNode);
@@ -90,8 +96,7 @@ void CallLoopChecker::checkCallMap(
     vector<string> value = myMap.find(currNode)->second;
 
     myMap.erase(key);
-    for (string s: value) {
+    for (string s : value) {
         checkCallMap(myMap, visited, s, overallVisited);
     }
-
 }

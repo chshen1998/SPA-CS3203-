@@ -5,12 +5,15 @@
 
 #include "AST/Expression/Expression.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class ConditionalExpression : public Expression {
 public:
-    ConditionalExpression(shared_ptr<TNode> parent) : Expression(parent) { }
+    ConditionalExpression(shared_ptr<TNode> parent)
+        : Expression(parent)
+    {
+    }
 };
 
 #endif

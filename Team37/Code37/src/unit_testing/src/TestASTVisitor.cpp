@@ -1,11 +1,11 @@
 #include "AST/SourceCode.h"
 
-#include "AST/Statement/ReadStatement.h"
-#include "AST/Statement/PrintStatement.h"
-#include "AST/Statement/CallStatement.h"
-#include "AST/Statement/WhileStatement.h"
-#include "AST/Statement/IfStatement.h"
 #include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/PrintStatement.h"
+#include "AST/Statement/ReadStatement.h"
+#include "AST/Statement/WhileStatement.h"
 
 #include "AST/Expression/ConditionalExpression/RelationalExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -20,8 +20,8 @@
 
 using namespace std;
 
-
-TEST_CASE("Read Statements") {
+TEST_CASE("Read Statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, "a");
@@ -43,7 +43,8 @@ TEST_CASE("Read Statements") {
     REQUIRE(storage->getAllVar().size() == 4);
 }
 
-TEST_CASE("Print Statements") {
+TEST_CASE("Print Statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<PrintStatement> printStmt1 = make_shared<PrintStatement>(procedure, "a");
@@ -59,24 +60,23 @@ TEST_CASE("Print Statements") {
     procedure->addStatement(printStmt3);
     procedure->addStatement(printStmt4);
 
-
     // We start by traversing the AST
     storage->storeAST(sc);
 
     REQUIRE(storage->getAllVar().size() == 4);
 }
 
-TEST_CASE("Constant Expression") {
+TEST_CASE("Constant Expression")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<Storage> storage = make_shared<Storage>();
     shared_ptr<ConditionalExpression> expr1 = make_shared<RelationalExpression>(
-            nullptr,
-            RelationalOperator::EQUALS,
-            make_shared<ConstantExpression>(nullptr, 10),
-            make_shared<ConstantExpression>(nullptr, 11));
-    shared_ptr<Statement> whileStmt =
-            make_shared<WhileStatement>(procedure, expr1);
+        nullptr,
+        RelationalOperator::EQUALS,
+        make_shared<ConstantExpression>(nullptr, 10),
+        make_shared<ConstantExpression>(nullptr, 11));
+    shared_ptr<Statement> whileStmt = make_shared<WhileStatement>(procedure, expr1);
 
     procedure->addStatement(whileStmt);
 
@@ -88,16 +88,16 @@ TEST_CASE("Constant Expression") {
     REQUIRE(storage->getAllConst().size() == 2);
 }
 
-TEST_CASE("Statements") {
+TEST_CASE("Statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<ConditionalExpression> expr = make_shared<RelationalExpression>(
-            nullptr,
-            RelationalOperator::EQUALS,
-            make_shared<ConstantExpression>(nullptr, 10),
-            make_shared<ConstantExpression>(nullptr, 11));
+        nullptr,
+        RelationalOperator::EQUALS,
+        make_shared<ConstantExpression>(nullptr, 10),
+        make_shared<ConstantExpression>(nullptr, 11));
     shared_ptr<RelationalFactor> rf = make_shared<ConstantExpression>(nullptr, 1);
-
 
     shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(procedure, "b");
     shared_ptr<PrintStatement> printStmt = make_shared<PrintStatement>(procedure, "a");
@@ -115,7 +115,6 @@ TEST_CASE("Statements") {
     procedure->addStatement(ifStmt);
     procedure->addStatement(assignStmt);
 
-
     sc->addProcedure(procedure);
 
     // We start by traversing the AST
@@ -124,7 +123,8 @@ TEST_CASE("Statements") {
     REQUIRE(storage->getAllStmt().size() == 6);
 }
 
-TEST_CASE("Call Stmt Proc Mapping") {
+TEST_CASE("Call Stmt Proc Mapping")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure1 = make_shared<Procedure>(sc, "Test Procedure 1");
     shared_ptr<Procedure> procedure2 = make_shared<Procedure>(sc, "Test Procedure 2");

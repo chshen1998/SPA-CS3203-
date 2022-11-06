@@ -1,29 +1,38 @@
 #include "Procedure.h"
 
-Procedure::Procedure(shared_ptr<TNode> parent, string procedureName) : TNode(parent), procedureName(procedureName) {}
+Procedure::Procedure(shared_ptr<TNode> parent, string procedureName)
+    : TNode(parent)
+    , procedureName(procedureName)
+{
+}
 
-void Procedure::addStatement(shared_ptr<Statement> stmt) {
+void Procedure::addStatement(shared_ptr<Statement> stmt)
+{
     this->stmtLst.push_back(stmt);
 }
 
-string Procedure::getProcedureName() {
+string Procedure::getProcedureName()
+{
     return this->procedureName;
 }
 
-vector<shared_ptr<Statement> > Procedure::getStatements() {
+vector<shared_ptr<Statement>> Procedure::getStatements()
+{
     return this->stmtLst;
 }
 
-shared_ptr<CFG> Procedure::getCFG() {
+shared_ptr<CFG> Procedure::getCFG()
+{
     return this->cfg;
 }
 
-void Procedure::buildCFG(string procName) {
+void Procedure::buildCFG(string procName)
+{
     // start node does not have any parents
-    vector<shared_ptr<CFGNode> > parents = {};
+    vector<shared_ptr<CFGNode>> parents = {};
 
     // set first statement as start node of CFG
-    vector<shared_ptr<Statement> > stmtLst = this->getStatements();
+    vector<shared_ptr<Statement>> stmtLst = this->getStatements();
 
     shared_ptr<CFGNode> firstNode = stmtLst[0]->buildCFG(parents, this->getCFG());
     shared_ptr<CFGNode> startNode;
@@ -43,7 +52,7 @@ void Procedure::buildCFG(string procName) {
     parents.clear();
     parents.push_back(firstNode);
 
-    for (auto s: stmtLst) {
+    for (auto s : stmtLst) {
         shared_ptr<CFGNode> cfgNode = s->buildCFG(parents, this->getCFG());
         parents.clear();
         parents.push_back(cfgNode);
@@ -52,6 +61,7 @@ void Procedure::buildCFG(string procName) {
     this->cfg->setName(procName);
 }
 
-void Procedure::accept(shared_ptr<ASTVisitor> visitor) {
+void Procedure::accept(shared_ptr<ASTVisitor> visitor)
+{
     visitor->visitProcedure(shared_from_this());
 }

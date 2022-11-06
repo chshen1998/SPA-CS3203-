@@ -3,20 +3,21 @@
 #ifndef TEAM37_IFSTATEMENT_H
 #define TEAM37_IFSTATEMENT_H
 
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 using namespace std;
 
-#include "Statement.h"
 #include "../Expression/ConditionalExpression/ConditionalExpression.h"
+#include "Statement.h"
 
 class IfStatement : public Statement, public enable_shared_from_this<IfStatement> {
 private:
     shared_ptr<ConditionalExpression> condExpr;
-    vector<shared_ptr<Statement> > thenStmtLst;
-    vector<shared_ptr<Statement> > elseStmtLst;
+    vector<shared_ptr<Statement>> thenStmtLst;
+    vector<shared_ptr<Statement>> elseStmtLst;
+
 public:
     IfStatement(shared_ptr<TNode> parent, shared_ptr<ConditionalExpression> condExpr);
 
@@ -48,18 +49,18 @@ public:
      *
      * @return the if-then statement list
      */
-    vector<shared_ptr<Statement> > getThenStatements();
+    vector<shared_ptr<Statement>> getThenStatements();
 
     /**
      * Gets the if-else statement list
      *
      * @return the if-else statement list
      */
-    vector<shared_ptr<Statement> > getElseStatements();
+    vector<shared_ptr<Statement>> getElseStatements();
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
-    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode> > parents, shared_ptr<CFG> cfg) override;
+    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode>> parents, shared_ptr<CFG> cfg) override;
 };
 
 #endif

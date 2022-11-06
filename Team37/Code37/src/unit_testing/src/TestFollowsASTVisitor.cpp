@@ -1,11 +1,11 @@
 #include "AST/SourceCode.h"
 
-#include "AST/Statement/ReadStatement.h"
-#include "AST/Statement/PrintStatement.h"
-#include "AST/Statement/CallStatement.h"
-#include "AST/Statement/WhileStatement.h"
-#include "AST/Statement/IfStatement.h"
 #include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/PrintStatement.h"
+#include "AST/Statement/ReadStatement.h"
+#include "AST/Statement/WhileStatement.h"
 
 #include "AST/Expression/ConditionalExpression/RelationalExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -20,8 +20,8 @@
 
 using namespace std;
 
-
-TEST_CASE("Follow statements") {
+TEST_CASE("Follow statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, "a");
@@ -54,7 +54,8 @@ TEST_CASE("Follow statements") {
     REQUIRE(follower3[0] == readStmt4->getLineNum());
 }
 
-TEST_CASE("Follow Star statements") {
+TEST_CASE("Follow Star statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<ReadStatement> readStmt1 = make_shared<ReadStatement>(procedure, "a");

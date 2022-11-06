@@ -4,13 +4,13 @@
 #define TEAM37_QUERYOPTIMIZER_H
 
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
 
 #include "./Structures/PqlError.h"
-#include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
+#include "./Structures/PqlToken.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 
@@ -37,5 +37,4 @@ private:
     int partition(vector<shared_ptr<Clause>>* group, vector<int>* scores, int left, int right);
 };
 
-
-#endif //TEAM37_QUERYOPTIMIZER_H
+#endif // TEAM37_QUERYOPTIMIZER_H

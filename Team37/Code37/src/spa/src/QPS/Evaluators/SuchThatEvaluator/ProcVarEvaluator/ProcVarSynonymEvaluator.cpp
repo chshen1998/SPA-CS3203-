@@ -1,9 +1,9 @@
 using namespace std;
 
+#include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
-#include "QPS/Evaluators/EvaluatorUtils.h"
 
 #include "ProcVarSynonymEvaluator.h"
 
@@ -22,13 +22,13 @@ vector<vector<string>> ProcVarSynonymEvaluator::evaluateSynonymClause(shared_ptr
         allProcedures.push_back(p.getProcedureName());
     }
 
-    // Synonym-Synonym --> Eg. Uses(p, v) 
+    // Synonym-Synonym --> Eg. Uses(p, v)
     if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string> { leftArg.value, rightArg.value });
 
         for (string procedure : allProcedures) {
             for (string v : servicer->forwardRetrieveRelation(procedure, pv)) {
-                finalTable.push_back(vector<string> { procedure , v });
+                finalTable.push_back(vector<string> { procedure, v });
             }
         }
     }
@@ -39,12 +39,12 @@ vector<vector<string>> ProcVarSynonymEvaluator::evaluateSynonymClause(shared_ptr
 
         for (string procedure : allProcedures) {
             if (!servicer->forwardRetrieveRelation(procedure, pv).empty()) {
-                finalTable.push_back(vector<string>{ procedure });
+                finalTable.push_back(vector<string> { procedure });
             }
         }
     }
 
-    // Synonym-string --> Eg. Uses(p, "x") 
+    // Synonym-string --> Eg. Uses(p, "x")
     else if (leftArg.type == TokenType::SYNONYM && rightArg.type == TokenType::STRING) {
         finalTable.push_back(vector<string> { leftArg.value });
         vector<string> intermediateStmtLines = servicer->reverseRetrieveRelation(rightArg.value, pv);
@@ -54,7 +54,7 @@ vector<vector<string>> ProcVarSynonymEvaluator::evaluateSynonymClause(shared_ptr
         }
     }
 
-    // string-Synonym --> Eg. Modifies("procedure", s) 
+    // string-Synonym --> Eg. Modifies("procedure", s)
     else if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::SYNONYM) {
         finalTable.push_back(vector<string> { rightArg.value });
 

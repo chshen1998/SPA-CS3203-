@@ -1,12 +1,12 @@
 using namespace std;
 
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "QPS/QueryValidator.h"
 #include "QPS/Structures/PqlError.h"
-#include "QPS/Structures/PqlToken.h"
 #include "QPS/Structures/PqlQuery.h"
+#include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/ErrorType.h"
 #include "QPS/Types/TokenType.h"
 #include "TestQueryExtractorUtils.h"
@@ -16,12 +16,12 @@ using namespace std;
 TEST_CASE("READ")
 {
     vector<PqlToken> tokens = {
-            PqlToken(TokenType::READ, "read"),
-            PqlToken(TokenType::SYNONYM, "r"),
-            PqlToken(TokenType::SEMICOLON, ";"),
-            PqlToken(TokenType::DECLARATION_END, ""),
-            PqlToken(TokenType::SELECT, "select"),
-            PqlToken(TokenType::SYNONYM, "r")
+        PqlToken(TokenType::READ, "read"),
+        PqlToken(TokenType::SYNONYM, "r"),
+        PqlToken(TokenType::SEMICOLON, ";"),
+        PqlToken(TokenType::DECLARATION_END, ""),
+        PqlToken(TokenType::SELECT, "select"),
+        PqlToken(TokenType::SYNONYM, "r")
     };
     QueryValidator sut = QueryValidator(&tokens);
     PqlError results = sut.validateQuery();
@@ -29,7 +29,8 @@ TEST_CASE("READ")
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-TEST_CASE("Valid select no declarations") {
+TEST_CASE("Valid select no declarations")
+{
     QueryValidator sut = QueryValidator(&valid_select_only);
     PqlError results = sut.validateQuery();
 
@@ -37,14 +38,14 @@ TEST_CASE("Valid select no declarations") {
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-TEST_CASE("Valid Calls wildcard") {
+TEST_CASE("Valid Calls wildcard")
+{
     QueryValidator sut = QueryValidator(&valid_calls_wildcards);
     PqlError results = sut.validateQuery();
 
     REQUIRE(results.message == "");
     REQUIRE(results.errorType == ErrorType::NONE);
 }
-
 
 TEST_CASE("Valid declarations and select")
 {
@@ -62,7 +63,8 @@ TEST_CASE("Multiple variable declarations")
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-TEST_CASE("Valid Select boolean") {
+TEST_CASE("Valid Select boolean")
+{
     QueryValidator sut = QueryValidator(&valid_select_boolean);
     PqlError results = sut.validateQuery();
     REQUIRE(results.message == "");
@@ -70,8 +72,8 @@ TEST_CASE("Valid Select boolean") {
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-
-TEST_CASE("Valid Select declared boolean synonym") {
+TEST_CASE("Valid Select declared boolean synonym")
+{
     QueryValidator sut = QueryValidator(&valid_select_declared_boolean);
     PqlError results = sut.validateQuery();
     REQUIRE(results.message == "");
@@ -79,7 +81,8 @@ TEST_CASE("Valid Select declared boolean synonym") {
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-TEST_CASE("Valid Select declared boolean synonym attrName") {
+TEST_CASE("Valid Select declared boolean synonym attrName")
+{
     QueryValidator sut = QueryValidator(&valid_select_declared_boolean_attrname);
     PqlError results = sut.validateQuery();
     REQUIRE(results.message == "");
@@ -87,7 +90,8 @@ TEST_CASE("Valid Select declared boolean synonym attrName") {
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-TEST_CASE("Valid Select attrName") {
+TEST_CASE("Valid Select attrName")
+{
     QueryValidator sut = QueryValidator(&valid_select_attrname);
     PqlError results = sut.validateQuery();
 
@@ -95,7 +99,8 @@ TEST_CASE("Valid Select attrName") {
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-TEST_CASE("Valid Select tuple") {
+TEST_CASE("Valid Select tuple")
+{
     QueryValidator sut = QueryValidator(&valid_select_tuple);
     PqlError results = sut.validateQuery();
 
@@ -103,7 +108,8 @@ TEST_CASE("Valid Select tuple") {
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-TEST_CASE("Error: Select tuple missing open arrow") {
+TEST_CASE("Error: Select tuple missing open arrow")
+{
     QueryValidator sut = QueryValidator(&invalid_select_missing_arrows);
     PqlError results = sut.validateQuery();
 
@@ -126,7 +132,6 @@ TEST_CASE("Error: Missing semicolon")
     REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
 
-
 TEST_CASE("Error: Missing Select Clause")
 {
     QueryValidator sut = QueryValidator(&missing_select);
@@ -134,7 +139,6 @@ TEST_CASE("Error: Missing Select Clause")
 
     REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
-
 
 TEST_CASE("Error: Undeclared select parameters")
 {
@@ -161,7 +165,6 @@ TEST_CASE("Valid Pattern clause assign with BOOLEAN as assign")
     REQUIRE(results.message == "");
     REQUIRE(results.errorType == ErrorType::NONE);
 }
-
 
 TEST_CASE("Valid Pattern clause while")
 {
@@ -254,7 +257,6 @@ TEST_CASE("Valid Follows clause")
     REQUIRE(results.errorType == ErrorType::NONE);
 }
 
-
 TEST_CASE("Valid Follows clause with double wildcard")
 {
     QueryValidator sut = QueryValidator(&valid_follows_double_wildcard);
@@ -294,7 +296,6 @@ TEST_CASE("Valid Parent* clause")
 
     REQUIRE(results.errorType == ErrorType::NONE);
 }
-
 
 TEST_CASE("Invalid Uses arg1 wildcard")
 {
@@ -364,7 +365,6 @@ TEST_CASE("Invalid With clause ref type mismatch")
     REQUIRE(results.errorType == ErrorType::SEMANTIC_ERROR);
 }
 
-
 TEST_CASE("Invalid With clause parameter type")
 {
     QueryValidator sut = QueryValidator(&invalid_with_parameter_type);
@@ -396,4 +396,3 @@ TEST_CASE("Invalid With clause missing dot between synonym and attrName")
 
     REQUIRE(results.errorType == ErrorType::SYNTAX_ERROR);
 }
-

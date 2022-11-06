@@ -2,17 +2,17 @@
 
 using namespace std;
 
+#include <memory>
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
-#include <memory>
 
-#include "QueryOptimizer.h"
 #include "./Structures/PqlError.h"
-#include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
+#include "./Structures/PqlToken.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
+#include "QueryOptimizer.h"
 #include "Validators/ValidatorUtils.h"
 
 set<TokenType> designAbstractionsA = {
@@ -26,11 +26,11 @@ set<TokenType> designAbstractionsA = {
 
 QueryOptimizer::QueryOptimizer(shared_ptr<PqlQuery> pq_pointer)
 {
-	pq = pq_pointer;
+    pq = pq_pointer;
     synonymSets = {};
 }
 
-void QueryOptimizer::optimize() 
+void QueryOptimizer::optimize()
 {
     groupClauses();
 
@@ -42,14 +42,14 @@ void QueryOptimizer::optimize()
 
     sortGroupOrder();
 
-    //sortGroupClauses();
+    // sortGroupClauses();
 }
 
 /*  Divide the clauses into multiple groups
-*   1. Clauses without synonyms (Boolean clauses) should be 1 group
-*   2. Clauses with common synonyms should be in same group
-*/
-void QueryOptimizer::groupClauses() 
+ *   1. Clauses without synonyms (Boolean clauses) should be 1 group
+ *   2. Clauses with common synonyms should be in same group
+ */
+void QueryOptimizer::groupClauses()
 {
     synonymSets.push_back({});
 
@@ -64,20 +64,19 @@ void QueryOptimizer::groupClauses()
             size--;
             continue;
         }
-        
+
         // 2. Clauses with connected synonyms should be in the same group
         int setNum = 0;
         for (set<string> synonymSet : synonymSets) {
-            if (pq->clauses[0][i]->left.type == TokenType::SYNONYM && synonymSet.find(pq->clauses[0][i]->left.value) != synonymSet.end() ||
-                pq->clauses[0][i]->right.type == TokenType::SYNONYM && synonymSet.find(pq->clauses[0][i]->right.value) != synonymSet.end()) {
+            if (pq->clauses[0][i]->left.type == TokenType::SYNONYM && synonymSet.find(pq->clauses[0][i]->left.value) != synonymSet.end() || pq->clauses[0][i]->right.type == TokenType::SYNONYM && synonymSet.find(pq->clauses[0][i]->right.value) != synonymSet.end()) {
                 break;
             }
             setNum++;
         }
 
         if (setNum == pq->clauses.size()) {
-            pq->clauses.push_back(vector<shared_ptr<Clause>>{});
-            synonymSets.push_back(set<string>{});
+            pq->clauses.push_back(vector<shared_ptr<Clause>> {});
+            synonymSets.push_back(set<string> {});
         }
 
         if (pq->clauses[0][i]->left.type == TokenType::SYNONYM) {
@@ -97,11 +96,10 @@ void QueryOptimizer::groupClauses()
     }
 }
 
-
 /*  Sort groups for evaluation
-*   1. Start with clauses without synonyms (Boolean clauses)
-*   2. Prioritize groups that do not invlove synonyms in Select to be evaluated first
-*/
+ *   1. Start with clauses without synonyms (Boolean clauses)
+ *   2. Prioritize groups that do not invlove synonyms in Select to be evaluated first
+ */
 void QueryOptimizer::sortGroupOrder()
 {
     vector<string> selectSynonyms;
@@ -112,7 +110,7 @@ void QueryOptimizer::sortGroupOrder()
     }
 
     int left = 0;
-    int right = pq->clauses.size()-1;
+    int right = pq->clauses.size() - 1;
     while (left < right) {
         bool containsSelect = false;
         for (string synonym : selectSynonyms) {
@@ -122,24 +120,23 @@ void QueryOptimizer::sortGroupOrder()
                 break;
             }
         }
-        
+
         if (containsSelect) {
             swap(pq->clauses[left], pq->clauses[right]);
             right--;
-        }
-        else {
+        } else {
             left++;
         }
     }
 }
 
-
-/*  Sort clauses inside each group 
-*   1. Prioritize clauses with one constant and one synonym
-*   2. Prioritize with-clauses – more restrictive than such that clauses
-*   3. Push Affects clauses and *-clauses to the last positions in a group
-*/
-void QueryOptimizer::sortGroupClauses() {
+/*  Sort clauses inside each group
+ *   1. Prioritize clauses with one constant and one synonym
+ *   2. Prioritize with-clauses – more restrictive than such that clauses
+ *   3. Push Affects clauses and *-clauses to the last positions in a group
+ */
+void QueryOptimizer::sortGroupClauses()
+{
     for (vector<shared_ptr<Clause>> group : pq->clauses) {
         vector<int> priorityScores(group.size());
         int currScore;
@@ -158,7 +155,7 @@ void QueryOptimizer::sortGroupClauses() {
                 priorityScores[i]++;
             }
 
-            // Increase priority if clauses 
+            // Increase priority if clauses
             if (group[i]->category == TokenType::WITH) {
                 priorityScores[i]++;
             }
@@ -168,7 +165,8 @@ void QueryOptimizer::sortGroupClauses() {
     }
 }
 
-void QueryOptimizer::quickSort(vector<shared_ptr<Clause>>* group, vector<int>* scores, int left, int right) {
+void QueryOptimizer::quickSort(vector<shared_ptr<Clause>>* group, vector<int>* scores, int left, int right)
+{
     if (left < right) {
         int p = partition(group, scores, left, right);
         quickSort(group, scores, left, p - 1);
@@ -176,7 +174,8 @@ void QueryOptimizer::quickSort(vector<shared_ptr<Clause>>* group, vector<int>* s
     }
 }
 
-int QueryOptimizer::partition(vector<shared_ptr<Clause>>* group, vector<int>* scores, int left, int right) {
+int QueryOptimizer::partition(vector<shared_ptr<Clause>>* group, vector<int>* scores, int left, int right)
+{
     int pivot = scores->at(right);
     int i = left - 1;
     for (int j = left; j < right; j++) {

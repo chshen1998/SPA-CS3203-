@@ -5,12 +5,13 @@
 
 #include "Statement.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class PrintStatement : public Statement, public enable_shared_from_this<PrintStatement> {
 private:
     string variableName;
+
 public:
     PrintStatement(shared_ptr<TNode> parent, string variableName);
 
@@ -23,7 +24,7 @@ public:
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
-    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode> > parents, shared_ptr<CFG> cfg) override;
+    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode>> parents, shared_ptr<CFG> cfg) override;
 };
 
 #endif

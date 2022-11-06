@@ -3,24 +3,25 @@
 #ifndef TEAM37_RELATIONALEXPRESSION_H
 #define TEAM37_RELATIONALEXPRESSION_H
 
-#include "ConditionalExpression.h"
-#include "AST/Operators/RelationalOperator.h"
 #include "../RelationalFactor/RelationalFactor.h"
+#include "AST/Operators/RelationalOperator.h"
+#include "ConditionalExpression.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class RelationalExpression : public ConditionalExpression, public enable_shared_from_this<RelationalExpression> {
 private:
     RelationalOperator opr = EQUALS;
     shared_ptr<RelationalFactor> relFactor1 = nullptr;
     shared_ptr<RelationalFactor> relFactor2 = nullptr;
+
 public:
     RelationalExpression(
-            shared_ptr<TNode> parent,
-            RelationalOperator opr,
-            shared_ptr<RelationalFactor> relFactor1,
-            shared_ptr<RelationalFactor> relFactor2);
+        shared_ptr<TNode> parent,
+        RelationalOperator opr,
+        shared_ptr<RelationalFactor> relFactor1,
+        shared_ptr<RelationalFactor> relFactor2);
 
     /**
      * Get the relational operator for the conditional expression

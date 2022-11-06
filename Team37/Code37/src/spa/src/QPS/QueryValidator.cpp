@@ -1,12 +1,12 @@
 using namespace std;
 
-#include <string>
 #include <set>
+#include <string>
 #include <vector>
 
 #include "./Structures/PqlError.h"
-#include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
+#include "./Structures/PqlToken.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 #include "QueryValidator.h"
@@ -17,15 +17,16 @@ using namespace std;
 #include "Validators/FollowsValidator.h"
 #include "Validators/ModifiesValidator.h"
 #include "Validators/NextValidator.h"
-#include "Validators/PatternValidator.h"
 #include "Validators/ParentValidator.h"
+#include "Validators/PatternValidator.h"
 #include "Validators/SelectValidator.h"
 #include "Validators/UsesValidator.h"
 #include "Validators/ValidatorUtils.h"
 #include "Validators/WithValidator.h"
 #include <iostream>
 
-QueryValidator::QueryValidator(vector<PqlToken> *tokenVector) {
+QueryValidator::QueryValidator(vector<PqlToken>* tokenVector)
+{
     tokens = tokenVector;
     size = tokens->size();
     next = 0;
@@ -36,17 +37,15 @@ PqlError QueryValidator::validateQuery()
 {
     try {
         validateDeclarations();
-    
+
         validateSelect();
 
-	    validateClauses();
+        validateClauses();
 
         return PqlError(ErrorType::NONE, "");
-    }
-    catch (SyntaxError e) {
+    } catch (SyntaxError e) {
         return PqlError(ErrorType::SYNTAX_ERROR, e.message);
-    } 
-    catch (SemanticError e) {
+    } catch (SemanticError e) {
         return PqlError(ErrorType::SEMANTIC_ERROR, e.message);
     }
 }
@@ -73,7 +72,7 @@ void QueryValidator::validateSelect()
     SelectValidator validator = SelectValidator(&declarations);
 
     validator.validateSelect(getNextToken().type);
-   
+
     PqlToken curr = getNextToken();
     if (curr.type == TokenType::OPEN_ARROW) {
         vector<PqlToken> tokens;
@@ -87,12 +86,10 @@ void QueryValidator::validateSelect()
         validator.validateMultiple(&tokens);
 
         curr = getNextToken(); // Get Token after closed arros
-    }
-    else if (curr.type == TokenType::BOOLEAN) {
+    } else if (curr.type == TokenType::BOOLEAN) {
         // No validation required for boolean
         curr = getNextToken();
-    } 
-    else {
+    } else {
         validator.validateSynonym(curr);
         curr = getNextToken();
 
@@ -111,8 +108,7 @@ void QueryValidator::validateSelect()
 void QueryValidator::validateClauses()
 {
     PqlToken curr = getNextToken();
-    while (curr.type != TokenType::END)
-    {
+    while (curr.type != TokenType::END) {
         switch (curr.type) {
         case TokenType::PATTERN:
             curr = validatePattern();
@@ -121,7 +117,7 @@ void QueryValidator::validateClauses()
             curr = validateWith();
             break;
         case TokenType::SUCH:
-            curr =validateSuchThat();
+            curr = validateSuchThat();
             break;
         default:
             throw SyntaxError("Invalid clauses");
@@ -133,8 +129,7 @@ PqlToken QueryValidator::validatePattern()
 {
     PatternValidator validator = PatternValidator(&declarations);
     PqlToken andToken = PqlToken(TokenType::AND, "and");
-    while (andToken.type == TokenType::AND)
-    {
+    while (andToken.type == TokenType::AND) {
         PqlToken pattern = getNextToken();
         validator.validatePattern(&pattern);
 
@@ -170,8 +165,7 @@ PqlToken QueryValidator::validateWith()
     vector<PqlToken> withTokens;
 
     PqlToken nextToken = getNextToken();
-    while (nextToken.type != TokenType::END && nextToken.type != TokenType::PATTERN && nextToken.type != TokenType::SUCH)
-    {
+    while (nextToken.type != TokenType::END && nextToken.type != TokenType::PATTERN && nextToken.type != TokenType::SUCH) {
         withTokens.push_back(nextToken);
         nextToken = getNextToken();
     }
@@ -185,67 +179,49 @@ PqlToken QueryValidator::validateWith()
 PqlToken QueryValidator::validateSuchThat()
 {
     PqlToken that = getNextToken();
-    if (that.type != TokenType::THAT)
-    {
+    if (that.type != TokenType::THAT) {
         throw SyntaxError("The keywords 'such that' must be used prior to a relationship reference");
     }
 
-	PqlToken andToken = PqlToken(TokenType::AND, "and");
-    while (andToken.type == TokenType::AND)
-    {
+    PqlToken andToken = PqlToken(TokenType::AND, "and");
+    while (andToken.type == TokenType::AND) {
         shared_ptr<ClauseValidator> validator = createClauseValidator(getNextToken().type);
-        validator->validateOpen(getNextToken().type); 
+        validator->validateOpen(getNextToken().type);
         PqlToken left = getNextToken();
-        validator->validateComma(getNextToken().type); 
+        validator->validateComma(getNextToken().type);
         PqlToken right = getNextToken();
         validator->validateClose(getNextToken().type);
-	    validator->validate(&left, &right);
+        validator->validate(&left, &right);
         andToken = getNextToken();
     }
 
     return andToken;
 }
 
- 
 shared_ptr<ClauseValidator> QueryValidator::createClauseValidator(TokenType type)
 {
-    if (type == TokenType::USES) 
-    {
+    if (type == TokenType::USES) {
         return shared_ptr<UsesValidator>(new UsesValidator(&declarations, type));
-    }  else if (type == TokenType::MODIFIES)
-    {
+    } else if (type == TokenType::MODIFIES) {
         return shared_ptr<ModifiesValidator>(new ModifiesValidator(&declarations, type));
-    }
-    else if (type == TokenType::FOLLOWS || type == TokenType::FOLLOWS_A)
-    {
+    } else if (type == TokenType::FOLLOWS || type == TokenType::FOLLOWS_A) {
         return shared_ptr<FollowsValidator>(new FollowsValidator(&declarations, type));
-    }
-    else if (type == TokenType::PARENT || type == TokenType::PARENT_A)
-    {
+    } else if (type == TokenType::PARENT || type == TokenType::PARENT_A) {
         return shared_ptr<ParentValidator>(new ParentValidator(&declarations, type));
-    }
-    else if (type == TokenType::CALLS || type == TokenType::CALLS_A)
-    {
+    } else if (type == TokenType::CALLS || type == TokenType::CALLS_A) {
         return shared_ptr<CallsValidator>(new CallsValidator(&declarations, type));
-    }
-    else if (type == TokenType::NEXT || type == TokenType::NEXT_A)
-    {
+    } else if (type == TokenType::NEXT || type == TokenType::NEXT_A) {
         return shared_ptr<NextValidator>(new NextValidator(&declarations, type));
-    }
-    else if (type == TokenType::AFFECTS || type == TokenType::AFFECTS_A)
-    {
+    } else if (type == TokenType::AFFECTS || type == TokenType::AFFECTS_A) {
         return shared_ptr<AffectsValidator>(new AffectsValidator(&declarations, type));
-    }
-    else
-    {
+    } else {
         throw SemanticError("Invalid relationship type");
     }
 }
 
-
-PqlToken QueryValidator::getNextToken() {
-    if (next >= size)
-    {   
+PqlToken QueryValidator::getNextToken()
+{
+    if (next >= size) {
         next++;
         return PqlToken(TokenType::END, "");
     }
@@ -255,5 +231,4 @@ PqlToken QueryValidator::getNextToken() {
         token.type = TokenType::SYNONYM;
     }
     return token;
-
 }

@@ -3,23 +3,24 @@
 #ifndef TEAM37_OPERATEDEXPRESSION_H
 #define TEAM37_OPERATEDEXPRESSION_H
 
-#include "RelationalFactor.h"
 #include "AST/Operators/Operator.h"
+#include "RelationalFactor.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class OperatedExpression : public RelationalFactor, public enable_shared_from_this<OperatedExpression> {
 private:
     Operator opr = ADD;
     shared_ptr<RelationalFactor> relFactor1 = nullptr;
     shared_ptr<RelationalFactor> relFactor2 = nullptr;
+
 public:
     OperatedExpression(
-            shared_ptr<TNode> parent,
-            Operator opr,
-            shared_ptr<RelationalFactor> expr1,
-            shared_ptr<RelationalFactor> expr2);
+        shared_ptr<TNode> parent,
+        Operator opr,
+        shared_ptr<RelationalFactor> expr1,
+        shared_ptr<RelationalFactor> expr2);
 
     /**
      * Get the operator of the operated expression

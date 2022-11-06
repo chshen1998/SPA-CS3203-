@@ -4,30 +4,29 @@
 #define TEAM37_QUERYVALIDATOR_H
 
 #include <memory>
-#include <string>
 #include <set>
-#include <vector>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "./Structures/PqlError.h"
-#include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
+#include "./Structures/PqlToken.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 #include "Validators/ClauseValidator.h"
 #include "Validators/PatternValidator.h"
 #include "Validators/WithValidator.h"
 
-
 class QueryValidator {
 public:
-    vector<PqlToken> *tokens;
+    vector<PqlToken>* tokens;
     int size;
     int next;
     bool booleanIsSynonym;
     unordered_map<string, TokenType> declarations;
 
-    QueryValidator(vector<PqlToken> * tokenVector);
+    QueryValidator(vector<PqlToken>* tokenVector);
 
     PqlError validateQuery();
 
@@ -41,8 +40,6 @@ private:
 
     shared_ptr<ClauseValidator> createClauseValidator(TokenType type);
     PqlToken getNextToken();
-
 };
 
-
-#endif //TEAM37_QUERYVALIDATOR_H
+#endif // TEAM37_QUERYVALIDATOR_H

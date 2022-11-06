@@ -1,10 +1,10 @@
 #ifndef SPA_CFGNODE_H
 #define SPA_CFGNODE_H
 
+#include <cassert>
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <cassert>
 
 using namespace std;
 
@@ -75,9 +75,6 @@ public:
      * @return the stored while or if statement
      */
     shared_ptr<CFGNode> getStoredStmt();
-
-
 };
 
-
-#endif //SPA_CFGNODE_H
+#endif // SPA_CFGNODE_H

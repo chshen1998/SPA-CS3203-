@@ -1,13 +1,14 @@
 #include "Storage.h"
 
 // Constructor
-Storage::Storage() {}
+Storage::Storage() { }
 
 /*
 Store the AST
 @param: AST - Shared Pointer to AST
 */
-void Storage::storeAST(shared_ptr<SourceCode> AST) {
+void Storage::storeAST(shared_ptr<SourceCode> AST)
+{
     this->AST = AST;
 
     // initialising AST visitors
@@ -15,11 +16,11 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     shared_ptr<ExtractParentsASTVisitor> parentsAstVisitor = make_shared<ExtractParentsASTVisitor>(shared_from_this());
     shared_ptr<ExtractFollowsASTVisitor> followsAstVisitor = make_shared<ExtractFollowsASTVisitor>(shared_from_this());
     shared_ptr<ExtractModifiesASTVisitor> modifiesAstVisitor = make_shared<ExtractModifiesASTVisitor>(
-            shared_from_this());
+        shared_from_this());
     shared_ptr<ExtractUsesASTVisitor> usesAstVisitor = make_shared<ExtractUsesASTVisitor>(
-            shared_from_this());
+        shared_from_this());
     shared_ptr<ExtractCallsASTVisitor> callsAstVisitor = make_shared<ExtractCallsASTVisitor>(
-            shared_from_this());
+        shared_from_this());
 
     // we start by traversing the AST using a Extract AST Visitor
     AST->accept(generalAstVisitor);
@@ -28,7 +29,6 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     AST->accept(parentsAstVisitor);
     this->buildStar(PARENT);
 
-
     // traverse the AST using a follows AST Visitor
     AST->accept(followsAstVisitor);
     this->buildStar(FOLLOWS);
@@ -36,7 +36,6 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
     // traverse the AST using a modifies AST Visitor
     AST->accept(modifiesAstVisitor);
     this->storeCallStmtProcedure(MODIFIESPV, MODIFIESSV);
-
 
     // traverse the AST using a uses AST Visitor
     AST->accept(usesAstVisitor);
@@ -52,7 +51,8 @@ void Storage::storeAST(shared_ptr<SourceCode> AST) {
 Retrieve Stored AST
 @return AST SourceCode node if AST added, nullptr otherwise
 */
-shared_ptr<SourceCode> Storage::retrieveAST() {
+shared_ptr<SourceCode> Storage::retrieveAST()
+{
     return this->AST;
 }
 
@@ -61,25 +61,27 @@ shared_ptr<SourceCode> Storage::retrieveAST() {
 Store a variable in the variable set
 @param varNode NameExpression Node to store
 */
-void Storage::storeVar(NameExpression varNode) {
+void Storage::storeVar(NameExpression varNode)
+{
     (this->variables).insert(varNode);
 }
 
-/* 
+/*
 Retrieve all stored variables
 @returns Set of Variables
 */
-set<NameExpression> Storage::getAllVar() {
+set<NameExpression> Storage::getAllVar()
+{
     return this->variables;
 }
-
 
 // Constant
 /*
 Store a constant
 @param constNode a ConstantExpression Node
 */
-void Storage::storeConst(ConstantExpression constNode) {
+void Storage::storeConst(ConstantExpression constNode)
+{
     (this->constants).insert(constNode);
 }
 
@@ -87,7 +89,8 @@ void Storage::storeConst(ConstantExpression constNode) {
 Retrieve all stored constants
 @return Set of constants stored
 */
-set<ConstantExpression> Storage::getAllConst() {
+set<ConstantExpression> Storage::getAllConst()
+{
     return this->constants;
 }
 
@@ -96,7 +99,8 @@ set<ConstantExpression> Storage::getAllConst() {
 Store a procedure
 @param constNode a Procedure Node
 */
-void Storage::storeProc(Procedure procNode) {
+void Storage::storeProc(Procedure procNode)
+{
     (this->procedures).insert(procNode);
 }
 
@@ -104,7 +108,8 @@ void Storage::storeProc(Procedure procNode) {
 Retrieve all stored procedure
 @return Set of procedure stored
 */
-set<Procedure> Storage::getAllProc() {
+set<Procedure> Storage::getAllProc()
+{
     return this->procedures;
 }
 
@@ -113,7 +118,8 @@ set<Procedure> Storage::getAllProc() {
 Store a shared pointer to a statement
 @param stmtNode Shared pointers to a Statement Node
 */
-void Storage::storeStmt(shared_ptr<Statement> stmtNode) {
+void Storage::storeStmt(shared_ptr<Statement> stmtNode)
+{
     (this->statements).insert(make_pair(stmtNode->getLineNum(), stmtNode));
 }
 
@@ -121,40 +127,40 @@ void Storage::storeStmt(shared_ptr<Statement> stmtNode) {
 Retrieve all stored statements
 @return Set of shared pointers of statements stored
 */
-set<shared_ptr<Statement>> Storage::getAllStmt() {
+set<shared_ptr<Statement>> Storage::getAllStmt()
+{
     set<shared_ptr<Statement>> output = {};
 
-    for (auto kv: statements) {
+    for (auto kv : statements) {
         output.insert(kv.second);
     }
 
     return output;
 }
 
-
 /**
  * after traversing the AST we have to store the Uses(c,v) relations that was not handled in the queue
  */
-void Storage::storeCallStmtProcedure(ProcVarRelationType relationProcType, StmtVarRelationType relationStmtType) {
-    for (const auto &tuple: this->callStmtProcedureQueue) {
+void Storage::storeCallStmtProcedure(ProcVarRelationType relationProcType, StmtVarRelationType relationStmtType)
+{
+    for (const auto& tuple : this->callStmtProcedureQueue) {
         int lineNum = get<0>(tuple);
         string parentProcedureName = get<1>(tuple);
         string calledProcedureName = get<2>(tuple);
 
         vector<string> storedVariablesInProcedure = this->forwardRetrieveRelation(calledProcedureName,
-                                                                                  relationProcType);
-        for (const auto &variable: storedVariablesInProcedure) {
+            relationProcType);
+        for (const auto& variable : storedVariablesInProcedure) {
             // store Relation(c,v)
             this->storeRelation(lineNum, variable, relationStmtType);
             if (!parentProcedureName.empty()) {
                 // store Relation(p,v)
                 this->storeRelation(parentProcedureName, variable, relationProcType);
             }
-
         }
     }
 
-// empty the queue after storing the relations
+    // empty the queue after storing the relations
     this->callStmtProcedureQueue = {};
 }
 
@@ -165,16 +171,17 @@ Store Relation of a Statement-Statement Relationship (Non-star). For Relation(st
 @param value Value of relation
 @param type Type of relation
 */
-void Storage::storeRelation(int stmt1, int stmt2, StmtStmtRelationType type) {
+void Storage::storeRelation(int stmt1, int stmt2, StmtStmtRelationType type)
+{
     switch (type) {
-        case (FOLLOWS):
-            Follows.store(stmt1, stmt2);
-            break;
-        case (PARENT):
-            Parent.store(stmt1, stmt2);
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Statement Realtion");
+    case (FOLLOWS):
+        Follows.store(stmt1, stmt2);
+        break;
+    case (PARENT):
+        Parent.store(stmt1, stmt2);
+        break;
+    default:
+        throw invalid_argument("Not a Statement-Statement Realtion");
     }
 }
 
@@ -185,39 +192,39 @@ Retrieve Statement-Statement Relation Stored. For Relation(stmt1, stmt2)
 @param type Type of relation
 @returns Value of relation stored
 */
-bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) {
+bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type)
+{
     switch (type) {
-        case (FOLLOWS):
-            return Follows.retrieve(stmt1, stmt2);
-        case (FOLLOWSS):
-            return FollowsS.retrieve(stmt1, stmt2);
-        case (PARENT):
-            return Parent.retrieve(stmt1, stmt2);
-        case (PARENTS):
-            return ParentS.retrieve(stmt1, stmt2);
-        case (NEXT): {
-            vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXT);
+    case (FOLLOWS):
+        return Follows.retrieve(stmt1, stmt2);
+    case (FOLLOWSS):
+        return FollowsS.retrieve(stmt1, stmt2);
+    case (PARENT):
+        return Parent.retrieve(stmt1, stmt2);
+    case (PARENTS):
+        return ParentS.retrieve(stmt1, stmt2);
+    case (NEXT): {
+        vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXT);
 
-            // search for stmt2 in all lineNum that fulfil Next(stmt1,_)
-            return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
-        }
-        case (NEXTS): {
-            vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXTS);
+        // search for stmt2 in all lineNum that fulfil Next(stmt1,_)
+        return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
+    }
+    case (NEXTS): {
+        vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXTS);
 
-            // search for stmt2 in all lineNum that fulfil Nexts(stmt1,_)
-            return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
-        }
-        case (AFFECTS): {
-            vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTS);
-            return find(forward.begin(), forward.end(), stmt2) != forward.end();
-        }
-        case (AFFECTSS): {
-            vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTSS);
-            return find(forward.begin(), forward.end(), stmt2) != forward.end();
-
-        }
-        default:
-            throw invalid_argument("Not a Statement-Statement Realtion");
+        // search for stmt2 in all lineNum that fulfil Nexts(stmt1,_)
+        return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
+    }
+    case (AFFECTS): {
+        vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTS);
+        return find(forward.begin(), forward.end(), stmt2) != forward.end();
+    }
+    case (AFFECTSS): {
+        vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTSS);
+        return find(forward.begin(), forward.end(), stmt2) != forward.end();
+    }
+    default:
+        throw invalid_argument("Not a Statement-Statement Realtion");
     }
 }
 
@@ -227,22 +234,23 @@ Retrieve Reverse Relation Stored. For Relation(stmt1, stmt2)
 @param type Type of relation
 @returns All stmt1 such that Relation(stmt1, stmt2) is True
 */
-vector<int> Storage::reverseRetrieveRelation(int stmt2, StmtStmtRelationType type) {
+vector<int> Storage::reverseRetrieveRelation(int stmt2, StmtStmtRelationType type)
+{
     switch (type) {
-        case (FOLLOWS):
-            return Follows.reverseRetrieve(stmt2);
-            break;
-        case (FOLLOWSS):
-            return FollowsS.reverseRetrieve(stmt2);
-            break;
-        case (PARENT):
-            return Parent.reverseRetrieve(stmt2);
-            break;
-        case (PARENTS):
-            return ParentS.reverseRetrieve(stmt2);
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Statement Realtion");
+    case (FOLLOWS):
+        return Follows.reverseRetrieve(stmt2);
+        break;
+    case (FOLLOWSS):
+        return FollowsS.reverseRetrieve(stmt2);
+        break;
+    case (PARENT):
+        return Parent.reverseRetrieve(stmt2);
+        break;
+    case (PARENTS):
+        return ParentS.reverseRetrieve(stmt2);
+        break;
+    default:
+        throw invalid_argument("Not a Statement-Statement Realtion");
     }
 }
 
@@ -252,41 +260,42 @@ Retrieve Forward Relation Stored. For Relation(stmt1, stmt2)
 @param type Type of relation
 @returns All stmt2 such that Relation(stmt1, stmt2) is True
 */
-vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType type) {
+vector<int> Storage::forwardRetrieveRelation(int stmt1, StmtStmtRelationType type)
+{
     switch (type) {
-        case (FOLLOWS):
-            return Follows.forwardRetrieve(stmt1);
-            break;
-        case (FOLLOWSS):
-            return FollowsS.forwardRetrieve(stmt1);
-            break;
-        case (PARENT):
-            return Parent.forwardRetrieve(stmt1);
-            break;
-        case (PARENTS):
-            return ParentS.forwardRetrieve(stmt1);
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Statement Realtion");
+    case (FOLLOWS):
+        return Follows.forwardRetrieve(stmt1);
+        break;
+    case (FOLLOWSS):
+        return FollowsS.forwardRetrieve(stmt1);
+        break;
+    case (PARENT):
+        return Parent.forwardRetrieve(stmt1);
+        break;
+    case (PARENTS):
+        return ParentS.forwardRetrieve(stmt1);
+        break;
+    default:
+        throw invalid_argument("Not a Statement-Statement Realtion");
     }
 }
-
 
 /**
 Only called after filling up Statement-Statement, fills in the Star
 @param type Type of relation
 
 */
-void Storage::buildStar(StmtStmtRelationType type) {
+void Storage::buildStar(StmtStmtRelationType type)
+{
     switch (type) {
-        case (FOLLOWS):
-            FollowsS = Follows.buildStar();
-            break;
-        case (PARENT):
-            ParentS = Parent.buildStar();
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Statement Realtion");
+    case (FOLLOWS):
+        FollowsS = Follows.buildStar();
+        break;
+    case (PARENT):
+        ParentS = Parent.buildStar();
+        break;
+    default:
+        throw invalid_argument("Not a Statement-Statement Realtion");
     }
 }
 
@@ -296,19 +305,20 @@ Store Relation of a Statement-Variable Relationship. For Relation(stmt, var)
 @param var Variable Name
 @param type Type of relation
 */
-void Storage::storeRelation(int stmt, string var, StmtVarRelationType type) {
+void Storage::storeRelation(int stmt, string var, StmtVarRelationType type)
+{
     switch (type) {
-        case (USESSV):
-            UsesSV.store(stmt, var);
-            break;
-        case (MODIFIESSV):
-            ModifiesSV.store(stmt, var);
-            break;
-        case (USESSVPREDICATE):
-            UsesSVPredicate.store(stmt, var);
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Variable Relation");
+    case (USESSV):
+        UsesSV.store(stmt, var);
+        break;
+    case (MODIFIESSV):
+        ModifiesSV.store(stmt, var);
+        break;
+    case (USESSVPREDICATE):
+        UsesSVPredicate.store(stmt, var);
+        break;
+    default:
+        throw invalid_argument("Not a Statement-Variable Relation");
     }
 }
 
@@ -319,19 +329,20 @@ Retrieve Statement-Statement Relation Stored. For Relation(stmt, var)
 @param type Type of relation
 @returns Value of relation stored
 */
-bool Storage::retrieveRelation(int stmt, string var, StmtVarRelationType type) {
+bool Storage::retrieveRelation(int stmt, string var, StmtVarRelationType type)
+{
     switch (type) {
-        case (USESSV):
-            return UsesSV.retrieve(stmt, var);
-            break;
-        case (MODIFIESSV):
-            return ModifiesSV.retrieve(stmt, var);
-            break;
-        case (USESSVPREDICATE):
-            return UsesSVPredicate.retrieve(stmt, var);
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Variable Realtion");
+    case (USESSV):
+        return UsesSV.retrieve(stmt, var);
+        break;
+    case (MODIFIESSV):
+        return ModifiesSV.retrieve(stmt, var);
+        break;
+    case (USESSVPREDICATE):
+        return UsesSVPredicate.retrieve(stmt, var);
+        break;
+    default:
+        throw invalid_argument("Not a Statement-Variable Realtion");
     }
 }
 
@@ -341,19 +352,20 @@ Retrieve Forward Relation Stored.For Relation(stmt, var)
 @param type Type of relation
 @returns All var such that Relation(stmt, var) is True
 */
-vector<string> Storage::forwardRetrieveRelation(int stmt, StmtVarRelationType type) {
+vector<string> Storage::forwardRetrieveRelation(int stmt, StmtVarRelationType type)
+{
     switch (type) {
-        case (USESSV):
-            return UsesSV.forwardRetrieve(stmt);
-            break;
-        case (MODIFIESSV):
-            return ModifiesSV.forwardRetrieve(stmt);
-            break;
-        case (USESSVPREDICATE):
-            return UsesSVPredicate.forwardRetrieve(stmt);
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Variable Relation");
+    case (USESSV):
+        return UsesSV.forwardRetrieve(stmt);
+        break;
+    case (MODIFIESSV):
+        return ModifiesSV.forwardRetrieve(stmt);
+        break;
+    case (USESSVPREDICATE):
+        return UsesSVPredicate.forwardRetrieve(stmt);
+        break;
+    default:
+        throw invalid_argument("Not a Statement-Variable Relation");
     }
 }
 
@@ -363,19 +375,20 @@ Retrieve Reverse Relation Stored.For Relation(stmt, var)
 @param type Type of relation
 @returns All stmt such that Relation(stmt, var) is True
 */
-vector<int> Storage::reverseRetrieveRelation(string var, StmtVarRelationType type) {
+vector<int> Storage::reverseRetrieveRelation(string var, StmtVarRelationType type)
+{
     switch (type) {
-        case (USESSV):
-            return UsesSV.reverseRetrieve(var);
-            break;
-        case (MODIFIESSV):
-            return ModifiesSV.reverseRetrieve(var);
-            break;
-        case (USESSVPREDICATE):
-            return UsesSVPredicate.reverseRetrieve(var);
-            break;
-        default:
-            throw invalid_argument("Not a Statement-Variable Relation");
+    case (USESSV):
+        return UsesSV.reverseRetrieve(var);
+        break;
+    case (MODIFIESSV):
+        return ModifiesSV.reverseRetrieve(var);
+        break;
+    case (USESSVPREDICATE):
+        return UsesSVPredicate.reverseRetrieve(var);
+        break;
+    default:
+        throw invalid_argument("Not a Statement-Variable Relation");
     }
 }
 
@@ -385,16 +398,17 @@ Store Relation of a Procedure-Variable Relationship. For Relation(proc, var)
 @param var Variable Name
 @param type Type of relation
 */
-void Storage::storeRelation(string proc, string var, ProcVarRelationType type) {
+void Storage::storeRelation(string proc, string var, ProcVarRelationType type)
+{
     switch (type) {
-        case (USESPV):
-            UsesPV.store(proc, var);
-            break;
-        case (MODIFIESPV):
-            ModifiesPV.store(proc, var);
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Variable Relation");
+    case (USESPV):
+        UsesPV.store(proc, var);
+        break;
+    case (MODIFIESPV):
+        ModifiesPV.store(proc, var);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Variable Relation");
     }
 }
 
@@ -405,16 +419,17 @@ Retrieve Procedure-Variable Relationship. For Relation(proc, var)
 @param type Type of relation
 @returns Value of relation stored
 */
-bool Storage::retrieveRelation(string proc, string var, ProcVarRelationType type) {
+bool Storage::retrieveRelation(string proc, string var, ProcVarRelationType type)
+{
     switch (type) {
-        case (USESPV):
-            return UsesPV.retrieve(proc, var);
-            break;
-        case (MODIFIESPV):
-            return ModifiesPV.retrieve(proc, var);
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Variable Realtion");
+    case (USESPV):
+        return UsesPV.retrieve(proc, var);
+        break;
+    case (MODIFIESPV):
+        return ModifiesPV.retrieve(proc, var);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Variable Realtion");
     }
 }
 
@@ -424,16 +439,17 @@ Retrieve Forward Relation Stored. For Relation(proc, var)
 @param type Type of relation
 @returns All var such that Relation(stmt, var) is True
 */
-vector<string> Storage::forwardRetrieveRelation(string proc, ProcVarRelationType type) {
+vector<string> Storage::forwardRetrieveRelation(string proc, ProcVarRelationType type)
+{
     switch (type) {
-        case (USESSV):
-            return UsesPV.forwardRetrieve(proc);
-            break;
-        case (MODIFIESSV):
-            return ModifiesPV.forwardRetrieve(proc);
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Variable Relation");
+    case (USESSV):
+        return UsesPV.forwardRetrieve(proc);
+        break;
+    case (MODIFIESSV):
+        return ModifiesPV.forwardRetrieve(proc);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Variable Relation");
     }
 }
 
@@ -443,16 +459,17 @@ Retrieve Reverse Relation Stored. For Relation(proc, var)
 @param type Type of relation
 @returns All stmt such that Relation(stmt, var) is True
 */
-vector<string> Storage::reverseRetrieveRelation(string var, ProcVarRelationType type) {
+vector<string> Storage::reverseRetrieveRelation(string var, ProcVarRelationType type)
+{
     switch (type) {
-        case (USESSV):
-            return UsesPV.reverseRetrieve(var);
-            break;
-        case (MODIFIESSV):
-            return ModifiesPV.reverseRetrieve(var);
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Variable Relation");
+    case (USESSV):
+        return UsesPV.reverseRetrieve(var);
+        break;
+    case (MODIFIESSV):
+        return ModifiesPV.reverseRetrieve(var);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Variable Relation");
     }
 }
 
@@ -462,16 +479,17 @@ Store Relation of a Procedure-Procedure Relationship. For Relation(proc1, proc2)
 @param proc Procedure Name 2
 @param type Type of relation
 */
-void Storage::storeRelation(string proc1, string proc2, ProcProcRelationType type) {
+void Storage::storeRelation(string proc1, string proc2, ProcProcRelationType type)
+{
     switch (type) {
-        case (CALLS):
-            Calls.store(proc1, proc2);
-            break;
-        case (CALLSS):
-            CallsS.store(proc1, proc2);
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Procedure Relation");
+    case (CALLS):
+        Calls.store(proc1, proc2);
+        break;
+    case (CALLSS):
+        CallsS.store(proc1, proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
     }
 }
 
@@ -482,16 +500,17 @@ Retrieve Procedure-Procedure Relationship. For Relation(proc1, proc2)
 @param type Type of relation
 @returns Value of relation stored
 */
-bool Storage::retrieveRelation(string proc1, string proc2, ProcProcRelationType type) {
+bool Storage::retrieveRelation(string proc1, string proc2, ProcProcRelationType type)
+{
     switch (type) {
-        case (CALLS):
-            return Calls.retrieve(proc1, proc2);
-            break;
-        case (CALLSS):
-            return CallsS.retrieve(proc1, proc2);
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Procedure Realtion");
+    case (CALLS):
+        return Calls.retrieve(proc1, proc2);
+        break;
+    case (CALLSS):
+        return CallsS.retrieve(proc1, proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Realtion");
     }
 }
 
@@ -501,16 +520,17 @@ Retrieve Forward Relation Stored. For Relation(proc1, proc2)
 @param type Type of relation
 @returns All proc2 such that Relation(proc1, proc2) is True
 */
-vector<string> Storage::forwardRetrieveRelation(string proc1, ProcProcRelationType type) {
+vector<string> Storage::forwardRetrieveRelation(string proc1, ProcProcRelationType type)
+{
     switch (type) {
-        case (CALLS):
-            return Calls.forwardRetrieve(proc1);
-            break;
-        case (CALLSS):
-            return CallsS.forwardRetrieve(proc1);
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Procedure Relation");
+    case (CALLS):
+        return Calls.forwardRetrieve(proc1);
+        break;
+    case (CALLSS):
+        return CallsS.forwardRetrieve(proc1);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
     }
 }
 
@@ -520,16 +540,17 @@ Retrieve Reverse Relation Stored. For Relation(proc1, proc2)
 @param type Type of relation
 @returns All proc1 such that Relation(proc1, proc2) is True
 */
-vector<string> Storage::reverseRetrieveRelation(string proc2, ProcProcRelationType type) {
+vector<string> Storage::reverseRetrieveRelation(string proc2, ProcProcRelationType type)
+{
     switch (type) {
-        case (USESSV):
-            return Calls.reverseRetrieve(proc2);
-            break;
-        case (MODIFIESSV):
-            return CallsS.reverseRetrieve(proc2);
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Procedure Relation");
+    case (USESSV):
+        return Calls.reverseRetrieve(proc2);
+        break;
+    case (MODIFIESSV):
+        return CallsS.reverseRetrieve(proc2);
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Relation");
     }
 }
 
@@ -538,20 +559,21 @@ Only called after filling up Procedure-Procedure, fills in the Star
 @param type Type of relation
 
 */
-void Storage::buildStar(ProcProcRelationType type) {
+void Storage::buildStar(ProcProcRelationType type)
+{
     switch (type) {
-        case (CALLS):
-            CallsS = Calls.buildStar();
-            break;
-        default:
-            throw invalid_argument("Not a Procedure-Procedure Realtion");
+    case (CALLS):
+        CallsS = Calls.buildStar();
+        break;
+    default:
+        throw invalid_argument("Not a Procedure-Procedure Realtion");
     }
 }
 
-void Storage::storeAllCFGs(shared_ptr<AllCFGs> allCfgs) {
+void Storage::storeAllCFGs(shared_ptr<AllCFGs> allCfgs)
+{
     this->allCFGs = allCfgs;
 }
-
 
 /*
 Compute Forward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
@@ -559,7 +581,8 @@ Compute Forward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @param type Type of relation
 @returns All stmt2 such that Relation(stmt, stmt2) is True
 */
-vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type) {
+vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
+{
 
     shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
     if (cfgNode == nullptr) {
@@ -569,95 +592,92 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
     vector<int> lstLineNum = {};
 
     switch (type) {
-        case (NEXT): {
-            lstLineNum = getNextForwardHelper(cfgNode);
+    case (NEXT): {
+        lstLineNum = getNextForwardHelper(cfgNode);
+        return lstLineNum;
+    }
+
+    case (NEXTS): {
+        // reset visited
+        shared_ptr<map<int, bool>> visited = make_shared<map<int, bool>>();
+
+        vector<int> childrenLineNums = this->getNextStarForwardLineNum(cfgNode, visited);
+        lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
+
+        return lstLineNum;
+    }
+    case (AFFECTS): {
+        shared_ptr<TNode> tNode = cfgNode->getTNode();
+        if (tNode == nullptr) {
+            return lstLineNum;
+        }
+        shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
+
+        if (stmtNode == nullptr) {
             return lstLineNum;
         }
 
-        case (NEXTS): {
-            // reset visited
-            shared_ptr<map<int, bool >> visited = make_shared<map<int, bool >>();
+        shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
+        string var = stmtNode->getVarName();
 
-            vector<int> childrenLineNums = this->getNextStarForwardLineNum(cfgNode, visited);
-            lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
+        set<int> result = forwardAffectsHelper(cfgNode, nullptr, var, visited);
+        for (auto x : result) {
+            lstLineNum.push_back(x);
+        }
 
+        return lstLineNum;
+    }
+    case (AFFECTSS): {
+        shared_ptr<TNode> tNode = cfgNode->getTNode();
+        if (tNode == nullptr) {
             return lstLineNum;
         }
-        case (AFFECTS): {
-            shared_ptr<TNode> tNode = cfgNode->getTNode();
-            if (tNode == nullptr) {
-                return lstLineNum;
+        shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
+
+        if (stmtNode == nullptr) {
+            return lstLineNum;
+        }
+
+        unordered_map<int, bool> visited = {};
+        queue<int> nodeQueue;
+        nodeQueue.push(stmt);
+
+        while (!nodeQueue.empty()) {
+            // Get next item in queue
+            int currStmt = nodeQueue.front();
+            nodeQueue.pop();
+
+            // Skip if visited before
+            if (visited[currStmt]) {
+                continue;
             }
-            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
-            if (stmtNode == nullptr) {
-                return lstLineNum;
-            }
+            // Mark as visited and add to result
+            visited[currStmt] = true;
 
+            // Get all statement that this affects
+            vector<int> nextResult = forwardComputeRelation(currStmt, AFFECTS);
 
-            shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
-            string var = stmtNode->getVarName();
+            // Add all next result into queue
 
-            set<int> result = forwardAffectsHelper(cfgNode, nullptr, var, visited);
-            for (auto x: result) {
+            for (int x : nextResult) {
+                nodeQueue.push(x);
                 lstLineNum.push_back(x);
             }
-
-            return lstLineNum;
         }
-        case (AFFECTSS): {
-            shared_ptr<TNode> tNode = cfgNode->getTNode();
-            if (tNode == nullptr) {
-                return lstLineNum;
-            }
-            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
-            if (stmtNode == nullptr) {
-                return lstLineNum;
-            }
-
-
-            unordered_map<int, bool> visited = {};
-            queue<int> nodeQueue;
-            nodeQueue.push(stmt);
-
-            while (!nodeQueue.empty()) {
-                // Get next item in queue
-                int currStmt = nodeQueue.front();
-                nodeQueue.pop();
-
-                // Skip if visited before
-                if (visited[currStmt]) {
-                    continue;
-                }
-
-                // Mark as visited and add to result
-                visited[currStmt] = true;
-
-
-                // Get all statement that this affects
-                vector<int> nextResult = forwardComputeRelation(currStmt, AFFECTS);
-
-                // Add all next result into queue
-
-                for (int x: nextResult) {
-                    nodeQueue.push(x);
-                    lstLineNum.push_back(x);
-                }
-
-            }
-
-            return lstLineNum;
-        }
-        default:
-            throw invalid_argument("Not a Statement-Statement Relation");
+        return lstLineNum;
+    }
+    default:
+        throw invalid_argument("Not a Statement-Statement Relation");
     }
 }
 
-vector<int> Storage::getNextForwardHelper(shared_ptr<CFGNode> cfgNode) {
+vector<int> Storage::getNextForwardHelper(shared_ptr<CFGNode> cfgNode)
+{
     vector<int> lstLineNum = {};
 
-    for (const auto &childNode: cfgNode->getChildren()) {
+    for (const auto& childNode : cfgNode->getChildren()) {
         shared_ptr<TNode> tNode = childNode->getTNode();
 
         // normal child node
@@ -667,7 +687,7 @@ vector<int> Storage::getNextForwardHelper(shared_ptr<CFGNode> cfgNode) {
 
             // childNode is a dummy node
         } else if (tNode == nullptr && !childNode->getChildren().empty()) {
-            for (const auto &storedChildNode: childNode->getChildren()) {
+            for (const auto& storedChildNode : childNode->getChildren()) {
                 shared_ptr<TNode> storedChildTNode = storedChildNode->getTNode();
 
                 if (dynamic_pointer_cast<Statement>(storedChildTNode) != nullptr) {
@@ -692,7 +712,8 @@ Helper function for retrieve affects
 @returns Value of relation stored
 */
 set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode, string var,
-                                       shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
+    shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited)
+{
     set<int> result = {};
 
     // Check if path visited before
@@ -704,7 +725,7 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     // If blank node, recurse into childNodes
     shared_ptr<Statement> statementNode = dynamic_pointer_cast<Statement>(currNode->getTNode());
     if (statementNode == nullptr) {
-        for (const auto &childNode: currNode->getChildren()) {
+        for (const auto& childNode : currNode->getChildren()) {
             set<int> childResult = forwardAffectsHelper(childNode, currNode, var, visited);
             result.insert(childResult.begin(), childResult.end());
         }
@@ -718,7 +739,6 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
         result.insert(lineNo);
     }
 
-
     // If current statement is assignment, read or call and modifies var -> end recursion
     bool isAssignment = dynamic_pointer_cast<AssignStatement>(statementNode) != nullptr;
     bool isRead = dynamic_pointer_cast<ReadStatement>(statementNode) != nullptr;
@@ -728,7 +748,7 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     }
 
     // Recurse to child nodes
-    for (const auto &childNode: currNode->getChildren()) {
+    for (const auto& childNode : currNode->getChildren()) {
         set<int> childResult = forwardAffectsHelper(childNode, currNode, var, visited);
         result.insert(childResult.begin(), childResult.end());
     }
@@ -740,11 +760,12 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
  * @param node
  * @return lines numbers of all child nodes(recursively) where Next*(n1, n2)
  */
-vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node, shared_ptr<map<int, bool >> visited) {
+vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node, shared_ptr<map<int, bool>> visited)
+{
     vector<int> lstLineNum = {};
 
     // add children
-    for (const auto &childNode: node->getChildren()) {
+    for (const auto& childNode : node->getChildren()) {
         shared_ptr<TNode> TNode = childNode->getTNode();
 
         if (dynamic_pointer_cast<Statement>(TNode) != nullptr) {
@@ -756,15 +777,15 @@ vector<int> Storage::getNextStarForwardLineNum(shared_ptr<CFGNode> node, shared_
                 continue;
             } else {
                 // add children stmt to list
-                visited->insert({lineNum, true});
+                visited->insert({ lineNum, true });
                 lstLineNum.push_back(lineNum);
 
-                //recursively get child nodes
+                // recursively get child nodes
                 vector<int> childrenLineNums = getNextStarForwardLineNum(childNode, visited);
                 lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
             }
         } else if (TNode == nullptr && !childNode->getChildren().empty()) {
-            //recursively get children nodes
+            // recursively get children nodes
             vector<int> childrenLineNums = getNextStarForwardLineNum(childNode, visited);
             lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
         }
@@ -778,7 +799,8 @@ Compute Reverse Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @param type Type of relation
 @returns All stmt1 such that Relation(stmt1, stmt) is True
 */
-vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type) {
+vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
+{
     shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
 
     if (cfgNode == nullptr) {
@@ -787,104 +809,103 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
 
     vector<int> lstLineNum = {};
     switch (type) {
-        case (NEXT): {
-            lstLineNum = getNextReverseHelper(cfgNode);
+    case (NEXT): {
+        lstLineNum = getNextReverseHelper(cfgNode);
+        return lstLineNum;
+    }
+    case (NEXTS): {
+        // reset visited
+        shared_ptr<map<int, bool>> visited = make_shared<map<int, bool>>();
+
+        vector<int> parentLineNums = this->getNextStarReverseLineNum(cfgNode, visited);
+        lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
+
+        return lstLineNum;
+    }
+    case (AFFECTS): {
+        // Check if statement is assign
+        shared_ptr<TNode> tNode = cfgNode->getTNode();
+        if (tNode == nullptr) {
             return lstLineNum;
         }
-        case (NEXTS): {
-            // reset visited
-            shared_ptr<map<int, bool >> visited = make_shared<map<int, bool >>();
+        shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
-            vector<int> parentLineNums = this->getNextStarReverseLineNum(cfgNode, visited);
-            lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
-
+        if (stmtNode == nullptr) {
             return lstLineNum;
         }
-        case (AFFECTS): {
-            // Check if statement is assign
-            shared_ptr<TNode> tNode = cfgNode->getTNode();
-            if (tNode == nullptr) {
-                return lstLineNum;
+
+        shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
+
+        if (cfgNode == nullptr) {
+            return {};
+        }
+
+        shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>>();
+
+        // Get all variables used
+        vector<string> temp = forwardRetrieveRelation(stmt, USESSV);
+        set<string> varUsed = {};
+        for (auto x : temp) {
+            varUsed.insert(x);
+        }
+
+        set<int> result = reverseAffectsHelper(cfgNode, nullptr, varUsed, visited);
+        for (auto x : result) {
+            lstLineNum.push_back(x);
+        }
+        return lstLineNum;
+    }
+    case (AFFECTSS): {
+        // Check if current statement is assign
+        shared_ptr<TNode> tNode = cfgNode->getTNode();
+        if (tNode == nullptr) {
+            return lstLineNum;
+        }
+        shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
+
+        if (stmtNode == nullptr) {
+            return lstLineNum;
+        }
+
+        unordered_map<int, bool> visited = {};
+        queue<int> nodeQueue;
+        nodeQueue.push(stmt);
+
+        while (!nodeQueue.empty()) {
+            // Get next item in queue
+            int currStmt = nodeQueue.front();
+            nodeQueue.pop();
+
+            // Skip if visited before
+            if (visited[currStmt]) {
+                continue;
             }
-            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
-            if (stmtNode == nullptr) {
-                return lstLineNum;
-            }
+            // Mark as visited and add to result
+            visited[currStmt] = true;
 
-            shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
+            // Get all statement that this affects
+            vector<int> nextResult = reverseComputeRelation(currStmt, AFFECTS);
 
-            if (cfgNode == nullptr) {
-                return {};
-            }
-
-            shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>>();
-
-            // Get all variables used
-            vector<string> temp = forwardRetrieveRelation(stmt, USESSV);
-            set<string> varUsed = {};
-            for (auto x: temp) {
-                varUsed.insert(x);
-            }
-
-            set<int> result = reverseAffectsHelper(cfgNode, nullptr, varUsed, visited);
-            for (auto x: result) {
+            // Add all next result into queue
+            for (int x : nextResult) {
                 lstLineNum.push_back(x);
+                nodeQueue.push(x);
             }
-            return lstLineNum;
         }
-        case (AFFECTSS): {
-            // Check if current statement is assign
-            shared_ptr<TNode> tNode = cfgNode->getTNode();
-            if (tNode == nullptr) {
-                return lstLineNum;
-            }
-            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
-            if (stmtNode == nullptr) {
-                return lstLineNum;
-            }
-
-            unordered_map<int, bool> visited = {};
-            queue<int> nodeQueue;
-            nodeQueue.push(stmt);
-
-            while (!nodeQueue.empty()) {
-                // Get next item in queue
-                int currStmt = nodeQueue.front();
-                nodeQueue.pop();
-
-                // Skip if visited before
-                if (visited[currStmt]) {
-                    continue;
-                }
-
-                // Mark as visited and add to result
-                visited[currStmt] = true;
-
-
-                // Get all statement that this affects
-                vector<int> nextResult = reverseComputeRelation(currStmt, AFFECTS);
-
-                // Add all next result into queue
-                for (int x: nextResult) {
-                    lstLineNum.push_back(x);
-                    nodeQueue.push(x);
-                }
-
-            }
-
-            return lstLineNum;
-        }
-        default:
-            throw invalid_argument("Not a Statement-Statement Relation");
+        return lstLineNum;
+    }
+    default:
+        throw invalid_argument("Not a Statement-Statement Relation");
     }
 }
 
-vector<int> Storage::getNextReverseHelper(shared_ptr<CFGNode> cfgNode) {
+vector<int> Storage::getNextReverseHelper(shared_ptr<CFGNode> cfgNode)
+{
     vector<int> lstLineNum = {};
 
-    for (const auto &parentNode: cfgNode->getParents()) {
+    for (const auto& parentNode : cfgNode->getParents()) {
         shared_ptr<TNode> tNode = parentNode->getTNode();
 
         if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
@@ -892,7 +913,7 @@ vector<int> Storage::getNextReverseHelper(shared_ptr<CFGNode> cfgNode) {
             lstLineNum.push_back(stmt->getLineNum());
 
         } else if (parentNode->getTNode() == nullptr && !parentNode->getParents().empty()) {
-            for (auto storedParentNode: parentNode->getParents()) {
+            for (auto storedParentNode : parentNode->getParents()) {
                 shared_ptr<TNode> storedParentTNode = storedParentNode->getTNode();
 
                 if (dynamic_pointer_cast<Statement>(storedParentTNode) != nullptr) {
@@ -919,7 +940,8 @@ Helper function for retrieve affects
 */
 set<int>
 Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> childNode, set<string> varsUsed,
-                              shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited) {
+    shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited)
+{
     set<int> result = {};
 
     if (varsUsed.empty()) {
@@ -928,20 +950,20 @@ Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> 
 
     // Check if path visited before
     if (visited->find(pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>(currNode,
-                                                                                        pair<shared_ptr<CFGNode>, set<string>>(
-                                                                                                childNode,
-                                                                                                varsUsed))) !=
-        visited->end()) {
+            pair<shared_ptr<CFGNode>, set<string>>(
+                childNode,
+                varsUsed)))
+        != visited->end()) {
         return result;
     }
     visited->insert(pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>(currNode,
-                                                                                      pair<shared_ptr<CFGNode>, set<string>>(
-                                                                                              childNode, varsUsed)));
+        pair<shared_ptr<CFGNode>, set<string>>(
+            childNode, varsUsed)));
 
     // If blank node, recurse into parentNodes
     shared_ptr<Statement> statementNode = dynamic_pointer_cast<Statement>(currNode->getTNode());
     if (statementNode == nullptr) {
-        for (const auto &parentNode: currNode->getParents()) {
+        for (const auto& parentNode : currNode->getParents()) {
             set<int> childResult = reverseAffectsHelper(parentNode, currNode, varsUsed, visited);
             result.insert(childResult.begin(), childResult.end());
         }
@@ -967,35 +989,33 @@ Storage::reverseAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> 
     if ((isAssignment || isRead || isCall) && childNode != nullptr) {
         vector<string> varsModified = forwardRetrieveRelation(lineNo, MODIFIESSV);
 
-        for (auto x: varsModified) {
+        for (auto x : varsModified) {
             varsUsed.erase(x);
         }
     }
 
-
     // Recurse to parent nodes
-    for (const auto &parentNode: currNode->getParents()) {
+    for (const auto& parentNode : currNode->getParents()) {
         set<int> childResult = reverseAffectsHelper(parentNode, currNode, varsUsed, visited);
         result.insert(childResult.begin(), childResult.end());
     }
     return result;
 }
 
-
 /**
  * helper function to recursively get all line numbers of parent nodes in CFGNode
  * @param node
  * @return lines numbers of all parent nodes(recursively) where Next*(n1, n2)
  */
-vector<int> Storage::getNextStarReverseLineNum(shared_ptr<CFGNode> node, shared_ptr<map<int, bool >> visited) {
+vector<int> Storage::getNextStarReverseLineNum(shared_ptr<CFGNode> node, shared_ptr<map<int, bool>> visited)
+{
     vector<int> lstLineNum = {};
 
     if (dynamic_pointer_cast<Statement>(node->getTNode()) != nullptr) {
         shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(node->getTNode());
     }
 
-
-    for (const auto &parentNode: node->getParents()) {
+    for (const auto& parentNode : node->getParents()) {
         shared_ptr<TNode> tNode = parentNode->getTNode();
 
         if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
@@ -1007,16 +1027,16 @@ vector<int> Storage::getNextStarReverseLineNum(shared_ptr<CFGNode> node, shared_
                 continue;
             } else {
                 // add parent stmt to list
-                visited->insert({lineNum, true});
+                visited->insert({ lineNum, true });
                 lstLineNum.push_back(lineNum);
 
-                //recursively get parent nodes
+                // recursively get parent nodes
                 vector<int> parentLineNums = getNextStarReverseLineNum(parentNode, visited);
                 lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
             }
             // node is dummy node
         } else if (tNode == nullptr && !parentNode->getParents().empty()) {
-            //recursively get parent nodes
+            // recursively get parent nodes
             vector<int> parentLineNums = getNextStarReverseLineNum(parentNode, visited);
             lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
         }

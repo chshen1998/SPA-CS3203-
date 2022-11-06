@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 
-#include "SP/Tokenizer.h"
 #include "SP/InvalidSyntaxException.h"
+#include "SP/Tokenizer.h"
 
 using namespace std;
 
@@ -15,7 +15,8 @@ using namespace std;
  * tokenizeRelFactor - Negative Case - Very Nested Blocks
  */
 
-TEST_CASE("tokenizeRead - Positive Case") {
+TEST_CASE("tokenizeRead - Positive Case")
+{
     string rawReadStatement;
     shared_ptr<ReadStatement> result;
 
@@ -36,7 +37,8 @@ TEST_CASE("tokenizeRead - Positive Case") {
     REQUIRE(result->getVariableName() == "VeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLong");
 }
 
-TEST_CASE("tokenizeRead - Negative Case") {
+TEST_CASE("tokenizeRead - Negative Case")
+{
     string rawReadStatement;
 
     rawReadStatement = "read 999";
@@ -61,7 +63,8 @@ TEST_CASE("tokenizeRead - Negative Case") {
     REQUIRE_THROWS_AS(Tokenizer::tokenizeRead(rawReadStatement), InvalidSyntaxException);
 }
 
-TEST_CASE("tokenizePrint - Positive Case") {
+TEST_CASE("tokenizePrint - Positive Case")
+{
     string rawPrintStatement;
     shared_ptr<PrintStatement> result;
 
@@ -82,7 +85,8 @@ TEST_CASE("tokenizePrint - Positive Case") {
     REQUIRE(result->getVariableName() == "VeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLong");
 }
 
-TEST_CASE("tokenizePrint - Negative Case") {
+TEST_CASE("tokenizePrint - Negative Case")
+{
     string rawPrintStatement;
 
     rawPrintStatement = "print 999";
@@ -107,7 +111,8 @@ TEST_CASE("tokenizePrint - Negative Case") {
     REQUIRE_THROWS_AS(Tokenizer::tokenizePrint(rawPrintStatement), InvalidSyntaxException);
 }
 
-TEST_CASE("tokenizeAssign - Positive Case") {
+TEST_CASE("tokenizeAssign - Positive Case")
+{
     string rawAssignStatement;
     shared_ptr<AssignStatement> result;
     shared_ptr<OperatedExpression> operatedExpression;
@@ -125,7 +130,8 @@ TEST_CASE("tokenizeAssign - Positive Case") {
     REQUIRE(constantExpression->getValue() == 10);
 }
 
-TEST_CASE("tokenizeCall - Positive Case") {
+TEST_CASE("tokenizeCall - Positive Case")
+{
     string rawCallStatement;
     shared_ptr<CallStatement> result;
 
@@ -146,7 +152,8 @@ TEST_CASE("tokenizeCall - Positive Case") {
     REQUIRE(result->getProcedureName() == "VeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLongVeryLong");
 }
 
-TEST_CASE("tokenizeRelFactor - Positive Case - Addition / Subtraction") {
+TEST_CASE("tokenizeRelFactor - Positive Case - Addition / Subtraction")
+{
     string rawAssignStatement = "a - 1 + hmm - 9312";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
 
@@ -174,7 +181,8 @@ TEST_CASE("tokenizeRelFactor - Positive Case - Addition / Subtraction") {
     REQUIRE(constantExpression->getValue() == 1);
 }
 
-TEST_CASE("tokenizeRelFactor - Positive Case - Multiplication / Division / Modulo") {
+TEST_CASE("tokenizeRelFactor - Positive Case - Multiplication / Division / Modulo")
+{
     string rawAssignStatement = "a % 1 / hmm * 9312";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
 
@@ -202,7 +210,8 @@ TEST_CASE("tokenizeRelFactor - Positive Case - Multiplication / Division / Modul
     REQUIRE(constantExpression->getValue() == 1);
 }
 
-TEST_CASE("tokenizeRelFactor - Positive Case -  ALL Operators") {
+TEST_CASE("tokenizeRelFactor - Positive Case -  ALL Operators")
+{
     string rawAssignStatement = "a % b - c / d + e % f * g + h - i";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
 
@@ -258,7 +267,8 @@ TEST_CASE("tokenizeRelFactor - Positive Case -  ALL Operators") {
     REQUIRE(nameExpression->getVarName() == "a");
 }
 
-TEST_CASE("tokenizeRelFactor - Positive Case - Annoying Brackets") {
+TEST_CASE("tokenizeRelFactor - Positive Case - Annoying Brackets")
+{
     string rawAssignStatement = "(((a + b)))";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
 
@@ -273,7 +283,8 @@ TEST_CASE("tokenizeRelFactor - Positive Case - Annoying Brackets") {
     REQUIRE(nameExpression->getVarName() == "b");
 }
 
-TEST_CASE("tokenizeRelFactor - Positive Case - Brackets reversing the order") {
+TEST_CASE("tokenizeRelFactor - Positive Case - Brackets reversing the order")
+{
     string rawAssignStatement = "(a + (b + (c + d)))";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
 
@@ -298,7 +309,8 @@ TEST_CASE("tokenizeRelFactor - Positive Case - Brackets reversing the order") {
     REQUIRE(nameExpression->getVarName() == "d");
 }
 
-TEST_CASE("tokenizeRelFactor - Positive Case - Brackets changing priority") {
+TEST_CASE("tokenizeRelFactor - Positive Case - Brackets changing priority")
+{
     string rawAssignStatement = "((a % b) - c)";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
 
@@ -316,7 +328,6 @@ TEST_CASE("tokenizeRelFactor - Positive Case - Brackets changing priority") {
     nameExpression = dynamic_pointer_cast<NameExpression>(operatedExpression->getExpression2());
     REQUIRE(nameExpression->getVarName() == "b");
 
-
     rawAssignStatement = "(a % (b - c))";
     relFactor = Tokenizer::tokenizeRelFactor(rawAssignStatement);
 
@@ -333,7 +344,8 @@ TEST_CASE("tokenizeRelFactor - Positive Case - Brackets changing priority") {
     REQUIRE(nameExpression->getVarName() == "c");
 }
 
-TEST_CASE("generateString (relFactor) - Positive Case") {
+TEST_CASE("generateString (relFactor) - Positive Case")
+{
     string rawRelFactor = "a%b-c/d+e%f*g+h-i";
     shared_ptr<RelationalFactor> relFactor = Tokenizer::tokenizeRelFactor(rawRelFactor);
     REQUIRE(relFactor->generateString() == "((((((a) % (b)) - ((c) / (d))) + (((e) % (f)) * (g))) + (h)) - (i))");

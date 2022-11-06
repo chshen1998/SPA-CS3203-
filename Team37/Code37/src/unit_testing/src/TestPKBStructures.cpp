@@ -2,11 +2,11 @@
 
 using namespace std;
 
-#include "PKB/Structures/RelationStorage.h"
 #include "PKB/Structures/RelationStarStorage.h"
+#include "PKB/Structures/RelationStorage.h"
 
-
-TEST_CASE("Structure - Statement-Statement Star") {
+TEST_CASE("Structure - Statement-Statement Star")
+{
     RelationStarStorage<int, int> matrix = RelationStarStorage<int, int>();
 
     // Check initial matrix is empty
@@ -28,8 +28,8 @@ TEST_CASE("Structure - Statement-Statement Star") {
     vector<int> row_0 = matrix.forwardRetrieve(1);
     vector<int> row_1 = matrix.forwardRetrieve(2);
 
-    vector<int> cmp_0{ 1 };
-    vector<int> cmp_1{ 2 };
+    vector<int> cmp_0 { 1 };
+    vector<int> cmp_1 { 2 };
 
     REQUIRE(row_0 == cmp_0);
     REQUIRE(row_1 == cmp_1);
@@ -45,9 +45,9 @@ TEST_CASE("Structure - Statement-Statement Star") {
     testStarMatrix.store(1, 2);
     testStarMatrix.store(2, 3);
 
-    vector<int> cmp_star_1{ 2, 3 };
-    vector<int> cmp_star_2{ 3 };
-    vector<int> cmp_star_3{};
+    vector<int> cmp_star_1 { 2, 3 };
+    vector<int> cmp_star_2 { 3 };
+    vector<int> cmp_star_3 {};
 
     RelationStarStorage<int, int> starMatrix = testStarMatrix.buildStar();
 
@@ -67,7 +67,8 @@ TEST_CASE("Structure - Statement-Statement Star") {
     REQUIRE(StarMatrixLoop.retrieve(2, 2));
 }
 
-TEST_CASE("Structure - Statement-Variable") {
+TEST_CASE("Structure - Statement-Variable")
+{
     RelationStorage<int, string> store = RelationStorage<int, string>();
 
     // Initally Empty
@@ -102,7 +103,8 @@ TEST_CASE("Structure - Statement-Variable") {
     REQUIRE(store.reverseRetrieve("z") == cmp_z);
 }
 
-TEST_CASE("Structure - Procedure - Variable") {
+TEST_CASE("Structure - Procedure - Variable")
+{
     RelationStorage<string, string> store = RelationStorage<string, string>();
 
     // Initally Empty
@@ -128,8 +130,8 @@ TEST_CASE("Structure - Procedure - Variable") {
     REQUIRE(store.forwardRetrieve("test") == cmp_2);
     REQUIRE(store.forwardRetrieve("sum") == cmp_3);
 
-    vector<string> cmp_x = { "main", "test"};
-    vector<string> cmp_y = { "test", "sum"};
+    vector<string> cmp_x = { "main", "test" };
+    vector<string> cmp_y = { "test", "sum" };
     vector<string> cmp_z = { "sum" };
 
     REQUIRE(store.reverseRetrieve("x") == cmp_x);

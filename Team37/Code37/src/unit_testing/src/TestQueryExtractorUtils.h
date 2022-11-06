@@ -1,12 +1,12 @@
 #include "QPS/QueryExtractor.h"
 #include "QPS/Structures/PqlError.h"
-#include "QPS/Structures/PqlToken.h"
 #include "QPS/Structures/PqlQuery.h"
+#include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/ErrorType.h"
 #include "QPS/Types/TokenType.h"
 
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "catch.hpp"
 using namespace std;
@@ -126,4 +126,3 @@ extern vector<PqlToken> invalid_with_synonym_attrname;
 extern vector<PqlToken> invalid_with_missing_dot;
 
 extern vector<PqlToken> invalid_with_parameter_extra_tokens;
-

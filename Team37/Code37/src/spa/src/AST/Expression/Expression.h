@@ -5,12 +5,15 @@
 
 #include "../TNode.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class Expression : public TNode {
 public:
-    Expression(shared_ptr<TNode> parent) : TNode(parent) { }
+    Expression(shared_ptr<TNode> parent)
+        : TNode(parent)
+    {
+    }
 };
 
 #endif

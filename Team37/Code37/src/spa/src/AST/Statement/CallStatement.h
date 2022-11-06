@@ -3,15 +3,16 @@
 #ifndef TEAM37_CALLSTATEMENT_H
 #define TEAM37_CALLSTATEMENT_H
 
-#include <stdio.h>
 #include <iostream>
 #include <memory>
+#include <stdio.h>
 
 #include "Statement.h"
 
 class CallStatement : public Statement, public enable_shared_from_this<CallStatement> {
 private:
     string procedureName;
+
 public:
     CallStatement(shared_ptr<TNode> parent, string procedureName);
 
@@ -24,7 +25,7 @@ public:
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
-    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode> > parents, shared_ptr<CFG> cfg) override;
+    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode>> parents, shared_ptr<CFG> cfg) override;
 };
 
 #endif

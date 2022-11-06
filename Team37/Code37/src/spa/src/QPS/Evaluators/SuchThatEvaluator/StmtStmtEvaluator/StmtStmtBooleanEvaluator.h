@@ -3,16 +3,16 @@
 
 using namespace std;
 
-#include "QPS/Structures/PqlQuery.h"
-#include "QPS/Evaluators/BooleanEvaluator.h"
-#include "PKB/Types/StmtStmtRelationType.h"
 #include "PKB/QueryServicer.h"
+#include "PKB/Types/StmtStmtRelationType.h"
+#include "QPS/Evaluators/BooleanEvaluator.h"
+#include "QPS/Structures/PqlQuery.h"
 #include "StmtStmtEvaluator.h"
 
 class StmtStmtBooleanEvaluator : public BooleanEvaluator, public StmtStmtEvaluator {
 public:
-    StmtStmtBooleanEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType >& d) :
-        BooleanEvaluator(s, d) {};
+    StmtStmtBooleanEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d)
+        : BooleanEvaluator(s, d) {};
 
     bool evaluateBooleanClause(shared_ptr<Clause>) override;
 };

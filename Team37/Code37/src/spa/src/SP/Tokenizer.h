@@ -1,21 +1,21 @@
 #ifndef SPA_TOKENISER_H
 #define SPA_TOKENISER_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 using namespace std;
 
-#include "AST/SourceCode.h"
-#include "AST/Procedure.h"
-#include "AST/Statement/ReadStatement.h"
-#include "AST/Statement/PrintStatement.h"
-#include "AST/Statement/AssignStatement.h"
-#include "AST/Statement/IfStatement.h"
-#include "AST/Statement/CallStatement.h"
-#include "AST/Expression/RelationalFactor/OperatedExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "AST/Expression/RelationalFactor/NameExpression.h"
+#include "AST/Expression/RelationalFactor/OperatedExpression.h"
+#include "AST/Procedure.h"
+#include "AST/SourceCode.h"
+#include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/PrintStatement.h"
+#include "AST/Statement/ReadStatement.h"
 
 class Tokenizer {
 public:

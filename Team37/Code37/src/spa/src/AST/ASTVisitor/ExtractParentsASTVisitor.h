@@ -4,12 +4,13 @@ using namespace std;
 
 #include "AST/ASTVisitor/ASTVisitor.h"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 class ExtractParentsASTVisitor : public ASTVisitor, public enable_shared_from_this<ASTVisitor> {
 private:
     shared_ptr<Storage> storage = nullptr;
+
 public:
     // Constructor
     ExtractParentsASTVisitor(shared_ptr<Storage> storage);
@@ -46,7 +47,6 @@ public:
     void visitAndCondition(shared_ptr<AndCondition> andCondition);
 
     void visitOrCondition(shared_ptr<OrCondition> orCondition);
-
 };
 
 #endif

@@ -1,20 +1,21 @@
 using namespace std;
 
-#include <string>
 #include <set>
-#include <vector>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "../Structures/PqlError.h"
-#include "../Structures/PqlToken.h"
 #include "../Structures/PqlQuery.h"
+#include "../Structures/PqlToken.h"
 #include "../Types/ErrorType.h"
 #include "../Types/TokenType.h"
+#include "BaseValidator.h"
 #include "DeclarationValidator.h"
 #include "ValidatorUtils.h"
-#include "BaseValidator.h"
 
-DeclarationValidator::DeclarationValidator(vector<PqlToken>* declarationTokens, unordered_map<string, TokenType>* declarationMap) : BaseValidator{}
+DeclarationValidator::DeclarationValidator(vector<PqlToken>* declarationTokens, unordered_map<string, TokenType>* declarationMap)
+    : BaseValidator {}
 {
     tokens = declarationTokens;
     next = 0;
@@ -22,10 +23,10 @@ DeclarationValidator::DeclarationValidator(vector<PqlToken>* declarationTokens, 
     declarations = declarationMap;
 }
 
-void DeclarationValidator::validate() {
+void DeclarationValidator::validate()
+{
     PqlToken declarationType = getNextToken();
-    while (declarationType.type != TokenType::END)
-    {
+    while (declarationType.type != TokenType::END) {
         isValidDesignEntity(&declarationType);
         PqlToken synonym = getNextToken();
         isValidSynonym(&synonym);
@@ -45,23 +46,24 @@ void DeclarationValidator::validate() {
     }
 }
 
-void DeclarationValidator::isValidDesignEntity(PqlToken *token)
+void DeclarationValidator::isValidDesignEntity(PqlToken* token)
 {
     if (!(validDesignEntities.find(token->type) != validDesignEntities.end())) {
         throw SyntaxError(token->value + " is not a valid design entity type");
     }
 }
 
-void DeclarationValidator::isValidSynonym(PqlToken *token) {
+void DeclarationValidator::isValidSynonym(PqlToken* token)
+{
     if (token->type != TokenType::SYNONYM) {
         throw SyntaxError("Declarations must be a synonym");
-    }
-    else if (declarations->find(token->value) != declarations->end()) {
+    } else if (declarations->find(token->value) != declarations->end()) {
         throw SemanticError("Synonym name can only be declared once");
     }
 }
 
-void DeclarationValidator::isSemicolonOrComma(PqlToken *token) {
+void DeclarationValidator::isSemicolonOrComma(PqlToken* token)
+{
     if (token->type != TokenType::SEMICOLON && token->type != TokenType::COMMA) {
         throw SyntaxError("Declarations synonym must be followed with either a semicolon or comma");
     }

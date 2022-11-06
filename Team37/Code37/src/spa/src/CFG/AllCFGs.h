@@ -1,8 +1,8 @@
 #ifndef SPA_ALLCFGS_H
 #define SPA_ALLCFGS_H
 
-#include <vector>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -10,16 +10,17 @@ using namespace std;
 
 class AllCFGs {
 private:
-    vector<shared_ptr<CFG> > allCFGs;
-    shared_ptr<map<int, shared_ptr<CFGNode> > > combinedMap;
+    vector<shared_ptr<CFG>> allCFGs;
+    shared_ptr<map<int, shared_ptr<CFGNode>>> combinedMap;
+
 public:
-    AllCFGs(vector<shared_ptr<CFG> > allCFGs, shared_ptr<map<int, shared_ptr<CFGNode> > > combinedMap);
+    AllCFGs(vector<shared_ptr<CFG>> allCFGs, shared_ptr<map<int, shared_ptr<CFGNode>>> combinedMap);
 
     /**
      * Getter to get all CFGs of the program.
      * @return vector containing all CFGs of program
      */
-    vector<shared_ptr<CFG> > getAllCFGs();
+    vector<shared_ptr<CFG>> getAllCFGs();
 
     /**
      * Getter to get the combined statement number to CFG node map
@@ -43,5 +44,4 @@ public:
     shared_ptr<CFGNode> getNode(int stmtNum);
 };
 
-
-#endif //SPA_ALLCFGS_H
+#endif // SPA_ALLCFGS_H

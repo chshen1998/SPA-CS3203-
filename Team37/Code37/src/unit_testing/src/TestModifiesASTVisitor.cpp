@@ -1,11 +1,11 @@
 #include "AST/SourceCode.h"
 
-#include "AST/Statement/ReadStatement.h"
-#include "AST/Statement/PrintStatement.h"
-#include "AST/Statement/CallStatement.h"
-#include "AST/Statement/WhileStatement.h"
-#include "AST/Statement/IfStatement.h"
 #include "AST/Statement/AssignStatement.h"
+#include "AST/Statement/CallStatement.h"
+#include "AST/Statement/IfStatement.h"
+#include "AST/Statement/PrintStatement.h"
+#include "AST/Statement/ReadStatement.h"
+#include "AST/Statement/WhileStatement.h"
 
 #include "AST/Expression/ConditionalExpression/RelationalExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
@@ -18,12 +18,11 @@
 
 using namespace std;
 
-
-TEST_CASE("Modified assign statements") {
+TEST_CASE("Modified assign statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<RelationalFactor> rf = make_shared<ConstantExpression>(nullptr, 1);
-
 
     shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(procedure, "c", rf);
 
@@ -31,22 +30,20 @@ TEST_CASE("Modified assign statements") {
 
     procedure->addStatement(assignStmt);
 
-
     sc->addProcedure(procedure);
 
     // We start by traversing the AST
     storage->storeAST(sc);
-
 
     vector<string> modifiedVariables = storage->forwardRetrieveRelation(assignStmt->getLineNum(), MODIFIESSV);
 
     REQUIRE(modifiedVariables.size() == 1);
 }
 
-TEST_CASE("Modified read statements") {
+TEST_CASE("Modified read statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
-
 
     shared_ptr<ReadStatement> readStmt = make_shared<ReadStatement>(procedure, "b");
 
@@ -64,16 +61,17 @@ TEST_CASE("Modified read statements") {
     REQUIRE(modifiedVariables.size() == 1);
 }
 
-TEST_CASE("Modified while statements") {
+TEST_CASE("Modified while statements")
+{
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<NameExpression> nameExpr = make_shared<NameExpression>(nullptr, "c");
     shared_ptr<ConstantExpression> constExpr = make_shared<ConstantExpression>(nullptr, 11);
     shared_ptr<ConditionalExpression> expr = make_shared<RelationalExpression>(
-            nullptr,
-            RelationalOperator::LESS_THAN,
-            nameExpr,
-            constExpr);
+        nullptr,
+        RelationalOperator::LESS_THAN,
+        nameExpr,
+        constExpr);
 
     shared_ptr<RelationalFactor> rf = make_shared<ConstantExpression>(nullptr, 1);
     shared_ptr<AssignStatement> assignStmt = make_shared<AssignStatement>(procedure, "c", rf);
@@ -83,7 +81,6 @@ TEST_CASE("Modified while statements") {
     constExpr->setParent(expr);
     expr->setParent(whileStmt);
     rf->setParent(assignStmt);
-
 
     shared_ptr<Storage> storage = make_shared<Storage>();
 
@@ -102,7 +99,8 @@ TEST_CASE("Modified while statements") {
     REQUIRE(modifiedVariables.size() == 1);
 }
 
-TEST_CASE("Modifies call statements") {
+TEST_CASE("Modifies call statements")
+{
     /**
      * In this testcase, procedure 1 only contains a call stmt on procedure 2, we are testing if we are able to store
      * the variables from procedure 2 into Modifies(c,v) even though procedure 2 is traversed later on in the evaluation

@@ -10,7 +10,8 @@ using namespace std;
 
 using namespace TokenizerUtils;
 
-void PatternTokenizer::tokenize() {
+void PatternTokenizer::tokenize()
+{
     TokenType currentToken;
     int clauseCounter = 1;
 
@@ -19,8 +20,7 @@ void PatternTokenizer::tokenize() {
 
         if (clauseCounter % 2 != 0) {
             currentToken = checkPatternTokenType(delimited_query[currentIndex], clauseCounter);
-        }
-        else {
+        } else {
             if (stringToTokenMap.find(delimited_query[currentIndex]) != stringToTokenMap.end()) {
                 currentToken = stringToTokenMap[delimited_query[currentIndex]];
             }
@@ -35,16 +35,15 @@ void PatternTokenizer::tokenize() {
                 tokens.push_back(PqlToken(TokenType::AND, delimited_query[currentIndex]));
                 currentIndex += 1;
                 clauseCounter = patternClauseFirstArgIndex;
-            }
-            else {
+            } else {
                 return;
             }
         }
     }
 }
 
-
-TokenType PatternTokenizer::checkPatternTokenType(const string & s, int argNum) {
+TokenType PatternTokenizer::checkPatternTokenType(const string& s, int argNum)
+{
     switch (argNum) {
     case patternClauseFirstArgIndex:
         return checkIfSynonym(s) ? TokenType::SYNONYM : TokenType::UNKNOWN;
@@ -58,5 +57,3 @@ TokenType PatternTokenizer::checkPatternTokenType(const string & s, int argNum) 
         return TokenType::UNKNOWN;
     }
 }
-  
-

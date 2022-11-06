@@ -1,7 +1,7 @@
-    using namespace std;
+using namespace std;
 
-#include <string>
 #include <set>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -22,23 +22,26 @@ struct PqlToken {
     TokenType type;
     string value;
 
-    PqlToken() {
+    PqlToken()
+    {
         type = TokenType::NONE;
         value = "";
     }
 
-    PqlToken(TokenType tokenType, string tokenValue) {
+    PqlToken(TokenType tokenType, string tokenValue)
+    {
         type = tokenType;
         value = tokenValue;
     }
 
-    bool operator==(const PqlToken& other) const {
+    bool operator==(const PqlToken& other) const
+    {
         return (other.type == type) && (other.value == value);
     }
 
 public:
     // For debugging when writing unit tests
-    friend ostream& operator<< (std::ostream& os, const PqlToken& token); 
+    friend ostream& operator<<(std::ostream& os, const PqlToken& token);
 };
 
-#endif 
+#endif

@@ -3,8 +3,8 @@
 #ifndef TEAM37_ASSIGNSTATEMENT_H
 #define TEAM37_ASSIGNSTATEMENT_H
 
-#include "Statement.h"
 #include "../Expression/RelationalFactor/RelationalFactor.h"
+#include "Statement.h"
 
 #include <memory>
 #include <string>
@@ -13,6 +13,7 @@ class AssignStatement : public Statement, public enable_shared_from_this<AssignS
 private:
     string varName;
     shared_ptr<RelationalFactor> relFactor;
+
 public:
     AssignStatement(shared_ptr<TNode> parent, string varName, shared_ptr<RelationalFactor> relFactor);
 
@@ -32,7 +33,7 @@ public:
 
     void accept(shared_ptr<ASTVisitor> visitor) override;
 
-    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode> > parents, shared_ptr<CFG> cfg) override;
+    shared_ptr<CFGNode> buildCFG(vector<shared_ptr<CFGNode>> parents, shared_ptr<CFG> cfg) override;
 };
 
 #endif

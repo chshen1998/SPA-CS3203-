@@ -1,37 +1,41 @@
 using namespace std;
 
-#include <string>
-#include <vector>
-#include <unordered_map>
 #include <algorithm>
 #include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include <ctype.h>
 
-#include "./Validators/ValidatorUtils.h"
-#include "QueryTokenizer.h"
 #include "./Structures/PqlError.h"
-#include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
-#include "./Types/ErrorType.h"
-#include "./Types/TokenType.h"
-#include "./Tokenizers/TokenizerUtils.h"
+#include "./Structures/PqlToken.h"
 #include "./Tokenizers/DeclarationTokenizer.h"
+#include "./Tokenizers/PatternTokenizer.h"
 #include "./Tokenizers/SelectTokenizer.h"
 #include "./Tokenizers/SuchThatTokenizer.h"
-#include "./Tokenizers/PatternTokenizer.h"
+#include "./Tokenizers/TokenizerUtils.h"
 #include "./Tokenizers/WithTokenizer.h"
+#include "./Types/ErrorType.h"
+#include "./Types/TokenType.h"
+#include "./Validators/ValidatorUtils.h"
+#include "QueryTokenizer.h"
 
 using namespace TokenizerUtils;
 
+QueryTokenizer::QueryTokenizer(string queryString)
+    : query(queryString)
+{
+}
 
-QueryTokenizer::QueryTokenizer(string queryString) : query(queryString) { }
-
-void QueryTokenizer::resetQueryString(string queryString) {
+void QueryTokenizer::resetQueryString(string queryString)
+{
     query = queryString;
 }
 
-vector<PqlToken> QueryTokenizer::tokenize() {
+vector<PqlToken> QueryTokenizer::tokenize()
+{
     if (query.empty()) {
         throw "Invalid Query Syntax :: Query Length is zero.";
     }
@@ -42,7 +46,8 @@ vector<PqlToken> QueryTokenizer::tokenize() {
     return tokens;
 }
 
-void QueryTokenizer::split() {
+void QueryTokenizer::split()
+{
     string currentString;
     bool selectExists = false;
     bool insideInvertedCommas = false;
@@ -56,22 +61,20 @@ void QueryTokenizer::split() {
         if (isspace(query[i])) {
             if (currentString.empty()) {
                 continue;
-            }
-            else if (insideInvertedCommas) {
+            } else if (insideInvertedCommas) {
                 currentString += query[i];
-            }
-            else {
+            } else {
                 delimited_query.push_back(currentString);
                 currentString = "";
             }
         }
 
         // If the character is a single character symbol, for eg brackets or comma
-        else if (stringToTokenMap.find(string{ query[i] }) != stringToTokenMap.end()) {
+        else if (stringToTokenMap.find(string { query[i] }) != stringToTokenMap.end()) {
             if (!currentString.empty()) {
                 delimited_query.push_back(currentString);
             }
-            delimited_query.push_back(string{ query[i] });
+            delimited_query.push_back(string { query[i] });
             currentString = "";
         }
 
@@ -83,7 +86,6 @@ void QueryTokenizer::split() {
             selectExists = selectExists || currentString == "Select";
         }
     }
-
 
     if (!currentString.empty()) {
         delimited_query.push_back(currentString);
@@ -97,7 +99,7 @@ void QueryTokenizer::split() {
         throw SyntaxError("Select keyword does not exist");
     }
 
-    delimited_query.shrink_to_fit(); //Shrinking the final capacity (not size) of the vector for space optimizations
+    delimited_query.shrink_to_fit(); // Shrinking the final capacity (not size) of the vector for space optimizations
 
     if (!checkIfDesignEntity(delimited_query[0]) && delimited_query[0] != "Select") {
         throw SyntaxError("Query must either start with a declaration or 'Select' keyword");
@@ -108,8 +110,8 @@ void QueryTokenizer::split() {
     }
 }
 
-
-void QueryTokenizer::convertIntoTokens() {
+void QueryTokenizer::convertIntoTokens()
+{
     tokens = vector<PqlToken>();
     tokens.reserve(delimited_query.size() + 1); // Additional 1 for `declaration end`
     int index = 0; // index of delimited_query that we are looping through
@@ -139,8 +141,7 @@ void QueryTokenizer::convertIntoTokens() {
                 if (currentToken == TokenType::WITH) {
                     currentState = TokenizeState::WITH;
                 }
-            }
-            else {
+            } else {
                 // If this token is not where it is supposed to be, it will throw an error anyway
                 currentToken = TokenType::UNKNOWN;
             }

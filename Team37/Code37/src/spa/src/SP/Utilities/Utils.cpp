@@ -1,6 +1,7 @@
 #include "Utils.h"
 #include "Keywords.h"
 #include "../InvalidSyntaxException.h"
+#include "../FileNotFoundException.h"
 
 const string Utils::WHITESPACE = " \n\r\t\f\v";
 
@@ -14,13 +15,11 @@ string Utils::fileToString(string filepath) {
     if (in.is_open()) {
         while(!in.eof()) {
             getline(in, s);
-            // TODO: investigate if "\n" is needed
             sTotal += s + "\n";
         }
         in.close();
     } else {
-        // TODO: Throw error
-        cout << "Unable to open file." << endl;
+        throw FileNotFoundException((char *) "File not found!");
     }
 
     return sTotal;

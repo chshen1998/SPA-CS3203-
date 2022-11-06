@@ -45,5 +45,5 @@ jobs:
         shell: bash
         run: |
           cd Team37/Tests37
-          python script.py
+          python script_ci.py
       

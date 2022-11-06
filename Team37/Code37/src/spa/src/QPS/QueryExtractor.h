@@ -15,15 +15,15 @@
 
 class QueryExtractor {
 public:
-    vector<PqlToken> *tokens;
+    QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq_pointer);
+
+    void extractSemantics();
+
+    vector<PqlToken>* tokens;
     int next;
     int size;
     bool booleanIsSynonym;
     shared_ptr<PqlQuery> pq;
-
-    QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq);
-
-    void extractSemantics();
 
 private:
     void extractDeclarations();

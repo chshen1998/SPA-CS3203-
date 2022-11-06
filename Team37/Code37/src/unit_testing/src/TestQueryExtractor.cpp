@@ -15,7 +15,7 @@
 using namespace std;
 
 bool isSameMap(unordered_map<string, TokenType> ans, unordered_map<string, TokenType> result) {
-	for (const auto & [key, value] : ans) {
+	for (const auto& [key, value] : ans) {
 		if (result.find(key) == result.end()) {
 			return false;
 		}
@@ -26,7 +26,7 @@ bool isSameMap(unordered_map<string, TokenType> ans, unordered_map<string, Token
 	return true;
 }
 
-bool isSameClauses(vector<shared_ptr<Clause>> ans, vector<shared_ptr<Clause>> result)
+bool isSameClauses(vector<Clause> ans, vector<shared_ptr<Clause>> result)
 {
 	if (ans.size() != result.size())
 	{
@@ -35,7 +35,28 @@ bool isSameClauses(vector<shared_ptr<Clause>> ans, vector<shared_ptr<Clause>> re
 
 	for (int i = 0; i != ans.size(); i++)
 	{
-		if (ans[i] == result[i]) {
+		if (ans[i] == (*result[i].get())) {
+			continue;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool isSameSelectObject(vector<SelectObject> ans, vector<shared_ptr<SelectObject>> result)
+{
+	if (ans.size() != result.size())
+	{
+		return false;
+	}
+
+	for (int i = 0; i != ans.size(); i++)
+	{
+		if (ans[i] == (*result[i].get())) {
 			continue;
 		}
 		else
@@ -64,97 +85,97 @@ TEST_CASE("Test declartions")
 
 TEST_CASE("Test Select clause")
 {
-	vector<shared_ptr<SelectObject>> ans = { make_shared<SelectObject>(SelectObject(SelectType::SYNONYM, "v")) };
+	vector<SelectObject> ans = { SelectObject(SelectType::SYNONYM, "v") };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&basic_tokens, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Select only no declarations")
 {
-	vector<shared_ptr<SelectObject>> ans = { make_shared<SelectObject>(SelectObject(SelectType::BOOLEAN)) };
+	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_select_only, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Calls wildcards")
 {
-	vector<shared_ptr<SelectObject>> ans = { make_shared<SelectObject>(SelectObject(SelectType::BOOLEAN)) };
-	vector<shared_ptr<Clause>> ans2 = { make_shared<Clause>(Clause(PqlToken(TokenType::CALLS, "Calls"),
+	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };
+	vector<Clause> ans2 = { Clause(PqlToken(TokenType::CALLS, "Calls"),
 								  PqlToken(TokenType::WILDCARD, "_"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_calls_wildcards, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
-	REQUIRE(ptr->clauses[0] == ans2);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
+	REQUIRE(isSameClauses(ans2, ptr->clauses[0]));
 }
 
 
 TEST_CASE("Test Select boolean")
 {
-	vector<shared_ptr<SelectObject>> ans = { make_shared<SelectObject>(SelectObject(SelectType::BOOLEAN)) };
+	vector<SelectObject> ans = { SelectObject(SelectType::BOOLEAN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_select_boolean, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Select declared boolean")
 {
-	vector<shared_ptr<SelectObject>> ans = { make_shared<SelectObject>(SelectObject(SelectType::SYNONYM, "BOOLEAN")) };
+	vector<SelectObject> ans = { SelectObject(SelectType::SYNONYM, "BOOLEAN") };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_select_declared_boolean, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Select attrName")
 {
-	vector<shared_ptr<SelectObject>> ans = { make_shared<SelectObject>(SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#"))) };
+	vector<SelectObject> ans = { SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#")) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_select_attrname, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Select tuple")
 {
-	vector<shared_ptr<SelectObject>> ans = { 
-		make_shared<SelectObject>(SelectObject(SelectType::ATTRNAME, "BOOLEAN", PqlToken(TokenType::STMTLINE, "stmt#"))),
-		make_shared<SelectObject>(SelectObject(SelectType::SYNONYM, "v"))
+	vector<SelectObject> ans = {
+		SelectObject(SelectType::ATTRNAME, "BOOLEAN", PqlToken(TokenType::STMTLINE, "stmt#")),
+		SelectObject(SelectType::SYNONYM, "v")
 	};
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_select_tuple, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 
 TEST_CASE("Test Pattern clause assign")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN))};
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_pattern_assign, ptr);
@@ -165,10 +186,10 @@ TEST_CASE("Test Pattern clause assign")
 
 TEST_CASE("Test Pattern clause while")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "w"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "w"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN)) };
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_pattern_while, ptr);
@@ -179,10 +200,10 @@ TEST_CASE("Test Pattern clause while")
 
 TEST_CASE("Test Pattern clause if")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "ifs"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "ifs"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN)) };
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_pattern_if, ptr);
@@ -193,15 +214,15 @@ TEST_CASE("Test Pattern clause if")
 
 TEST_CASE("Test Pattern clause multi")
 {
-	vector<shared_ptr<Clause>> ans = { 
-		make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "ifs"),
+	vector<Clause> ans = {
+		Clause(PqlToken(TokenType::SYNONYM, "ifs"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN)),
-		make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "w"),
+								  TokenType::PATTERN),
+		Clause(PqlToken(TokenType::SYNONYM, "w"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN))
+								  TokenType::PATTERN)
 	};
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
@@ -214,10 +235,10 @@ TEST_CASE("Test Pattern clause multi")
 
 TEST_CASE("Test Pattern clause with String")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::STRING, "x+y"),
-								  TokenType::PATTERN)) };
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_pattern_with_string, ptr);
@@ -228,10 +249,10 @@ TEST_CASE("Test Pattern clause with String")
 
 TEST_CASE("Test Pattern clause with String and whitespace")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::STRING, "x+y"),
-								  TokenType::PATTERN)) };
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_pattern_with_string_and_whitespace, ptr);
@@ -242,10 +263,10 @@ TEST_CASE("Test Pattern clause with String and whitespace")
 
 TEST_CASE("Test Pattern clause with Wildcard String")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD_STRING, "x+y"),
-								  TokenType::PATTERN)) };
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_pattern_with_wildcard_string, ptr);
@@ -256,13 +277,13 @@ TEST_CASE("Test Pattern clause with Wildcard String")
 
 TEST_CASE("Test With clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::NONE, ""),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::STRING, "answer"),
-								  TokenType::WITH, 								
-								  PqlToken(TokenType::PROCNAME, "procName"), 								  
+								  TokenType::WITH,
+								  PqlToken(TokenType::PROCNAME, "procName"),
 								  PqlToken(TokenType::NONE, "")
-		))};
+		) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_with, ptr);
@@ -273,20 +294,20 @@ TEST_CASE("Test With clause")
 
 TEST_CASE("Test Mulitple With clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::NONE, ""),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::STRING, "answer"),
 								  TokenType::WITH,
 								  PqlToken(TokenType::PROCNAME, "procName"),
 								  PqlToken(TokenType::NONE, "")
-		)),
-							 make_shared<Clause>(Clause(PqlToken(TokenType::NONE, ""),
+		),
+							Clause(PqlToken(TokenType::NONE, ""),
 									PqlToken(TokenType::STRING, "answer2"),
 									PqlToken(TokenType::SYNONYM, "p"),
 								  TokenType::WITH,
 								  PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::PROCNAME, "procName")
-		)) };
+		) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_multi_with, ptr);
@@ -297,10 +318,10 @@ TEST_CASE("Test Mulitple With clause")
 
 TEST_CASE("Test Uses clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(Clause(PqlToken(TokenType::USES, "uses"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::USES, "uses"),
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
 								  PqlToken(TokenType::SYNONYM, "v"),
-								  TokenType::SUCH_THAT))) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_uses, ptr);
@@ -311,10 +332,10 @@ TEST_CASE("Test Uses clause")
 
 TEST_CASE("Test Modifies clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::MODIFIES, "modifies"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::MODIFIES, "modifies"),
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
 								  PqlToken(TokenType::SYNONYM, "v"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_modifies, ptr);
@@ -325,10 +346,10 @@ TEST_CASE("Test Modifies clause")
 
 TEST_CASE("Test Follows clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::FOLLOWS, "follows"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::FOLLOWS, "follows"),
 								  PqlToken(TokenType::SYNONYM, "s"),
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_follows, ptr);
@@ -339,10 +360,10 @@ TEST_CASE("Test Follows clause")
 
 TEST_CASE("Test Follows* clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::FOLLOWS_A, "follows*"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::FOLLOWS_A, "follows*"),
 								  PqlToken(TokenType::SYNONYM, "s"),
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_follows_a, ptr);
@@ -353,10 +374,10 @@ TEST_CASE("Test Follows* clause")
 
 TEST_CASE("Test Parent clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::PARENT, "parent"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::PARENT, "parent"),
 								  PqlToken(TokenType::SYNONYM, "s"),
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_parent, ptr);
@@ -367,10 +388,10 @@ TEST_CASE("Test Parent clause")
 
 TEST_CASE("Test Parent* clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::PARENT_A, "parent*"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::PARENT_A, "parent*"),
 								  PqlToken(TokenType::SYNONYM, "s"),
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_parent_a, ptr);
@@ -381,10 +402,10 @@ TEST_CASE("Test Parent* clause")
 
 TEST_CASE("Test Calls clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::CALLS, "calls"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::CALLS, "calls"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_calls, ptr);
@@ -395,10 +416,10 @@ TEST_CASE("Test Calls clause")
 
 TEST_CASE("Test Calls* clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::CALLS_A, "calls*"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::CALLS_A, "calls*"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_calls_a, ptr);
@@ -409,14 +430,14 @@ TEST_CASE("Test Calls* clause")
 
 TEST_CASE("Test Pattern then Such That clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 									PqlToken(TokenType::SYNONYM, "v"),
 									PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN)),
-							make_shared<Clause>(Clause(PqlToken(TokenType::USES, "uses"),
+								  TokenType::PATTERN),
+							Clause(PqlToken(TokenType::USES, "uses"),
 									PqlToken(TokenType::STATEMENT_NUM, "1"),
 									PqlToken(TokenType::SYNONYM, "v"),
-								  TokenType::SUCH_THAT)) };
+								  TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_pattern_then_such_that, ptr);
@@ -427,14 +448,14 @@ TEST_CASE("Test Pattern then Such That clause")
 
 TEST_CASE("Test Such That then Pattern clause")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::USES, "uses"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::USES, "uses"),
 									PqlToken(TokenType::STATEMENT_NUM, "1"),
 									PqlToken(TokenType::SYNONYM, "v"),
-									TokenType::SUCH_THAT)),
-							make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+									TokenType::SUCH_THAT),
+							Clause(PqlToken(TokenType::SYNONYM, "a"),
 									PqlToken(TokenType::SYNONYM, "v"),
 									PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN)) };
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_such_that_then_pattern, ptr);
@@ -446,22 +467,22 @@ TEST_CASE("Test Such That then Pattern clause")
 
 TEST_CASE("Test Mulitple Pattern and Such That clauses")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 								PqlToken(TokenType::SYNONYM, "v"),
 								PqlToken(TokenType::WILDCARD, "_"),
-							  TokenType::PATTERN)),
-						make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+							  TokenType::PATTERN),
+						Clause(PqlToken(TokenType::SYNONYM, "a"),
 								PqlToken(TokenType::SYNONYM, "v"),
 								PqlToken(TokenType::WILDCARD, "_"),
-							  TokenType::PATTERN)),
-						make_shared<Clause>(Clause(PqlToken(TokenType::USES, "uses"),
+							  TokenType::PATTERN),
+						Clause(PqlToken(TokenType::USES, "uses"),
 								PqlToken(TokenType::STATEMENT_NUM, "1"),
 								PqlToken(TokenType::SYNONYM, "v"),
-								TokenType::SUCH_THAT)),
-						make_shared<Clause>(Clause(PqlToken(TokenType::MODIFIES, "modifies"),
+								TokenType::SUCH_THAT),
+						Clause(PqlToken(TokenType::MODIFIES, "modifies"),
 								PqlToken(TokenType::STATEMENT_NUM, "1"),
 								PqlToken(TokenType::SYNONYM, "v"),
-								TokenType::SUCH_THAT)) };
+								TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_multi_pattern_then_multi_such_that, ptr);
@@ -472,35 +493,35 @@ TEST_CASE("Test Mulitple Pattern and Such That clauses")
 
 TEST_CASE("Test Mulitple Pattern, With and Such That clauses")
 {
-	vector<shared_ptr<Clause>> ans = { make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 								PqlToken(TokenType::SYNONYM, "v"),
 								PqlToken(TokenType::WILDCARD, "_"),
-							  TokenType::PATTERN)),
-						make_shared<Clause>(Clause(PqlToken(TokenType::SYNONYM, "a"),
+							  TokenType::PATTERN),
+						Clause(PqlToken(TokenType::SYNONYM, "a"),
 								PqlToken(TokenType::SYNONYM, "v"),
 								PqlToken(TokenType::WILDCARD, "_"),
-							  TokenType::PATTERN)),
-						make_shared<Clause>(Clause(PqlToken(TokenType::NONE, ""),
+							  TokenType::PATTERN),
+						Clause(PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::STRING, "one"),
 								  TokenType::WITH,
 								  PqlToken(TokenType::PROCNAME, "procName"),
-								  PqlToken(TokenType::NONE, ""))
+								  PqlToken(TokenType::NONE, "")
 							),
-							make_shared<Clause>(Clause(PqlToken(TokenType::NONE, ""),
+							Clause(PqlToken(TokenType::NONE, ""),
 									PqlToken(TokenType::STRING, "two"),
 									PqlToken(TokenType::SYNONYM, "p"),
 								  TokenType::WITH,
 								  PqlToken(TokenType::NONE, ""),
-								  PqlToken(TokenType::PROCNAME, "procName"))),
-						make_shared<Clause>(Clause(PqlToken(TokenType::USES, "uses"),
+								  PqlToken(TokenType::PROCNAME, "procName")),
+						Clause(PqlToken(TokenType::USES, "uses"),
 								PqlToken(TokenType::STATEMENT_NUM, "1"),
 								PqlToken(TokenType::SYNONYM, "v"),
-								TokenType::SUCH_THAT)),
-						make_shared<Clause>(Clause(PqlToken(TokenType::MODIFIES, "modifies"),
+								TokenType::SUCH_THAT),
+						Clause(PqlToken(TokenType::MODIFIES, "modifies"),
 								PqlToken(TokenType::STATEMENT_NUM, "1"),
 								PqlToken(TokenType::SYNONYM, "v"),
-								TokenType::SUCH_THAT)) };
+								TokenType::SUCH_THAT) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_multi_pattern_with_such_that, ptr);

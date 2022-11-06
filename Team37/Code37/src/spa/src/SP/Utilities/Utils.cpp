@@ -1,11 +1,11 @@
 #include "Utils.h"
-#include "../InvalidSyntaxException.h"
 #include "Keywords.h"
+#include "../InvalidSyntaxException.h"
+#include "../FileNotFoundException.h"
 
 const string Utils::WHITESPACE = " \n\r\t\f\v";
 
-string Utils::fileToString(string filepath)
-{
+string Utils::fileToString(string filepath) {
     string s;
     string sTotal;
 
@@ -13,39 +13,33 @@ string Utils::fileToString(string filepath)
     in.open(filepath);
 
     if (in.is_open()) {
-        while (!in.eof()) {
+        while(!in.eof()) {
             getline(in, s);
-            // TODO: investigate if "\n" is needed
             sTotal += s + "\n";
         }
         in.close();
     } else {
-        // TODO: Throw error
-        cout << "Unable to open file." << endl;
+        throw FileNotFoundException((char *) "File not found!");
     }
 
     return sTotal;
 }
 
-string Utils::ltrim(string s)
-{
+string Utils::ltrim(string s) {
     size_t start = s.find_first_not_of(Utils::WHITESPACE);
     return (start == std::string::npos) ? "" : s.substr(start);
 }
 
-string Utils::rtrim(string s)
-{
+string Utils::rtrim(string s) {
     size_t end = s.find_last_not_of(Utils::WHITESPACE);
     return (end == std::string::npos) ? "" : s.substr(0, end + 1);
 }
 
-string Utils::trim(string s)
-{
+string Utils::trim(string s) {
     return rtrim(ltrim(s));
 }
 
-bool Utils::validateName(string varName)
-{
+bool Utils::validateName(string varName) {
     // Variable name cannot be empty string
     if (varName.length() == 0) {
         return false;
@@ -61,7 +55,7 @@ bool Utils::validateName(string varName)
 
     varName = varName.erase(0, 1);
 
-    for (char& c : varName) {
+    for (char& c: varName)  {
         if (!(isalpha(c) || isdigit(c))) {
             return false;
         }
@@ -69,14 +63,13 @@ bool Utils::validateName(string varName)
     return true;
 }
 
-bool Utils::validateInteger(string integer)
-{
+bool Utils::validateInteger(string integer) {
     // Variable name cannot be empty string
     if (integer.length() == 0) {
         return false;
     }
 
-    for (char& c : integer) {
+    for (char& c: integer)  {
         if (!isdigit(c)) {
             return false;
         }
@@ -85,8 +78,7 @@ bool Utils::validateInteger(string integer)
     return true;
 }
 
-string Utils::stripOuterBrackets(string s)
-{
+string Utils::stripOuterBrackets(string s) {
     s = Utils::trim(s);
     if (s[0] != '(') {
         return s;

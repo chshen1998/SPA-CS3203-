@@ -115,8 +115,6 @@ TEST_CASE("QueryServicer - Statements") {
 
     // Read Statement
     set<shared_ptr<Statement>> retrievedRead = queryService->getAllStmt(StatementType::READ);
-    //REQUIRE(retrievedRead.size() == 1);
-    //REQUIRE(*(retrievedRead.begin()) == readStmt);
 
     // While Statement
     set<shared_ptr<Statement>> retrievedWhile = queryService->getAllStmt(StatementType::WHILE);

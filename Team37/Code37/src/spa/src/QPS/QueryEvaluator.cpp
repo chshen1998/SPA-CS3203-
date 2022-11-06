@@ -163,10 +163,6 @@ void QueryEvaluator::evaluate() {
         return;
     }
 
-    cout << "FINAL TABLE" << endl;
-    EvaluatorUtils::printTable(finalResult);
-    cout << "" << endl;
-
     FinalEvaluator finalEvaluator = FinalEvaluator(servicer, pq->declarations, pq);
     finalEvaluator.getFinalResult(result, finalResult);
 }

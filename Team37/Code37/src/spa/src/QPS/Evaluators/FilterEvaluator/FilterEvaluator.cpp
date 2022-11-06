@@ -37,7 +37,6 @@ bool FilterEvaluator::addAttrName(vector<vector<string>> &intermediate, const Pq
                 intermediate[i].push_back(ProcedureStmtNumToName[stoi(intermediate[i][index])]);
             }
 
-            EvaluatorUtils::printTable(intermediate);
         } else {
             StmtVarRelationType sv = declarations[token.value] == TokenType::READ ? StmtVarRelationType::MODIFIESSV : StmtVarRelationType::USESSV;
 

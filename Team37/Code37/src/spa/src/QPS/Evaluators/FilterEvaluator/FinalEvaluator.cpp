@@ -126,7 +126,6 @@ void FinalEvaluator::updateFinalTableWithAttrName(vector<vector<string>> &interm
     // Add .ProcName or VarName to call/print/read synonyms if they are part of a select synonym
     for (string s: callPrintReadSynonym) {
         if (callReadPrintWithAltAttrName.find(s) != callReadPrintWithAltAttrName.end()) {
-            cout << s << endl;
             addAttrName(intermediate, PqlToken(TokenType::SYNONYM, s));
         }
     }

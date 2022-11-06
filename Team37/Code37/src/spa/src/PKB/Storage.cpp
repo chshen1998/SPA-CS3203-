@@ -560,11 +560,12 @@ Compute Forward Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @returns All stmt2 such that Relation(stmt, stmt2) is True
 */
 vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type) {
-    if (!this->allCFGs->stmtExistsInMap(stmt)) {
+
+    shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
+    if (cfgNode == nullptr) {
         return {};
     }
 
-    shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
     vector<int> lstLineNum = {};
 
     switch (type) {
@@ -778,11 +779,12 @@ Compute Reverse Relation Stored. For Next(stmt1, stmt2) or Affects(stmt1,stmt2)
 @returns All stmt1 such that Relation(stmt1, stmt) is True
 */
 vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type) {
-    if (!this->allCFGs->stmtExistsInMap(stmt)) {
+    shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
+
+    if (cfgNode == nullptr) {
         return {};
     }
 
-    shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
     vector<int> lstLineNum = {};
     switch (type) {
         case (NEXT): {
@@ -810,11 +812,12 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
                 return lstLineNum;
             }
 
-            if (!this->allCFGs->stmtExistsInMap(stmt)) {
+            shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
+
+            if (cfgNode == nullptr) {
                 return {};
             }
 
-            shared_ptr<CFGNode> cfgNode = this->allCFGs->getNode(stmt);
             shared_ptr<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, pair<shared_ptr<CFGNode>, set<string>>>>>();
 
             // Get all variables used

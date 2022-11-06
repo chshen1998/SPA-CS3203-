@@ -51,5 +51,5 @@ jobs:
         shell: bash
         run: |
           cd Team37/Tests37/TestOutputs/TestCases-Milestone1/Follows
-          cat .\follows_advanced_queries.txt
+          cat ./follows_advanced_queries.txt
       

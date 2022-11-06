@@ -1,50 +1,54 @@
 using namespace std;
 
-#include <string>
-#include <set>
 #include <memory>
+#include <set>
+#include <string>
 #include <unordered_map>
 
-#include "QueryEvaluator.h"
 #include "./Structures/PqlError.h"
-#include "./Structures/PqlToken.h"
 #include "./Structures/PqlQuery.h"
+#include "./Structures/PqlToken.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
+#include "QueryEvaluator.h"
 
+#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcBooleanEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcSynonymEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarBooleanEvaluator.h"
+#include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarSynonymEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtBooleanEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtSynonymEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarBooleanEvaluator.h"
 #include "QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarSynonymEvaluator.h"
-#include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarBooleanEvaluator.h"
-#include "QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarSynonymEvaluator.h"
-#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcBooleanEvaluator.h"
-#include "QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcSynonymEvaluator.h"
 
 #include "QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
-#include "QPS/Evaluators/PatternEvaluator/WhileEvaluator.h"
 #include "QPS/Evaluators/PatternEvaluator/IfEvaluator.h"
+#include "QPS/Evaluators/PatternEvaluator/WhileEvaluator.h"
 
+#include "QPS/Evaluators/FilterEvaluator/FinalEvaluator.h"
 #include "QPS/Evaluators/FilterEvaluator/WithBooleanEvaluator.h"
 #include "QPS/Evaluators/FilterEvaluator/WithSynonymEvaluator.h"
-#include "QPS/Evaluators/FilterEvaluator/FinalEvaluator.h"
 
-#include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Evaluators/BooleanEvaluator.h"
+#include "QPS/Evaluators/EvaluatorUtils.h"
 #include "QPS/Evaluators/SynonymEvaluator.h"
 
-#include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
+#include "AST/Expression/RelationalFactor/NameExpression.h"
 #include "AST/Procedure.h"
 #include "AST/Statement/Statement.h"
 
 #include "PKB/QueryServicer.h"
 
+QueryEvaluator::QueryEvaluator(shared_ptr<PqlQuery> pqlQuery, shared_ptr<QueryServicer> s, list<string>& r)
+    : result(r)
+    , servicer(s)
+    , pq(pqlQuery)
+{
+}
 
-QueryEvaluator::QueryEvaluator(shared_ptr<PqlQuery> pqlQuery, shared_ptr<QueryServicer> s, list<string>& r) :
-    result(r), servicer(s), pq(pqlQuery) {}
-
-void QueryEvaluator::evaluate() {
+void QueryEvaluator::evaluate()
+{
     const bool isResultBoolean = pq->selectObjects[0]->type == SelectType::BOOLEAN;
 
     unique_ptr<BooleanEvaluator> booleanEvaluator;
@@ -53,8 +57,7 @@ void QueryEvaluator::evaluate() {
     for (shared_ptr<Clause> booleanClause : pq->booleanClauses) {
         if (booleanClause->category == TokenType::WITH) {
             booleanEvaluator = make_unique<WithBooleanEvaluator>(WithBooleanEvaluator(servicer, pq->declarations));
-        }
-        else {
+        } else {
             TokenType suchThatType = booleanClause->clauseType.type;
 
             if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
@@ -95,21 +98,17 @@ void QueryEvaluator::evaluate() {
         for (shared_ptr<Clause> clause : clauseGroup) {
             if (clause->category == TokenType::WITH) {
                 synonymEvaluator = make_unique<WithSynonymEvaluator>(WithSynonymEvaluator(servicer, pq->declarations));
-            }
-            else if (clause->category == TokenType::PATTERN) {
+            } else if (clause->category == TokenType::PATTERN) {
                 TokenType patternType = pq->declarations[clause->clauseType.value];
 
                 if (patternType == TokenType::ASSIGN) {
                     synonymEvaluator = make_unique<AssignEvaluator>(AssignEvaluator(servicer, pq->declarations));
-                }
-                else if (patternType == TokenType::WHILE) {
+                } else if (patternType == TokenType::WHILE) {
                     synonymEvaluator = make_unique<WhileEvaluator>(WhileEvaluator(servicer, pq->declarations));
-                }
-                else if (patternType == TokenType::IF) {
+                } else if (patternType == TokenType::IF) {
                     synonymEvaluator = make_unique<IfEvaluator>(IfEvaluator(servicer, pq->declarations));
                 }
-            }
-            else {
+            } else {
                 TokenType suchThatType = clause->clauseType.type;
 
                 if (suchThatType == TokenType::CALLS || suchThatType == TokenType::CALLS_A) {
@@ -132,7 +131,7 @@ void QueryEvaluator::evaluate() {
             }
 
             intermediateTable = synonymEvaluator->evaluateSynonymClause(clause, intermediateTable);
-       
+
             // Terminate early if any clause is invalid or empty
             if (intermediateTable.size() <= 1) {
                 if (isResultBoolean) {
@@ -153,7 +152,7 @@ void QueryEvaluator::evaluate() {
         if (finalResult.size() <= 1) {
             if (isResultBoolean) {
                 result.push_back("FALSE");
-            }  
+            }
             return;
         }
     }
@@ -166,6 +165,3 @@ void QueryEvaluator::evaluate() {
     FinalEvaluator finalEvaluator = FinalEvaluator(servicer, pq->declarations, pq);
     finalEvaluator.getFinalResult(result, finalResult);
 }
-
-
-

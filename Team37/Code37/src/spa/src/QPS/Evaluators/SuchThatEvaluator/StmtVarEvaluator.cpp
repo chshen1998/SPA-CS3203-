@@ -14,10 +14,10 @@ unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType = {
 };
 
 
-bool StmtVarEvaluator::evaluateBooleanClause(const Clause& clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
+bool StmtVarEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause->clauseType.type];
 
     // StmtNum-StmtNum --> Eg. Uses(5, "x") 
     if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STRING) {
@@ -33,11 +33,11 @@ bool StmtVarEvaluator::evaluateBooleanClause(const Clause& clause) {
 }
 
 
-vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
+vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause->clauseType.type];
     vector<vector<string>> finalTable;
 
     string synonymValue = leftArg.type == TokenType::SYNONYM ? leftArg.value : rightArg.value;

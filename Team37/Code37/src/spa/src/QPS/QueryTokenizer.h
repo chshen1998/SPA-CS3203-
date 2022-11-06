@@ -22,7 +22,7 @@ using namespace std;
 * The state corresponds to what kind of keyword/clause we are looking at
 */
 enum class TokenizeState {
-    FINDING_KEYWORDS, 
+    FINDING_KEYWORDS,
     SELECT,
     SUCH_THAT,
     PATTERN,

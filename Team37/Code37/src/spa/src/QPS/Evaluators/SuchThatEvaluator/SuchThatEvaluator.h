@@ -15,8 +15,8 @@ public:
     SuchThatEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
         GeneralEvaluator(s, d) {};
 
-    virtual vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) = 0;
-    virtual bool evaluateBooleanClause(const Clause&) = 0;
+    virtual vector<vector<string>> evaluateSynonymClause(shared_ptr<Clause>, vector<vector<string>>) = 0;
+    virtual bool evaluateBooleanClause(shared_ptr<Clause>) = 0;
 };
 
 #endif

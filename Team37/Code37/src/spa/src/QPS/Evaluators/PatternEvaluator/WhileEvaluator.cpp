@@ -8,15 +8,15 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vector<vector<string>> intermediate) {
-    PqlToken leftArg = clause.left;
-    TokenType patternType = declarations[clause.clauseType.value];
+vector<vector<string>> WhileEvaluator::evaluateClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+    PqlToken leftArg = clause->left;
+    TokenType patternType = declarations[clause->clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
     vector<vector<string>> finalTable;
     vector<int> allWhileStmtLines = WhileEvaluator::getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
-    finalTable.push_back(vector<string>{clause.clauseType.value});
+    finalTable.push_back(vector<string>{clause->clauseType.value});
 
     vector<int> finalResult;
 

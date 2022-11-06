@@ -49,7 +49,7 @@ void QueryTokenizer::split() {
     delimited_query = vector<string>();
 
     // Maximum length of delimited query is the number of characters in query string by Pigeonhole Principle
-    delimited_query.reserve(query.size()); 
+    delimited_query.reserve(query.size());
 
     for (int i = 0; i < query.size(); i++) {
         // If the character is a blank (whitespace or tab etc)
@@ -65,7 +65,7 @@ void QueryTokenizer::split() {
                 currentString = "";
             }
         }
-           
+
         // If the character is a single character symbol, for eg brackets or comma
         else if (stringToTokenMap.find(string{ query[i] }) != stringToTokenMap.end()) {
             if (!currentString.empty()) {
@@ -73,7 +73,7 @@ void QueryTokenizer::split() {
             }
             delimited_query.push_back(string{ query[i] });
             currentString = "";
-        } 
+        }
 
         else {
             if (query[i] == '"') {
@@ -84,7 +84,7 @@ void QueryTokenizer::split() {
         }
     }
 
-  
+
     if (!currentString.empty()) {
         delimited_query.push_back(currentString);
     }
@@ -171,5 +171,3 @@ void QueryTokenizer::convertIntoTokens() {
         currentState = TokenizeState::FINDING_KEYWORDS;
     }
 }
-
-

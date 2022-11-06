@@ -16,12 +16,12 @@ public:
     WithEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType> &d) :
         FilterEvaluator(s, d) {};
 
-    vector<vector<string>> evaluateClause(const Clause &, vector<vector<string>>);
+    vector<vector<string>> evaluateClause(shared_ptr<Clause>, vector<vector<string>>);
 
-    bool evaluateBooleanClause(const Clause &);
+    bool evaluateBooleanClause(shared_ptr<Clause>);
 
 private:
-    void fillInitialTable(const Clause&, vector<vector<string>>&);
+    void fillInitialTable(shared_ptr<Clause>, vector<vector<string>>&);
 
 };
 

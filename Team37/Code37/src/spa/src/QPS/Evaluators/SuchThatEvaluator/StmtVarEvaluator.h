@@ -15,8 +15,8 @@ public:
     StmtVarEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType >& d) :
         SuchThatEvaluator(s, d) {};
 
-    bool evaluateBooleanClause(const Clause&) override;
-    vector<vector<string>> evaluateSynonymClause(const Clause&, vector<vector<string>>) override;
+    bool evaluateBooleanClause(shared_ptr<Clause>) override;
+    vector<vector<string>> evaluateSynonymClause(shared_ptr<Clause>, vector<vector<string>>) override;
 };
 
 

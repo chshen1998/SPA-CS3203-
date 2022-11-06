@@ -20,13 +20,13 @@
 
 class DeclarationValidator : public BaseValidator {
 public:
-	DeclarationValidator(vector<PqlToken> *tokens);
-	unordered_map<string, TokenType> validate();
+	DeclarationValidator(vector<PqlToken> *tokens, unordered_map<string, TokenType> *map);
+	void validate();
 
 private:
-	void isValidDesignEntity(PqlToken token);
-	void isSynonym(PqlToken token);
-	void isSemicolonOrComma(PqlToken token);
+	void isValidDesignEntity(PqlToken *token);
+	void isValidSynonym(PqlToken *token);
+	void isSemicolonOrComma(PqlToken *token);
 };
 
 

@@ -32,7 +32,7 @@ private:
 
     bool checkIfClauseContainsSelect();
 
-    bool checkIfSelectSynonymIsDoubleAttr(const SelectObject&);
+    bool checkIfSelectSynonymIsDoubleAttr(shared_ptr<SelectObject>);
 
     unordered_map<TokenType, TokenType> attrNameToTokenType = {
         {TokenType::PROCNAME, TokenType::PROCEDURE},

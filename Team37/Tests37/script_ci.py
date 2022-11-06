@@ -4,9 +4,7 @@ import shutil
 from pathlib import Path
 
 
-AUTOTESTER_PATH = Path("../Code37\build\src\autotester\Release\autotester")
-
-print(f"--- OS: {sys.platform}, Mode: {buildType} ---\n")
+AUTOTESTER_PATH = Path("../Code37/build/src/autotester/Release/autotester")
 
 OUTPUT_XML_PATH = Path("./out.xml")
 

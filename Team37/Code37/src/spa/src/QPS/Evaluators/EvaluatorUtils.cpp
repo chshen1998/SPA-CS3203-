@@ -69,9 +69,6 @@ vector<vector<string>> EvaluatorUtils::JoinToIntermediateTable(const vector<vect
     // push headers
     result.push_back(columns);
 
-    // TODO: Currently doing nested Join O(nm)
-    // Consider doing hash join O(n+m)
-    // But might not matter since tables shouldn't get very big anyway
     for (int i = 1; i != v1.size(); i++) {
         for (int j = 1; j != v2.size(); j++) {
             bool allCommonIndexEqual = true;

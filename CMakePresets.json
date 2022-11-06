@@ -8,7 +8,7 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "architecture": {
-        "value": "x64",
+        "value": "x32",
         "strategy": "external"
       },
       "cacheVariables": {

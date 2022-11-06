@@ -28,8 +28,28 @@ assign a;
 Select a such that Affects* (1, a)
 4, 8, 10, 11, 12
 5000
-5 - affects* 5
+6 - affects* 6
 assign a;
 Select a such that Affects* (a, 8)
+1, 4
+5000
+7 - affects* 7
+assign a;
+Select a such that Affects* (a, 13)
 
+5000
+8 - affects* 8
+assign a;
+Select a such that Affects* (a, 14)
+13
+5000
+9 - affects* 9
+assign a;
+Select a such that Affects* (a, 16)
+13, 14
+5000
+10 - affects* 10
+
+Select BOOLEAN such that Affects* (4, 16)
+FALSE
 5000

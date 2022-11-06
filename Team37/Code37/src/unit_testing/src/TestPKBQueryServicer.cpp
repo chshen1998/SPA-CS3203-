@@ -10,12 +10,6 @@ using namespace std;
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "SP/Parser.h"
 
-void printIntInVector(vector<int> vect) {
-    for (int num: vect) {
-        printf("%d", num);
-    }
-}
-
 TEST_CASE("QueryServicer - Variable") {
     // Storage Stub
     shared_ptr<Storage> store = make_shared<Storage>();
@@ -121,8 +115,6 @@ TEST_CASE("QueryServicer - Statements") {
 
     // Read Statement
     set<shared_ptr<Statement>> retrievedRead = queryService->getAllStmt(StatementType::READ);
-    //REQUIRE(retrievedRead.size() == 1);
-    //REQUIRE(*(retrievedRead.begin()) == readStmt);
 
     // While Statement
     set<shared_ptr<Statement>> retrievedWhile = queryService->getAllStmt(StatementType::WHILE);

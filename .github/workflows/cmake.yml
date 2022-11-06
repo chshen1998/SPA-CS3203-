@@ -31,7 +31,7 @@ jobs:
           cd Team37/Code37
           mkdir build
           cd build
-          cmake -G "Ninja" -A x64
+          cmake -G "Ninja" -A x64 .. 
           cmake --build . --target unit_testing --config Release
           cmake --build . --target autotester --config Release
           cd ../..

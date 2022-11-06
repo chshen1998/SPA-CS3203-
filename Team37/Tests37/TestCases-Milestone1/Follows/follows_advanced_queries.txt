@@ -36,5 +36,5 @@ Select a such that Follows*(a,w)
 8 - follows star assign-if
 assign a; if ifs;
 Select a such that Follows*(a,ifs)
-1, 4, 5
+1, 4
 5000

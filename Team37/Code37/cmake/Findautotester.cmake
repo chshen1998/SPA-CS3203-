@@ -18,13 +18,13 @@ find_library(AUTOTESTER_LIBRARY_DEBUG autotester
     PATHS ${AUTOTESTER_ROOT}/debug
     PATH_SUFFIXES
         lib
-        lib64)
+        lib32)
 
 find_library(AUTOTESTER_LIBRARY_RELEASE autotester 
     PATHS ${AUTOTESTER_ROOT}/release
     PATH_SUFFIXES
         lib
-        lib64)
+        lib32)
 
 SET(AUTOTESTER_LIBRARY
     debug ${AUTOTESTER_LIBRARY_DEBUG}

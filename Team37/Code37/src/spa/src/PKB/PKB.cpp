@@ -14,8 +14,8 @@ void PKB::buildFromAst(shared_ptr<SourceCode> AST) {
     this->storage->storeAST(AST);
 };
 
-void PKB::buildFromCFG(shared_ptr<map<int, shared_ptr<CFGNode>>> CFGMap) {
-    this->storage->storeCFGMap(CFGMap);
+void PKB::buildFromCFG(shared_ptr<AllCFGs> allCfgs) {
+    this->storage->storeAllCFGs(allCfgs);
 }
 
 

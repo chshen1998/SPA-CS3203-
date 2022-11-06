@@ -155,8 +155,8 @@ TEST_CASE("QueryServicer - Next Forward") {
     shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
     vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
 
-    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
-    pkb->buildFromCFG(cfgMap);
+    shared_ptr<AllCFGs> allCfgs = sourceCode->getAllCFGInfo();
+    pkb->buildFromCFG(allCfgs);
 
     vector<int> nextStatements = pkb->getQueryServicer()->forwardComputeRelation(1, NEXT);
     REQUIRE(nextStatements.size() == 2);
@@ -195,8 +195,8 @@ TEST_CASE("QueryServicer - Next Backward") {
     shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
     vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
 
-    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
-    pkb->buildFromCFG(cfgMap);
+    shared_ptr<AllCFGs> allCfgs = sourceCode->getAllCFGInfo();
+    pkb->buildFromCFG(allCfgs);
 
     vector<int> nextStatements = pkb->getQueryServicer()->reverseComputeRelation(2, NEXT);
     // Contain lines 4,5,6
@@ -236,8 +236,8 @@ TEST_CASE("QueryServicer - Next Backward While Statement") {
     shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
     vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
 
-    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
-    pkb->buildFromCFG(cfgMap);
+    shared_ptr<AllCFGs> allCfgs = sourceCode->getAllCFGInfo();
+    pkb->buildFromCFG(allCfgs);
 
     vector<int> nextStatements = pkb->getQueryServicer()->reverseComputeRelation(1, NEXT);
     REQUIRE(nextStatements.size() == 1);
@@ -271,12 +271,10 @@ TEST_CASE("FAILING TESTCASE") {
     shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
     vector<shared_ptr<CFG> > cfgLst = sourceCode->getAllCFGs();
 
-    shared_ptr<map<int, shared_ptr<CFGNode> >> cfgMap = sourceCode->getAllCFGMaps();
-    pkb->buildFromCFG(cfgMap);
+    shared_ptr<AllCFGs> allCfgs = sourceCode->getAllCFGInfo();
+    pkb->buildFromCFG(allCfgs);
 
-
-    shared_ptr<CFGNode> cfgNode = cfgMap->at(5);
-
+    shared_ptr<CFGNode> cfgNode = allCfgs->getNode(5);
 
     bool checkRetrieveRelation1 = pkb->getQueryServicer()->retrieveRelation(3, 5, NEXT);
     REQUIRE(checkRetrieveRelation1 == true);

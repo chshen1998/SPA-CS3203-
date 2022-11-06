@@ -20,7 +20,7 @@ using namespace std;
 #include "./Types/TokenType.h"
 #include "Validators/ValidatorUtils.h"
 
-QueryExtractor::QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq_pointer)
+QueryExtractor::QueryExtractor(vector<PqlToken>* tokenVector, shared_ptr<PqlQuery> pq_pointer)
 {
     tokens = tokenVector;
     next = 0;

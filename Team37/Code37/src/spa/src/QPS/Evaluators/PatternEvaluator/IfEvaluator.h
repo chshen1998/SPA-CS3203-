@@ -3,20 +3,18 @@
 
 using namespace std;
 
-#include "PatternEvaluator.h"
 #include "PKB/QueryServicer.h"
 #include "QPS/Types/TokenType.h"
+#include "QPS/Evaluators/SynonymEvaluator.h"
 #include "QPS/Structures/PqlQuery.h"
-#include "PKB/Types/StmtStmtRelationType.h"
-#include "PKB/Types/StmtVarRelationType.h"
 
-class IfEvaluator : public PatternEvaluator {
+class IfEvaluator : public SynonymEvaluator {
 
 public:
     IfEvaluator(shared_ptr<QueryServicer> s, unordered_map<string, TokenType>& d) :
-    PatternEvaluator(s, d) {};
+        SynonymEvaluator(s, d) {};
 
-    vector<vector<string>> evaluateClause(shared_ptr<Clause>, vector<vector<string>>);
+    vector<vector<string>> evaluateSynonymClause(shared_ptr<Clause>, vector<vector<string>>) override;
 };
 
 

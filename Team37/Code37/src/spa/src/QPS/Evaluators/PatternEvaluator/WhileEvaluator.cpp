@@ -8,12 +8,12 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> WhileEvaluator::evaluateClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+vector<vector<string>> WhileEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause->left;
     TokenType patternType = declarations[clause->clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
     vector<vector<string>> finalTable;
-    vector<int> allWhileStmtLines = WhileEvaluator::getAllLineNumOfStmtType(patternStmtType);
+    vector<int> allWhileStmtLines = getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
     finalTable.push_back(vector<string>{clause->clauseType.value});

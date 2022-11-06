@@ -27,7 +27,7 @@ public:
     bool booleanIsSynonym;
     unordered_map<string, TokenType> declarations;
 
-    QueryValidator(vector<PqlToken> *tokens);
+    QueryValidator(vector<PqlToken> * tokenVector);
 
     PqlError validateQuery();
 

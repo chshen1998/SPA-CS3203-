@@ -3,75 +3,14 @@ using namespace std;
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
-#include "StmtStmtEvaluator.h"
-#include "../EvaluatorUtils.h"
+#include "QPS/Evaluators/EvaluatorUtils.h"
+#include "PKB/Types/StatementType.h"
+#include "StmtStmtSynonymEvaluator.h"
 
 using namespace EvaluatorUtils;
 
-unordered_map<TokenType, StmtStmtRelationType> tokenTypeToStmtStmtRelationType = {
-        {TokenType::FOLLOWS,   StmtStmtRelationType::FOLLOWS},
-        {TokenType::FOLLOWS_A, StmtStmtRelationType::FOLLOWSS},
-        {TokenType::PARENT,    StmtStmtRelationType::PARENT},
-        {TokenType::PARENT_A,  StmtStmtRelationType::PARENTS},
-        {TokenType::NEXT,      StmtStmtRelationType::NEXT},
-        {TokenType::NEXT_A,    StmtStmtRelationType::NEXTS},
-        {TokenType::AFFECTS,   StmtStmtRelationType::AFFECTS},
-        {TokenType::AFFECTS_A, StmtStmtRelationType::AFFECTSS},
-};
-
-bool StmtStmtEvaluator::evaluateBooleanClause(shared_ptr<Clause> clause) {
-    PqlToken leftArg = clause->left;
-    PqlToken rightArg = clause->right;
-    StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause->clauseType.type];
-
-    // StmtNum-StmtNum --> Eg. Follows(5,6) 
-    if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STATEMENT_NUM) {
-
-        return servicer->retrieveRelation(stoi(leftArg.value), stoi(rightArg.value), ss);
-
-    }
-
-    // WildCard-StmtNum --> Eg. Follows(_,6) 
-    if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::STATEMENT_NUM) {
-        if (checkIfComputeRelation(ss)) {
-            return !servicer->reverseComputeRelation(stoi(rightArg.value), ss).empty();
-        } else {
-            return !servicer->reverseRetrieveRelation(stoi(rightArg.value), ss).empty();
-        }
-    }
-
-    // StmtNum-WildCard --> Eg. Follows(5,_) 
-    if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::WILDCARD) {
-        if (checkIfComputeRelation(ss)) {
-            return !servicer->forwardComputeRelation(stoi(leftArg.value), ss).empty();
-        } else {
-            return !servicer->forwardRetrieveRelation(stoi(leftArg.value), ss).empty();
-        }
-    }
-
-    // WildCard-WildCard --> Eg. Follows(_,_) 
-    if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::WILDCARD) {
-        if (checkIfComputeRelation(ss)) {
-            for (shared_ptr<Statement> s: servicer->getAllStmt(STATEMENT)) {
-                if (!servicer->forwardComputeRelation(s->getLineNum(), ss).empty()) {
-                    return true;
-                }
-            }
-        } else {
-            for (shared_ptr<Statement> s: servicer->getAllStmt(STATEMENT)) {
-                if (!servicer->forwardRetrieveRelation(s->getLineNum(), ss).empty()) {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
-
 vector<vector<string>>
-StmtStmtEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+StmtStmtSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
     PqlToken leftArg = clause->left;
     PqlToken rightArg = clause->right;
     StmtStmtRelationType ss = tokenTypeToStmtStmtRelationType[clause->clauseType.type];
@@ -132,7 +71,7 @@ StmtStmtEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vecto
             }
         }
 
-            // Wildcard-Synonym --> Eg. Follows(_, s)
+        // Wildcard-Synonym --> Eg. Follows(_, s)
         else if (leftArg.type == TokenType::WILDCARD && rightArg.type == TokenType::SYNONYM) {
             for (int lines: allLineNumOfSynonym) {
                 if (checkIfComputeRelation(ss)) {
@@ -175,7 +114,7 @@ StmtStmtEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vecto
     return JoinTable(intermediate, finalTable);
 }
 
-bool StmtStmtEvaluator::precheck(const PqlToken leftArg, const PqlToken rightArg, const StmtStmtRelationType ss) {
+bool StmtStmtSynonymEvaluator::precheck(const PqlToken leftArg, const PqlToken rightArg, const StmtStmtRelationType ss) {
 
     // Follows/Follows*/Parent/Parent* cannot have same left/right arg
     if (ss == StmtStmtRelationType::FOLLOWS || ss == StmtStmtRelationType::FOLLOWSS ||

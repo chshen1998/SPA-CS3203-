@@ -12,7 +12,7 @@ using namespace EvaluatorUtils;
 
 
 string FilterEvaluator::updatedColumnName(const PqlToken& token) {
-    return token.type == TokenType::CALL ? token.value + ".procName" : token.value + ".varName";
+    return declarations[token.value] == TokenType::CALL ? token.value + ".procName" : token.value + ".varName";
 }
 
 bool FilterEvaluator::addAttrName(vector<vector<string>> &intermediate, const PqlToken &token) {
@@ -29,13 +29,14 @@ bool FilterEvaluator::addAttrName(vector<vector<string>> &intermediate, const Pq
 
         intermediate[0].push_back(updatedColumnName(token));
 
-        if (token.type == TokenType::CALL) {
+        if (declarations[token.value] == TokenType::CALL) {
             map<int, string> ProcedureStmtNumToName = servicer->retrieveCallStmtProcMapping();
 
             for (int i = 1; i < intermediate.size(); i++) {
                 // insert to get procedure name for each call statement
                 intermediate[i].push_back(ProcedureStmtNumToName[stoi(intermediate[i][index])]);
             }
+
         } else {
             StmtVarRelationType sv = declarations[token.value] == TokenType::READ ? StmtVarRelationType::MODIFIESSV : StmtVarRelationType::USESSV;
 

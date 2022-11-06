@@ -132,7 +132,7 @@ void QueryEvaluator::evaluate() {
             }
 
             intermediateTable = synonymEvaluator->evaluateSynonymClause(clause, intermediateTable);
-            
+       
             // Terminate early if any clause is invalid or empty
             if (intermediateTable.size() <= 1) {
                 if (isResultBoolean) {

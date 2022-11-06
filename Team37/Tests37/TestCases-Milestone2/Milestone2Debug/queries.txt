@@ -3,3 +3,8 @@ variable v;
 Select v
 breadth, iter, left, length, print, procedure, radius, radius1, right, temp, x, no, y
 5000
+2 - call within while statement
+call c; while w; variable v;
+Select c.procName such that Parent(w, c) pattern w(v,_) with v.varName = "left"
+nestedBlocks, anotherOne
+5000

@@ -784,12 +784,8 @@ vector<int> Storage::getNextForwardHelper(shared_ptr<CFGNode> cfgNode) {
                     shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(storedChildTNode);
                     lstLineNum.push_back(stmt->getLineNum());
                 } else {
-                    while (dynamic_pointer_cast<Statement>(storedChildTNode) == nullptr) {
-                        shared_ptr<CFGNode> storedChildNode = storedChildNode->getChildren()[0];
-                        storedChildTNode = storedChildNode->getTNode();
-                    }
-                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(storedChildTNode);
-                    lstLineNum.push_back(stmt->getLineNum());
+                    vector<int> childrenLineNums = getNextForwardHelper(storedChildNode);
+                    lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
                 }
             }
         }

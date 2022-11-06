@@ -215,65 +215,12 @@ bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) 
             return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
         }
         case (AFFECTS): {
-            // Check if both are affects
-            shared_ptr<AssignStatement> stmtNode1 = dynamic_pointer_cast<AssignStatement>(statements[stmt1]);
-            shared_ptr<AssignStatement> stmtNode2 = dynamic_pointer_cast<AssignStatement>(statements[stmt2]);
-
-            if (stmtNode1 == nullptr || stmtNode2 == nullptr) {
-                return false;
-            }
-            // Check CFG path + if variable 
-            shared_ptr<CFGNode> cfgNode1 = this->CFGMap->at(stmt1);
-            shared_ptr<CFGNode> cfgNode2 = this->CFGMap->at(stmt2);
-
-            shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
-
-            // Check if statement 1 modifies a variable used in statement 2
-            string var = stmtNode1->getVarName();
-
-            if (!retrieveRelation(stmt2, var, USESSV)) {
-                return false;
-            }
-
-            return retrieveAffectsHelper(cfgNode1, nullptr, cfgNode2, var, visited);
+            vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTS);
+            return find(forward.begin(), forward.end(), stmt2) != forward.end();
         }
         case (AFFECTSS): {
-            // Check if both are affects
-            shared_ptr<AssignStatement> stmtNode1 = dynamic_pointer_cast<AssignStatement>(statements[stmt1]);
-            shared_ptr<AssignStatement> stmtNode2 = dynamic_pointer_cast<AssignStatement>(statements[stmt2]);
-
-            if (stmtNode1 == nullptr || stmtNode2 == nullptr) {
-                return false;
-            }
-
-
-            unordered_map<int, bool> visited = {};
-            queue<int> q = {};
-
-            q.push(stmt1);
-
-
-            while (!q.empty()) {
-                int nextStmt = q.front();
-                q.pop();
-
-
-                if (visited[nextStmt]) {
-                    continue;
-                } else {
-                    visited[nextStmt] = true;
-                }
-
-                vector<int> forwardResult = forwardComputeRelation(nextStmt, AFFECTS);
-                for (auto x: forwardResult) {
-                    q.push(x);
-                    if (x == stmt2) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTSS);
+            return find(forward.begin(), forward.end(), stmt2) != forward.end();
 
         }
         default:

@@ -146,7 +146,7 @@ TEST_CASE("Call Stmt Proc Mapping")
     // We start by traversing the AST
     storage->storeAST(sc);
 
-    REQUIRE(storage->callStmtProcMapping[callStmt1->getLineNum()] == "Test Procedure 1");
-    REQUIRE(storage->callStmtProcMapping[callStmt2->getLineNum()] == "Test Procedure 2");
-    REQUIRE(storage->callStmtProcMapping[callStmt3->getLineNum()] == "Test Procedure 3");
+    REQUIRE(storage->callStmtProcMapping[callStmt1->getLineNum()] == "Test Call 1");
+    REQUIRE(storage->callStmtProcMapping[callStmt2->getLineNum()] == "Test Call 2");
+    REQUIRE(storage->callStmtProcMapping[callStmt3->getLineNum()] == "Test Call 3");
 }

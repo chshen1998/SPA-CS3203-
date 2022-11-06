@@ -3,14 +3,8 @@ import sys
 import shutil
 from pathlib import Path
 
-AUTOTESTER_PATH = Path("../Code37/cmake-build-release/src/autotester/autotester")
 
-buildType = "Release"
-
-if sys.platform == "win32":
-    AUTOTESTER_PATH = Path("../Code37/out/build/x64-{}/src/autotester/autotester".format(buildType))
-
-print(f"--- OS: {sys.platform}, Mode: {buildType} ---\n")
+AUTOTESTER_PATH = Path("../Code37/build/src/autotester/Release/autotester")
 
 OUTPUT_XML_PATH = Path("./out.xml")
 
@@ -85,8 +79,13 @@ for milestone in milestones:
 
     print("")
 
+failed = False
 for incomplete_testcase in incomplete_testcases:
     print(incomplete_testcase)
+    failed = True
 for failed_testcase in failed_testcases:
     print(failed_testcase)
+    failed = True
+
 print("Completed scanning all files")
+assert(failed == False)

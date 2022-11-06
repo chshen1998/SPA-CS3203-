@@ -35,14 +35,10 @@ jobs:
           cmake --build . --target unit_testing --config Release
           cmake --build . --target autotester --config Release
           cd ../..
-      
-      - name: echo
-        shell: bash
-        run: pwd
 
       - name: Run unit tests
         shell: bash
-        run: ./Team37/Code37/out/build/x64-Release/src/unit_testing/unit_testing.exe
+        run: ./Team37/Code37/build/src/unit_testing/Release/unit_testing.exe
 
       
       - name: Run integration tests

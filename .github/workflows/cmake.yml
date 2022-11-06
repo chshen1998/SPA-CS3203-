@@ -46,4 +46,10 @@ jobs:
         run: |
           cd Team37/Tests37
           python script_ci.py
+
+      - name: Check test output content
+        shell: bash
+        run: |
+          cd Team37/Tests37/TestOutputs/TestCases-Milestone1/Follows
+          cat .\follows_advanced_queries.txt
       

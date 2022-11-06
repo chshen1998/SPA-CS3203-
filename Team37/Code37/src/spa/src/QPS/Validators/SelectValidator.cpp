@@ -12,14 +12,14 @@ using namespace std;
 #include "ClauseValidator.h"
 #include "ValidatorUtils.h"
 
-SelectValidator::SelectValidator(unordered_map<string, TokenType> *declarationMap)
+SelectValidator::SelectValidator(unordered_map<string, TokenType>* declarationMap) : BaseValidator {}
 {
 	declarations = declarationMap;
 }
 
-void SelectValidator::validateSelect(PqlToken select) 
+void SelectValidator::validateSelect(TokenType type) 
 {
-	if (select.type != TokenType::SELECT)
+	if (type != TokenType::SELECT)
 	{
 		throw SyntaxError("Select clause must come after declarations");
 	}
@@ -70,7 +70,7 @@ void SelectValidator::validateSynonym(PqlToken token) {
 	if (token.type != TokenType::SYNONYM) {
 		throw SyntaxError("Invalid Select clause parameter");
 	}
-	else if (!isDeclared(token)) {
+	else if (!isDeclared(&token)) {
 		throw SemanticError("Undeclared synonym in Select clause");
 	}
 }
@@ -89,21 +89,4 @@ void SelectValidator::validateAttrNameMatch(PqlToken synonym, PqlToken attrName)
 	if (validSynonymToAttrMap[t].find(attrName.type) == validSynonymToAttrMap[t].end()) {
 		throw SemanticError("Invalid attrName for attrRef synonym");
 	}
-}
-
-bool SelectValidator::isDeclared(PqlToken synonym)
-{
-	auto findit = declarations->find(synonym.value);
-	return (findit != declarations->end());
-}
-
-PqlToken SelectValidator::getNextToken() {
-	if (next == size)
-	{
-		return PqlToken(TokenType::END, "");
-	}
-	PqlToken token = tokens->at(next);
-	next = next + 1;
-	return token;
-
 }

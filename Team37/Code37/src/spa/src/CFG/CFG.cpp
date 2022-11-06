@@ -29,3 +29,19 @@ shared_ptr<CFGNode> CFG::getCFGNode(int stmtNum) {
 shared_ptr<map<int, shared_ptr<CFGNode> > > CFG::getMap() {
     return stmtCFGNodeMap;
 }
+
+bool CFG::stmtExistsInMap(int stmtNum) {
+    if (stmtCFGNodeMap->find(stmtNum) == stmtCFGNodeMap->end()) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+shared_ptr<CFGNode> CFG::getNode(int stmtNum) {
+    if (stmtExistsInMap(stmtNum)) {
+        return stmtCFGNodeMap->at(stmtNum);
+    } else {
+        return nullptr;
+    }
+}

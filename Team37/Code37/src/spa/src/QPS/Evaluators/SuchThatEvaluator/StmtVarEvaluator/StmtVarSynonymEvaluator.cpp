@@ -3,41 +3,17 @@ using namespace std;
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
-#include "StmtVarEvaluator.h"
-#include "../EvaluatorUtils.h"
+#include "StmtVarSynonymEvaluator.h"
+#include "QPS/Evaluators/EvaluatorUtils.h"
 
 using namespace EvaluatorUtils;
 
-unordered_map<TokenType, StmtVarRelationType> tokenTypeToStmtVarRelationType = {
-    { TokenType::USES, StmtVarRelationType::USESSV},
-    { TokenType::MODIFIES, StmtVarRelationType::MODIFIESSV },
-};
 
-
-bool StmtVarEvaluator::evaluateBooleanClause(const Clause& clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
-
-    // StmtNum-StmtNum --> Eg. Uses(5, "x") 
-    if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::STRING) {
-        return servicer->retrieveRelation(stoi(leftArg.value), rightArg.value, sv);
-    }
-
-    // StmtNum-WildCard --> Eg. Uses(5,_) 
-    if (leftArg.type == TokenType::STATEMENT_NUM && rightArg.type == TokenType::WILDCARD) {
-        return !servicer->forwardRetrieveRelation(stoi(leftArg.value), sv).empty();
-    }
-
-    return false;
-}
-
-
-vector<vector<string>> StmtVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
+vector<vector<string>> StmtVarSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause.clauseType.type];
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    StmtVarRelationType sv = tokenTypeToStmtVarRelationType[clause->clauseType.type];
     vector<vector<string>> finalTable;
 
     string synonymValue = leftArg.type == TokenType::SYNONYM ? leftArg.value : rightArg.value;

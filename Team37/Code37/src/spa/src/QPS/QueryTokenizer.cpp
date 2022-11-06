@@ -4,6 +4,7 @@ using namespace std;
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <memory>
 
 #include <ctype.h>
 
@@ -30,25 +31,25 @@ void QueryTokenizer::resetQueryString(string queryString) {
     query = queryString;
 }
 
-vector<PqlToken> QueryTokenizer::Tokenize() {
+vector<PqlToken> QueryTokenizer::tokenize() {
     if (query.empty()) {
         throw "Invalid Query Syntax :: Query Length is zero.";
     }
 
-    Split();
-    ConvertIntoTokens();
+    split();
+    convertIntoTokens();
 
     return tokens;
 }
 
-void QueryTokenizer::Split() {
+void QueryTokenizer::split() {
     string currentString;
     bool selectExists = false;
     bool insideInvertedCommas = false;
     delimited_query = vector<string>();
 
     // Maximum length of delimited query is the number of characters in query string by Pigeonhole Principle
-    delimited_query.reserve(query.size()); 
+    delimited_query.reserve(query.size());
 
     for (int i = 0; i < query.size(); i++) {
         // If the character is a blank (whitespace or tab etc)
@@ -64,7 +65,7 @@ void QueryTokenizer::Split() {
                 currentString = "";
             }
         }
-           
+
         // If the character is a single character symbol, for eg brackets or comma
         else if (stringToTokenMap.find(string{ query[i] }) != stringToTokenMap.end()) {
             if (!currentString.empty()) {
@@ -72,7 +73,7 @@ void QueryTokenizer::Split() {
             }
             delimited_query.push_back(string{ query[i] });
             currentString = "";
-        } 
+        }
 
         else {
             if (query[i] == '"') {
@@ -83,7 +84,7 @@ void QueryTokenizer::Split() {
         }
     }
 
-  
+
     if (!currentString.empty()) {
         delimited_query.push_back(currentString);
     }
@@ -108,7 +109,7 @@ void QueryTokenizer::Split() {
 }
 
 
-void QueryTokenizer::ConvertIntoTokens() {
+void QueryTokenizer::convertIntoTokens() {
     tokens = vector<PqlToken>();
     tokens.reserve(delimited_query.size() + 1); // Additional 1 for `declaration end`
     int index = 0; // index of delimited_query that we are looping through
@@ -117,13 +118,9 @@ void QueryTokenizer::ConvertIntoTokens() {
     TokenType currentToken = TokenType::UNKNOWN;
 
     // Initialize our tokenizers
-    DeclarationTokenizer declarationTokenizer = DeclarationTokenizer(index, delimited_query, tokens);
-    SelectTokenizer selectTokenizer = SelectTokenizer(index, delimited_query, tokens);
-    SuchThatTokenizer suchThatTokenizer = SuchThatTokenizer(index, delimited_query, tokens);
-    PatternTokenizer patternTokenizer = PatternTokenizer(index, delimited_query, tokens);
-    WithTokenizer withTokenizer = WithTokenizer(index, delimited_query, tokens);
+    unique_ptr<GeneralTokenizer> tokenizer = make_unique<DeclarationTokenizer>(DeclarationTokenizer(index, delimited_query, tokens));
 
-    declarationTokenizer.tokenize();
+    tokenizer->tokenize();
 
     while (index < delimited_query.size()) {
         if (currentState == TokenizeState::FINDING_KEYWORDS) {
@@ -154,24 +151,23 @@ void QueryTokenizer::ConvertIntoTokens() {
         }
 
         else if (currentState == TokenizeState::SELECT) {
-            selectTokenizer.tokenize();
+            tokenizer = make_unique<SelectTokenizer>(SelectTokenizer(index, delimited_query, tokens));
         }
 
         else if (currentState == TokenizeState::SUCH_THAT) {
-            suchThatTokenizer.tokenize();
+            tokenizer = make_unique<SuchThatTokenizer>(SuchThatTokenizer(index, delimited_query, tokens));
         }
 
         else if (currentState == TokenizeState::PATTERN) {
-            patternTokenizer.tokenize();
+            tokenizer = make_unique<PatternTokenizer>(PatternTokenizer(index, delimited_query, tokens));
         }
 
         // WITH CLAUSE
         else {
-            withTokenizer.tokenize();
+            tokenizer = make_unique<WithTokenizer>(WithTokenizer(index, delimited_query, tokens));
         }
 
+        tokenizer->tokenize();
         currentState = TokenizeState::FINDING_KEYWORDS;
     }
 }
-
-

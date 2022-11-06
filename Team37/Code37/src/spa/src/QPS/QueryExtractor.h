@@ -13,38 +13,26 @@
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 
-extern set<char> validOperators;
-
 class QueryExtractor {
 public:
-    vector<PqlToken> *tokens;
-    int size;
-    int next;
-    bool booleanIsSynonym;
-    shared_ptr<PqlQuery> pq;
-
-    QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq);
+    QueryExtractor(vector<PqlToken> *tokenVector, shared_ptr<PqlQuery> pq_pointer);
 
     void extractSemantics();
+
+    vector<PqlToken>* tokens;
+    int next;
+    int size;
+    bool booleanIsSynonym;
+    shared_ptr<PqlQuery> pq;
 
 private:
     void extractDeclarations();
     
-    PqlToken extractSelect();
+    void extractSelect();
 
-    PqlToken extractSelectObject(PqlToken curr);
+    void extractClauses();
 
-    void extractClauses(PqlToken curr);
-
-    PqlToken extractPatternClause();
-
-    PqlToken extractWithClause();
-
-    PqlToken extractSuchThatClause();
-
-    PqlToken extractString(PqlToken token);
-
-    PqlToken getNextToken();
+    void checkBooleanSynonym();
 };
 
 

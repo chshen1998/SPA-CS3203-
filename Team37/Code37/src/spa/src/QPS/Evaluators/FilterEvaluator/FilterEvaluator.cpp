@@ -15,7 +15,6 @@ string FilterEvaluator::updatedColumnName(const PqlToken& token) {
     return token.type == TokenType::CALL ? token.value + ".procName" : token.value + ".varName";
 }
 
-
 bool FilterEvaluator::addAttrName(vector<vector<string>> &intermediate, const PqlToken &token) {
     if (doubleAttrTokens.find(declarations[token.value]) != doubleAttrTokens.end() &&
         find(intermediate[0].begin(), intermediate[0].end(), token.value) != intermediate[0].end()) {

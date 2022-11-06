@@ -8,15 +8,15 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vector<vector<string>> intermediate) {
-    PqlToken leftArg = clause.left;
-    TokenType patternType = declarations[clause.clauseType.value];
+vector<vector<string>> WhileEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+    PqlToken leftArg = clause->left;
+    TokenType patternType = declarations[clause->clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
     vector<vector<string>> finalTable;
-    vector<int> allWhileStmtLines = WhileEvaluator::getAllLineNumOfStmtType(patternStmtType);
+    vector<int> allWhileStmtLines = getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
-    finalTable.push_back(vector<string>{clause.clauseType.value});
+    finalTable.push_back(vector<string>{clause->clauseType.value});
 
     vector<int> finalResult;
 
@@ -25,9 +25,6 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
         // Add synonym column header
         finalTable[0].push_back(leftArg.value);
         for (int line: allWhileStmtLines) {
-//            if (servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSV).empty()) {
-//                printf("EMPTY!\n");
-//            }
             for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSVPREDICATE)) {
                 finalTable.push_back(vector<string>{to_string(line), v});
             }
@@ -39,19 +36,12 @@ vector<vector<string>> WhileEvaluator::evaluateClause(const Clause &clause, vect
         for (int line: finalResult) {
             finalTable.push_back(vector<string>{to_string(line)});
         }
-//        if (allStmtsWithLeftArg.empty()) {
-//            printf("EMPTY!!\n");
-//        }
     } else {
         // First argument is wildcard --> Eg. w (_,_)
         for (int line: allWhileStmtLines) {
             if (!servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSVPREDICATE).empty()) {
-//                printf("NOT EMPTY\n");
                 finalTable.push_back(vector<string>{to_string(line)});
             }
-//            else {
-//                printf("EMPTY!!!\n");
-//            }
         }
     }
     return JoinTable(finalTable, intermediate);

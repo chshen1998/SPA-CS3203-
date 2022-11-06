@@ -13,7 +13,7 @@ using namespace std;
 
 ParentValidator::ParentValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
-void ParentValidator::validate(PqlToken left, PqlToken right)
+void ParentValidator::validate(PqlToken* left, PqlToken* right)
 {
 	validateStatementRef(left);
 	validateStatementRef(right);

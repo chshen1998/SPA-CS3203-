@@ -31,6 +31,10 @@ private:
     void sortGroupOrder();
 
     void sortGroupClauses();
+
+    void quickSort(vector<shared_ptr<Clause>>* group, vector<int>* scores, int left, int right);
+
+    int partition(vector<shared_ptr<Clause>>* group, vector<int>* scores, int left, int right);
 };
 
 

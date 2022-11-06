@@ -13,7 +13,7 @@ using namespace std;
 
 NextValidator::NextValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
-void NextValidator::validate(PqlToken left, PqlToken right)
+void NextValidator::validate(PqlToken* left, PqlToken* right)
 {
 	validateStatementRef(left);
 	validateStatementRef(right);

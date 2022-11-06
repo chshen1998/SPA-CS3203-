@@ -19,7 +19,7 @@
 class UsesValidator : public ClauseValidator {
 public:
 	UsesValidator(unordered_map<string, TokenType> *declarations, TokenType token);
-	void validate(PqlToken left, PqlToken right);
+	void validate(PqlToken* left, PqlToken* right);
 };
 
 #endif //TEAM37_USESVALIDATOR_H

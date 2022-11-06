@@ -44,7 +44,7 @@ void PatternTokenizer::tokenize() {
 }
 
 
-TokenType PatternTokenizer::checkPatternTokenType(const string & s, const int& argNum) {
+TokenType PatternTokenizer::checkPatternTokenType(const string & s, int argNum) {
     switch (argNum) {
     case patternClauseFirstArgIndex:
         return checkIfSynonym(s) ? TokenType::SYNONYM : TokenType::UNKNOWN;

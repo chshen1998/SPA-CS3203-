@@ -7,8 +7,6 @@
 #include <set>
 #include <memory>
 #include <list>
-#include <unordered_map>
-
 
 #include "PKB/QueryServicer.h"
 #include "PKB/Types/StatementType.h"
@@ -19,8 +17,6 @@
 #include "./Structures/PqlQuery.h"
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
-
-extern set<TokenType> suchThatStmtRefStmtRef;
 
 class QueryEvaluator {
 public:

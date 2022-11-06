@@ -13,7 +13,7 @@ using namespace std;
 
 FollowsValidator::FollowsValidator(unordered_map<string, TokenType> *declarations, TokenType token) : ClauseValidator(declarations, token) {}
 
-void FollowsValidator::validate(PqlToken left, PqlToken right)
+void FollowsValidator::validate(PqlToken* left, PqlToken* right)
 {
 	validateStatementRef(left);
 	validateStatementRef(right);

@@ -8,15 +8,15 @@ using namespace std;
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> IfEvaluator::evaluateClause(const Clause &clause, vector<vector<string>> intermediate) {
-    PqlToken leftArg = clause.left;
-    TokenType patternType = declarations[clause.clauseType.value];
+vector<vector<string>> IfEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate) {
+    PqlToken leftArg = clause->left;
+    TokenType patternType = declarations[clause->clauseType.value];
     StatementType patternStmtType = tokenTypeToStatementType[patternType];
     vector<vector<string>> finalTable;
-    vector<int> allIfStmtLines = IfEvaluator::getAllLineNumOfStmtType(patternStmtType);
+    vector<int> allIfStmtLines = getAllLineNumOfStmtType(patternStmtType);
 
     // Add in the column header
-    finalTable.push_back(vector<string>{clause.clauseType.value});
+    finalTable.push_back(vector<string>{clause->clauseType.value});
 
     vector<int> finalResult;
 
@@ -25,7 +25,6 @@ vector<vector<string>> IfEvaluator::evaluateClause(const Clause &clause, vector<
         // Add synonym column header
         finalTable[0].push_back(leftArg.value);
         for (int line: allIfStmtLines) {
-//            printf("LINE: %d \n", line);
             for (string v: servicer->forwardRetrieveRelation(line, StmtVarRelationType::USESSVPREDICATE)) {
                 finalTable.push_back(vector<string>{to_string(line), v});
             }

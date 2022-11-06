@@ -15,7 +15,7 @@
 using namespace std;
 
 bool isSameMap(unordered_map<string, TokenType> ans, unordered_map<string, TokenType> result) {
-	for (const auto & [key, value] : ans) {
+	for (const auto& [key, value] : ans) {
 		if (result.find(key) == result.end()) {
 			return false;
 		}
@@ -26,7 +26,7 @@ bool isSameMap(unordered_map<string, TokenType> ans, unordered_map<string, Token
 	return true;
 }
 
-bool isSameClauses(vector<Clause> ans, vector<Clause> result)
+bool isSameClauses(vector<Clause> ans, vector<shared_ptr<Clause>> result)
 {
 	if (ans.size() != result.size())
 	{
@@ -35,7 +35,28 @@ bool isSameClauses(vector<Clause> ans, vector<Clause> result)
 
 	for (int i = 0; i != ans.size(); i++)
 	{
-		if (ans[i] == result[i]) {
+		if (ans[i] == (*result[i].get())) {
+			continue;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool isSameSelectObject(vector<SelectObject> ans, vector<shared_ptr<SelectObject>> result)
+{
+	if (ans.size() != result.size())
+	{
+		return false;
+	}
+
+	for (int i = 0; i != ans.size(); i++)
+	{
+		if (ans[i] == (*result[i].get())) {
 			continue;
 		}
 		else
@@ -70,7 +91,7 @@ TEST_CASE("Test Select clause")
 	QueryExtractor sut(&basic_tokens, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Select only no declarations")
@@ -81,7 +102,7 @@ TEST_CASE("Test Select only no declarations")
 	QueryExtractor sut(&valid_select_only, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Calls wildcards")
@@ -96,8 +117,8 @@ TEST_CASE("Test Calls wildcards")
 	QueryExtractor sut(&valid_calls_wildcards, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
-	REQUIRE(ptr->clauses[0] == ans2);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
+	REQUIRE(isSameClauses(ans2, ptr->clauses[0]));
 }
 
 
@@ -109,34 +130,34 @@ TEST_CASE("Test Select boolean")
 	QueryExtractor sut(&valid_select_boolean, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Select declared boolean")
 {
-	vector<SelectObject> ans = { SelectObject(SelectType::SYNONYM, "BOOLEAN")};
+	vector<SelectObject> ans = { SelectObject(SelectType::SYNONYM, "BOOLEAN") };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_select_declared_boolean, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Select attrName")
 {
-	vector<SelectObject> ans = { SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#"))};
+	vector<SelectObject> ans = { SelectObject(SelectType::ATTRNAME, "s", PqlToken(TokenType::STMTLINE, "stmt#")) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_select_attrname, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 TEST_CASE("Test Select tuple")
 {
-	vector<SelectObject> ans = { 
+	vector<SelectObject> ans = {
 		SelectObject(SelectType::ATTRNAME, "BOOLEAN", PqlToken(TokenType::STMTLINE, "stmt#")),
 		SelectObject(SelectType::SYNONYM, "v")
 	};
@@ -145,7 +166,7 @@ TEST_CASE("Test Select tuple")
 	QueryExtractor sut(&valid_select_tuple, ptr);
 	sut.extractSemantics();
 
-	REQUIRE(ptr->selectObjects == ans);
+	REQUIRE(isSameSelectObject(ans, ptr->selectObjects));
 }
 
 
@@ -154,7 +175,7 @@ TEST_CASE("Test Pattern clause assign")
 	vector<Clause> ans = { Clause(PqlToken(TokenType::SYNONYM, "a"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN)};
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_pattern_assign, ptr);
@@ -193,7 +214,7 @@ TEST_CASE("Test Pattern clause if")
 
 TEST_CASE("Test Pattern clause multi")
 {
-	vector<Clause> ans = { 
+	vector<Clause> ans = {
 		Clause(PqlToken(TokenType::SYNONYM, "ifs"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  PqlToken(TokenType::WILDCARD, "_"),
@@ -259,10 +280,10 @@ TEST_CASE("Test With clause")
 	vector<Clause> ans = { Clause(PqlToken(TokenType::NONE, ""),
 								  PqlToken(TokenType::SYNONYM, "p"),
 								  PqlToken(TokenType::STRING, "answer"),
-								  TokenType::WITH, 								
-								  PqlToken(TokenType::PROCNAME, "procName"), 								  
+								  TokenType::WITH,
+								  PqlToken(TokenType::PROCNAME, "procName"),
 								  PqlToken(TokenType::NONE, "")
-		)};
+		) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_with, ptr);
@@ -297,7 +318,7 @@ TEST_CASE("Test Mulitple With clause")
 
 TEST_CASE("Test Uses clause")
 {
-	vector<Clause> ans = { Clause(PqlToken(TokenType::USES, "uses"), 
+	vector<Clause> ans = { Clause(PqlToken(TokenType::USES, "uses"),
 								  PqlToken(TokenType::STATEMENT_NUM, "1"),
 								  PqlToken(TokenType::SYNONYM, "v"),
 								  TokenType::SUCH_THAT) };
@@ -434,7 +455,7 @@ TEST_CASE("Test Such That then Pattern clause")
 							Clause(PqlToken(TokenType::SYNONYM, "a"),
 									PqlToken(TokenType::SYNONYM, "v"),
 									PqlToken(TokenType::WILDCARD, "_"),
-								  TokenType::PATTERN)};
+								  TokenType::PATTERN) };
 
 	shared_ptr<PqlQuery> ptr = make_shared<PqlQuery>();
 	QueryExtractor sut(&valid_such_that_then_pattern, ptr);

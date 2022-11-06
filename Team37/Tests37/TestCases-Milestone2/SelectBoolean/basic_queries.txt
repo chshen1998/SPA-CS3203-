@@ -31,5 +31,5 @@ TRUE
 7 - Boolean variable
 variable BOOLEAN;
 Select BOOLEAN
-flag, x, i
+flag, x, i, test
 5000

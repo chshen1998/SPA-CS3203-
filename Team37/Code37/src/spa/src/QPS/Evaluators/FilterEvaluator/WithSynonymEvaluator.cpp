@@ -3,17 +3,17 @@ using namespace std;
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
-#include "WithEvaluator.h"
+#include "WithSynonymEvaluator.h"
 #include "PKB/Types/StatementType.h"
 #include "PKB/Types/StmtVarRelationType.h"
 #include "QPS/Evaluators/EvaluatorUtils.h"
 
 using namespace EvaluatorUtils;
 
-vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vector<vector<string>> intermediate)
+vector<vector<string>> WithSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
     vector<vector<string>> finalResult;
 
     // If initial table is empty
@@ -31,13 +31,13 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     }
 
     // Add procName for call, print, and read
-    bool isLeftDoubleAttr = WithEvaluator::addAttrName(intermediate, leftArg);
+    bool isLeftDoubleAttr = addAttrName(intermediate, leftArg);
     string leftValue = isLeftDoubleAttr ? updatedColumnName(leftArg) : leftArg.value;
     finalResult.push_back(intermediate[0]);
 
     // Two Synonyms - s.procName() = v.procName()
-    if (clause.rightAttr.type != TokenType::NONE) {        
-        bool isRightDoubleAttr = WithEvaluator::addAttrName(intermediate, rightArg);
+    if (clause->rightAttr.type != TokenType::NONE) {        
+        bool isRightDoubleAttr = addAttrName(intermediate, rightArg);
 
         // Insert Column headers
         int leftArgIndex = -1;
@@ -83,28 +83,21 @@ vector<vector<string>> WithEvaluator::evaluateClause(const Clause& clause, vecto
     return finalResult;
 }
 
-/*
-* For cases with 1 = 1 or "x" = "x"
-*/
-bool WithEvaluator::evaluateBooleanClause(const Clause& clause) {
-    return clause.left == clause.right;
-}
 
+void WithSynonymEvaluator::fillInitialTable(shared_ptr<Clause> clause, vector<vector<string>>& intermediate) {
+    intermediate.push_back(vector<string> { clause->left.value });
 
-void WithEvaluator::fillInitialTable(const Clause& clause, vector<vector<string>>& intermediate) {
-    intermediate.push_back(vector<string> { clause.left.value });
+    if (clause->right.type == TokenType::SYNONYM) {
+        intermediate[0].push_back(clause->right.value);
 
-    if (clause.right.type == TokenType::SYNONYM) {
-        intermediate[0].push_back(clause.right.value);
-
-        for (string left : selectAll(declarations[clause.left.value])) {
-            for (string right : selectAll(declarations[clause.right.value])) {
+        for (string left : selectAll(SynonymEvaluator::declarations[clause->left.value])) {
+            for (string right : selectAll(SynonymEvaluator::declarations[clause->right.value])) {
                 intermediate.push_back(vector<string> { left, right });
             }
         }
     }
     else {
-        for (string left : selectAll(declarations[clause.left.value])) {
+        for (string left : selectAll(SynonymEvaluator::declarations[clause->left.value])) {
             intermediate.push_back(vector<string> { left });
         }
     }

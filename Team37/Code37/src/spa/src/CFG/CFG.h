@@ -64,6 +64,19 @@ public:
      */
     shared_ptr<map<int, shared_ptr<CFGNode> > > getMap();
 
+    /**
+     * Returns true if the statement exist in the stmtCFGNodeMap, false otherwise.
+     * @param stmtNum statement number to check
+     * @return boolean if stmt exists in the map
+     */
+    bool stmtExistsInMap(int stmtNum);
+
+    /**
+     * Returns the CFGNode corresponding to the statement number
+     * @param stmtNum statement number of node
+     * @return pointer to the CFG Node
+     */
+    shared_ptr<CFGNode> getNode(int stmtNum);
 };
 
 

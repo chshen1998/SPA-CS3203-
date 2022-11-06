@@ -3,41 +3,17 @@ using namespace std;
 #include "QPS/Structures/PqlQuery.h"
 #include "QPS/Structures/PqlToken.h"
 #include "QPS/Types/TokenType.h"
-#include "ProcVarEvaluator.h"
-#include "../EvaluatorUtils.h"
+#include "QPS/Evaluators/EvaluatorUtils.h"
+
+#include "ProcVarSynonymEvaluator.h"
 
 using namespace EvaluatorUtils;
 
-unordered_map<TokenType, ProcVarRelationType> tokenTypeToProcVarRelationType = {
-    { TokenType::USES, ProcVarRelationType::USESPV },
-    { TokenType::MODIFIES, ProcVarRelationType::MODIFIESPV },
-};
-
-
-bool ProcVarEvaluator::evaluateBooleanClause(const Clause& clause) {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
-
-    // StmtNum-StmtNum --> Eg. Uses("procedure", "x") 
-    if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::STRING) {
-        return servicer->retrieveRelation(leftArg.value, rightArg.value, pv);
-    }
-
-    // StmtNum-WildCard --> Eg. Uses(5,_) 
-    if (leftArg.type == TokenType::STRING && rightArg.type == TokenType::WILDCARD) {
-        return !servicer->forwardRetrieveRelation(leftArg.value, pv).empty();
-    }
-
-    return false;
-}
-
-
-vector<vector<string>> ProcVarEvaluator::evaluateSynonymClause(const Clause& clause, vector<vector<string>> intermediate)
+vector<vector<string>> ProcVarSynonymEvaluator::evaluateSynonymClause(shared_ptr<Clause> clause, vector<vector<string>> intermediate)
 {
-    PqlToken leftArg = clause.left;
-    PqlToken rightArg = clause.right;
-    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause.clauseType.type];
+    PqlToken leftArg = clause->left;
+    PqlToken rightArg = clause->right;
+    ProcVarRelationType pv = tokenTypeToProcVarRelationType[clause->clauseType.type];
     vector<vector<string>> finalTable;
     vector<string> finalResult;
     vector<string> allProcedures;

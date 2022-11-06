@@ -8,6 +8,7 @@
 #include "catch.hpp"
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -41,7 +42,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
                 PqlToken(TokenType::CLOSED_ARROW, ">"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -65,7 +66,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -97,7 +98,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -142,7 +143,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
                 PqlToken(TokenType::NUMBER, "2"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -181,7 +182,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -227,7 +228,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -285,7 +286,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
                 PqlToken(TokenType::STMTLINE, "stmt#"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -313,7 +314,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Advanced SPA") {
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -338,7 +339,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
                 PqlToken(TokenType::SYNONYM, "v"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -370,7 +371,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
                     PqlToken(TokenType::CLOSED_BRACKET, ")"),
             };
 
-            REQUIRE_NOTHROW(q.Tokenize());
+            REQUIRE_NOTHROW(q.tokenize());
             REQUIRE(q.delimited_query == expectedDelimited);
             REQUIRE(q.tokens == expectedTokens);
         }
@@ -402,7 +403,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
                     PqlToken(TokenType::CLOSED_BRACKET, ")"),
             };
 
-            REQUIRE_NOTHROW(q.Tokenize());
+            REQUIRE_NOTHROW(q.tokenize());
             REQUIRE(q.delimited_query == expectedDelimited);
             REQUIRE(q.tokens == expectedTokens);
         }
@@ -434,7 +435,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
                     PqlToken(TokenType::CLOSED_BRACKET, ")"),
             };
 
-            REQUIRE_NOTHROW(q.Tokenize());
+            REQUIRE_NOTHROW(q.tokenize());
             REQUIRE(q.delimited_query == expectedDelimited);
             REQUIRE(q.tokens == expectedTokens);
         }
@@ -464,7 +465,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
                     PqlToken(TokenType::CLOSED_BRACKET, ")"),
             };
 
-            REQUIRE_NOTHROW(q.Tokenize());
+            REQUIRE_NOTHROW(q.tokenize());
             REQUIRE(q.delimited_query == expectedDelimited);
             REQUIRE(q.tokens == expectedTokens);
         }
@@ -492,7 +493,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
                     PqlToken(TokenType::CLOSED_BRACKET, ")"),
             };
 
-            REQUIRE_NOTHROW(q.Tokenize());
+            REQUIRE_NOTHROW(q.tokenize());
             REQUIRE(q.delimited_query == expectedDelimited);
             REQUIRE(q.tokens == expectedTokens);
         }
@@ -536,7 +537,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
                     PqlToken(TokenType::CLOSED_BRACKET, ")"),
             };
 
-            REQUIRE_NOTHROW(q.Tokenize());
+            REQUIRE_NOTHROW(q.tokenize());
             REQUIRE(q.delimited_query == expectedDelimited);
             REQUIRE(q.tokens == expectedTokens);
         }
@@ -572,7 +573,7 @@ TEST_CASE("Syntatically Valid and Correct Cases for Basic SPA") {
                     PqlToken(TokenType::CLOSED_BRACKET, ")"),
             };
 
-            REQUIRE_NOTHROW(q.Tokenize());
+            REQUIRE_NOTHROW(q.tokenize());
             REQUIRE(q.delimited_query == expectedDelimited);
             REQUIRE(q.tokens == expectedTokens);
         }
@@ -604,7 +605,7 @@ TEST_CASE("Syntatically Invalid Queries") {
                 PqlToken(TokenType::SYNONYM, "b"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -643,7 +644,7 @@ TEST_CASE("Syntatically Invalid Queries") {
                 PqlToken(TokenType::CLOSED_BRACKET, ")"),
         };
 
-        REQUIRE_NOTHROW(q.Tokenize());
+        REQUIRE_NOTHROW(q.tokenize());
         REQUIRE(q.delimited_query == expectedDelimited);
         REQUIRE(q.tokens == expectedTokens);
     }
@@ -655,30 +656,30 @@ TEST_CASE("Basic Invalid Query Strings") {
 //    SECTION("Query is of length zero") {
 //        inputQuery = "";
 //        q.resetQueryString(inputQuery);
-//        REQUIRE_THROWS_WITH(q.Tokenize(), "Invalid Query Syntax :: Query Length is zero.");
+//        REQUIRE_THROWS_WITH(q.tokenize(), "Invalid Query Syntax :: Query Length is zero.");
 //    }
 
 //    SECTION("Empty String (String with blanks)") {
 //        inputQuery = "  \n\t\r\v\f   ";
 //        q.resetQueryString(inputQuery);
-//        REQUIRE_THROWS_WITH(q.Tokenize(), "Invalid Query Syntax :: Query is blank.");
+//        REQUIRE_THROWS_WITH(q.tokenize(), "Invalid Query Syntax :: Query is blank.");
 //    }
 
     SECTION("No `select` keyword") {
         inputQuery = "variable v;";
         q.resetQueryString(inputQuery);
-        REQUIRE_THROWS(q.Tokenize(), "Invalid Query Syntax :: Select statement does not exist.");
+        REQUIRE_THROWS(q.tokenize(), "Invalid Query Syntax :: Select statement does not exist.");
     }
 
     SECTION("SemiColon at the end of query string") {
         inputQuery = "variable v; Select v;";
         q.resetQueryString(inputQuery);
-        REQUIRE_THROWS(q.Tokenize(), "Invalid Query Syntax :: Query String should not end with a semicolon.");
+        REQUIRE_THROWS(q.tokenize(), "Invalid Query Syntax :: Query String should not end with a semicolon.");
     }
 
     SECTION("Invalid Token") {
         inputQuery = "!!!??%$^";
         q.resetQueryString(inputQuery);
-        REQUIRE_THROWS(q.Tokenize(), "Invalid Query syntax :: Token does not exist.");
+        REQUIRE_THROWS(q.tokenize(), "Invalid Query syntax :: Token does not exist.");
     }
 }

@@ -65,12 +65,10 @@ TEST_CASE("Modified read statements") {
 }
 
 TEST_CASE("Modified while statements") {
-//    TODO: check with SP on NameExpression
     shared_ptr<SourceCode> sc = make_shared<SourceCode>("Filename.txt");
     shared_ptr<Procedure> procedure = make_shared<Procedure>(sc, "Test Procedure");
     shared_ptr<NameExpression> nameExpr = make_shared<NameExpression>(nullptr, "c");
     shared_ptr<ConstantExpression> constExpr = make_shared<ConstantExpression>(nullptr, 11);
-
     shared_ptr<ConditionalExpression> expr = make_shared<RelationalExpression>(
             nullptr,
             RelationalOperator::LESS_THAN,
@@ -90,6 +88,10 @@ TEST_CASE("Modified while statements") {
     shared_ptr<Storage> storage = make_shared<Storage>();
 
     procedure->addStatement(whileStmt);
+    whileStmt->addStatement(assignStmt);
+
+    assignStmt->setParent(whileStmt);
+
     sc->addProcedure(procedure);
 
     // We start by traversing the AST

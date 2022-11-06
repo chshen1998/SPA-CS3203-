@@ -98,3 +98,8 @@ stmt s1, s2;
 Select s1 such that Uses(s1, s2)
 SemanticError
 5000
+21 - Repeated declaration name
+stmt s1, s2; variable s1;
+Select s1 such that Uses(s1, s2)
+SemanticError
+5000

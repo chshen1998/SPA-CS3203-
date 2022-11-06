@@ -12,66 +12,57 @@ using namespace std;
 #include "../Types/TokenType.h"
 #include "DeclarationValidator.h"
 #include "ValidatorUtils.h"
+#include "BaseValidator.h"
 
-DeclarationValidator::DeclarationValidator(vector<PqlToken> *declarationTokens) {
+DeclarationValidator::DeclarationValidator(vector<PqlToken>* declarationTokens, unordered_map<string, TokenType>* declarationMap) : BaseValidator{}
+{
     tokens = declarationTokens;
     next = 0;
     size = tokens->size();
+    declarations = declarationMap;
 }
 
-unordered_map<string, TokenType> DeclarationValidator::validate() {
-    unordered_map<string, TokenType> declarations;
-
+void DeclarationValidator::validate() {
     PqlToken declarationType = getNextToken();
     while (declarationType.type != TokenType::END)
     {
-        isValidDesignEntity(declarationType);
+        isValidDesignEntity(&declarationType);
         PqlToken synonym = getNextToken();
-        isSynonym(synonym);
+        isValidSynonym(&synonym);
         PqlToken sign = getNextToken();
-        isSemicolonOrComma(sign);
+        isSemicolonOrComma(&sign);
 
         while (sign.type == TokenType::COMMA) {
-            declarations[synonym.value] = declarationType.type;
+            (*declarations)[synonym.value] = declarationType.type;
             synonym = getNextToken();
-            isSynonym(synonym);
+            isValidSynonym(&synonym);
             sign = getNextToken();
-            isSemicolonOrComma(sign);
+            isSemicolonOrComma(&sign);
         }
 
-        declarations[synonym.value] = declarationType.type;
+        (*declarations)[synonym.value] = declarationType.type;
         declarationType = getNextToken();
     }
-
-    return declarations;
 }
 
-void DeclarationValidator::isValidDesignEntity(PqlToken token)
+void DeclarationValidator::isValidDesignEntity(PqlToken *token)
 {
-    if (!(validDesignEntities.find(token.type) != validDesignEntities.end())) {
-        throw SyntaxError(token.value + " is not a valid design entity type");
+    if (!(validDesignEntities.find(token->type) != validDesignEntities.end())) {
+        throw SyntaxError(token->value + " is not a valid design entity type");
     }
 }
 
-void DeclarationValidator::isSynonym(PqlToken token) {
-    if (token.type != TokenType::SYNONYM) {
+void DeclarationValidator::isValidSynonym(PqlToken *token) {
+    if (token->type != TokenType::SYNONYM) {
         throw SyntaxError("Declarations must be a synonym");
     }
+    else if (declarations->find(token->value) != declarations->end()) {
+        throw SemanticError("Synonym name can only be declared once");
+    }
 }
 
-void DeclarationValidator::isSemicolonOrComma(PqlToken token) {
-    if (token.type != TokenType::SEMICOLON && token.type != TokenType::COMMA) {
+void DeclarationValidator::isSemicolonOrComma(PqlToken *token) {
+    if (token->type != TokenType::SEMICOLON && token->type != TokenType::COMMA) {
         throw SyntaxError("Declarations synonym must be followed with either a semicolon or comma");
     }
-}
-
-PqlToken DeclarationValidator::getNextToken() {
-    if (next == size)
-    {
-        return PqlToken(TokenType::END, "");
-    }
-    PqlToken token = tokens->at(next);
-    next = next + 1;
-    return token;
-
 }

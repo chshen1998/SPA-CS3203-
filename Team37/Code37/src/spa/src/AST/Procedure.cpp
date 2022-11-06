@@ -24,6 +24,7 @@ void Procedure::buildCFG(string procName) {
 
     // set first statement as start node of CFG
     vector<shared_ptr<Statement> > stmtLst = this->getStatements();
+
     shared_ptr<CFGNode> firstNode = stmtLst[0]->buildCFG(parents, this->getCFG());
     shared_ptr<CFGNode> startNode;
 
@@ -47,7 +48,6 @@ void Procedure::buildCFG(string procName) {
         parents.clear();
         parents.push_back(cfgNode);
     }
-//    this->cfg = make_shared<CFG>(startNode, procName);
     this->cfg->setStartNode(startNode);
     this->cfg->setName(procName);
 }

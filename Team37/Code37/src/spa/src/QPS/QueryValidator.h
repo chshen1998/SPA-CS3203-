@@ -15,6 +15,8 @@
 #include "./Types/ErrorType.h"
 #include "./Types/TokenType.h"
 #include "Validators/ClauseValidator.h"
+#include "Validators/PatternValidator.h"
+#include "Validators/WithValidator.h"
 
 
 class QueryValidator {
@@ -25,17 +27,17 @@ public:
     bool booleanIsSynonym;
     unordered_map<string, TokenType> declarations;
 
-    QueryValidator(vector<PqlToken> *tokens);
+    QueryValidator(vector<PqlToken> * tokenVector);
 
     PqlError validateQuery();
 
 private:
-    unordered_map<string, TokenType> validateDeclarations();
-    PqlToken validateSelect();
-    void validateClauses(PqlToken token);
+    void validateDeclarations();
+    void validateSelect();
+    void validateClauses();
     PqlToken validatePattern();
     PqlToken validateWith();
-    PqlToken validateSuchThat(PqlToken such);
+    PqlToken validateSuchThat();
 
     shared_ptr<ClauseValidator> createClauseValidator(TokenType type);
     PqlToken getNextToken();

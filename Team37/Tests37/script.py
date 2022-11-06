@@ -27,6 +27,9 @@ OUTPUT_FOLDER.mkdir()
 
 exception_milestone_folders = ["Sample SIMPLE Code", "TestOutputs", "TestCases-Progress"]
 
+incomplete_testcases = []
+failed_testcases = []
+
 for milestone in milestones:
     if milestone in exception_milestone_folders:
         continue
@@ -57,8 +60,7 @@ for milestone in milestones:
                 testcases.append(test_file)
 
         passed_testcases = []
-        incomplete_testcases = []
-        failed_testcases = []
+
         for testcase in testcases:
             testcase_source_path = Path(f"./{milestone}/{testcase_folder}/{source_file}")
             testcase_path = Path(f"./{milestone}/{testcase_folder}/{testcase}")
@@ -69,7 +71,7 @@ for milestone in milestones:
 
             with open(output_path) as f:
                 filetxt = f.read()
-                if 'Missing:' in filetxt or 'Additional:   ' in filetxt:
+                if 'Missing:' in filetxt or 'Additional:   ' in filetxt or "TIMEOUT" in filetxt:
                     failed_testcases.append(f"Failed\t{testcase_folder}/{testcase}")
 
                 elif 'End of evaluating Query File.' not in filetxt:
@@ -80,11 +82,11 @@ for milestone in milestones:
 
         for passed_testcase in passed_testcases:
             print(passed_testcase)
-        for incomplete_testcase in incomplete_testcases:
-            print(incomplete_testcase)
-        for failed_testcase in failed_testcases:
-            print(failed_testcase)
 
     print("")
 
+for incomplete_testcase in incomplete_testcases:
+    print(incomplete_testcase)
+for failed_testcase in failed_testcases:
+    print(failed_testcase)
 print("Completed scanning all files")

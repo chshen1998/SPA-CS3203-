@@ -12,13 +12,7 @@ using namespace std;
 #include "../Types/TokenType.h"
 
 
-/*
-* For Such That Clause: [such, that, clauseType, (, leftArg, comma, rightArg, )]
-* Notice that we need to verify the token type for indexes 2 (clauseType), 4 (leftArg), 6 (rightArg)
-*/
-const int suchThatClauseTypeIndex = 2;
-const int suchThatClauseFirstArgIndex = 4;
-const int suchThatClauseSecondArgIndex = 6;
+
 
 class SuchThatTokenizer : public GeneralTokenizer {
 
@@ -28,6 +22,15 @@ public:
 
 	void tokenize() override;
 	TokenType checkSuchThatTokenType(const string&, const ClauseType&, const int&);
+
+private:
+	/*
+* For Such That Clause: [such, that, clauseType, (, leftArg, comma, rightArg, )]
+* Notice that we need to verify the token type for indexes 2 (clauseType), 4 (leftArg), 6 (rightArg)
+*/
+	const int suchThatClauseTypeIndex = 2;
+	const int suchThatClauseFirstArgIndex = 4;
+	const int suchThatClauseSecondArgIndex = 6;
 };
 
 #endif

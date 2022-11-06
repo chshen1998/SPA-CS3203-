@@ -74,16 +74,7 @@ add_library(spa ${srcs} ${headers}
         src/SP/Utilities/Utils.cpp
         src/SP/SP.cpp
         src/SP/Tokenizer.cpp
-        "src/QPS/Validators/CallsValidator.cpp"
-        "src/QPS/Validators/ClauseValidator.cpp"
-        "src/QPS/Validators/DeclarationValidator.cpp"
-        "src/QPS/Validators/FollowsValidator.cpp"
-        "src/QPS/Validators/PatternValidator.cpp"
-        "src/QPS/Validators/ParentValidator.cpp"
-        "src/QPS/Validators/SelectValidator.cpp"
-        "src/QPS/Validators/ModifiesValidator.cpp"
-        "src/QPS/Validators/UsesValidator.cpp"
-        "src/QPS/Validators/ValidatorUtils.cpp"
+        
 
         src/QPS/QPS.cpp
         src/QPS/QueryExtractor.cpp
@@ -141,45 +132,88 @@ add_library(spa ${srcs} ${headers}
         src/CFG/CFG.cpp
         src/CFG/CFG.h
         src/PKB/Types/ProcVarRelationType.h
+        
+        "src/QPS/Structures/PqlQuery.cpp"
+
         "src/QPS/Validators/NextValidator.h"
         "src/QPS/Validators/NextValidator.cpp"
         "src/QPS/Validators/AffectsValidator.h"
         "src/QPS/Validators/AffectsValidator.cpp"
         "src/QPS/Validators/WithValidator.h"
         "src/QPS/Validators/WithValidator.cpp"
-        "src/QPS/Structures/PqlQuery.cpp"
-        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.h"
-        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator.cpp"
-        "src/QPS/Evaluators/SuchThatEvaluator/SuchThatEvaluator.h"
+
+        "src/QPS/Validators/CallsValidator.cpp"
+        "src/QPS/Validators/ClauseValidator.cpp"
+        "src/QPS/Validators/DeclarationValidator.cpp"
+        "src/QPS/Validators/FollowsValidator.cpp"
+        "src/QPS/Validators/PatternValidator.cpp"
+        "src/QPS/Validators/ParentValidator.cpp"
+        "src/QPS/Validators/SelectValidator.cpp"
+        "src/QPS/Validators/ModifiesValidator.cpp"
+        "src/QPS/Validators/UsesValidator.cpp"
+        "src/QPS/Validators/ValidatorUtils.cpp"
+
+
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtBooleanEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtBooleanEvaluator.cpp"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtSynonymEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtStmtEvaluator/StmtStmtSynonymEvaluator.cpp"
+
+        
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarBooleanEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarBooleanEvaluator.cpp"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarSynonymEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator/StmtVarSynonymEvaluator.cpp"
+
+        
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarBooleanEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarBooleanEvaluator.cpp"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarSynonymEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator/ProcVarSynonymEvaluator.cpp"
+
+        
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcBooleanEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcBooleanEvaluator.cpp"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcSynonymEvaluator.h"
+        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator/ProcProcSynonymEvaluator.cpp"
+
+       
         "src/QPS/Evaluators/EvaluatorUtils.h"
         "src/QPS/Evaluators/EvaluatorUtils.cpp"
-        "src/QPS/Evaluators/GeneralEvaluator.cpp"
-        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.h"
-        "src/QPS/Evaluators/SuchThatEvaluator/StmtVarEvaluator.cpp"
-        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.cpp"
-        "src/QPS/Evaluators/SuchThatEvaluator/ProcVarEvaluator.h"
+        "src/QPS/Evaluators/BooleanEvaluator.h"
+        "src/QPS/Evaluators/SynonymEvaluator.h"
+        "src/QPS/Evaluators/SynonymEvaluator.cpp"
+       
         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.h"
         "src/QPS/Evaluators/PatternEvaluator/AssignEvaluator.cpp"
-        "src/QPS/Evaluators/FilterEvaluator/WithEvaluator.h"
-        "src/QPS/Evaluators/FilterEvaluator/WithEvaluator.cpp"
+        "src/QPS/Evaluators/PatternEvaluator/IfEvaluator.h"
+        "src/QPS/Evaluators/PatternEvaluator/IfEvaluator.cpp"
+        "src/QPS/Evaluators/PatternEvaluator/WhileEvaluator.h"
+        "src/QPS/Evaluators/PatternEvaluator/WhileEvaluator.cpp"
+
+        "src/QPS/Evaluators/FilterEvaluator/WithBooleanEvaluator.h"
+        "src/QPS/Evaluators/FilterEvaluator/WithSynonymEvaluator.cpp"
+        "src/QPS/Evaluators/FilterEvaluator/WithSynonymEvaluator.h"
+
         "src/QPS/Evaluators/FilterEvaluator/FinalEvaluator.h"
         "src/QPS/Evaluators/FilterEvaluator/FinalEvaluator.cpp"
         "src/QPS/Evaluators/FilterEvaluator/FilterEvaluator.h"
         "src/QPS/Evaluators/FilterEvaluator/FilterEvaluator.cpp"
+
         "src/PKB/Types/ProcProcRelationType.h"
         "src/AST/ASTVisitor/ExtractCallsASTVisitor.cpp"
         "src/AST/ASTVisitor/ExtractCallsASTVisitor.h"
         "src/SP/Utilities/CallLoopChecker.cpp"
         "src/SP/Utilities/CallLoopChecker.h" 
-        src/QPS/Evaluators/PatternEvaluator/WhileEvaluator.cpp 
-        src/QPS/Evaluators/PatternEvaluator/WhileEvaluator.h 
-        src/QPS/Evaluators/PatternEvaluator/IfEvaluator.cpp 
-        src/QPS/Evaluators/PatternEvaluator/IfEvaluator.h
-        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.h" 
-        "src/QPS/Evaluators/SuchThatEvaluator/ProcProcEvaluator.cpp" 
+       
         "src/QPS/QueryOptimizer.h" 
         "src/QPS/QueryOptimizer.cpp"
-)
+         "src/QPS/Validators/BaseValidator.h"
+ "src/QPS/Validators/BaseValidator.cpp" "src/QPS/Extractors/DeclarationExtractor.h" "src/QPS/Extractors/DeclarationExtractor.cpp" "src/QPS/Extractors/BaseExtractor.h" "src/QPS/Extractors/BaseExtractor.cpp" "src/QPS/Extractors/SelectExtractor.h" "src/QPS/Extractors/SelectExtractor.cpp" "src/QPS/Extractors/ClauseExtractor.h" "src/QPS/Extractors/ClauseExtractor.cpp")
 
 
 # this makes the headers accessible for other projects which uses spa lib

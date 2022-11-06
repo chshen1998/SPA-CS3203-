@@ -19,14 +19,14 @@
 class PatternValidator : public ClauseValidator {
 public:
 	PatternValidator(unordered_map<string, TokenType> *declarations);
-	void validatePattern(PqlToken assign);
-	void validate(PqlToken left, PqlToken right);
-	void validateWhile(PqlToken left, PqlToken right);
-	void validateIf(PqlToken left, PqlToken mid, PqlToken right);
+	void validatePattern(PqlToken *assign);
+	void validate(PqlToken* left, PqlToken* right);
+	void validateWhile(PqlToken* left, PqlToken* right);
+	void validateIf(PqlToken *eft, PqlToken *mid, PqlToken *right);
 
 private:
-	void validateExpressionSpec(PqlToken token);
-	void validateWildcard(PqlToken token);
+	void validateExpressionSpec(PqlToken *token);
+	void validateWildcard(PqlToken *token);
 };
 
 

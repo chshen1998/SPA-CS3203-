@@ -63,3 +63,59 @@ procedure affecting {
 *********************************************************************************************************
 ******************************************** WITH LINE NUMBERS ***********************************************
 *********************************************************************************************************
+
+  procedure add {
+01  read arg1;
+02  read arg2;
+03  x = arg1;
+04  y = arg2;
+05  result = x + y;
+06  print result;
+  }
+
+  procedure multiply {
+07  read arg1;
+08  read arg2;
+09  x = arg1;
+10  y = arg2;
+11  result = x * y;
+12  print result;
+  }
+
+  procedure modulo {
+13  read arg1;
+14  read arg2;
+15  x = arg1;
+16  y = arg2;
+17  result = x % y;
+18  print result;
+  }
+
+  procedure factorial {
+19  read arg1;
+20  x = arg1;
+21  result = 1;
+22  while (x > 1) {
+23    result = result * x;
+24    x = x - 1;
+    }
+25  print result;
+  }
+
+  procedure affecting {
+26  a = a + b + c;
+27  b = f + g;
+28  c = a + 5;
+29  d = a + d;
+30  e = c - 9;
+31  f = e + b + c;
+32  g = a;
+33  h = d + e;
+34  while (qwe >= another) {
+35    A = A + 123;
+36    B = B + 543;
+37    B = B - 234;
+38    C = A + 2;
+39    D = B + A;
+    }
+  }

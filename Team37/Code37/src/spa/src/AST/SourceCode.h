@@ -6,6 +6,7 @@
 
 #include "Procedure.h"
 #include "CFG/CFG.h"
+#include "CFG/AllCFGs.h"
 
 class SourceCode : public TNode, public enable_shared_from_this<SourceCode> {
 private:
@@ -73,6 +74,11 @@ public:
         return filename < other.filename;
     };
 
+    /**
+     * Gets all CFG information for source code level.
+     * @return AllCFGs object
+     */
+    shared_ptr<AllCFGs> getAllCFGInfo();
 };
 
 #endif

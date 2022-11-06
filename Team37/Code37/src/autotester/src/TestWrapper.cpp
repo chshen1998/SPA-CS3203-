@@ -31,6 +31,7 @@ void TestWrapper::parse(string filename) {
         shared_ptr<SourceCode> AST = SP::parse(filename);
         vector<shared_ptr<CFG> > cfgLst = AST->getAllCFGs();
         shared_ptr<map<int, shared_ptr<CFGNode> > > allCFGMaps = AST->getAllCFGMaps();
+        shared_ptr<AllCFGs> allCFGsInfo = AST->getAllCFGInfo();
         knowledgeBase->buildFromAst(AST);
         knowledgeBase->buildFromCFG(allCFGMaps);
         queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());

@@ -14,14 +14,15 @@ bool CallLoopChecker::checkCallLoop(shared_ptr<SourceCode> AST) {
         populateCallMap(p);
     }
 
-    vector<string> visited;
+    vector<string> visited = {};
+    shared_ptr<vector<string>> overallVisited = make_shared<vector<string>>();
 
     for (auto it = procedureCallMap.begin(); it != procedureCallMap.end(); it++) {
         visited.clear();
-        checkCallMap(procedureCallMap, visited, it->first);
+        if (find(overallVisited->begin(), overallVisited->end(), it->first) == overallVisited->end()) {
+            checkCallMap(procedureCallMap, visited, it->first, overallVisited);
+        }
     }
-
-//    check();
 
     return false;
 }
@@ -68,7 +69,11 @@ void CallLoopChecker::checkSameName(vector<shared_ptr<Procedure>> procedures) {
     }
 }
 
-void CallLoopChecker::checkCallMap(map<string, vector<string>> myMap, vector<string> visited, string currNode) {
+void CallLoopChecker::checkCallMap(
+        map<string, vector<string>> myMap,
+        vector<string> visited,
+        string currNode,
+        shared_ptr<vector<string>> overallVisited) {
     // If currNode has been visited before
     if (find(visited.begin(), visited.end(), currNode) != visited.end()) {
         throw InvalidSyntaxException((char *) "Recursive procedure call loops are not allowed");
@@ -79,13 +84,14 @@ void CallLoopChecker::checkCallMap(map<string, vector<string>> myMap, vector<str
     }
 
     visited.push_back(currNode);
+    overallVisited->push_back(currNode);
 
     string key = currNode;
     vector<string> value = myMap.find(currNode)->second;
 
     myMap.erase(key);
     for (string s: value) {
-        checkCallMap(myMap, visited, s);
+        checkCallMap(myMap, visited, s, overallVisited);
     }
 
 }

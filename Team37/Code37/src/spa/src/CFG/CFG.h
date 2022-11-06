@@ -64,6 +64,12 @@ public:
      */
     shared_ptr<map<int, shared_ptr<CFGNode> > > getMap();
 
+    /**
+     * Returns true if the statement exist in the stmtCFGNodeMap, false otherwise.
+     * @param stmtNum statement number to check
+     * @return boolean if stmt exists in the map
+     */
+    bool stmtExistsInMap(int stmtNum);
 };
 
 

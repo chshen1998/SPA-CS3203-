@@ -85,8 +85,13 @@ for milestone in milestones:
 
     print("")
 
+failed = False
 for incomplete_testcase in incomplete_testcases:
     print(incomplete_testcase)
+    failed = True
 for failed_testcase in failed_testcases:
     print(failed_testcase)
+    failed = True
+
 print("Completed scanning all files")
+assert(failed == False)

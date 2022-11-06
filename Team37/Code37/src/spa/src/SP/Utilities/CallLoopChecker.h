@@ -54,18 +54,11 @@ public:
      * @param currNode the current node we are on
      *
      */
-    static void checkCallMap(map<string, vector<string>> myMap, vector<string> visited, string currNode);
-
-
-    // TODO: Delete temp function
-    static void check() {
-        for (auto it = procedureCallMap.begin(); it != procedureCallMap.end(); ++it) {
-            cout << "NAME: " << it->first << endl;
-            for (string s: it->second) {
-                cout << s << endl;
-            }
-        }
-    }
+    static void checkCallMap(
+            map<string, vector<string>> myMap,
+            vector<string> visited,
+            string currNode,
+            shared_ptr<vector<string>> overallVisited);
 };
 
 

@@ -740,3 +740,83 @@ TEST_CASE("Procedure with while statement and double nested if statement") {
 
     REQUIRE(cfg->getMap()->size() == 7);
 }
+
+TEST_CASE("Get all program level CFG information") {
+    string srcCode = "procedure main {\n"
+                     " print = x;\n"
+                     " read x;\n"
+                     " left = x;\n"
+                     " call somethingHmm;\n"
+                     " right = left + 2;\n"
+                     " read temp;\n"
+                     " radius = x + left;\n"
+                     " temp = temp + 2;\n"
+                     " radius1 = x + left;\n"
+                     " call anotherOne;\n"
+                     "}\n"
+                     "\n"
+                     "procedure somethingHmm {\n"
+                     " while (iter <=  5) {\n"
+                     "  x = right + 3 + 2 + left;\n"
+                     "  temp = temp + 7;\n"
+                     "  call anotherOne;\n"
+                     " }\n"
+                     " x = 5;\n"
+                     " if (iter != 1) then {\n"
+                     "  iter = iter + 1; \n"
+                     "  length = radius * 10;\n"
+                     "  breadth = radius + 10;\n"
+                     " } else {\n"
+                     "  while ((left + 1 > 2) || (radius + 1 > 2)) {\n"
+                     "   call nestedBlocks;\n"
+                     "   length = left + right;\n"
+                     "  }\n"
+                     " }\n"
+                     "}\n"
+                     "\n"
+                     "procedure nestedBlocks {\n"
+                     " if (iter != 1) then {\n"
+                     "  iter = iter + 1; \n"
+                     "  length = radius * 10;\n"
+                     "  breadth = radius + 10;\n"
+                     " } else {\n"
+                     "  while ((left + 1 > 2) || (radius + 1 > 2)) {\n"
+                     "   breadth = radius - 100;\n"
+                     "   length = left + right;\n"
+                     "   call anotherOne;\n"
+                     "   if (1 > 2) then {\n"
+                     "    procedure  = 5;\n"
+                     "   } else {\n"
+                     "    length = no;\n"
+                     "    while ((x > 2) || !(y <= 5)) {\n"
+                     "     call anotherOne;\n"
+                     "    }\n"
+                     "   }\n"
+                     "  }\n"
+                     " }\n"
+                     "}\n"
+                     "\n"
+                     "procedure anotherOne {\n"
+                     " print x;\n"
+                     "}";
+    Statement::resetLineNumCount();
+    shared_ptr<SourceCode> sourceCode = Parser::parseSourceCode(srcCode, "");
+    shared_ptr<AllCFGs> allCFGInfo = sourceCode->getAllCFGInfo();
+
+    vector<shared_ptr<CFG> > cfgLst = allCFGInfo->getAllCFGs();
+    shared_ptr<map<int, shared_ptr<CFGNode> >> combinedCfgMap = allCFGInfo->getCombinedMap();
+
+    shared_ptr<CFG> cfg1 = cfgLst[0];
+    REQUIRE(cfg1->getMap()->size() == 10);
+
+    shared_ptr<CFG> cfg2 = cfgLst[1];
+    REQUIRE(cfg2->getMap()->size() == 12);
+
+    shared_ptr<CFG> cfg3 = cfgLst[2];
+    REQUIRE(cfg3->getMap()->size() == 13);
+
+    shared_ptr<CFG> cfg4 = cfgLst[3];
+    REQUIRE(cfg4->getMap()->size() == 1);
+
+    REQUIRE(combinedCfgMap->size() == 36);
+}

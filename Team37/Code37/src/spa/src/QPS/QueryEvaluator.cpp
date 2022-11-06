@@ -132,7 +132,7 @@ void QueryEvaluator::evaluate() {
             }
 
             intermediateTable = synonymEvaluator->evaluateSynonymClause(clause, intermediateTable);
-            
+       
             // Terminate early if any clause is invalid or empty
             if (intermediateTable.size() <= 1) {
                 if (isResultBoolean) {
@@ -162,6 +162,10 @@ void QueryEvaluator::evaluate() {
         result.push_back("TRUE");
         return;
     }
+
+    cout << "FINAL TABLE" << endl;
+    EvaluatorUtils::printTable(finalResult);
+    cout << "" << endl;
 
     FinalEvaluator finalEvaluator = FinalEvaluator(servicer, pq->declarations, pq);
     finalEvaluator.getFinalResult(result, finalResult);

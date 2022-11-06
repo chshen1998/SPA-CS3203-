@@ -194,98 +194,38 @@ Retrieve Statement-Statement Relation Stored. For Relation(stmt1, stmt2)
 */
 bool Storage::retrieveRelation(int stmt1, int stmt2, StmtStmtRelationType type) {
     switch (type) {
-        case (FOLLOWS):
-            return Follows.retrieve(stmt1, stmt2);
-        case (FOLLOWSS):
-            return FollowsS.retrieve(stmt1, stmt2);
-        case (PARENT):
-            return Parent.retrieve(stmt1, stmt2);
-        case (PARENTS):
-            return ParentS.retrieve(stmt1, stmt2);
-        case (NEXT): {
-            vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXT);
+    case (FOLLOWS):
+        return Follows.retrieve(stmt1, stmt2);
+    case (FOLLOWSS):
+        return FollowsS.retrieve(stmt1, stmt2);
+    case (PARENT):
+        return Parent.retrieve(stmt1, stmt2);
+    case (PARENTS):
+        return ParentS.retrieve(stmt1, stmt2);
+    case (NEXT): {
+        vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXT);
 
-            // search for stmt2 in all lineNum that fulfil Next(stmt1,_)
-            return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
-        }
-        case (NEXTS): {
-            vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXTS);
-
-            // search for stmt2 in all lineNum that fulfil Nexts(stmt1,_)
-            return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
-        }
-        case (AFFECTS): {
-            vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTS);
-            return find(forward.begin(), forward.end(), stmt2) != forward.end();
-        }
-        case (AFFECTSS): {
-            vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTSS);
-            return find(forward.begin(), forward.end(), stmt2) != forward.end();
-
-        }
-        default:
-            throw invalid_argument("Not a Statement-Statement Realtion");
+        // search for stmt2 in all lineNum that fulfil Next(stmt1,_)
+        return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
     }
-}
+    case (NEXTS): {
+        vector<int> lstLineNumNexts = this->forwardComputeRelation(stmt1, NEXTS);
 
-/**
-Helper function for retrieve affects
-@param currNode Current node to check
-@param parentNode Parent node of the current node
-@param targetNode Target node to ccheck for
-@param var Variable to check for
-@param visited Visited set of (current, parent) to prevent infinite loops
-@returns Value of relation stored
-*/
-bool Storage::retrieveAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<CFGNode> parentNode,
-                                    shared_ptr<CFGNode> targetNode, string var,
-                                    shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited) {
-    // Check if path visited before
-    if (visited->find(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode)) != visited->end()) {
-        return false;
+        // search for stmt2 in all lineNum that fulfil Nexts(stmt1,_)
+        return find(lstLineNumNexts.begin(), lstLineNumNexts.end(), stmt2) != lstLineNumNexts.end();
     }
-    visited->insert(pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>(currNode, parentNode));
-
-    // If reached target nodes return true
-    if (currNode == targetNode) {
-        return true;
+    case (AFFECTS): {
+        vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTS);
+        return find(forward.begin(), forward.end(), stmt2) != forward.end();
     }
+    case (AFFECTSS): {
+        vector<int> forward = this->forwardComputeRelation(stmt1, AFFECTSS);
+        return find(forward.begin(), forward.end(), stmt2) != forward.end();
 
-    // If current node is dummy node, recurse into child nodes
-    shared_ptr<Statement> tnode = dynamic_pointer_cast<Statement>(currNode->getTNode());
-    if (tnode == nullptr) {
-        // Recurse to child nodes
-        for (const auto &childNode: currNode->getChildren()) {
-            if (retrieveAffectsHelper(childNode, currNode, targetNode, var, visited)) {
-                return true;
-            }
-        }
-
-        return false;
     }
-
-    // Check if intermediate node modifies variable
-    // Only if assignment, read or call
-    bool isAssignment = dynamic_pointer_cast<AssignStatement>(tnode) != nullptr;
-    bool isRead = dynamic_pointer_cast<ReadStatement>(tnode) != nullptr;
-    bool isCall = dynamic_pointer_cast<CallStatement>(tnode) != nullptr;
-
-    int lineNo = tnode->getLineNum();
-
-    if (parentNode != nullptr && (isAssignment || isRead || isCall)) {
-        if (parentNode != nullptr && retrieveRelation(lineNo, var, MODIFIESSV)) {
-            return false;
-        }
+    default:
+        throw invalid_argument("Not a Statement-Statement Realtion");
     }
-
-    // Recurse to child nodes
-    bool result = false;
-    for (const auto &childNode: currNode->getChildren()) {
-        if (retrieveAffectsHelper(childNode, currNode, targetNode, var, visited)) {
-            return true;
-        }
-    }
-    return false;
 }
 
 /*
@@ -641,42 +581,42 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
             return lstLineNum;
         }
         case (AFFECTS): {
-            // Check if both are affects
-            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+            shared_ptr<TNode> tNode = cfgNode->getTNode();
+            if (tNode == nullptr) {
+                return lstLineNum;
+            }
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
             if (stmtNode == nullptr) {
-                return {};
+                return lstLineNum;
             }
 
-            // Check CFG path + if variable 
-            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
 
             shared_ptr<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>> visited = make_shared<set<pair<shared_ptr<CFGNode>, shared_ptr<CFGNode>>>>();
             string var = stmtNode->getVarName();
 
             set<int> result = forwardAffectsHelper(cfgNode, nullptr, var, visited);
-            vector<int> output = {};
             for (auto x: result) {
-                output.push_back(x);
+                lstLineNum.push_back(x);
             }
-            return output;
+
+            return lstLineNum;
         }
         case (AFFECTSS): {
-            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+            shared_ptr<TNode> tNode = cfgNode->getTNode();
+            if (tNode == nullptr) {
+                return lstLineNum;
+            }
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
-            // Check if current statement is assign
             if (stmtNode == nullptr) {
-                return {};
+                return lstLineNum;
             }
 
-
-            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
 
             unordered_map<int, bool> visited = {};
             queue<int> nodeQueue;
             nodeQueue.push(stmt);
-
-            vector<int> output = {};
 
             while (!nodeQueue.empty()) {
                 // Get next item in queue
@@ -699,12 +639,12 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
                 for (int x: nextResult) {
                     nodeQueue.push(x);
-                    output.push_back(x);
+                    lstLineNum.push_back(x);
                 }
 
             }
 
-            return output;
+            return lstLineNum;
         }
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
@@ -774,6 +714,7 @@ set<int> Storage::forwardAffectsHelper(shared_ptr<CFGNode> currNode, shared_ptr<
     if (assign_node != nullptr && retrieveRelation(lineNo, var, USESSV) && parentNode != nullptr) {
         result.insert(lineNo);
     }
+
 
     // If current statement is assignment, read or call and modifies var -> end recursion
     bool isAssignment = dynamic_pointer_cast<AssignStatement>(statementNode) != nullptr;
@@ -853,10 +794,14 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
         }
         case (AFFECTS): {
             // Check if statement is assign
-            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
+            shared_ptr<TNode> tNode = cfgNode->getTNode();
+            if (tNode == nullptr) {
+                return lstLineNum;
+            }
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
             if (stmtNode == nullptr) {
-                return {};
+                return lstLineNum;
             }
 
             shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
@@ -870,28 +815,26 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
             }
 
             set<int> result = reverseAffectsHelper(cfgNode, nullptr, varUsed, visited);
-            vector<int> output = {};
             for (auto x: result) {
-                output.push_back(x);
+                lstLineNum.push_back(x);
             }
-            return output;
+            return lstLineNum;
         }
         case (AFFECTSS): {
-            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(statements[stmt]);
-
             // Check if current statement is assign
-            if (stmtNode == nullptr) {
-                return {};
+            shared_ptr<TNode> tNode = cfgNode->getTNode();
+            if (tNode == nullptr) {
+                return lstLineNum;
             }
+            shared_ptr<AssignStatement> stmtNode = dynamic_pointer_cast<AssignStatement>(tNode);
 
-
-            shared_ptr<CFGNode> cfgNode = this->CFGMap->at(stmt);
+            if (stmtNode == nullptr) {
+                return lstLineNum;
+            }
 
             unordered_map<int, bool> visited = {};
             queue<int> nodeQueue;
             nodeQueue.push(stmt);
-
-            vector<int> output = {};
 
             while (!nodeQueue.empty()) {
                 // Get next item in queue
@@ -912,13 +855,13 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
 
                 // Add all next result into queue
                 for (int x: nextResult) {
-                    output.push_back(x);
+                    lstLineNum.push_back(x);
                     nodeQueue.push(x);
                 }
 
             }
 
-            return output;
+            return lstLineNum;
         }
         default:
             throw invalid_argument("Not a Statement-Statement Relation");

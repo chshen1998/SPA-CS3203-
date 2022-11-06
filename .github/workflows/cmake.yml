@@ -37,7 +37,7 @@ jobs:
           cd ../..
       
       - name: Run unit tests
-        run: ./Team37/Code37/src/unit_testing/x64-Release/unit_testing.exe
+        run: ./Team37/Code37/out/build/x64-Release/src/unit_testing/unit_testing.exe
       
       - name: Run integration tests
         run: |

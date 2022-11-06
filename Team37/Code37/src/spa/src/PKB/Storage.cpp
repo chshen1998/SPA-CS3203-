@@ -627,26 +627,7 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
 
     switch (type) {
         case (NEXT): {
-            for (const auto &childNode: cfgNode->getChildren()) {
-                shared_ptr<TNode> tNode = childNode->getTNode();
-
-                // normal child node
-                if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
-                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
-                    lstLineNum.push_back(stmt->getLineNum());
-
-                    // childNode is a dummy node
-                } else if (tNode == nullptr && !childNode->getChildren().empty()) {
-                    for (const auto &storedChildNode: childNode->getChildren()) {
-                        shared_ptr<TNode> storedChildTNode = storedChildNode->getTNode();
-
-                        if (dynamic_pointer_cast<Statement>(storedChildTNode) != nullptr) {
-                            shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(storedChildTNode);
-                            lstLineNum.push_back(stmt->getLineNum());
-                        }
-                    }
-                }
-            }
+            lstLineNum = getNextForwardHelper(cfgNode);
             return lstLineNum;
         }
 
@@ -728,6 +709,35 @@ vector<int> Storage::forwardComputeRelation(int stmt, StmtStmtRelationType type)
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }
+}
+
+vector<int> Storage::getNextForwardHelper(shared_ptr<CFGNode> cfgNode) {
+    vector<int> lstLineNum = {};
+
+    for (const auto &childNode: cfgNode->getChildren()) {
+        shared_ptr<TNode> tNode = childNode->getTNode();
+
+        // normal child node
+        if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
+            shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
+            lstLineNum.push_back(stmt->getLineNum());
+
+            // childNode is a dummy node
+        } else if (tNode == nullptr && !childNode->getChildren().empty()) {
+            for (const auto &storedChildNode: childNode->getChildren()) {
+                shared_ptr<TNode> storedChildTNode = storedChildNode->getTNode();
+
+                if (dynamic_pointer_cast<Statement>(storedChildTNode) != nullptr) {
+                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(storedChildTNode);
+                    lstLineNum.push_back(stmt->getLineNum());
+                } else {
+                    vector<int> childrenLineNums = getNextForwardHelper(storedChildNode);
+                    lstLineNum.insert(lstLineNum.end(), childrenLineNums.begin(), childrenLineNums.end());
+                }
+            }
+        }
+    }
+    return lstLineNum;
 }
 
 /**
@@ -829,24 +839,7 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
     vector<int> lstLineNum = {};
     switch (type) {
         case (NEXT): {
-            for (const auto &parentNode: cfgNode->getParents()) {
-                shared_ptr<TNode> tNode = parentNode->getTNode();
-
-                if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
-                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
-                    lstLineNum.push_back(stmt->getLineNum());
-
-                } else if (parentNode->getTNode() == nullptr && !parentNode->getParents().empty()) {
-                    for (const auto &storedParentNode: parentNode->getParents()) {
-                        shared_ptr<TNode> storedParentTNode = storedParentNode->getTNode();
-
-                        if (dynamic_pointer_cast<Statement>(storedParentTNode) != nullptr) {
-                            shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(storedParentTNode);
-                            lstLineNum.push_back(stmt->getLineNum());
-                        }
-                    }
-                }
-            }
+            lstLineNum = getNextReverseHelper(cfgNode);
             return lstLineNum;
         }
         case (NEXTS): {
@@ -930,6 +923,33 @@ vector<int> Storage::reverseComputeRelation(int stmt, StmtStmtRelationType type)
         default:
             throw invalid_argument("Not a Statement-Statement Relation");
     }
+}
+
+vector<int> Storage::getNextReverseHelper(shared_ptr<CFGNode> cfgNode) {
+    vector<int> lstLineNum = {};
+
+    for (const auto &parentNode: cfgNode->getParents()) {
+        shared_ptr<TNode> tNode = parentNode->getTNode();
+
+        if (dynamic_pointer_cast<Statement>(tNode) != nullptr) {
+            shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(tNode);
+            lstLineNum.push_back(stmt->getLineNum());
+
+        } else if (parentNode->getTNode() == nullptr && !parentNode->getParents().empty()) {
+            for (auto storedParentNode: parentNode->getParents()) {
+                shared_ptr<TNode> storedParentTNode = storedParentNode->getTNode();
+
+                if (dynamic_pointer_cast<Statement>(storedParentTNode) != nullptr) {
+                    shared_ptr<Statement> stmt = dynamic_pointer_cast<Statement>(storedParentTNode);
+                    lstLineNum.push_back(stmt->getLineNum());
+                } else {
+                    vector<int> parentLineNums = getNextReverseHelper(storedParentNode);
+                    lstLineNum.insert(lstLineNum.end(), parentLineNums.begin(), parentLineNums.end());
+                }
+            }
+        }
+    }
+    return lstLineNum;
 }
 
 /**

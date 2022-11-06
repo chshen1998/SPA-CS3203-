@@ -15,6 +15,7 @@
 #include "PKB/PKB.h"
 #include "SP/SP.h"
 #include "SP/InvalidSyntaxException.h"
+#include "SP/FileNotFoundException.h"
 
 using namespace std;
 

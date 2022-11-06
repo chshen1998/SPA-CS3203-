@@ -36,6 +36,9 @@ void TestWrapper::parse(string filename) {
         knowledgeBase->buildFromCFG(allCFGsInfo);
         queryProcessor->setQueryServicer(knowledgeBase->getQueryServicer());
 
+    } catch (FileNotFoundException e) {
+        printf("%s\n", e.what());
+        exit(0);
     } catch (InvalidSyntaxException e) {
         printf("%s\n", e.what());
         exit(0);

@@ -10,12 +10,6 @@ using namespace std;
 #include "AST/Expression/RelationalFactor/ConstantExpression.h"
 #include "SP/Parser.h"
 
-void printIntInVector(vector<int> vect) {
-    for (int num: vect) {
-        printf("%d", num);
-    }
-}
-
 TEST_CASE("QueryServicer - Variable") {
     // Storage Stub
     shared_ptr<Storage> store = make_shared<Storage>();

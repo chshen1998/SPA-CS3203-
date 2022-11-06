@@ -15,4 +15,5 @@ procedure Second {
 procedure Third {
     z = 5;
     v = z;
-    print v; }
+    print v; 
+    v = x  + v + i;}
